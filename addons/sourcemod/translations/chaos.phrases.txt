@@ -1,0 +1,36 @@
+"Phrases"
+{
+	"#Chaos_Effect_Activated"
+	{
+		"#format"	"{1:t}"
+		"en"		"The effect '{1}' has been activated!"
+	}
+	"#Chaos_Effect_ReverseControls"
+	{
+		"en"		"Reverse Controls"
+	}
+	"#Chaos_Effect_IcePhysics"
+	{
+		"en"		"Ice Physics"
+	}
+	"#Chaos_Effect_SlowMotion"
+	{
+		"en"		"Bullet Time"
+	}
+	"#Chaos_Effect_KillRandomPlayer"
+	{
+		"en"		"Kill Random Player"
+	}
+	"#Chaos_Effect_FriendlyFire"
+	{
+		"en"		"Friendly Fire"
+	}
+	"#Chaos_Effect_InvertGravity"
+	{
+		"en"		"Invert Gravity"
+	}
+	"#Chaos_Effect_InvertGravity"
+	{
+		"en"		"Truce"
+	}
+}
