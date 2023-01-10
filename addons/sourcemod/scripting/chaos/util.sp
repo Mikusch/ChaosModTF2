@@ -1,6 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+any Max(any a, any b)
+{
+	return (a >= b) ? a : b;
+}
+
 int Compare(any val1, any val2)
 {
 	if (val1 > val2)

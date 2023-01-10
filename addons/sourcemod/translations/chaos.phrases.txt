@@ -29,8 +29,12 @@
 	{
 		"en"		"Invert Gravity"
 	}
-	"#Chaos_Effect_InvertGravity"
+	"#Chaos_Effect_Truce"
 	{
 		"en"		"Truce"
+	}
+	"#Chaos_Effect_WhereDidEverythingGo"
+	{
+		"en"		"Where Did Everything Go?"
 	}
 }

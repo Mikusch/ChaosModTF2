@@ -12,41 +12,43 @@ enum struct ChaosEffect
 	
 	// Runtime data
 	bool active;
+	Handle timer;
+	float activate_time;
 	int cooldown_left;
 	
 	void Parse(KeyValues kv)
 	{
-		// Give each effect a unique static ID
-		static int s_id = 1;
-		this.id = s_id++;
-		
-		kv.GetString("name", this.name, sizeof(this.name));
-		this.duration = kv.GetFloat("duration", 30.0);
-		this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
-		
-		if (kv.JumpToKey("callbacks", false))
+		char section[64];
+		if (kv.GetSectionName(section, sizeof(section)) && StringToIntEx(section, this.id))
 		{
-			this.callbacks = new StringMap();
-			if (kv.GotoFirstSubKey(false))
+			kv.GetString("name", this.name, sizeof(this.name));
+			this.duration = kv.GetFloat("duration", 30.0);
+			this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
+			
+			if (kv.JumpToKey("callbacks", false))
 			{
-				do
+				this.callbacks = new StringMap();
+				if (kv.GotoFirstSubKey(false))
 				{
-					char key[64], value[64];
-					kv.GetSectionName(key, sizeof(key));
-					kv.GetString(NULL_STRING, value, sizeof(value));
-					this.callbacks.SetString(key, value);
+					do
+					{
+						char key[64], value[64];
+						kv.GetSectionName(key, sizeof(key));
+						kv.GetString(NULL_STRING, value, sizeof(value));
+						this.callbacks.SetString(key, value);
+					}
+					while (kv.GotoNextKey(false));
+					kv.GoBack();
 				}
-				while (kv.GotoNextKey(false));
 				kv.GoBack();
 			}
-			kv.GoBack();
 		}
 	}
 	
 	Function GetCallbackFunction(const char[] key, Handle plugin = null)
 	{
 		char name[64];
-		if (this.callbacks.GetString(key, name, sizeof(name)))
+		if (this.callbacks && this.callbacks.GetString(key, name, sizeof(name)))
 		{
 			Function callback = GetFunctionByName(plugin, name);
 			if (callback == INVALID_FUNCTION)
