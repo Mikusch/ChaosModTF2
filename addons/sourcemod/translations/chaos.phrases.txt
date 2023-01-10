@@ -11,7 +11,7 @@
 	}
 	"#Chaos_Effect_IcePhysics"
 	{
-		"en"		"Ice Physics"
+		"en"		"Ice Skating"
 	}
 	"#Chaos_Effect_SlowMotion"
 	{
@@ -36,5 +36,9 @@
 	"#Chaos_Effect_WhereDidEverythingGo"
 	{
 		"en"		"Where Did Everything Go?"
+	}
+	"#Chaos_Effect_EternalScreams"
+	{
+		"en"		"Eternal Screams"
 	}
 }

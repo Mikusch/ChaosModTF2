@@ -6,7 +6,7 @@ public void WhereDidEverythingGo_OnStart()
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		SetEntProp(entity, Prop_Data, "m_fEffects", GetEntProp(entity, Prop_Data, "m_fEffects") | EF_NODRAW);
+		SDKHook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
 	}
 }
 
@@ -15,6 +15,23 @@ public void WhereDidEverythingGo_OnEnd()
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		SetEntProp(entity, Prop_Data, "m_fEffects", GetEntProp(entity, Prop_Data, "m_fEffects") & ~EF_NODRAW);
+		SDKUnhook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
 	}
+}
+
+public void WhereDidEverythingGo_OnEntityCreated(int entity, const char[] classname)
+{
+	SDKHook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
+}
+
+static Action SDKHookCB_SetTransmit(int entity, int client)
+{
+	if (entity == client)
+		return Plugin_Continue;
+	
+	if (HasEntProp(entity, Prop_Send, "m_hOwnerEntity") && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+		return Plugin_Continue;
+	
+	// Hide every entity
+	return Plugin_Handled;
 }

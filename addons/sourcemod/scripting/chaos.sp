@@ -3,6 +3,7 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <sdkhooks>
 
 ArrayList g_effects;
 float g_flNextEffectActivateTime;
@@ -23,6 +24,7 @@ ConVar sm_chaos_effect_interval;
 #include "chaos/effects/effect_invertgravity.sp"
 #include "chaos/effects/effect_truce.sp"
 #include "chaos/effects/effect_wheredideverythinggo.sp"
+#include "chaos/effects/effect_eternalscreams.sp"
 
 public void OnPluginStart()
 {
@@ -127,6 +129,28 @@ public void OnGameFrame()
 		}
 		
 		g_iForceEffectId = INVALID_EFFECT_ID;
+	}
+}
+
+public void OnEntityCreated(int entity, const char[] classname)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect))
+		{
+			if (!effect.active)
+				continue;
+			
+			Function callback = effect.GetCallbackFunction("OnEntityCreated");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushCell(entity);
+				Call_PushString(classname);
+				Call_Finish();
+			}
+		}
 	}
 }
 
