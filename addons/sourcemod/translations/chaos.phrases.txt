@@ -41,4 +41,8 @@
 	{
 		"en"		"Eternal Screams"
 	}
+	"#Chaos_Effect_SetEveryoneTo1HP"
+	{
+		"en"		"Set everyone to 1 HP"
+	}
 }

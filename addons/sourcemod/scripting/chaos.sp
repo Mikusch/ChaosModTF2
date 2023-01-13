@@ -25,6 +25,7 @@ ConVar sm_chaos_effect_interval;
 #include "chaos/effects/effect_truce.sp"
 #include "chaos/effects/effect_wheredideverythinggo.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
+#include "chaos/effects/effect_seteveryoneto1hp.sp"
 
 public void OnPluginStart()
 {
@@ -130,6 +131,8 @@ public void OnGameFrame()
 		
 		g_iForceEffectId = INVALID_EFFECT_ID;
 	}
+	
+	DisplayActiveEffects();
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -253,11 +256,16 @@ void StartEffect(ChaosEffect effect)
 		}
 	}
 	
-	// Set new effect as active and put on cooldown
-	effect.active = true;
+	// One-shot effects are never set to active state
+	if (effect.duration)
+	{
+		effect.active = true;
+		effect.timer = CreateTimer(effect.duration, Timer_ExpireEffect, effect.id);
+	}
+	
 	effect.cooldown_left = effect.cooldown;
 	effect.activate_time = GetGameTime();
-	effect.timer = CreateTimer(effect.duration, Timer_ExpireEffect, effect.id);
+	
 	g_effects.SetArray(index, effect);
 	
 	// Lower cooldown of all other effects
@@ -284,11 +292,9 @@ Action Timer_ExpireEffect(Handle timer, int id)
 	ChaosEffect effect;
 	if (g_effects.GetArray(index, effect))
 	{
+		// Time was extended, this is valid
 		if (effect.timer != timer)
-		{
-			LogMessage("Failed to expire effect '%T' because another expiry timer was created", effect.name, LANG_SERVER);
 			return Plugin_Continue;
-		}
 		
 		if (!effect.active)
 		{
@@ -303,8 +309,42 @@ Action Timer_ExpireEffect(Handle timer, int id)
 			Call_Finish();
 		}
 		
-		g_effects.Set(index, false, ChaosEffect::active);
+		effect.active = false;
+		effect.timer = null;
+		g_effects.SetArray(index, effect);
 	}
 	
 	return Plugin_Continue;
+}
+
+void DisplayActiveEffects()
+{
+	// Sort effects based on their cooldown
+	g_effects.SortCustom(SortFuncADTArray_SortChaosEffectsByActivationTime);
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		char text[512];
+		
+		// Go through all effects until we find a valid one 
+		for (int i = 0; i < g_effects.Length; i++)
+		{
+			ChaosEffect effect;
+			if (g_effects.GetArray(i, effect))
+			{
+				// TODO
+				// Only active effects or one-shot effects in the last 60 seconds
+				/*if (!effect.active || (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0))
+					continue;
+				
+				float flTimeLeft = effect.activate_time - GetGameTime() + effect.duration;
+				Format(text, sizeof(text), "%s\n%T %0.0f", text, effect.name, client, flTimeLeft);*/
+			}
+		}
+		
+		PrintKeyHintText(client, text);
+	}
 }
