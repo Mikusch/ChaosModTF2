@@ -43,6 +43,22 @@
 	}
 	"#Chaos_Effect_SetEveryoneTo1HP"
 	{
-		"en"		"Set everyone to 1 HP"
+		"en"		"Set Everyone To 1 HP"
+	}
+	"#Chaos_Effect_MidgetMercenaries"
+	{
+		"en"		"Midget Mercenaries"
+	}
+	"#Chaos_Effect_Watermark"
+	{
+		"en"		"What Server Am I On Again?"
+	}
+	"#Chaos_Effect_Thriller"
+	{
+		"en"		"Thriller Night"
+	}
+	"#Chaos_Effect_ShowScoreboard"
+	{
+		"en"		"Show Scoreboard"
 	}
 }

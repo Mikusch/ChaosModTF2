@@ -3,6 +3,8 @@
 
 #define INVALID_EFFECT_ID	-1
 
+#define MAX_USER_MSG_DATA	255
+
 enum
 {
 	EF_BONEMERGE			= 0x001,	// Performs bone merge on client side

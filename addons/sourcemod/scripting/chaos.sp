@@ -4,6 +4,8 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
+#include <tf2attributes>
+#include <tf2_stocks>
 
 ArrayList g_effects;
 float g_flNextEffectActivateTime;
@@ -13,6 +15,7 @@ ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
 
 #include "chaos/data.sp"
+#include "chaos/sdkcalls.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
@@ -26,6 +29,10 @@ ConVar sm_chaos_effect_interval;
 #include "chaos/effects/effect_wheredideverythinggo.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
 #include "chaos/effects/effect_seteveryoneto1hp.sp"
+#include "chaos/effects/effect_midgetmercenaries.sp"
+#include "chaos/effects/effect_watermark.sp"
+#include "chaos/effects/effect_thriller.sp"
+#include "chaos/effects/effect_showscoreboard.sp"
 
 public void OnPluginStart()
 {
@@ -39,6 +46,17 @@ public void OnPluginStart()
 	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS);
 	
 	ParseConfig();
+	
+	GameData gamedata = new GameData("chaos");
+	if (gamedata)
+	{
+		SDKCalls_Initialize(gamedata);
+		delete gamedata;
+	}
+	else
+	{
+		LogError("Failed to find chaos gamedata");
+	}
 }
 
 public Action ConCmd_ForceEffect(int client, int args)
@@ -107,32 +125,49 @@ public void OnMapStart()
 
 public void OnGameFrame()
 {
-	if (GameRules_GetProp("m_bInWaitingForPlayers"))
+	if (GameRules_GetRoundState() <= RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
-	if (g_flNextEffectActivateTime > GetGameTime())
-		return;
-	
-	g_flNextEffectActivateTime = GetGameTime() + sm_chaos_effect_interval.FloatValue;
-	
-	if (g_iForceEffectId == INVALID_EFFECT_ID)
+	for (int i = 0; i < g_effects.Length; i++)
 	{
-		SelectRandomEffect();
-	}
-	else
-	{
-		int index = g_effects.FindValue(g_iForceEffectId, ChaosEffect::id);
-		
 		ChaosEffect effect;
-		if (g_effects.GetArray(index, effect))
+		if (g_effects.GetArray(i, effect))
 		{
-			StartEffect(effect);
+			if (!effect.active)
+				continue;
+			
+			Function callback = effect.GetCallbackFunction("OnGameFrame");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_Finish();
+			}
 		}
-		
-		g_iForceEffectId = INVALID_EFFECT_ID;
 	}
 	
 	DisplayActiveEffects();
+	
+	if (g_flNextEffectActivateTime <= GetGameTime())
+	{
+		g_flNextEffectActivateTime = GetGameTime() + sm_chaos_effect_interval.FloatValue;
+		
+		if (g_iForceEffectId == INVALID_EFFECT_ID)
+		{
+			SelectRandomEffect();
+		}
+		else
+		{
+			int index = g_effects.FindValue(g_iForceEffectId, ChaosEffect::id);
+			
+			ChaosEffect effect;
+			if (g_effects.GetArray(index, effect))
+			{
+				StartEffect(effect);
+			}
+			
+			g_iForceEffectId = INVALID_EFFECT_ID;
+		}
+	}
 }
 
 public void OnEntityCreated(int entity, const char[] classname)
@@ -327,7 +362,7 @@ void DisplayActiveEffects()
 		if (!IsClientInGame(client))
 			continue;
 		
-		char text[512];
+		char szMessage[MAX_USER_MSG_DATA - 1];
 		
 		// Go through all effects until we find a valid one 
 		for (int i = 0; i < g_effects.Length; i++)
@@ -335,16 +370,35 @@ void DisplayActiveEffects()
 			ChaosEffect effect;
 			if (g_effects.GetArray(i, effect))
 			{
-				// TODO
-				// Only active effects or one-shot effects in the last 60 seconds
-				/*if (!effect.active || (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0))
-					continue;
-				
-				float flTimeLeft = effect.activate_time - GetGameTime() + effect.duration;
-				Format(text, sizeof(text), "%s\n%T %0.0f", text, effect.name, client, flTimeLeft);*/
+				// Expiring effects stay on screen while active
+				if (effect.active)
+				{
+					float flEndTime = effect.activate_time + effect.duration;
+					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
+					
+					char meter[64];
+					for (int j = 0; j <= 100; j += 10)
+					{
+						if (flRatio * 100 >= j)
+						{
+							Format(meter, sizeof(meter), "%s▒", meter);
+						}
+						else
+						{
+							Format(meter, sizeof(meter), "█%s", meter);
+						}
+					}
+					
+					Format(szMessage, sizeof(szMessage), "%s\n%T %s", szMessage, effect.name, client, meter);
+				}
+				// One-shot effects stay on screen for 60 seconds
+				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
+				{
+					Format(szMessage, sizeof(szMessage), "%s\n%T", szMessage, effect.name, client);
+				}
 			}
 		}
 		
-		PrintKeyHintText(client, text);
+		PrintKeyHintText(client, szMessage);
 	}
 }
