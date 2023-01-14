@@ -370,6 +370,8 @@ void DisplayActiveEffects()
 			ChaosEffect effect;
 			if (g_effects.GetArray(i, effect))
 			{
+				char szLine[64];
+				
 				// Expiring effects stay on screen while active
 				if (effect.active)
 				{
@@ -389,12 +391,18 @@ void DisplayActiveEffects()
 						}
 					}
 					
-					Format(szMessage, sizeof(szMessage), "%s\n%T %s", szMessage, effect.name, client, meter);
+					Format(szLine, sizeof(szLine), "%T %s", effect.name, client, meter);
 				}
 				// One-shot effects stay on screen for 60 seconds
 				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
 				{
-					Format(szMessage, sizeof(szMessage), "%s\n%T", szMessage, effect.name, client);
+					Format(szLine, sizeof(szLine), "%T", effect.name, client);
+				}
+				
+				// -2 to include null terminators
+				if (szLine[0] && strlen(szMessage) + strlen(szLine) < MAX_USER_MSG_DATA - 2)
+				{
+					Format(szMessage, sizeof(szMessage), "%s\n%s", szMessage, szLine);
 				}
 			}
 		}
