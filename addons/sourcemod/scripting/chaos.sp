@@ -23,6 +23,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
+#include "chaos/effects/effect_empty.sp"
 #include "chaos/effects/effect_setconvar.sp"
 #include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_addcond.sp"

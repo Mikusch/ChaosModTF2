@@ -3,9 +3,11 @@
 
 static ConVar sv_gravity;
 
-public void InvertGravity_Initialize(ChaosEffect effect)
+public bool InvertGravity_Initialize(ChaosEffect effect)
 {
 	sv_gravity = FindConVar("sv_gravity");
+	
+	return true;
 }
 
 public bool InvertGravity_OnStart(ChaosEffect effect)

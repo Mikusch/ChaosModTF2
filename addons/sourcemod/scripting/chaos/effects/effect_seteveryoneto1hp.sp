@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void SetEveryoneTo1HP_OnStart(ChaosEffect effect)
+public bool SetEveryoneTo1HP_OnStart(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -13,4 +13,6 @@ public void SetEveryoneTo1HP_OnStart(ChaosEffect effect)
 		
 		SetEntProp(client, Prop_Data, "m_iHealth", 1);
 	}
+	
+	return true;
 }

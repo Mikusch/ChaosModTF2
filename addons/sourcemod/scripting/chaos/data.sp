@@ -8,7 +8,7 @@ enum struct ChaosEffect
 	char name[64];
 	float duration;
 	int cooldown;
-	StringMap callbacks;
+	char effect_class[64];
 	KeyValues data;
 	
 	// Runtime data
@@ -25,24 +25,7 @@ enum struct ChaosEffect
 			kv.GetString("name", this.name, sizeof(this.name));
 			this.duration = kv.GetFloat("duration", 30.0);
 			this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
-			
-			if (kv.JumpToKey("callbacks", false))
-			{
-				this.callbacks = new StringMap();
-				if (kv.GotoFirstSubKey(false))
-				{
-					do
-					{
-						char key[64], value[64];
-						kv.GetSectionName(key, sizeof(key));
-						kv.GetString(NULL_STRING, value, sizeof(value));
-						this.callbacks.SetString(key, value);
-					}
-					while (kv.GotoNextKey(false));
-					kv.GoBack();
-				}
-				kv.GoBack();
-			}
+			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class), "InvalidEffect");
 			
 			if (kv.JumpToKey("data", false))
 			{
@@ -56,19 +39,8 @@ enum struct ChaosEffect
 	Function GetCallbackFunction(const char[] key, Handle plugin = null)
 	{
 		char name[64];
-		if (this.callbacks && this.callbacks.GetString(key, name, sizeof(name)))
-		{
-			Function callback = GetFunctionByName(plugin, name);
-			if (callback == INVALID_FUNCTION)
-			{
-				LogError("Unable to find callback function '%s' for '%s'", name, key);
-			}
-			
-			return callback;
-		}
-		
-		// No callbacks specified on item
-		return INVALID_FUNCTION;
+		Format(name, sizeof(name), "%s_%s", this.effect_class, key);
+		return GetFunctionByName(plugin, name);
 	}
 }
 
@@ -91,7 +63,14 @@ void ParseConfig()
 				if (callback != INVALID_FUNCTION)
 				{
 					Call_StartFunction(null, callback);
-					Call_Finish();
+					Call_PushArray(effect, sizeof(effect));
+					
+					// If Initialize returns false, the effect is not added to our effects list
+					bool bReturn;
+					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+					{
+						continue;
+					}
 				}
 				
 				g_effects.PushArray(effect);

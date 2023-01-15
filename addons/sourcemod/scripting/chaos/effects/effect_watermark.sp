@@ -6,11 +6,13 @@ static float g_flNextDisplayTime;
 
 static ConVar hostname;
 
-public void Watermark_Inititalize(ChaosEffect effect)
+public bool Watermark_Initialize(ChaosEffect effect)
 {
 	g_hHudSync = CreateHudSynchronizer();
 	
 	hostname = FindConVar("hostname");
+	
+	return true;
 }
 
 public bool Watermark_OnStart(ChaosEffect effect)

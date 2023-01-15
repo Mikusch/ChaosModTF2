@@ -3,9 +3,11 @@
 
 static StringMap g_hOldConvarValues;
 
-public void SetConVar_Initialize(ChaosEffect effect)
+public bool SetConVar_Initialize(ChaosEffect effect)
 {
 	g_hOldConvarValues = new StringMap();
+	
+	return true;
 }
 
 public bool SetConVar_OnStart(ChaosEffect effect)
