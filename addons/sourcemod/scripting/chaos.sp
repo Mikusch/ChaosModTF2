@@ -6,6 +6,8 @@
 #include <sdkhooks>
 #include <tf2attributes>
 #include <tf2_stocks>
+#include <tf2items>
+#include <tf2utils>
 
 ArrayList g_effects;
 float g_flNextEffectActivateTime;
@@ -37,10 +39,14 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_thriller.sp"
 #include "chaos/effects/effect_showscoreboard.sp"
 #include "chaos/effects/effect_fov.sp"
+#include "chaos/effects/effect_silence.sp"
+#include "chaos/effects/effect_removewearables.sp"
 
 public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
+	
+	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 	
 	g_effects = new ArrayList(sizeof(ChaosEffect));
 	
@@ -159,26 +165,6 @@ public void OnGameFrame()
 	}
 }
 
-public void TF2_OnConditionRemoved(int client, TFCond condition)
-{
-	for (int i = 0; i < g_effects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
-		{
-			Function callback = effect.GetCallbackFunction("OnConditionRemoved");
-			if (callback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, callback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushCell(client);
-				Call_PushCell(condition);
-				Call_Finish();
-			}
-		}
-	}
-}
-
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	for (int i = 0; i < g_effects.Length; i++)
@@ -224,6 +210,60 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_PushCellRef(tickcount);
 				Call_PushCellRef(seed);
 				Call_PushArrayEx(mouse, sizeof(mouse), SM_PARAM_COPYBACK);
+				
+				Action ret;
+				if (Call_Finish(ret) == SP_ERROR_NONE)
+				{
+					if (ret > action)
+					{
+						action = ret;
+					}
+				}
+			}
+		}
+	}
+	
+	return action;
+}
+
+public void TF2_OnConditionRemoved(int client, TFCond condition)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnConditionRemoved");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
+				Call_PushCell(condition);
+				Call_Finish();
+			}
+		}
+	}
+}
+
+public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDefIndex, Handle &item)
+{
+	Action action = Plugin_Continue;
+	
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnGiveNamedItem");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
+				Call_PushString(classname);
+				Call_PushCell(itemDefIndex);
+				Call_PushCellRef(item);
 				
 				Action ret;
 				if (Call_Finish(ret) == SP_ERROR_NONE)
@@ -409,4 +449,45 @@ void DisplayActiveEffects()
 		
 		PrintKeyHintText(client, szMessage);
 	}
+}
+
+static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
+{
+	Action action = Plugin_Continue;
+	
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnSoundPlayed");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushArrayEx(clients, sizeof(clients), SM_PARAM_COPYBACK);
+				Call_PushCellRef(numClients);
+				Call_PushStringEx(sample, sizeof(sample), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+				Call_PushCellRef(entity);
+				Call_PushCellRef(channel);
+				Call_PushCellRef(volume);
+				Call_PushCellRef(level);
+				Call_PushCellRef(pitch);
+				Call_PushCellRef(flags);
+				Call_PushStringEx(soundEntry, sizeof(soundEntry), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+				Call_PushCellRef(seed);
+				
+				Action ret;
+				if (Call_Finish(ret) == SP_ERROR_NONE)
+				{
+					if (ret > action)
+					{
+						action = ret;
+					}
+				}
+			}
+		}
+	}
+	
+	return action;
 }

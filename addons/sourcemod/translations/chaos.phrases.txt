@@ -11,7 +11,7 @@
 	}
 	"#Chaos_Effect_IcePhysics"
 	{
-		"en"		"Ice Skating"
+		"en"		"Wet Floor"
 	}
 	"#Chaos_Effect_SlowMotion"
 	{
@@ -43,7 +43,7 @@
 	}
 	"#Chaos_Effect_SetEveryoneTo1HP"
 	{
-		"en"		"Set Everyone To 1 HP"
+		"en"		"Set Every Player To 1 HP"
 	}
 	"#Chaos_Effect_MidgetMercenaries"
 	{
@@ -80,5 +80,25 @@
 	"#Chaos_Effect_BumperCars"
 	{
 		"en"		"Bumper Cars!"
+	}
+	"#Chaos_Effect_ViewRoll"
+	{
+		"en"		"Immersive Gameplay"
+	}
+	"#Chaos_Effect_Silence"
+	{
+		"en"		"Silence Is Golden"
+	}
+	"#Chaos_Effect_RemoveWearables"
+	{
+		"en"		"Remove All Cosmetics"
+	}
+	"#Chaos_Effect_SquidFootsteps"
+	{
+		"en"		"Squid Fortress 2"
+	}
+	"#Chaos_Effect_JingleAllTheWay"
+	{
+		"en"		"Jingle All The Way"
 	}
 }
