@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void KillRandomPlayer_OnStart()
+public bool KillRandomPlayer_OnStart(ChaosEffect effect)
 {
 	ArrayList players = new ArrayList();
 	
@@ -16,11 +16,15 @@ public void KillRandomPlayer_OnStart()
 		players.Push(client);
 	}
 	
-	if (players.Length)
+	if (!players.Length)
 	{
-		int client = players.Get(GetRandomInt(0, players.Length - 1));
-		ForcePlayerSuicide(client);
+		delete players;
+		return false;
 	}
 	
-	delete players;
+	// Fuck this guy in particular
+	int client = players.Get(GetRandomInt(0, players.Length - 1));
+	ForcePlayerSuicide(client);
+	
+	return true;
 }

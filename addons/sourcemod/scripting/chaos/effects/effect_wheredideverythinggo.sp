@@ -1,16 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void WhereDidEverythingGo_OnStart()
+public bool WhereDidEverythingGo_OnStart(ChaosEffect effect)
 {
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
 		SDKHook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
 	}
+	
+	return true;
 }
 
-public void WhereDidEverythingGo_OnEnd()
+public void WhereDidEverythingGo_OnEnd(ChaosEffect effect)
 {
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
@@ -19,7 +21,7 @@ public void WhereDidEverythingGo_OnEnd()
 	}
 }
 
-public void WhereDidEverythingGo_OnEntityCreated(int entity, const char[] classname)
+public void WhereDidEverythingGo_OnEntityCreated(ChaosEffect effect, int entity, const char[] classname)
 {
 	SDKHook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
 }

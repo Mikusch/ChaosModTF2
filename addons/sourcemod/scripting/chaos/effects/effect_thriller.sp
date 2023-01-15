@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void Thriller_OnEnd()
+public void Thriller_OnEnd(ChaosEffect effect)
 {
-	for (int client = 1; client<=MaxClients;client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
@@ -12,7 +12,7 @@ public void Thriller_OnEnd()
 	}
 }
 
-public Action Thriller_OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+public Action Thriller_OnPlayerRunCmd(ChaosEffect effect, int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	TF2_AddCondition(client, TFCond_HalloweenThriller);
 	

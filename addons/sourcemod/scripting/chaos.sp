@@ -20,10 +20,9 @@ ConVar sm_chaos_effect_interval;
 #include "chaos/util.sp"
 
 #include "chaos/effects/effect_reversecontrols.sp"
-#include "chaos/effects/effect_icephysics.sp"
+#include "chaos/effects/effect_setconvar.sp"
 #include "chaos/effects/effect_slowmotion.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
-#include "chaos/effects/effect_friendlyfire.sp"
 #include "chaos/effects/effect_invertgravity.sp"
 #include "chaos/effects/effect_truce.sp"
 #include "chaos/effects/effect_wheredideverythinggo.sp"
@@ -97,6 +96,7 @@ public void OnPluginEnd()
 			if (callback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
 		}
@@ -117,6 +117,7 @@ public void OnMapStart()
 			if (callback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
 		}
@@ -140,6 +141,7 @@ public void OnGameFrame()
 			if (callback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
 		}
@@ -184,6 +186,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			if (callback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(entity);
 				Call_PushString(classname);
 				Call_Finish();
@@ -208,6 +211,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			if (callback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_PushCellRef(buttons);
 				Call_PushCellRef(impulse);
@@ -250,35 +254,20 @@ void SelectRandomEffect()
 			if (effect.active || effect.cooldown_left > 0)
 				continue;
 			
-			// Run CanActivate callback and skip effects returning false
-			Function callback = effect.GetCallbackFunction("CanActivate");
-			if (callback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, callback);
-				
-				bool ret;
-				if (Call_Finish(ret) == SP_ERROR_NONE && !ret)
-				{
-					continue;
-				}
-			}
-			
-			StartEffect(effect);
-			break;
+			if (StartEffect(effect))
+				break;
 		}
 	}
 }
 
-void StartEffect(ChaosEffect effect)
+bool StartEffect(ChaosEffect effect)
 {
 	int index = g_effects.FindValue(effect.id, ChaosEffect::id);
 	if (index == -1)
 	{
 		LogError("Failed to start unknown effect with id '%d'", effect.id);
-		return;
+		return false;
 	}
-	
-	PrintCenterTextAll("%t", "#Chaos_Effect_Activated", effect.name);
 	
 	// Run OnStart callback (if the effect wasn't already active)
 	if (!effect.active)
@@ -287,9 +276,18 @@ void StartEffect(ChaosEffect effect)
 		if (callback != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, callback);
-			Call_Finish();
+			Call_PushArray(effect, sizeof(effect));
+			
+			// If OnStart returned false, do not start the effect
+			bool bReturn;
+			if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+			{
+				return false;
+			}
 		}
 	}
+	
+	PrintCenterTextAll("%t", "#Chaos_Effect_Activated", effect.name);
 	
 	// One-shot effects are never set to active state
 	if (effect.duration)
@@ -313,6 +311,8 @@ void StartEffect(ChaosEffect effect)
 		int cooldown = Max(0, g_effects.Get(j, ChaosEffect::cooldown_left) - 1);
 		g_effects.Set(j, cooldown, ChaosEffect::cooldown_left);
 	}
+	
+	return true;
 }
 
 Action Timer_ExpireEffect(Handle timer, int id)
@@ -341,6 +341,7 @@ Action Timer_ExpireEffect(Handle timer, int id)
 		if (callback != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, callback);
+			Call_PushArray(effect, sizeof(effect));
 			Call_Finish();
 		}
 		

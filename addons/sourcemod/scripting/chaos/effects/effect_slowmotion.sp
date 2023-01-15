@@ -7,7 +7,7 @@ static ConVar sm_chaos_effect_slowmotion_timescale;
 
 static float flOldTimescale;
 
-public void SlowMotion_Initialize()
+public void SlowMotion_Initialize(ChaosEffect effect)
 {
 	host_timescale = FindConVar("host_timescale");
 	sv_cheats = FindConVar("sv_cheats");
@@ -15,13 +15,13 @@ public void SlowMotion_Initialize()
 	sm_chaos_effect_slowmotion_timescale = CreateConVar("sm_chaos_effect_slowmotion_timescale", "0.5", "How much to slow the game down.");
 }
 
-public void SlowMotion_OnMapStart()
+public void SlowMotion_OnMapStart(ChaosEffect effect)
 {
 	PrecacheSound("#replay/enterperformancemode.wav");
 	PrecacheSound("#replay/exitperformancemode.wav");
 }
 
-public void SlowMotion_OnStart()
+public bool SlowMotion_OnStart(ChaosEffect effect)
 {
 	EmitSoundToAll("#replay/enterperformancemode.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 	
@@ -42,10 +42,12 @@ public void SlowMotion_OnStart()
 	}
 	
 	flOldTimescale = host_timescale.FloatValue;
-	host_timescale.FloatValue = sm_chaos_effect_slowmotion_timescale.FloatValue;
+	host_timescale.FloatValue *= sm_chaos_effect_slowmotion_timescale.FloatValue;
+	
+	return true;
 }
 
-public void SlowMotion_OnEnd()
+public void SlowMotion_OnEnd(ChaosEffect effect)
 {
 	EmitSoundToAll("#replay/exitperformancemode.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 	

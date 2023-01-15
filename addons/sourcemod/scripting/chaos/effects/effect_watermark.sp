@@ -6,18 +6,20 @@ static float g_flNextDisplayTime;
 
 static ConVar hostname;
 
-public void Watermark_Inititalize()
+public void Watermark_Inititalize(ChaosEffect effect)
 {
 	g_hHudSync = CreateHudSynchronizer();
 	hostname = FindConVar("hostname");
 }
 
-public void Watermark_OnStart()
+public bool Watermark_OnStart(ChaosEffect effect)
 {
 	g_flNextDisplayTime = GetGameTime();
+	
+	return true;
 }
 
-public void Watermark_OnGameFrame()
+public void Watermark_OnGameFrame(ChaosEffect effect)
 {
 	if (g_flNextDisplayTime <= GetGameTime())
 	{

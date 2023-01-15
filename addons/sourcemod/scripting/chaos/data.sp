@@ -9,6 +9,7 @@ enum struct ChaosEffect
 	float duration;
 	int cooldown;
 	StringMap callbacks;
+	KeyValues data;
 	
 	// Runtime data
 	bool active;
@@ -40,6 +41,13 @@ enum struct ChaosEffect
 					while (kv.GotoNextKey(false));
 					kv.GoBack();
 				}
+				kv.GoBack();
+			}
+			
+			if (kv.JumpToKey("data", false))
+			{
+				this.data = new KeyValues("data");
+				this.data.Import(kv);
 				kv.GoBack();
 			}
 		}
