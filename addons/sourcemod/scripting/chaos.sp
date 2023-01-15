@@ -9,6 +9,7 @@
 
 ArrayList g_effects;
 float g_flNextEffectActivateTime;
+float g_flNextEffectDisplayTime;
 
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
@@ -45,7 +46,7 @@ public void OnPluginStart()
 	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30.0", "Interval between each effect activation.");
-	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "Effect to force.");
+	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "ID of the effect to force.");
 	
 	Events_Initialize();
 	ParseConfig();
@@ -83,6 +84,7 @@ public void OnPluginEnd()
 public void OnMapStart()
 {
 	g_flNextEffectActivateTime = 0.0;
+	g_flNextEffectDisplayTime = 0.0;
 	
 	for (int i = 0; i < g_effects.Length; i++)
 	{
@@ -120,24 +122,31 @@ public void OnGameFrame()
 		}
 	}
 	
-	DisplayActiveEffects();
+	// Show all active effects in HUD
+	if (g_flNextEffectDisplayTime <= GetGameTime())
+	{
+		g_flNextEffectDisplayTime = GetGameTime() + 0.1;
+		
+		DisplayActiveEffects();
+	}
 	
+	// Activate a new effect
 	if (g_flNextEffectActivateTime <= GetGameTime())
 	{
 		g_flNextEffectActivateTime = GetGameTime() + sm_chaos_effect_interval.FloatValue;
 		
-		int iForceID = sm_chaos_force_effect.IntValue;
-		if (iForceID == INVALID_EFFECT_ID)
+		int iForceId = sm_chaos_force_effect.IntValue;
+		if (iForceId == INVALID_EFFECT_ID)
 		{
 			SelectRandomEffect();
 		}
 		else
 		{
 			
-			int index = g_effects.FindValue(iForceID, ChaosEffect::id);
+			int index = g_effects.FindValue(iForceId, ChaosEffect::id);
 			if (index == -1)
 			{
-				LogError("Failed to force unknown effect '%d'", iForceID);
+				LogError("Failed to force unknown effect '%d'", iForceId);
 				return;
 			}
 			

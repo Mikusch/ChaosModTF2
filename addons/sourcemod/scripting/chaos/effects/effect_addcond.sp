@@ -3,7 +3,10 @@
 
 public void AddCond_OnMapStart(ChaosEffect effect)
 {
-	// Bumper Car sounds
+	// Halloween Ghost
+	PrecacheModel("models/props_halloween/ghost.mdl");
+	
+	// Bumper Cars
 	PrecacheSound(")weapons/bumper_car_speed_boost_start.wav");
 	PrecacheSound(")weapons/bumper_car_speed_boost_stop.wav");
 	PrecacheSound(")weapons/bumper_car_jump_land.wav");
@@ -38,30 +41,26 @@ public bool AddCond_OnStart(ChaosEffect effect)
 
 public void AddCond_OnEnd(ChaosEffect effect)
 {
-	TFCond nCond = view_as<TFCond>(effect.data.GetNum("condition"));
+	TFCond nCondition = view_as<TFCond>(effect.data.GetNum("condition"));
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 		
-		TF2_RemoveCondition(client, nCond);
+		TF2_RemoveCondition(client, nCondition);
 	}
 }
 
 public void AddCond_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	TFCond nCond = view_as<TFCond>(effect.data.GetNum("condition"));
-	
-	TF2_AddCondition(client, nCond);
+	TF2_AddCondition(client, view_as<TFCond>(effect.data.GetNum("condition")));
 }
 
 public void AddCond_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
 {
-	TFCond nCondition = view_as<TFCond>(effect.data.GetNum("condition"));
-	
-	if (nCondition == condition)
+	if (view_as<TFCond>(effect.data.GetNum("condition")) == condition)
 	{
-		TF2_AddCondition(client, nCondition);
+		TF2_AddCondition(client, condition);
 	}
 }

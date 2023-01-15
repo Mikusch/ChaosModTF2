@@ -7,7 +7,7 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 		return false;
 	
 	char szAttrib[64];
-	effect.data.GetString("name", szAttrib, sizeof(szAttrib));
+	effect.data.GetString("attribute", szAttrib, sizeof(szAttrib));
 	float flValue = effect.data.GetFloat("value");
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -24,7 +24,7 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 public void SetAttribute_OnEnd(ChaosEffect effect)
 {
 	char szAttrib[64];
-	effect.data.GetString("name", szAttrib, sizeof(szAttrib));
+	effect.data.GetString("attribute", szAttrib, sizeof(szAttrib));
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -38,7 +38,7 @@ public void SetAttribute_OnEnd(ChaosEffect effect)
 public void SetAttribute_OnPlayerSpawn(ChaosEffect effect, int client)
 {
 	char szAttrib[64];
-	effect.data.GetString("name", szAttrib, sizeof(szAttrib));
+	effect.data.GetString("attribute", szAttrib, sizeof(szAttrib));
 	float flValue = effect.data.GetFloat("value");
 	
 	TF2Attrib_SetByName(client, szAttrib, flValue);

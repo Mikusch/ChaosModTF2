@@ -9,6 +9,7 @@ static ConVar hostname;
 public void Watermark_Inititalize(ChaosEffect effect)
 {
 	g_hHudSync = CreateHudSynchronizer();
+	
 	hostname = FindConVar("hostname");
 }
 

@@ -22,8 +22,9 @@ public bool KillRandomPlayer_OnStart(ChaosEffect effect)
 		return false;
 	}
 	
-	// Fuck this guy in particular
 	int client = players.Get(GetRandomInt(0, players.Length - 1));
+	delete players;
+	
 	ForcePlayerSuicide(client);
 	
 	return true;

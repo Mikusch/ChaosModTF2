@@ -14,7 +14,7 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 		return false;
 	
 	char szName[512], szValue[512];
-	effect.data.GetString("name", szName, sizeof(szName));
+	effect.data.GetString("convar", szName, sizeof(szName));
 	effect.data.GetString("value", szValue, sizeof(szValue));
 	
 	ConVar convar = FindConVar(szName);
@@ -37,7 +37,7 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 public void SetConVar_OnEnd(ChaosEffect effect)
 {
 	char szName[512];
-	effect.data.GetString("name", szName, sizeof(szName));
+	effect.data.GetString("convar", szName, sizeof(szName));
 	
 	char szValue[512];
 	g_hOldConvarValues.GetString(szName, szValue, sizeof(szValue));
