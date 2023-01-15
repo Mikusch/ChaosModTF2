@@ -69,4 +69,16 @@
 	{
 		"en"		"Zoomed View"
 	}
+	"#Chaos_Effect_Crits"
+	{
+		"en"		"Critical Hits"
+	}
+	"#Chaos_Effect_Ubercharge"
+	{
+		"en"		"Übercharged"
+	}
+	"#Chaos_Effect_BumperCars"
+	{
+		"en"		"Bumper Cars!"
+	}
 }

@@ -20,8 +20,11 @@ ConVar sm_chaos_force_effect;
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
-#include "chaos/effects/effect_reversecontrols.sp"
 #include "chaos/effects/effect_setconvar.sp"
+#include "chaos/effects/effect_setattribute.sp"
+#include "chaos/effects/effect_addcond.sp"
+
+#include "chaos/effects/effect_reversecontrols.sp"
 #include "chaos/effects/effect_slowmotion.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
 #include "chaos/effects/effect_invertgravity.sp"
@@ -29,7 +32,6 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_wheredideverythinggo.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
 #include "chaos/effects/effect_seteveryoneto1hp.sp"
-#include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_watermark.sp"
 #include "chaos/effects/effect_thriller.sp"
 #include "chaos/effects/effect_showscoreboard.sp"
@@ -78,25 +80,6 @@ public void OnPluginEnd()
 	}
 }
 
-public void OnClientPutInServer(int client)
-{
-	for (int i = 0; i < g_effects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
-		{
-			Function callback = effect.GetCallbackFunction("OnClientPutInServer");
-			if (callback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, callback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushCell(client);
-				Call_Finish();
-			}
-		}
-	}
-}
-
 public void OnMapStart()
 {
 	g_flNextEffectActivateTime = 0.0;
@@ -125,11 +108,8 @@ public void OnGameFrame()
 	for (int i = 0; i < g_effects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect))
+		if (g_effects.GetArray(i, effect) && effect.active)
 		{
-			if (!effect.active)
-				continue;
-			
 			Function callback = effect.GetCallbackFunction("OnGameFrame");
 			if (callback != INVALID_FUNCTION)
 			{
@@ -146,13 +126,20 @@ public void OnGameFrame()
 	{
 		g_flNextEffectActivateTime = GetGameTime() + sm_chaos_effect_interval.FloatValue;
 		
-		if (sm_chaos_force_effect.IntValue == INVALID_EFFECT_ID)
+		int iForceID = sm_chaos_force_effect.IntValue;
+		if (iForceID == INVALID_EFFECT_ID)
 		{
 			SelectRandomEffect();
 		}
 		else
 		{
-			int index = g_effects.FindValue(sm_chaos_force_effect.IntValue, ChaosEffect::id);
+			
+			int index = g_effects.FindValue(iForceID, ChaosEffect::id);
+			if (index == -1)
+			{
+				LogError("Failed to force unknown effect '%d'", iForceID);
+				return;
+			}
 			
 			ChaosEffect effect;
 			if (g_effects.GetArray(index, effect))
@@ -163,16 +150,33 @@ public void OnGameFrame()
 	}
 }
 
+public void TF2_OnConditionRemoved(int client, TFCond condition)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnConditionRemoved");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
+				Call_PushCell(condition);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 public void OnEntityCreated(int entity, const char[] classname)
 {
 	for (int i = 0; i < g_effects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect))
+		if (g_effects.GetArray(i, effect) && effect.active)
 		{
-			if (!effect.active)
-				continue;
-			
 			Function callback = effect.GetCallbackFunction("OnEntityCreated");
 			if (callback != INVALID_FUNCTION)
 			{
@@ -193,11 +197,8 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	for (int i = 0; i < g_effects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect))
+		if (g_effects.GetArray(i, effect) && effect.active)
 		{
-			if (!effect.active)
-				continue;
-			
 			Function callback = effect.GetCallbackFunction("OnPlayerRunCmd");
 			if (callback != INVALID_FUNCTION)
 			{
