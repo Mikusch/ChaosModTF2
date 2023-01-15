@@ -9,12 +9,13 @@
 
 ArrayList g_effects;
 float g_flNextEffectActivateTime;
-int g_iForceEffectId;
 
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
+ConVar sm_chaos_force_effect;
 
 #include "chaos/data.sp"
+#include "chaos/events.sp"
 #include "chaos/sdkcalls.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
@@ -28,10 +29,11 @@ ConVar sm_chaos_effect_interval;
 #include "chaos/effects/effect_wheredideverythinggo.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
 #include "chaos/effects/effect_seteveryoneto1hp.sp"
-#include "chaos/effects/effect_midgetmercenaries.sp"
+#include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_watermark.sp"
 #include "chaos/effects/effect_thriller.sp"
 #include "chaos/effects/effect_showscoreboard.sp"
+#include "chaos/effects/effect_fov.sp"
 
 public void OnPluginStart()
 {
@@ -41,9 +43,9 @@ public void OnPluginStart()
 	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30.0", "Interval between each effect activation.");
+	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "Effect to force.");
 	
-	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS);
-	
+	Events_Initialize();
 	ParseConfig();
 	
 	GameData gamedata = new GameData("chaos");
@@ -56,33 +58,6 @@ public void OnPluginStart()
 	{
 		LogError("Failed to find chaos gamedata");
 	}
-}
-
-public Action ConCmd_ForceEffect(int client, int args)
-{
-	if (args < 1)
-	{
-		ReplyToCommand(client, "[SM] Usage: sm_chaos_forceeffect <id>");
-		return Plugin_Handled;
-	}
-	
-	int id = GetCmdArgInt(1);
-	
-	int index = g_effects.FindValue(id, ChaosEffect::id);
-	if (index == -1)
-	{
-		ReplyToCommand(client, "Invalid effect id '%d'", id);
-		return Plugin_Handled;
-	}
-	
-	ChaosEffect effect;
-	if (g_effects.GetArray(index, effect))
-	{
-		g_iForceEffectId = effect.id;
-		ReplyToCommand(client, "The next effect will be '%t'", effect.name);
-	}
-	
-	return Plugin_Handled;
 }
 
 public void OnPluginEnd()
@@ -103,10 +78,28 @@ public void OnPluginEnd()
 	}
 }
 
+public void OnClientPutInServer(int client)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnClientPutInServer");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 public void OnMapStart()
 {
 	g_flNextEffectActivateTime = 0.0;
-	g_iForceEffectId = -1;
 	
 	for (int i = 0; i < g_effects.Length; i++)
 	{
@@ -153,21 +146,19 @@ public void OnGameFrame()
 	{
 		g_flNextEffectActivateTime = GetGameTime() + sm_chaos_effect_interval.FloatValue;
 		
-		if (g_iForceEffectId == INVALID_EFFECT_ID)
+		if (sm_chaos_force_effect.IntValue == INVALID_EFFECT_ID)
 		{
 			SelectRandomEffect();
 		}
 		else
 		{
-			int index = g_effects.FindValue(g_iForceEffectId, ChaosEffect::id);
+			int index = g_effects.FindValue(sm_chaos_force_effect.IntValue, ChaosEffect::id);
 			
 			ChaosEffect effect;
 			if (g_effects.GetArray(index, effect))
 			{
 				StartEffect(effect);
 			}
-			
-			g_iForceEffectId = INVALID_EFFECT_ID;
 		}
 	}
 }
@@ -269,21 +260,19 @@ bool StartEffect(ChaosEffect effect)
 		return false;
 	}
 	
-	// Run OnStart callback (if the effect wasn't already active)
-	if (!effect.active)
+	// Run OnStart callback
+	Function callback = effect.GetCallbackFunction("OnStart");
+	if (callback != INVALID_FUNCTION)
 	{
-		Function callback = effect.GetCallbackFunction("OnStart");
-		if (callback != INVALID_FUNCTION)
+		Call_StartFunction(null, callback);
+		Call_PushArray(effect, sizeof(effect));
+		
+		// If OnStart returned false, do not start the effect
+		bool bReturn;
+		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			Call_StartFunction(null, callback);
-			Call_PushArray(effect, sizeof(effect));
-			
-			// If OnStart returned false, do not start the effect
-			bool bReturn;
-			if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
-			{
-				return false;
-			}
+			LogMessage("Failed to start effect '%T'", effect.name, LANG_SERVER);
+			return false;
 		}
 	}
 	

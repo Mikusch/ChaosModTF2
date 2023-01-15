@@ -11,10 +11,7 @@ public void SetConVar_Initialize(ChaosEffect effect)
 public bool SetConVar_OnStart(ChaosEffect effect)
 {
 	if (!effect.data)
-	{
-		LogError("Missing effect data!");
 		return false;
-	}
 	
 	char szName[512], szValue[512];
 	effect.data.GetString("name", szName, sizeof(szName));
@@ -22,10 +19,7 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	
 	ConVar convar = FindConVar(szName);
 	if (!convar)
-	{
-		LogError("Failed to find ConVar '%s'", szName);
 		return false;
-	}
 	
 	char szOldValue[512];
 	convar.GetString(szOldValue, sizeof(szOldValue));

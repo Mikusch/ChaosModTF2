@@ -61,4 +61,12 @@
 	{
 		"en"		"Show Scoreboard"
 	}
+	"#Chaos_Effect_HighFOV"
+	{
+		"en"		"Quake Pro"
+	}
+	"#Chaos_Effect_LowFOV"
+	{
+		"en"		"Zoomed View"
+	}
 }
