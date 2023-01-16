@@ -48,6 +48,8 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_setspeed.sp"
 #include "chaos/effects/effect_thirdperson.sp"
 #include "chaos/effects/effect_teleportermalfunction.sp"
+#include "chaos/effects/effect_respawnalldead.sp"
+#include "chaos/effects/effect_screenoverlay.sp"
 
 public void OnPluginStart()
 {
@@ -110,6 +112,25 @@ public void OnMapStart()
 			{
 				Call_StartFunction(null, callback);
 				Call_PushArray(effect, sizeof(effect));
+				Call_Finish();
+			}
+		}
+	}
+}
+
+public void OnClientPutInServer(int client)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnClientPutInServer");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
 				Call_Finish();
 			}
 		}

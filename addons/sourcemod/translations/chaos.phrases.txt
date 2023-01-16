@@ -137,4 +137,20 @@
 	{
 		"en"		"Teleporter Malfunction"
 	}
+	"#Chaos_Effect_RespawnAllDead"
+	{
+		"en"		"Respawn All Dead Players"
+	}
+	"#Chaos_Effect_Blindness"
+	{
+		"en"		"Blindness"
+	}
+	"#Chaos_Effect_Greyscale"
+	{
+		"en"		"T.F. Noire"
+	}
+	"#Chaos_Effect_VirtualReality"
+	{
+		"en"		"Virtual Reality"
+	}
 }
