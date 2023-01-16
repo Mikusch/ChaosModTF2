@@ -5,13 +5,13 @@
 		"#format"	"{1:t}"
 		"en"		"The effect '{1}' has been activated!"
 	}
-	"#Chaos_Effect_ReverseControls"
+	"#Chaos_Effect_InvertAcceleration"
 	{
-		"en"		"Reverse Controls"
+		"en"		"Invert Acceleration"
 	}
 	"#Chaos_Effect_IcePhysics"
 	{
-		"en"		"Wet Floor"
+		"en"		"Caution Wet Floor"
 	}
 	"#Chaos_Effect_SlowMotion"
 	{
@@ -44,6 +44,10 @@
 	"#Chaos_Effect_SetEveryoneTo1HP"
 	{
 		"en"		"Set Every Player To 1 HP"
+	}
+	"#Chaos_Effect_SetEveryoneTo1000HP"
+	{
+		"en"		"Set Every Player To 1000 HP"
 	}
 	"#Chaos_Effect_MidgetMercenaries"
 	{
@@ -100,5 +104,37 @@
 	"#Chaos_Effect_JingleAllTheWay"
 	{
 		"en"		"Jingle All The Way"
+	}
+	"#Chaos_Effect_SkeletonModels"
+	{
+		"en"		"Skeletons!"
+	}
+	"#Chaos_Effect_Lag"
+	{
+		"en"		"Ping From Pluto"
+	}
+	"#Chaos_Effect_EnableTeamCollisions"
+	{
+		"en"		"Enable Team Collisions"
+	}
+	"#Chaos_Effect_MidasTouch"
+	{
+		"en"		"Midas Touch"
+	}
+	"#Chaos_Effect_SpeedLimit"
+	{
+		"en"		"100 HU/s Speed Limit"
+	}
+	"#Chaos_Effect_MaxSpeed"
+	{
+		"en"		"Ludicrious Speed"
+	}
+	"#Chaos_Effect_ThirdPerson"
+	{
+		"en"		"Third Person"
+	}
+	"#Chaos_Effect_TeleporterMalfunction"
+	{
+		"en"		"Teleporter Malfunction"
 	}
 }

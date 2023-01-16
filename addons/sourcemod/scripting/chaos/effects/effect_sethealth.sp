@@ -1,8 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public bool SetEveryoneTo1HP_OnStart(ChaosEffect effect)
+public bool SetHealth_OnStart(ChaosEffect effect)
 {
+	if (!effect.data)
+		return false;
+	
+	int health = effect.data.GetNum("health");
+	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
@@ -11,7 +16,7 @@ public bool SetEveryoneTo1HP_OnStart(ChaosEffect effect)
 		if (!IsPlayerAlive(client))
 			continue;
 		
-		SetEntProp(client, Prop_Data, "m_iHealth", 1);
+		SetEntProp(client, Prop_Data, "m_iHealth", health);
 	}
 	
 	return true;

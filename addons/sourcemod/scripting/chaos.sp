@@ -4,10 +4,12 @@
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
+#include <dhooks>
 #include <tf2attributes>
 #include <tf2_stocks>
 #include <tf2items>
 #include <tf2utils>
+#include <cbasenpc>
 
 ArrayList g_effects;
 float g_flNextEffectActivateTime;
@@ -18,6 +20,7 @@ ConVar sm_chaos_effect_interval;
 ConVar sm_chaos_force_effect;
 
 #include "chaos/data.sp"
+#include "chaos/dhooks.sp"
 #include "chaos/events.sp"
 #include "chaos/sdkcalls.sp"
 #include "chaos/shareddefs.sp"
@@ -27,21 +30,24 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_setconvar.sp"
 #include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_setcustommodel.sp"
 
-#include "chaos/effects/effect_reversecontrols.sp"
 #include "chaos/effects/effect_slowmotion.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
-#include "chaos/effects/effect_invertgravity.sp"
+#include "chaos/effects/effect_invertconvar.sp"
 #include "chaos/effects/effect_truce.sp"
 #include "chaos/effects/effect_wheredideverythinggo.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
-#include "chaos/effects/effect_seteveryoneto1hp.sp"
+#include "chaos/effects/effect_sethealth.sp"
 #include "chaos/effects/effect_watermark.sp"
 #include "chaos/effects/effect_thriller.sp"
 #include "chaos/effects/effect_showscoreboard.sp"
 #include "chaos/effects/effect_fov.sp"
 #include "chaos/effects/effect_silence.sp"
 #include "chaos/effects/effect_removewearables.sp"
+#include "chaos/effects/effect_setspeed.sp"
+#include "chaos/effects/effect_thirdperson.sp"
+#include "chaos/effects/effect_teleportermalfunction.sp"
 
 public void OnPluginStart()
 {
@@ -61,6 +67,7 @@ public void OnPluginStart()
 	GameData gamedata = new GameData("chaos");
 	if (gamedata)
 	{
+		DHooks_Initialize(gamedata);
 		SDKCalls_Initialize(gamedata);
 		delete gamedata;
 	}
@@ -149,7 +156,6 @@ public void OnGameFrame()
 		}
 		else
 		{
-			
 			int index = g_effects.FindValue(iForceId, ChaosEffect::id);
 			if (index == -1)
 			{
@@ -160,7 +166,7 @@ public void OnGameFrame()
 			ChaosEffect effect;
 			if (g_effects.GetArray(index, effect))
 			{
-				StartEffect(effect);
+				StartEffect(effect, true);
 			}
 		}
 	}
@@ -302,7 +308,7 @@ void SelectRandomEffect()
 	}
 }
 
-bool StartEffect(ChaosEffect effect)
+bool StartEffect(ChaosEffect effect, bool bForce = false)
 {
 	int index = g_effects.FindValue(effect.id, ChaosEffect::id);
 	if (index == -1)
@@ -322,8 +328,11 @@ bool StartEffect(ChaosEffect effect)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Failed to start effect '%T'", effect.name, LANG_SERVER);
-			return false;
+			if (!bForce)
+			{
+				LogMessage("Failed to start effect '%T'", effect.name, LANG_SERVER);
+				return false;
+			}
 		}
 	}
 	
@@ -452,7 +461,21 @@ void DisplayActiveEffects()
 	}
 }
 
-static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
+bool IsEffectOfClassActive(const char[] class)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && StrEqual(class, effect.effect_class) && effect.active)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	Action action = Plugin_Continue;
 	

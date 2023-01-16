@@ -6,7 +6,11 @@ public bool SetFOV_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
-	int iFOV = effect.data.GetNum("value");
+	// Only allow one active at a time
+	if (IsEffectOfClassActive(effect.effect_class))
+		return false;
+	
+	int iFOV = effect.data.GetNum("fov");
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -39,7 +43,7 @@ public void SetFOV_OnEnd(ChaosEffect effect)
 
 public void SetFOV_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	int iFOV = effect.data.GetNum("value");
+	int iFOV = effect.data.GetNum("fov");
 	
 	SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
 	SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
