@@ -40,8 +40,7 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	list.GetArray(index1, effect1);
 	list.GetArray(index2, effect2);
 	
-	// If both are the same, pick a random one
-	return Compare(effect2.activate_time, effect1.activate_time);
+	return (effect1.activate_time == effect2.activate_time) ? Compare(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
 }
 
 void SendHudNotification(HudNotification_t iType, bool bForceShow = false)

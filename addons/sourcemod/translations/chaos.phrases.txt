@@ -131,7 +131,7 @@
 	}
 	"#Chaos_Effect_ThirdPerson"
 	{
-		"en"		"Third Person"
+		"en"		"Third Person Camera"
 	}
 	"#Chaos_Effect_TeleporterMalfunction"
 	{
@@ -152,5 +152,21 @@
 	"#Chaos_Effect_VirtualReality"
 	{
 		"en"		"Virtual Reality"
+	}
+	"#Chaos_MetaEffect_5xTimerSpeed"
+	{
+		"en"		"5x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_2xTimerSpeed"
+	{
+		"en"		"2x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_0.5xTimerSpeed"
+	{
+		"en"		"0.5x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_NoChaos"
+	{
+		"en"		"No Chaos (Meta)"
 	}
 }

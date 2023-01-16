@@ -12,11 +12,14 @@
 #include <cbasenpc>
 
 ArrayList g_effects;
-float g_flNextEffectActivateTime;
-float g_flNextEffectDisplayTime;
+float g_flLastEffectActivateTime;
+float g_flLastMetaEffectActivateTime;
+float g_flLastEffectDisplayTime;
 
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
+ConVar sm_chaos_meta_effect_interval;
+ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_force_effect;
 
 #include "chaos/data.sp"
@@ -51,6 +54,8 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_respawnalldead.sp"
 #include "chaos/effects/effect_screenoverlay.sp"
 
+#include "chaos/effects/meta/effect_timerspeed.sp"
+
 public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
@@ -60,7 +65,9 @@ public void OnPluginStart()
 	g_effects = new ArrayList(sizeof(ChaosEffect));
 	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
-	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30.0", "Interval between each effect activation.");
+	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation.");
+	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "20", "Interval between each attempted meta effect activation.");
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.01", "Chance for a meta effect to be activated every interval.");
 	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "ID of the effect to force.");
 	
 	Events_Initialize();
@@ -99,8 +106,9 @@ public void OnPluginEnd()
 
 public void OnMapStart()
 {
-	g_flNextEffectActivateTime = 0.0;
-	g_flNextEffectDisplayTime = 0.0;
+	g_flLastEffectActivateTime = 0.0;
+	g_flLastMetaEffectActivateTime = 0.0;
+	g_flLastEffectDisplayTime = 0.0;
 	
 	for (int i = 0; i < g_effects.Length; i++)
 	{
@@ -158,17 +166,36 @@ public void OnGameFrame()
 	}
 	
 	// Show all active effects in HUD
-	if (g_flNextEffectDisplayTime <= GetGameTime())
+	if (g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
 	{
-		g_flNextEffectDisplayTime = GetGameTime() + 0.1;
+		g_flLastEffectDisplayTime = GetGameTime();
 		
 		DisplayActiveEffects();
 	}
 	
-	// Activate a new effect
-	if (g_flNextEffectActivateTime <= GetGameTime())
+	float flInterval = sm_chaos_effect_interval.FloatValue;
+	
+	// Check if a meta effect wants to lower the interval
+	for (int i = 0; i < g_effects.Length; i++)
 	{
-		g_flNextEffectActivateTime = GetGameTime() + sm_chaos_effect_interval.FloatValue;
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("ModifyTimerInterval");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushFloatRef(flInterval);
+				Call_Finish();
+			}
+		}
+	}
+	
+	// Activate a new effect
+	if (flInterval && g_flLastEffectActivateTime + flInterval <= GetGameTime())
+	{
+		g_flLastEffectActivateTime = GetGameTime();
 		
 		int iForceId = sm_chaos_force_effect.IntValue;
 		if (iForceId == INVALID_EFFECT_ID)
@@ -187,8 +214,20 @@ public void OnGameFrame()
 			ChaosEffect effect;
 			if (g_effects.GetArray(index, effect))
 			{
-				StartEffect(effect, true);
+				StartEffect(effect, false, true);
 			}
+		}
+	}
+	
+	// Attempt to activate a new meta effect
+	if (g_flLastMetaEffectActivateTime + sm_chaos_meta_effect_interval.FloatValue <= GetGameTime())
+	{
+		g_flLastMetaEffectActivateTime = GetGameTime();
+		
+		// Meta effects randomly activate
+		if (GetRandomFloat() <= sm_chaos_meta_effect_chance.FloatValue)
+		{
+			SelectRandomEffect(true);
 		}
 	}
 }
@@ -328,7 +367,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 	return action;
 }
 
-void SelectRandomEffect()
+void SelectRandomEffect(bool bMeta = false)
 {
 	// Sort effects based on their cooldown
 	g_effects.SortCustom(SortFuncADTArray_SortChaosEffectsByCooldown);
@@ -339,17 +378,21 @@ void SelectRandomEffect()
 		ChaosEffect effect;
 		if (g_effects.GetArray(i, effect))
 		{
-			// Skip already activate effects or effects still on cooldown
-			if (effect.active || effect.cooldown_left > 0)
+			// Filter by meta effects
+			if (effect.meta != bMeta)
 				continue;
 			
-			if (StartEffect(effect))
+			// Skip already activate effects or effects still on cooldown (meta effects have no cooldowns)
+			if (effect.active || (!effect.meta && effect.cooldown_left > 0))
+				continue;
+			
+			if (StartEffect(effect, bMeta))
 				break;
 		}
 	}
 }
 
-bool StartEffect(ChaosEffect effect, bool bForce = false)
+bool StartEffect(ChaosEffect effect, bool bSilent = false, bool bForce = false)
 {
 	int index = g_effects.FindValue(effect.id, ChaosEffect::id);
 	if (index == -1)
@@ -371,13 +414,16 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		{
 			if (!bForce)
 			{
-				LogMessage("Failed to start effect '%T'", effect.name, LANG_SERVER);
 				return false;
 			}
 		}
 	}
 	
-	PrintCenterTextAll("%t", "#Chaos_Effect_Activated", effect.name);
+	if (!bSilent)
+	{
+		EmitGameSoundToAll("CYOA.NodeActivate");
+		PrintCenterTextAll("%t", "#Chaos_Effect_Activated", effect.name);
+	}
 	
 	// One-shot effects are never set to active state
 	if (effect.duration)
@@ -395,6 +441,10 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	for (int j = 0; j < g_effects.Length; j++)
 	{
 		if (g_effects.Get(j, ChaosEffect::id) == effect.id)
+			continue;
+		
+		// Meta effects have no cooldowns
+		if (effect.meta)
 			continue;
 		
 		// Never lower cooldown below 0
