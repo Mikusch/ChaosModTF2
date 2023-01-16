@@ -28,10 +28,10 @@ public void Watermark_OnGameFrame(ChaosEffect effect)
 	{
 		g_flNextDisplayTime = GetGameTime() + 5.0;
 		
-		SetHudTextParams(GetRandomFloat(), GetRandomFloat(), 5.0, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
-		
 		char szHostname[512];
 		hostname.GetString(szHostname, sizeof(szHostname));
+		
+		SetHudTextParams(GetRandomFloat(), GetRandomFloat(), 5.0, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
 		
 		for (int client = 1; client <= MaxClients; client++)
 		{

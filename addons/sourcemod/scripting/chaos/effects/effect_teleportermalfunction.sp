@@ -39,6 +39,9 @@ public void TeleporterMalfunction_OnGameFrame(ChaosEffect effect)
 			if (!area)
 				continue;
 			
+			if (area.IsBlocked(GetClientTeam(client)))
+				continue;
+			
 			areas.Erase(index);
 			
 			float vecCenter[3];

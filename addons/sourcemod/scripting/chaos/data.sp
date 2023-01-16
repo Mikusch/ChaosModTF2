@@ -3,7 +3,7 @@
 
 enum struct ChaosEffect
 {
-	// Static data
+	// Effect data
 	int id;
 	char name[64];
 	float duration;

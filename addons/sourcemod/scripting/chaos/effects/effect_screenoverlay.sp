@@ -10,15 +10,12 @@ public bool ScreenOverlay_OnStart(ChaosEffect effect)
 	if (IsEffectOfClassActive(effect.effect_class))
 		return false;
 	
-	char szScreenOverlay[64];
-	effect.data.GetString("material", szScreenOverlay, sizeof(szScreenOverlay));
-	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 		
-		ClientCommand(client, "r_screenoverlay %s", szScreenOverlay);
+		SetScreenOverlayFromEffect(effect, client);
 	}
 	
 	return true;
@@ -31,13 +28,28 @@ public void ScreenOverlay_OnEnd(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		ClientCommand(client, "r_screenoverlay \"\"");
+		ClientCommand(client, "r_screenoverlay %s", "off");
 	}
 }
 
 public void ScreenOverlay_OnClientPutInServer(ChaosEffect effect, int client)
 {
-	char szScreenOverlay[64];
+	SetScreenOverlayFromEffect(effect, client);
+}
+
+public void ScreenOverlay_OnConditionAdded(ChaosEffect effect, int client, TFCond condition)
+{
+	SetScreenOverlayFromEffect(effect, client);
+}
+
+public void ScreenOverlay_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
+{
+	SetScreenOverlayFromEffect(effect, client);
+}
+
+static void SetScreenOverlayFromEffect(ChaosEffect effect, int client)
+{
+	char szScreenOverlay[PLATFORM_MAX_PATH];
 	effect.data.GetString("material", szScreenOverlay, sizeof(szScreenOverlay));
 	
 	ClientCommand(client, "r_screenoverlay %s", szScreenOverlay);

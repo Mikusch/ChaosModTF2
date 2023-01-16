@@ -9,6 +9,7 @@ public void Thriller_OnEnd(ChaosEffect effect)
 			continue;
 		
 		TF2_RemoveCondition(client, TFCond_HalloweenThriller);
+		TF2_RemoveCondition(client, TFCond_Taunting);
 	}
 }
 

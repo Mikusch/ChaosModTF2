@@ -254,6 +254,26 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	return action;
 }
 
+public void TF2_OnConditionAdded(int client, TFCond condition)
+{
+	for (int i = 0; i < g_effects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_effects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnConditionAdded");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
+				Call_PushCell(condition);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
 	for (int i = 0; i < g_effects.Length; i++)
