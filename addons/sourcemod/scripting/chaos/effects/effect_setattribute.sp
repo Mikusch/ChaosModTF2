@@ -6,16 +6,12 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
-	char szAttrib[64];
-	effect.data.GetString("attribute", szAttrib, sizeof(szAttrib));
-	float flValue = effect.data.GetFloat("value");
-	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 		
-		TF2Attrib_SetByName(client, szAttrib, flValue);
+		ApplyAttributesFromEffectData(effect, client);
 	}
 	
 	return true;
@@ -23,23 +19,46 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 
 public void SetAttribute_OnEnd(ChaosEffect effect)
 {
-	char szAttrib[64];
-	effect.data.GetString("attribute", szAttrib, sizeof(szAttrib));
-	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 		
-		TF2Attrib_RemoveByName(client, szAttrib);
+		ApplyAttributesFromEffectData(effect, client, true);
 	}
 }
 
 public void SetAttribute_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	char szAttrib[64];
-	effect.data.GetString("attribute", szAttrib, sizeof(szAttrib));
-	float flValue = effect.data.GetFloat("value");
+	ApplyAttributesFromEffectData(effect, client);
+}
+
+static void ApplyAttributesFromEffectData(ChaosEffect effect, int client, bool bRemove = false)
+{
+	KeyValues kv = effect.data;
 	
-	TF2Attrib_SetByName(client, szAttrib, flValue);
+	if (kv.JumpToKey("attributes", false))
+	{
+		if (kv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				char szAttrib[64];
+				kv.GetString("name", szAttrib, sizeof(szAttrib));
+				
+				if (!bRemove)
+				{
+					float flValue = kv.GetFloat("value");
+					TF2Attrib_SetByName(client, szAttrib, flValue);
+				}
+				else
+				{
+					TF2Attrib_RemoveByName(client, szAttrib);
+				}
+			}
+			while (kv.GotoNextKey(false));
+			kv.GoBack();
+		}
+		kv.GoBack();
+	}
 }

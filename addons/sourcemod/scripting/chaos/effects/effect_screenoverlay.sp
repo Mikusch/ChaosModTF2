@@ -15,7 +15,7 @@ public bool ScreenOverlay_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		SetScreenOverlayFromEffect(effect, client);
+		SetScreenOverlayFromEffectData(effect, client);
 	}
 	
 	return true;
@@ -34,20 +34,20 @@ public void ScreenOverlay_OnEnd(ChaosEffect effect)
 
 public void ScreenOverlay_OnClientPutInServer(ChaosEffect effect, int client)
 {
-	SetScreenOverlayFromEffect(effect, client);
+	SetScreenOverlayFromEffectData(effect, client);
 }
 
 public void ScreenOverlay_OnConditionAdded(ChaosEffect effect, int client, TFCond condition)
 {
-	SetScreenOverlayFromEffect(effect, client);
+	SetScreenOverlayFromEffectData(effect, client);
 }
 
 public void ScreenOverlay_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
 {
-	SetScreenOverlayFromEffect(effect, client);
+	SetScreenOverlayFromEffectData(effect, client);
 }
 
-static void SetScreenOverlayFromEffect(ChaosEffect effect, int client)
+static void SetScreenOverlayFromEffectData(ChaosEffect effect, int client)
 {
 	char szScreenOverlay[PLATFORM_MAX_PATH];
 	effect.data.GetString("material", szScreenOverlay, sizeof(szScreenOverlay));

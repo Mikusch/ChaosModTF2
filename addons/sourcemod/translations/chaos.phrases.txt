@@ -3,13 +3,13 @@
 	"#Chaos_Effect_Activated"
 	{
 		"#format"	"{1:t}"
-		"en"		"The effect '{1}' has been activated!"
+		"en"		"{lightgreen}{1} {default}has been activated!"
 	}
 	"#Chaos_Effect_InvertAcceleration"
 	{
 		"en"		"Invert Acceleration"
 	}
-	"#Chaos_Effect_IcePhysics"
+	"#Chaos_Effect_LowFriction"
 	{
 		"en"		"Caution Wet Floor"
 	}
@@ -168,5 +168,13 @@
 	"#Chaos_MetaEffect_NoChaos"
 	{
 		"en"		"No Chaos (Meta)"
+	}
+	"#Chaos_Effect_NoJumpingAndCrouching"
+	{
+		"en"		"No Jumping Or Crouching"
+	}
+	"#Chaos_Effect_CompanionHeavy"
+	{
+		"en"		"Companion Heavy"
 	}
 }

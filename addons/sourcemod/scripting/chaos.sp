@@ -10,11 +10,13 @@
 #include <tf2items>
 #include <tf2utils>
 #include <cbasenpc>
+#include <morecolors>
 
 ArrayList g_effects;
 float g_flLastEffectActivateTime;
 float g_flLastMetaEffectActivateTime;
 float g_flLastEffectDisplayTime;
+bool g_bNoChaos;
 
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
@@ -55,6 +57,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_screenoverlay.sp"
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
+#include "chaos/effects/meta/effect_nochaos.sp"
 
 public void OnPluginStart()
 {
@@ -150,6 +153,18 @@ public void OnGameFrame()
 	if (GameRules_GetRoundState() <= RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
+	// Show all active effects in HUD
+	if (g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
+	{
+		g_flLastEffectDisplayTime = GetGameTime();
+		
+		DisplayActiveEffects();
+	}
+	
+	// Meta effect requested to pause chaos
+	if (g_bNoChaos)
+		return;
+	
 	for (int i = 0; i < g_effects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -165,17 +180,9 @@ public void OnGameFrame()
 		}
 	}
 	
-	// Show all active effects in HUD
-	if (g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
-	{
-		g_flLastEffectDisplayTime = GetGameTime();
-		
-		DisplayActiveEffects();
-	}
-	
 	float flInterval = sm_chaos_effect_interval.FloatValue;
 	
-	// Check if a meta effect wants to lower the interval
+	// Check if a meta effect wants to modify the interval
 	for (int i = 0; i < g_effects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -193,7 +200,7 @@ public void OnGameFrame()
 	}
 	
 	// Activate a new effect
-	if (flInterval && g_flLastEffectActivateTime + flInterval <= GetGameTime())
+	if (g_flLastEffectActivateTime + flInterval <= GetGameTime())
 	{
 		g_flLastEffectActivateTime = GetGameTime();
 		
@@ -214,7 +221,7 @@ public void OnGameFrame()
 			ChaosEffect effect;
 			if (g_effects.GetArray(index, effect))
 			{
-				StartEffect(effect, false, true);
+				StartEffect(effect, true);
 			}
 		}
 	}
@@ -386,13 +393,13 @@ void SelectRandomEffect(bool bMeta = false)
 			if (effect.active || (!effect.meta && effect.cooldown_left > 0))
 				continue;
 			
-			if (StartEffect(effect, bMeta))
+			if (StartEffect(effect))
 				break;
 		}
 	}
 }
 
-bool StartEffect(ChaosEffect effect, bool bSilent = false, bool bForce = false)
+bool StartEffect(ChaosEffect effect, bool bForce = false)
 {
 	int index = g_effects.FindValue(effect.id, ChaosEffect::id);
 	if (index == -1)
@@ -419,11 +426,8 @@ bool StartEffect(ChaosEffect effect, bool bSilent = false, bool bForce = false)
 		}
 	}
 	
-	if (!bSilent)
-	{
-		EmitGameSoundToAll("CYOA.NodeActivate");
-		PrintCenterTextAll("%t", "#Chaos_Effect_Activated", effect.name);
-	}
+	EmitGameSoundToAll("CYOA.NodeActivate");
+	CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", effect.name);
 	
 	// One-shot effects are never set to active state
 	if (effect.duration)
