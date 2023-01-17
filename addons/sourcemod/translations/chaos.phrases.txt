@@ -177,6 +177,14 @@
 	{
 		"en"		"BONUS DUCKS!"
 	}
+	"#Chaos_Effect_Bouncy"
+	{
+		"en"		"Everything Is Bouncy"
+	}
+	"#Chaos_Effect_FlyVoices"
+	{
+		"en"		"Someone Call An Exterminator"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
