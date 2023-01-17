@@ -139,7 +139,7 @@
 	}
 	"#Chaos_Effect_RespawnAllDead"
 	{
-		"en"		"Respawn All Dead Players"
+		"en"		"Respawn Dead Players"
 	}
 	"#Chaos_Effect_Blindness"
 	{
@@ -171,7 +171,7 @@
 	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"Randomize Everyone's Classes'"
+		"en"		"Randomized Classes"
 	}
 	"#Chaos_Effect_BonusDucks"
 	{
@@ -199,7 +199,7 @@
 	}
 	"#Chaos_Effect_Noclip"
 	{
-		"en"		"Everyone Has Noclip"
+		"en"		"Noclip"
 	}
 	"#Chaos_Effect_HideHUD"
 	{
@@ -220,15 +220,15 @@
 	}
 	"#Chaos_Effect_BulletImmune"
 	{
-		"en"		"Everyone Is Bullet Immune"
+		"en"		"Bullet Damage Immunity"
 	}
 	"#Chaos_Effect_BlastImmune"
 	{
-		"en"		"Everyone Is Blast Immune"
+		"en"		"Blast Damage Immunity"
 	}
 	"#Chaos_Effect_FireImmune"
 	{
-		"en"		"Everyone Is Fire Immune"
+		"en"		"Fire Damage Immunity"
 	}
 	"#Chaos_Effect_10xCaptureRate"
 	{
@@ -257,6 +257,10 @@
 	"#Chaos_Effect_DisableRandomCrits"
 	{
 		"en"		"Disable Random Crits"
+	}
+	"#Chaos_Effect_Mannpower"
+	{
+		"en"		"Mannpower At Home"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

@@ -64,6 +64,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_hidehud.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
+#include "chaos/effects/effect_mannpower.sp"
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"
@@ -157,7 +158,7 @@ public void OnClientPutInServer(int client)
 public void OnGameFrame()
 {
 	// Show all active effects in HUD
-	if (g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
+	if (g_flLastEffectDisplayTime && g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
 	{
 		g_flLastEffectDisplayTime = GetGameTime();
 		
@@ -205,7 +206,7 @@ public void OnGameFrame()
 	}
 	
 	// Show interval progress bar
-	if (g_flTimerBarDisplayTime + 0.1 <= GetGameTime())
+	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= GetGameTime())
 	{
 		g_flTimerBarDisplayTime = GetGameTime();
 		
@@ -213,7 +214,7 @@ public void OnGameFrame()
 	}
 	
 	// Activate a new effect
-	if (g_flLastEffectActivateTime + flTimerSpeed <= GetGameTime())
+	if (g_flLastEffectActivateTime && g_flLastEffectActivateTime + flTimerSpeed <= GetGameTime())
 	{
 		g_flLastEffectActivateTime = GetGameTime();
 		
@@ -240,7 +241,7 @@ public void OnGameFrame()
 	}
 	
 	// Attempt to activate a new meta effect
-	if (g_flLastMetaEffectActivateTime + sm_chaos_meta_effect_interval.FloatValue <= GetGameTime())
+	if (g_flLastMetaEffectActivateTime && g_flLastMetaEffectActivateTime + sm_chaos_meta_effect_interval.FloatValue <= GetGameTime())
 	{
 		g_flLastMetaEffectActivateTime = GetGameTime();
 		
@@ -351,6 +352,14 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 			}
 		}
 	}
+}
+
+public void TF2_OnWaitingForPlayersEnd()
+{
+	g_flLastEffectActivateTime = GetGameTime();
+	g_flLastMetaEffectActivateTime = GetGameTime();
+	g_flLastEffectDisplayTime = GetGameTime();
+	g_flTimerBarDisplayTime = GetGameTime();
 }
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDefIndex, Handle &item)
@@ -606,7 +615,7 @@ bool IsEffectOfClassActive(const char[] class)
 
 bool IsChaosPaused()
 {
-	return g_bNoChaos || GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers") || GameRules_GetProp("m_bInSetup") || GameRules_GetProp("m_bMannVsMachineBetweenWaves");
+	return g_bNoChaos || GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers");
 }
 
 Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)

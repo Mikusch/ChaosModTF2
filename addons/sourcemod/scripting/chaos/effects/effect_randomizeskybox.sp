@@ -1,30 +1,30 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_szSkyNames[][] = 
+static char g_aSkyNames[][] =
 {
-	"sky_dustbowl_01", 
-	"sky_granary_01", 
-	"sky_gravel_01", 
-	"sky_well_01", 
-	"sky_tf2_04", 
-	"sky_hydro_01", 
-	"sky_badlands_01", 
-	"sky_goldrush_01", 
-	"sky_trainyard_01", 
-	"sky_night_01", 
-	"sky_alpinestorm_01", 
-	"sky_morningsnow_01", 
-	"sky_nightfall_01", 
-	"sky_harvest_01", 
-	"sky_harvest_night_01", 
-	"sky_upward", 
-	"sky_stormfront_01", 
-	"sky_halloween", 
-	"sky_halloween_night_01", 
-	"sky_halloween_night2014_01", 
-	"sky_island_01", 
-	"sky_rainbow_01", 
+	"sky_dustbowl_01",
+	"sky_granary_01",
+	"sky_gravel_01",
+	"sky_well_01",
+	"sky_tf2_04",
+	"sky_hydro_01",
+	"sky_badlands_01",
+	"sky_goldrush_01",
+	"sky_trainyard_01",
+	"sky_night_01",
+	"sky_alpinestorm_01",
+	"sky_morningsnow_01",
+	"sky_nightfall_01",
+	"sky_harvest_01",
+	"sky_harvest_night_01",
+	"sky_upward",
+	"sky_stormfront_01",
+	"sky_halloween",
+	"sky_halloween_night_01",
+	"sky_halloween_night2014_01",
+	"sky_island_01",
+	"sky_rainbow_01",
 };
 
 static ConVar sv_skyname;
@@ -44,7 +44,7 @@ public bool RandomizeSkybox_OnStart(ChaosEffect effect)
 	char szNewSkyname[PLATFORM_MAX_PATH];
 	do
 	{
-		strcopy(szNewSkyname, sizeof(szNewSkyname), g_szSkyNames[GetRandomInt(0, sizeof(g_szSkyNames) - 1)]);
+		strcopy(szNewSkyname, sizeof(szNewSkyname), g_aSkyNames[GetRandomInt(0, sizeof(g_aSkyNames) - 1)]);
 	}
 	while (StrEqual(szSkyname, szNewSkyname));
 	
