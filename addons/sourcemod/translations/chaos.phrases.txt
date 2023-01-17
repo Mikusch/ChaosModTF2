@@ -246,6 +246,10 @@
 	{
 		"en"		"Extreme Damage Knockback"
 	}
+	"#Chaos_Effect_StopAndStare"
+	{
+		"en"		"Stop And Stare"
+	}
 	"#Chaos_Effect_EnableRandomCrits"
 	{
 		"en"		"Enable Random Crits"
