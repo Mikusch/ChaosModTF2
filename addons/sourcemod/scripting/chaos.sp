@@ -13,9 +13,11 @@
 #include <morecolors>
 
 ArrayList g_effects;
+Handle g_hIntervalBarHudSync;
 float g_flLastEffectActivateTime;
 float g_flLastMetaEffectActivateTime;
 float g_flLastEffectDisplayTime;
+float g_flIntervalBarDisplayTime;
 bool g_bNoChaos;
 
 ConVar sm_chaos_effect_cooldown;
@@ -66,6 +68,7 @@ public void OnPluginStart()
 	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 	
 	g_effects = new ArrayList(sizeof(ChaosEffect));
+	g_hIntervalBarHudSync = CreateHudSynchronizer();
 	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation.");
@@ -161,10 +164,11 @@ public void OnGameFrame()
 		DisplayActiveEffects();
 	}
 	
-	// Meta effect requested to pause chaos
+	// Requested to pause chaos
 	if (g_bNoChaos)
 		return;
 	
+	// Execute OnGameFrame callback
 	for (int i = 0; i < g_effects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -197,6 +201,14 @@ public void OnGameFrame()
 				Call_Finish();
 			}
 		}
+	}
+	
+	// Show interval progress bar
+	if (g_flIntervalBarDisplayTime + 0.1 <= GetGameTime())
+	{
+		g_flIntervalBarDisplayTime = GetGameTime();
+		
+		DisplayIntervalBar(flInterval);
 	}
 	
 	// Activate a new effect
@@ -497,6 +509,35 @@ Action Timer_ExpireEffect(Handle timer, int id)
 	return Plugin_Continue;
 }
 
+void DisplayIntervalBar(float flInterval)
+{
+	SetHudTextParams(-1.0, 0.075, 0.1, 148, 32, 255, 255);
+	
+	float flEndTime = g_flLastEffectActivateTime + flInterval;
+	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
+	
+	char szProgressBar[64];
+	for (int i = 0; i <= 100; i += 5)
+	{
+		if (flRatio * 100 >= i)
+		{
+			Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
+		}
+		else
+		{
+			Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
+		}
+	}
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		ShowSyncHudText(client, g_hIntervalBarHudSync, szProgressBar);
+	}
+}
+
 void DisplayActiveEffects()
 {
 	// Sort effects based on their cooldown
@@ -515,7 +556,7 @@ void DisplayActiveEffects()
 			ChaosEffect effect;
 			if (g_effects.GetArray(i, effect))
 			{
-				char szLine[64];
+				char szLine[128];
 				
 				// Expiring effects stay on screen while active
 				if (effect.active)
@@ -523,20 +564,20 @@ void DisplayActiveEffects()
 					float flEndTime = effect.activate_time + effect.duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
-					char meter[64];
+					char szProgressBar[64];
 					for (int j = 0; j <= 100; j += 10)
 					{
 						if (flRatio * 100 >= j)
 						{
-							Format(meter, sizeof(meter), "%s▒", meter);
+							Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
 						}
 						else
 						{
-							Format(meter, sizeof(meter), "█%s", meter);
+							Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
 						}
 					}
 					
-					Format(szLine, sizeof(szLine), "%T %s", effect.name, client, meter);
+					Format(szLine, sizeof(szLine), "%T %s", effect.name, client, szProgressBar);
 				}
 				// One-shot effects stay on screen for 60 seconds
 				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
