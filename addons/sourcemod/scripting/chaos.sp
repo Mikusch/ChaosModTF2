@@ -57,6 +57,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_teleportermalfunction.sp"
 #include "chaos/effects/effect_respawnalldead.sp"
 #include "chaos/effects/effect_screenoverlay.sp"
+#include "chaos/effects/effect_shuffleclasses.sp"
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"

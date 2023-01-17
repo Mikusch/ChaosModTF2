@@ -185,4 +185,12 @@
 	{
 		"en"		"Pacifist"
 	}
+	"#Chaos_Effect_ShuffleClasses"
+	{
+		"en"		"Shuffle All Player's Classes"
+	}
+	"#Chaos_Effect_BonusDucks"
+	{
+		"en"		"BONUS DUCKS!"
+	}
 }
