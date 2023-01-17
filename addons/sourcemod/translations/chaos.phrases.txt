@@ -43,11 +43,11 @@
 	}
 	"#Chaos_Effect_SetEveryoneTo1HP"
 	{
-		"en"		"Set Every Player To 1 HP"
+		"en"		"Set Everyone To 1 HP"
 	}
 	"#Chaos_Effect_SetEveryoneTo1000HP"
 	{
-		"en"		"Set Every Player To 1000 HP"
+		"en"		"Set Everyone To 1000 HP"
 	}
 	"#Chaos_Effect_MidgetMercenaries"
 	{
@@ -63,7 +63,7 @@
 	}
 	"#Chaos_Effect_ShowScoreboard"
 	{
-		"en"		"Show Scoreboard"
+		"en"		"Open Scoreboard"
 	}
 	"#Chaos_Effect_HighFOV"
 	{
@@ -95,7 +95,7 @@
 	}
 	"#Chaos_Effect_RemoveWearables"
 	{
-		"en"		"Remove All Cosmetics"
+		"en"		"Remove Everyone's Cosmetics"
 	}
 	"#Chaos_Effect_SquidFootsteps"
 	{
@@ -127,7 +127,7 @@
 	}
 	"#Chaos_Effect_MaxSpeed"
 	{
-		"en"		"Ludicrious Speed"
+		"en"		"No Speed Limit"
 	}
 	"#Chaos_Effect_ThirdPerson"
 	{
@@ -171,7 +171,7 @@
 	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"Shuffle All Player's Classes"
+		"en"		"Randomize Everyone's Classes'"
 	}
 	"#Chaos_Effect_BonusDucks"
 	{
@@ -183,7 +183,7 @@
 	}
 	"#Chaos_Effect_FlyVoices"
 	{
-		"en"		"Someone Call An Exterminator"
+		"en"		"Brundle Bundle"
 	}
 	"#Chaos_Effect_Pyrovision"
 	{
@@ -191,7 +191,7 @@
 	}
 	"#Chaos_Effect_Taunt"
 	{
-		"en"		"Every Player Taunts"
+		"en"		"Force Every Player To Taunt"
 	}
 	"#Chaos_Effect_RandomizeSkybox"
 	{
@@ -213,6 +213,46 @@
 	{
 		"#format"	"{1:d},{2:s}"
 		"en"		"The entity {lightgreen}{1} {default}({lightgreen}{2}{default}) has been removed."
+	}
+	"#Chaos_Effect_RemoveHealthAndAmmo"
+	{
+		"en"		"Remove Health And Ammo Pickups"
+	}
+	"#Chaos_Effect_BulletImmune"
+	{
+		"en"		"Everyone Is Bullet Immune"
+	}
+	"#Chaos_Effect_BlastImmune"
+	{
+		"en"		"Everyone Is Blast Immune"
+	}
+	"#Chaos_Effect_FireImmune"
+	{
+		"en"		"Everyone Is Fire Immune"
+	}
+	"#Chaos_Effect_10xCaptureRate"
+	{
+		"en"		"10x Capture Rate"
+	}
+	"#Chaos_Effect_LaughOnKill"
+	{
+		"en"		"The Joy Of Killing"
+	}
+	"#Chaos_Effect_HitSelfOnMiss"
+	{
+		"en"		"Hit yourself. Idiot."
+	}
+	"#Chaos_Effect_DamageForceIncrease"
+	{
+		"en"		"Extreme Damage Knockback"
+	}
+	"#Chaos_Effect_EnableRandomCrits"
+	{
+		"en"		"Enable Random Crits"
+	}
+	"#Chaos_Effect_DisableRandomCrits"
+	{
+		"en"		"Disable Random Crits"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

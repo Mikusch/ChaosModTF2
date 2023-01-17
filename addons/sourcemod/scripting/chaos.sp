@@ -63,6 +63,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_noclip.sp"
 #include "chaos/effects/effect_hidehud.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
+#include "chaos/effects/effect_removehealthandammo.sp"
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"
