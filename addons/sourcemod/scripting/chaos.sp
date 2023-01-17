@@ -517,8 +517,11 @@ void DisplayTimerBar(float flInterval)
 	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
 	
 	char szProgressBar[64];
-	for (int i = 0; i <= 100; i += 5)
+	for (int i = 0; i < 100; i += 5)
 	{
+		if (i == 0)
+			continue;
+		
 		if (flRatio * 100 >= i)
 		{
 			Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
@@ -565,8 +568,11 @@ void DisplayActiveEffects()
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
 					char szProgressBar[64];
-					for (int j = 0; j <= 100; j += 10)
+					for (int j = 10; j < 100; j += 10)
 					{
+						if (i == 0)
+							continue;
+						
 						if (flRatio * 100 >= j)
 						{
 							Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
