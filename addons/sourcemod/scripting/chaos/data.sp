@@ -75,7 +75,7 @@ void ParseConfig()
 					}
 				}
 				
-				g_effects.PushArray(effect);
+				g_hEffects.PushArray(effect);
 			}
 			while (kv.GotoNextKey(false));
 			kv.GoBack();

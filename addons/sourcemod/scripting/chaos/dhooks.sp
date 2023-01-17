@@ -31,10 +31,10 @@ static MRESReturn DHookCallback_CalculateMaxSpeed_Post(int player, DHookReturn h
 	
 	MRESReturn nReturn = MRES_Ignored;
 	
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("CalculateMaxSpeed");
 			if (callback != INVALID_FUNCTION)

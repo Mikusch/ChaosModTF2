@@ -12,8 +12,8 @@
 #include <cbasenpc>
 #include <morecolors>
 
-ArrayList g_effects;
-Handle g_hIntervalBarHudSync;
+ArrayList g_hEffects;
+Handle g_hTimerBarHudSync;
 float g_flLastEffectActivateTime;
 float g_flLastMetaEffectActivateTime;
 float g_flLastEffectDisplayTime;
@@ -67,8 +67,8 @@ public void OnPluginStart()
 	
 	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 	
-	g_effects = new ArrayList(sizeof(ChaosEffect));
-	g_hIntervalBarHudSync = CreateHudSynchronizer();
+	g_hEffects = new ArrayList(sizeof(ChaosEffect));
+	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation.");
@@ -94,10 +94,10 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnEnd");
 			if (callback != INVALID_FUNCTION)
@@ -116,10 +116,10 @@ public void OnMapStart()
 	g_flLastMetaEffectActivateTime = 0.0;
 	g_flLastEffectDisplayTime = 0.0;
 	
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect))
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function callback = effect.GetCallbackFunction("OnMapStart");
 			if (callback != INVALID_FUNCTION)
@@ -134,10 +134,10 @@ public void OnMapStart()
 
 public void OnClientPutInServer(int client)
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnClientPutInServer");
 			if (callback != INVALID_FUNCTION)
@@ -169,10 +169,10 @@ public void OnGameFrame()
 		return;
 	
 	// Execute OnGameFrame callback
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnGameFrame");
 			if (callback != INVALID_FUNCTION)
@@ -187,10 +187,10 @@ public void OnGameFrame()
 	float flInterval = sm_chaos_effect_interval.FloatValue;
 	
 	// Check if a meta effect wants to modify the interval
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("ModifyTimerInterval");
 			if (callback != INVALID_FUNCTION)
@@ -208,7 +208,7 @@ public void OnGameFrame()
 	{
 		g_flIntervalBarDisplayTime = GetGameTime();
 		
-		DisplayIntervalBar(flInterval);
+		DisplayTimerBar(flInterval);
 	}
 	
 	// Activate a new effect
@@ -223,7 +223,7 @@ public void OnGameFrame()
 		}
 		else
 		{
-			int index = g_effects.FindValue(iForceId, ChaosEffect::id);
+			int index = g_hEffects.FindValue(iForceId, ChaosEffect::id);
 			if (index == -1)
 			{
 				LogError("Failed to force unknown effect '%d'", iForceId);
@@ -231,7 +231,7 @@ public void OnGameFrame()
 			}
 			
 			ChaosEffect effect;
-			if (g_effects.GetArray(index, effect))
+			if (g_hEffects.GetArray(index, effect))
 			{
 				StartEffect(effect, true);
 			}
@@ -253,10 +253,10 @@ public void OnGameFrame()
 
 public void OnEntityCreated(int entity, const char[] classname)
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnEntityCreated");
 			if (callback != INVALID_FUNCTION)
@@ -275,10 +275,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 {
 	Action action = Plugin_Continue;
 	
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnPlayerRunCmd");
 			if (callback != INVALID_FUNCTION)
@@ -314,10 +314,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnConditionAdded");
 			if (callback != INVALID_FUNCTION)
@@ -334,10 +334,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnConditionRemoved");
 			if (callback != INVALID_FUNCTION)
@@ -356,10 +356,10 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 {
 	Action action = Plugin_Continue;
 	
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnGiveNamedItem");
 			if (callback != INVALID_FUNCTION)
@@ -389,13 +389,13 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 void SelectRandomEffect(bool bMeta = false)
 {
 	// Sort effects based on their cooldown
-	g_effects.SortCustom(SortFuncADTArray_SortChaosEffectsByCooldown);
+	g_hEffects.SortCustom(SortFuncADTArray_SortChaosEffectsByCooldown);
 	
 	// Go through all effects until we find a valid one 
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect))
+		if (g_hEffects.GetArray(i, effect))
 		{
 			// Filter by meta effects
 			if (effect.meta != bMeta)
@@ -413,7 +413,7 @@ void SelectRandomEffect(bool bMeta = false)
 
 bool StartEffect(ChaosEffect effect, bool bForce = false)
 {
-	int index = g_effects.FindValue(effect.id, ChaosEffect::id);
+	int index = g_hEffects.FindValue(effect.id, ChaosEffect::id);
 	if (index == -1)
 	{
 		LogError("Failed to start unknown effect with id '%d'", effect.id);
@@ -451,12 +451,12 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	effect.cooldown_left = effect.cooldown;
 	effect.activate_time = GetGameTime();
 	
-	g_effects.SetArray(index, effect);
+	g_hEffects.SetArray(index, effect);
 	
 	// Lower cooldown of all other effects
-	for (int j = 0; j < g_effects.Length; j++)
+	for (int j = 0; j < g_hEffects.Length; j++)
 	{
-		if (g_effects.Get(j, ChaosEffect::id) == effect.id)
+		if (g_hEffects.Get(j, ChaosEffect::id) == effect.id)
 			continue;
 		
 		// Meta effects have no cooldowns
@@ -464,8 +464,8 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 			continue;
 		
 		// Never lower cooldown below 0
-		int cooldown = Max(0, g_effects.Get(j, ChaosEffect::cooldown_left) - 1);
-		g_effects.Set(j, cooldown, ChaosEffect::cooldown_left);
+		int cooldown = Max(0, g_hEffects.Get(j, ChaosEffect::cooldown_left) - 1);
+		g_hEffects.Set(j, cooldown, ChaosEffect::cooldown_left);
 	}
 	
 	return true;
@@ -473,7 +473,7 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 
 Action Timer_ExpireEffect(Handle timer, int id)
 {
-	int index = g_effects.FindValue(id, ChaosEffect::id);
+	int index = g_hEffects.FindValue(id, ChaosEffect::id);
 	if (index == -1)
 	{
 		LogError("Failed to expire unknown effect with id '%d'", id);
@@ -481,7 +481,7 @@ Action Timer_ExpireEffect(Handle timer, int id)
 	}
 	
 	ChaosEffect effect;
-	if (g_effects.GetArray(index, effect))
+	if (g_hEffects.GetArray(index, effect))
 	{
 		// Time was extended, this is valid
 		if (effect.timer != timer)
@@ -503,15 +503,15 @@ Action Timer_ExpireEffect(Handle timer, int id)
 		
 		effect.active = false;
 		effect.timer = null;
-		g_effects.SetArray(index, effect);
+		g_hEffects.SetArray(index, effect);
 	}
 	
 	return Plugin_Continue;
 }
 
-void DisplayIntervalBar(float flInterval)
+void DisplayTimerBar(float flInterval)
 {
-	SetHudTextParams(-1.0, 0.075, 0.1, 148, 32, 255, 255);
+	SetHudTextParams(-1.0, 0.075, 0.1, 147, 32, 252, 255);
 	
 	float flEndTime = g_flLastEffectActivateTime + flInterval;
 	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
@@ -534,14 +534,14 @@ void DisplayIntervalBar(float flInterval)
 		if (!IsClientInGame(client))
 			continue;
 		
-		ShowSyncHudText(client, g_hIntervalBarHudSync, szProgressBar);
+		ShowSyncHudText(client, g_hTimerBarHudSync, szProgressBar);
 	}
 }
 
 void DisplayActiveEffects()
 {
 	// Sort effects based on their cooldown
-	g_effects.SortCustom(SortFuncADTArray_SortChaosEffectsByActivationTime);
+	g_hEffects.SortCustom(SortFuncADTArray_SortChaosEffectsByActivationTime);
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -551,10 +551,10 @@ void DisplayActiveEffects()
 		char szMessage[MAX_USER_MSG_DATA - 1];
 		
 		// Go through all effects until we find a valid one 
-		for (int i = 0; i < g_effects.Length; i++)
+		for (int i = 0; i < g_hEffects.Length; i++)
 		{
 			ChaosEffect effect;
-			if (g_effects.GetArray(i, effect))
+			if (g_hEffects.GetArray(i, effect))
 			{
 				char szLine[128];
 				
@@ -599,10 +599,10 @@ void DisplayActiveEffects()
 
 bool IsEffectOfClassActive(const char[] class)
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && StrEqual(class, effect.effect_class) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && StrEqual(class, effect.effect_class) && effect.active)
 		{
 			return true;
 		}
@@ -615,10 +615,10 @@ Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char 
 {
 	Action action = Plugin_Continue;
 	
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnSoundPlayed");
 			if (callback != INVALID_FUNCTION)

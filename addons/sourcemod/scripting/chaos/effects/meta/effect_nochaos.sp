@@ -3,11 +3,11 @@
 
 public bool NoChaos_OnStart(ChaosEffect effect)
 {
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		// End all active effects now
 		ChaosEffect other;
-		if (g_effects.GetArray(i, other) && other.active)
+		if (g_hEffects.GetArray(i, other) && other.active)
 		{
 			// Don't force-end ourselves
 			if (effect.id == other.id)
@@ -23,7 +23,7 @@ public bool NoChaos_OnStart(ChaosEffect effect)
 			
 			other.active = false;
 			other.timer = null;
-			g_effects.SetArray(i, other);
+			g_hEffects.SetArray(i, other);
 		}
 	}
 	

@@ -10,10 +10,10 @@ static void EventHook_PlayerSpawn(Event event, const char[] name, bool dontBroad
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
-	for (int i = 0; i < g_effects.Length; i++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_effects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			Function callback = effect.GetCallbackFunction("OnPlayerSpawn");
 			if (callback != INVALID_FUNCTION)
