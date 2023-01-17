@@ -114,4 +114,6 @@ void ParseConfig()
 		LogError("Could not read from file '%s'", file);
 	}
 	delete kv;
+	
+	LogMessage("Registered %d effects", g_hEffects.Length);
 }

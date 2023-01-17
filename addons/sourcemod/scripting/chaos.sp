@@ -156,9 +156,6 @@ public void OnClientPutInServer(int client)
 
 public void OnGameFrame()
 {
-	if (GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
-		return;
-	
 	// Show all active effects in HUD
 	if (g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
 	{
@@ -169,8 +166,7 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
-	// Requested to pause chaos
-	if (g_bNoChaos)
+	if (IsChaosPaused())
 		return;
 	
 	// Execute OnGameFrame callback
@@ -606,6 +602,11 @@ bool IsEffectOfClassActive(const char[] class)
 	}
 	
 	return false;
+}
+
+bool IsChaosPaused()
+{
+	return g_bNoChaos || GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers") || GameRules_GetProp("m_bInSetup") || GameRules_GetProp("m_bMannVsMachineBetweenWaves");
 }
 
 Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
