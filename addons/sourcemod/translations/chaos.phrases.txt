@@ -185,6 +185,35 @@
 	{
 		"en"		"Someone Call An Exterminator"
 	}
+	"#Chaos_Effect_Pyrovision"
+	{
+		"en"		"Pyrovision"
+	}
+	"#Chaos_Effect_Taunt"
+	{
+		"en"		"Every Player Taunts"
+	}
+	"#Chaos_Effect_RandomizeSkybox"
+	{
+		"en"		"Change Skybox"
+	}
+	"#Chaos_Effect_Noclip"
+	{
+		"en"		"Everyone Has Noclip"
+	}
+	"#Chaos_Effect_HideHUD"
+	{
+		"en"		"No HUD"
+	}
+	"#Chaos_Effect_RemoveRandomEntity"
+	{
+		"en"		"Remove Random Entity"
+	}
+	"#Chaos_Effect_RemoveRandomEntity_Success"
+	{
+		"#format"	"{1:d},{2:s}"
+		"en"		"The entity {lightgreen}{1} {default}({lightgreen}{2}{default}) has been removed."
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

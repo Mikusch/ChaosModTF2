@@ -58,6 +58,11 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_respawnalldead.sp"
 #include "chaos/effects/effect_screenoverlay.sp"
 #include "chaos/effects/effect_shuffleclasses.sp"
+#include "chaos/effects/effect_fakeclientcommand.sp"
+#include "chaos/effects/effect_randomizeskybox.sp"
+#include "chaos/effects/effect_noclip.sp"
+#include "chaos/effects/effect_hidehud.sp"
+#include "chaos/effects/effect_removerandomentity.sp"
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"
@@ -517,7 +522,7 @@ void DisplayActiveEffects()
 		for (int i = 0; i < g_hEffects.Length; i++)
 		{
 			ChaosEffect effect;
-			if (g_hEffects.GetArray(i, effect))
+			if (g_hEffects.GetArray(i, effect) && effect.activate_time)
 			{
 				char szLine[128];
 				
