@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public bool TimerSpeed_OnStart(ChaosEffect effect)
+public bool EffectDuration_OnStart(ChaosEffect effect)
 {
 	if (!effect.data)
 		return false;
@@ -13,8 +13,8 @@ public bool TimerSpeed_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void TimerSpeed_ModifyTimerSpeed(ChaosEffect effect, float &flTimerSpeed)
+public void EffectDuration_ModifyEffectDuration(ChaosEffect effect, float &flDuration)
 {
 	float flMult = effect.data.GetFloat("multiplier");
-	flTimerSpeed *= flMult;
+	flDuration *= flMult;
 }

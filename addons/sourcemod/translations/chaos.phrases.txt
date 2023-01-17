@@ -153,22 +153,6 @@
 	{
 		"en"		"Virtual Reality"
 	}
-	"#Chaos_MetaEffect_5xTimerSpeed"
-	{
-		"en"		"5x Timer Speed (Meta)"
-	}
-	"#Chaos_MetaEffect_2xTimerSpeed"
-	{
-		"en"		"2x Timer Speed (Meta)"
-	}
-	"#Chaos_MetaEffect_0.5xTimerSpeed"
-	{
-		"en"		"0.5x Timer Speed (Meta)"
-	}
-	"#Chaos_MetaEffect_NoChaos"
-	{
-		"en"		"No Chaos (Meta)"
-	}
 	"#Chaos_Effect_NoJumpingAndCrouching"
 	{
 		"en"		"No Jumping Or Crouching"
@@ -192,5 +176,29 @@
 	"#Chaos_Effect_BonusDucks"
 	{
 		"en"		"BONUS DUCKS!"
+	}
+	"#Chaos_MetaEffect_5xTimerSpeed"
+	{
+		"en"		"5x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_2xTimerSpeed"
+	{
+		"en"		"2x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_0.5xTimerSpeed"
+	{
+		"en"		"0.5x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_NoChaos"
+	{
+		"en"		"No Chaos (Meta)"
+	}
+	"#Chaos_MetaEffect_2xEffectDuration"
+	{
+		"en"		"2x Effect Duration (Meta)"
+	}
+	"#Chaos_MetaEffect_0.5xEffectDuration"
+	{
+		"en"		"0.5x Effect Duration (Meta)"
 	}
 }

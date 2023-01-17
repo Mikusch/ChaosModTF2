@@ -61,6 +61,7 @@ ConVar sm_chaos_force_effect;
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"
+#include "chaos/effects/meta/effect_effectduration.sp"
 
 public void OnPluginStart()
 {
@@ -95,12 +96,12 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	ExpireAllActiveEffects();
+	ExpireAllActiveEffects(true);
 }
 
 public void OnMapEnd()
 {
-	ExpireAllActiveEffects();
+	ExpireAllActiveEffects(true);
 }
 
 public void OnMapStart()
@@ -122,6 +123,8 @@ public void OnMapStart()
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
+			
+			g_hEffects.Set(i, 0.0, ChaosEffect::activate_time);
 		}
 	}
 }
@@ -158,6 +161,8 @@ public void OnGameFrame()
 		DisplayActiveEffects();
 	}
 	
+	ExpireAllActiveEffects();
+	
 	// Requested to pause chaos
 	if (g_bNoChaos)
 		return;
@@ -178,7 +183,7 @@ public void OnGameFrame()
 		}
 	}
 	
-	float flInterval = sm_chaos_effect_interval.FloatValue;
+	float flTimerSpeed = sm_chaos_effect_interval.FloatValue;
 	
 	// Check if a meta effect wants to modify the interval
 	for (int i = 0; i < g_hEffects.Length; i++)
@@ -186,12 +191,12 @@ public void OnGameFrame()
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("ModifyTimerInterval");
+			Function callback = effect.GetCallbackFunction("ModifyTimerSpeed");
 			if (callback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, callback);
 				Call_PushArray(effect, sizeof(effect));
-				Call_PushFloatRef(flInterval);
+				Call_PushFloatRef(flTimerSpeed);
 				Call_Finish();
 			}
 		}
@@ -202,11 +207,11 @@ public void OnGameFrame()
 	{
 		g_flTimerBarDisplayTime = GetGameTime();
 		
-		DisplayTimerBar(flInterval);
+		DisplayTimerBar(flTimerSpeed);
 	}
 	
 	// Activate a new effect
-	if (g_flLastEffectActivateTime + flInterval <= GetGameTime())
+	if (g_flLastEffectActivateTime + flTimerSpeed <= GetGameTime())
 	{
 		g_flLastEffectActivateTime = GetGameTime();
 		
@@ -439,7 +444,6 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	if (effect.duration)
 	{
 		effect.active = true;
-		effect.timer = CreateTimer(effect.duration, Timer_ExpireEffect, effect.id);
 	}
 	
 	effect.cooldown_left = effect.cooldown;
@@ -463,43 +467,6 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	}
 	
 	return true;
-}
-
-Action Timer_ExpireEffect(Handle timer, int id)
-{
-	int index = g_hEffects.FindValue(id, ChaosEffect::id);
-	if (index == -1)
-	{
-		LogError("Failed to expire unknown effect with id '%d'", id);
-		return Plugin_Continue;
-	}
-	
-	ChaosEffect effect;
-	if (g_hEffects.GetArray(index, effect))
-	{
-		if (effect.timer != timer)
-			return Plugin_Continue;
-		
-		if (!effect.active)
-		{
-			LogError("Failed to expire already inactive effect '%T'", effect.name, LANG_SERVER);
-			return Plugin_Continue;
-		}
-		
-		Function callback = effect.GetCallbackFunction("OnEnd");
-		if (callback != INVALID_FUNCTION)
-		{
-			Call_StartFunction(null, callback);
-			Call_PushArray(effect, sizeof(effect));
-			Call_Finish();
-		}
-		
-		effect.active = false;
-		effect.timer = null;
-		g_hEffects.SetArray(index, effect);
-	}
-	
-	return Plugin_Continue;
 }
 
 void DisplayTimerBar(float flInterval)
@@ -557,7 +524,7 @@ void DisplayActiveEffects()
 				// Expiring effects stay on screen while active
 				if (effect.active)
 				{
-					float flEndTime = effect.activate_time + effect.duration;
+					float flEndTime = effect.activate_time + effect.GetEffectDuration();
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
 					char szProgressBar[64];
@@ -596,13 +563,17 @@ void DisplayActiveEffects()
 	}
 }
 
-void ExpireAllActiveEffects()
+void ExpireAllActiveEffects(bool bForce = false)
 {
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
+			// Check if the effect actually expired
+			if (!bForce && effect.activate_time + effect.GetEffectDuration() > GetGameTime())
+				continue;
+			
 			Function callback = effect.GetCallbackFunction("OnEnd");
 			if (callback != INVALID_FUNCTION)
 			{
@@ -612,7 +583,6 @@ void ExpireAllActiveEffects()
 			}
 			
 			effect.active = false;
-			effect.timer = null;
 			g_hEffects.SetArray(i, effect);
 		}
 	}

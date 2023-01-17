@@ -14,14 +14,13 @@ enum struct ChaosEffect
 	
 	// Runtime data
 	bool active;
-	Handle timer;
 	float activate_time;
 	int cooldown_left;
 	
 	void Parse(KeyValues kv)
 	{
-		char section[64];
-		if (kv.GetSectionName(section, sizeof(section)) && StringToIntEx(section, this.id))
+		char szSection[64];
+		if (kv.GetSectionName(szSection, sizeof(szSection)) && StringToIntEx(szSection, this.id))
 		{
 			kv.GetString("name", this.name, sizeof(this.name));
 			this.duration = kv.GetFloat("duration", 30.0);
@@ -38,11 +37,39 @@ enum struct ChaosEffect
 		}
 	}
 	
-	Function GetCallbackFunction(const char[] key, Handle plugin = null)
+	Function GetCallbackFunction(const char[] szKey, Handle hPlugin = null)
 	{
-		char name[64];
-		Format(name, sizeof(name), "%s_%s", this.effect_class, key);
-		return GetFunctionByName(plugin, name);
+		char szFunctionName[64];
+		Format(szFunctionName, sizeof(szFunctionName), "%s_%s", this.effect_class, szKey);
+		return GetFunctionByName(hPlugin, szFunctionName);
+	}
+	
+	float GetEffectDuration()
+	{
+		float flDuration = this.duration;
+		
+		// Check if any active effect wants to modify our duration
+		for (int i = 0; i < g_hEffects.Length; i++)
+		{
+			ChaosEffect effect;
+			if (g_hEffects.GetArray(i, effect) && effect.active)
+			{
+				// Don't modify our own duration
+				if (effect.id == this.id)
+					continue;
+				
+				Function callback = effect.GetCallbackFunction("ModifyEffectDuration");
+				if (callback != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, callback);
+					Call_PushArray(effect, sizeof(effect));
+					Call_PushFloatRef(flDuration);
+					Call_Finish();
+				}
+			}
+		}
+		
+		return flDuration;
 	}
 }
 

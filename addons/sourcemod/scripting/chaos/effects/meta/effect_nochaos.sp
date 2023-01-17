@@ -3,7 +3,7 @@
 
 public bool NoChaos_OnStart(ChaosEffect effect)
 {
-	ExpireAllActiveEffects();
+	ExpireAllActiveEffects(true);
 	
 	// Request to pause timer
 	g_bNoChaos = true;
