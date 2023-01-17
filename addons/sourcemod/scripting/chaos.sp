@@ -17,7 +17,7 @@ Handle g_hTimerBarHudSync;
 float g_flLastEffectActivateTime;
 float g_flLastMetaEffectActivateTime;
 float g_flLastEffectDisplayTime;
-float g_flIntervalBarDisplayTime;
+float g_flTimerBarDisplayTime;
 bool g_bNoChaos;
 
 ConVar sm_chaos_effect_cooldown;
@@ -94,20 +94,12 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-	for (int i = 0; i < g_hEffects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
-		{
-			Function callback = effect.GetCallbackFunction("OnEnd");
-			if (callback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, callback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_Finish();
-			}
-		}
-	}
+	ExpireAllActiveEffects();
+}
+
+public void OnMapEnd()
+{
+	ExpireAllActiveEffects();
 }
 
 public void OnMapStart()
@@ -115,6 +107,7 @@ public void OnMapStart()
 	g_flLastEffectActivateTime = 0.0;
 	g_flLastMetaEffectActivateTime = 0.0;
 	g_flLastEffectDisplayTime = 0.0;
+	g_flTimerBarDisplayTime = 0.0;
 	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -153,7 +146,7 @@ public void OnClientPutInServer(int client)
 
 public void OnGameFrame()
 {
-	if (GameRules_GetRoundState() <= RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
+	if (GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
 	// Show all active effects in HUD
@@ -204,9 +197,9 @@ public void OnGameFrame()
 	}
 	
 	// Show interval progress bar
-	if (g_flIntervalBarDisplayTime + 0.1 <= GetGameTime())
+	if (g_flTimerBarDisplayTime + 0.1 <= GetGameTime())
 	{
-		g_flIntervalBarDisplayTime = GetGameTime();
+		g_flTimerBarDisplayTime = GetGameTime();
 		
 		DisplayTimerBar(flInterval);
 	}
@@ -483,7 +476,6 @@ Action Timer_ExpireEffect(Handle timer, int id)
 	ChaosEffect effect;
 	if (g_hEffects.GetArray(index, effect))
 	{
-		// Time was extended, this is valid
 		if (effect.timer != timer)
 			return Plugin_Continue;
 		
@@ -600,6 +592,28 @@ void DisplayActiveEffects()
 		}
 		
 		PrintKeyHintText(client, szMessage);
+	}
+}
+
+void ExpireAllActiveEffects()
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && effect.active)
+		{
+			Function callback = effect.GetCallbackFunction("OnEnd");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_Finish();
+			}
+			
+			effect.active = false;
+			effect.timer = null;
+			g_hEffects.SetArray(i, effect);
+		}
 	}
 }
 
