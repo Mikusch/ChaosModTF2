@@ -262,6 +262,14 @@
 	{
 		"en"		"Mannpower At Home"
 	}
+	"#Chaos_Effect_Stealthed"
+	{
+		"en"		"Stealth"
+	}
+	"#Chaos_Effect_BalloonHeads"
+	{
+		"en"		"Balloon Heads"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

@@ -49,6 +49,8 @@ public bool Mannpower_OnStart(ChaosEffect effect)
 
 public void Mannpower_OnEnd(ChaosEffect effect)
 {
+	tf_grapplinghook_enable.BoolValue = false;
+	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
