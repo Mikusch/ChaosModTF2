@@ -4,21 +4,25 @@
 public void AddCond_OnMapStart(ChaosEffect effect)
 {
 	// Halloween Ghost
-	PrecacheModel("models/props_halloween/ghost.mdl");
+	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
+	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
+	PrecacheScriptSound("Halloween.GhostBoo");
 	
 	// Bumper Cars
-	PrecacheSound(")weapons/bumper_car_speed_boost_start.wav");
-	PrecacheSound(")weapons/bumper_car_speed_boost_stop.wav");
-	PrecacheSound(")weapons/bumper_car_jump_land.wav");
-	PrecacheSound(")weapons/bumper_car_jump.wav");
-	PrecacheSound("weapons/bumper_car_hit1.wav");
-	PrecacheSound("weapons/bumper_car_hit2.wav");
-	PrecacheSound("weapons/bumper_car_hit3.wav");
-	PrecacheSound("weapons/bumper_car_hit4.wav");
-	PrecacheSound("weapons/bumper_car_hit5.wav");
-	PrecacheSound("weapons/bumper_car_hit6.wav");
-	PrecacheSound("weapons/bumper_car_hit7.wav");
-	PrecacheSound("weapons/bumper_car_hit8.wav");
+	PrecacheModel("models/player/items/taunts/bumpercar/parts/bumpercar.mdl");
+	PrecacheModel("models/props_halloween/bumpercar_cage.mdl");
+	PrecacheScriptSound("BumperCar.Spawn");
+	PrecacheScriptSound("BumperCar.SpawnFromLava");
+	PrecacheScriptSound("BumperCar.GoLoop");
+	PrecacheScriptSound("BumperCar.Screech");
+	PrecacheScriptSound("BumperCar.HitGhost");
+	PrecacheScriptSound("BumperCar.Bump");
+	PrecacheScriptSound("BumperCar.BumpHard");
+	PrecacheScriptSound("BumperCar.BumpIntoAir");
+	PrecacheScriptSound("BumperCar.SpeedBoostStart");
+	PrecacheScriptSound("BumperCar.SpeedBoostStop");
+	PrecacheScriptSound("BumperCar.Jump");
+	PrecacheScriptSound("BumperCar.JumpLand");
 }
 
 public bool AddCond_OnStart(ChaosEffect effect)

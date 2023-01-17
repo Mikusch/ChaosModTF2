@@ -177,4 +177,12 @@
 	{
 		"en"		"Companion Heavy"
 	}
+	"#Chaos_Effect_Ghosts"
+	{
+		"en"		"Boo!"
+	}
+	"#Chaos_Effect_Pacifist"
+	{
+		"en"		"Pacifist"
+	}
 }
