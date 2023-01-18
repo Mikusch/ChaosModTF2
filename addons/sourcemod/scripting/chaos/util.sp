@@ -127,3 +127,30 @@ void PrintKeyHintText(int client, const char[] format, any...)
 	bf.WriteString(buffer);
 	EndMessage();
 }
+
+int GetRandomPlayer(bool bIsAlive = true)
+{
+	ArrayList players = new ArrayList();
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		if (bIsAlive && !IsPlayerAlive(client))
+			continue;
+		
+		players.Push(client);
+	}
+	
+	if (!players.Length)
+	{
+		delete players;
+		return false;
+	}
+	
+	int client = players.Get(GetRandomInt(0, players.Length - 1));
+	delete players;
+	
+	return client;
+}

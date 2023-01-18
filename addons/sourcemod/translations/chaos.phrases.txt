@@ -318,6 +318,10 @@
 	{
 		"en"		"Tinnitus"
 	}
+	"#Chaos_Effect_SpawnBall"
+	{
+		"en"		"Spawn Orange Ball"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

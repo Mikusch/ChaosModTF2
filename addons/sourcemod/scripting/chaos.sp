@@ -67,6 +67,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_shuffleclasses.sp"
 #include "chaos/effects/effect_silence.sp"
 #include "chaos/effects/effect_slowmotion.sp"
+#include "chaos/effects/effect_spawnball.sp"
 #include "chaos/effects/effect_teleportermalfunction.sp"
 #include "chaos/effects/effect_thirdperson.sp"
 #include "chaos/effects/effect_thriller.sp"

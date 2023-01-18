@@ -3,29 +3,10 @@
 
 public bool KillRandomPlayer_OnStart(ChaosEffect effect)
 {
-	ArrayList players = new ArrayList();
-	
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-		
-		if (!IsPlayerAlive(client))
-			continue;
-		
-		players.Push(client);
-	}
-	
-	if (!players.Length)
-	{
-		delete players;
+	int client = GetRandomPlayer();
+	if (client == -1)
 		return false;
-	}
-	
-	int client = players.Get(GetRandomInt(0, players.Length - 1));
-	delete players;
 	
 	ForcePlayerSuicide(client);
-	
 	return true;
 }
