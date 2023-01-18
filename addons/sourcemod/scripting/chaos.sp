@@ -165,7 +165,7 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
-	if (IsChaosPaused())
+	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
 	// Execute OnGameFrame callback
@@ -599,20 +599,6 @@ void ExpireAllActiveEffects(bool bForce = false)
 	}
 }
 
-bool IsEffectOfClassActive(const char[] class)
-{
-	for (int i = 0; i < g_hEffects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && StrEqual(class, effect.effect_class) && effect.active)
-		{
-			return true;
-		}
-	}
-	
-	return false;
-}
-
 void SetTimers(float flTime)
 {
 	g_flLastEffectActivateTime = flTime;
@@ -621,9 +607,68 @@ void SetTimers(float flTime)
 	g_flTimerBarDisplayTime = flTime;
 }
 
-bool IsChaosPaused()
+/*
+ * Returns true if the given effect class is currently active.
+ */
+bool IsEffectOfClassActive(const char[] szEffectClass)
 {
-	return g_bNoChaos || GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers");
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && StrEqual(szEffectClass, effect.effect_class) && effect.active)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+/*
+ * Returns true if the given key value pair was found in active effects with the given class.
+ */
+bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] szKey, const char[] szValue)
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active && effect.data)
+		{
+			KeyValues kv = new KeyValues("data");
+			kv.Import(effect.data);
+			
+			// Horribly slow and inefficient, but we'll survive
+			if (FindKeyValuePairInKeyValues(kv, szKey, szValue))
+			{
+				delete kv;
+				return true;
+			}
+			
+			delete kv;
+		}
+	}
+	
+	return false;
+}
+
+/**
+ * Returns true if the given effect is already active, but only if the given key was found in its 'data' section.
+ * If you already have the key, it is significantly faster to call 'FindKeyValuePairInActiveEffects' directly.
+ */
+bool IsEffectWithKeyAlreadyActive(ChaosEffect effect, const char[] szKey)
+{
+	KeyValues kv = new KeyValues("data");
+	kv.Import(effect.data);
+	
+	// Grab the value, then check if we can find it in active effects
+	char szValue[64];
+	if (GetValueForKeyInKeyValues(kv, szKey, szValue, sizeof(szValue)) && FindKeyValuePairInActiveEffects(effect.effect_class, szKey, szValue))
+	{
+		delete kv;
+		return true;
+	}
+	
+	return false;
 }
 
 Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)

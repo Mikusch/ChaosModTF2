@@ -43,6 +43,71 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	return (effect1.activate_time == effect2.activate_time) ? Compare(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
 }
 
+bool GetValueForKeyInKeyValues(KeyValues kv, const char[] szKeyToFind, char[] szValue, int iMaxLength)
+{
+	do
+	{
+		if (kv.GotoFirstSubKey(false))
+		{
+			// Current key is a section. Browse it recursively.
+			return GetValueForKeyInKeyValues(kv, szKeyToFind, szValue, iMaxLength);
+		}
+		else
+		{
+			// Current key is a regular key, or an empty section.
+			if (kv.GetDataType(NULL_STRING) != KvData_None)
+			{
+				char szKey[64];
+				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
+				{
+					kv.GetString(NULL_STRING, szValue, iMaxLength);
+					
+					if (szValue[0])
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	while (kv.GotoNextKey(false));
+	
+	return false;
+}
+
+bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const char[] szValueToFind)
+{
+	do
+	{
+		if (kv.GotoFirstSubKey(false))
+		{
+			// Current key is a section. Browse it recursively.
+			return FindKeyValuePairInKeyValues(kv, szKeyToFind, szValueToFind);
+		}
+		else
+		{
+			// Current key is a regular key, or an empty section.
+			if (kv.GetDataType(NULL_STRING) != KvData_None)
+			{
+				char szKey[64];
+				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
+				{
+					char szValue[64];
+					kv.GetString(NULL_STRING, szValue, sizeof(szValue));
+					
+					if (StrEqual(szValue, szValueToFind))
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	while (kv.GotoNextKey(false));
+	
+	return false;
+}
+
 void SendHudNotification(HudNotification_t iType, bool bForceShow = false)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageAll("HudNotify"));

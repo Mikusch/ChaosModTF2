@@ -6,6 +6,10 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
+	// Avoid setting the same attribute multiple times
+	if (IsEffectWithKeyAlreadyActive(effect, "name"))
+		return false;
+	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
