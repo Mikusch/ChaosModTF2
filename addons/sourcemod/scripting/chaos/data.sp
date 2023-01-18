@@ -73,7 +73,7 @@ enum struct ChaosEffect
 	}
 }
 
-void ParseConfig()
+void Data_Initialize()
 {
 	char file[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, file, sizeof(file), "configs/chaos/effects.cfg");

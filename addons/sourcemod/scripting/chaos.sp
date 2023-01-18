@@ -81,11 +81,13 @@ public Plugin myinfo =
 	url = "https://github.com/Mikusch/ChaosModTF2"
 }
 
+// --------------------------------------------------------------------------------------------------- //
+// Public Forwards
+// --------------------------------------------------------------------------------------------------- //
+
 public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
-	
-	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
@@ -97,7 +99,9 @@ public void OnPluginStart()
 	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "ID of the effect to force.");
 	
 	Events_Initialize();
-	ParseConfig();
+	Data_Initialize();
+	
+	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 	
 	GameData gamedata = new GameData("chaos");
 	if (gamedata)
@@ -113,11 +117,6 @@ public void OnPluginStart()
 }
 
 public void OnPluginEnd()
-{
-	ExpireAllActiveEffects(true);
-}
-
-public void OnMapEnd()
 {
 	ExpireAllActiveEffects(true);
 }
@@ -142,6 +141,11 @@ public void OnMapStart()
 			g_hEffects.Set(i, 0.0, ChaosEffect::activate_time);
 		}
 	}
+}
+
+public void OnMapEnd()
+{
+	ExpireAllActiveEffects(true);
 }
 
 public void OnClientPutInServer(int client)
@@ -406,6 +410,10 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 	return action;
 }
 
+// --------------------------------------------------------------------------------------------------- //
+// Plugin Functions
+// --------------------------------------------------------------------------------------------------- //
+
 void SelectRandomEffect(bool bMeta = false)
 {
 	// Sort effects based on their cooldown
@@ -639,14 +647,6 @@ void ExpireAllActiveEffects(bool bForce = false)
 	}
 }
 
-void SetTimers(float flTime)
-{
-	g_flLastEffectActivateTime = flTime;
-	g_flLastMetaEffectActivateTime = flTime;
-	g_flLastEffectDisplayTime = flTime;
-	g_flTimerBarDisplayTime = flTime;
-}
-
 /*
  * Returns true if the given effect class is currently active.
  */
@@ -711,7 +711,15 @@ bool IsEffectWithKeyAlreadyActive(ChaosEffect effect, const char[] szKey)
 	return false;
 }
 
-Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
+static void SetTimers(float flTime)
+{
+	g_flLastEffectActivateTime = flTime;
+	g_flLastMetaEffectActivateTime = flTime;
+	g_flLastEffectDisplayTime = flTime;
+	g_flTimerBarDisplayTime = flTime;
+}
+
+static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	Action action = Plugin_Continue;
 	
