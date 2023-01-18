@@ -16,12 +16,16 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	char szName[512];
 	effect.data.GetString("convar", szName, sizeof(szName));
 	
+	ConVar convar = FindConVar(szName);
+	if (!convar)
+		return false;
+	
 	// Don't set the same convar twice
 	if (FindKeyValuePairInActiveEffects(effect.effect_class, "convar", szName))
 		return false;
 	
-	ConVar convar = FindConVar(szName);
-	if (!convar)
+	// Avoid a potential clash
+	if (FindKeyValuePairInActiveEffects("InvertConVar", "convar", szName))
 		return false;
 	
 	char szValue[512], szOldValue[512];

@@ -33,43 +33,53 @@ ConVar sm_chaos_force_effect;
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
-#include "chaos/effects/effect_empty.sp"
-#include "chaos/effects/effect_setconvar.sp"
-#include "chaos/effects/effect_setattribute.sp"
-#include "chaos/effects/effect_addcond.sp"
-#include "chaos/effects/effect_setcustommodel.sp"
+// Meta effects
+#include "chaos/effects/meta/effect_effectduration.sp"
+#include "chaos/effects/meta/effect_nochaos.sp"
+#include "chaos/effects/meta/effect_timerspeed.sp"
 
-#include "chaos/effects/effect_slowmotion.sp"
-#include "chaos/effects/effect_killrandomplayer.sp"
-#include "chaos/effects/effect_invertconvar.sp"
-#include "chaos/effects/effect_truce.sp"
-#include "chaos/effects/effect_wheredideverythinggo.sp"
+// Regular effects
+#include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_empty.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
-#include "chaos/effects/effect_sethealth.sp"
-#include "chaos/effects/effect_watermark.sp"
-#include "chaos/effects/effect_thriller.sp"
-#include "chaos/effects/effect_showscoreboard.sp"
+#include "chaos/effects/effect_extremefog.sp"
+#include "chaos/effects/effect_fakeclientcommand.sp"
 #include "chaos/effects/effect_fov.sp"
-#include "chaos/effects/effect_silence.sp"
+#include "chaos/effects/effect_hidehud.sp"
+#include "chaos/effects/effect_invertconvar.sp"
+#include "chaos/effects/effect_killrandomplayer.sp"
+#include "chaos/effects/effect_mannpower.sp"
+#include "chaos/effects/effect_noclip.sp"
+#include "chaos/effects/effect_randomizeskybox.sp"
+#include "chaos/effects/effect_removehealthandammo.sp"
+#include "chaos/effects/effect_removerandomentity.sp"
 #include "chaos/effects/effect_removewearables.sp"
-#include "chaos/effects/effect_setspeed.sp"
-#include "chaos/effects/effect_thirdperson.sp"
-#include "chaos/effects/effect_teleportermalfunction.sp"
 #include "chaos/effects/effect_respawnalldead.sp"
 #include "chaos/effects/effect_screenoverlay.sp"
+#include "chaos/effects/effect_setattribute.sp"
+#include "chaos/effects/effect_setconvar.sp"
+#include "chaos/effects/effect_setcustommodel.sp"
+#include "chaos/effects/effect_sethealth.sp"
+#include "chaos/effects/effect_setspeed.sp"
+#include "chaos/effects/effect_showscoreboard.sp"
 #include "chaos/effects/effect_shuffleclasses.sp"
-#include "chaos/effects/effect_fakeclientcommand.sp"
-#include "chaos/effects/effect_randomizeskybox.sp"
-#include "chaos/effects/effect_noclip.sp"
-#include "chaos/effects/effect_hidehud.sp"
-#include "chaos/effects/effect_removerandomentity.sp"
-#include "chaos/effects/effect_removehealthandammo.sp"
-#include "chaos/effects/effect_mannpower.sp"
-#include "chaos/effects/effect_extremefog.sp"
+#include "chaos/effects/effect_silence.sp"
+#include "chaos/effects/effect_slowmotion.sp"
+#include "chaos/effects/effect_teleportermalfunction.sp"
+#include "chaos/effects/effect_thirdperson.sp"
+#include "chaos/effects/effect_thriller.sp"
+#include "chaos/effects/effect_truce.sp"
+#include "chaos/effects/effect_watermark.sp"
+#include "chaos/effects/effect_wheredideverythinggo.sp"
 
-#include "chaos/effects/meta/effect_timerspeed.sp"
-#include "chaos/effects/meta/effect_nochaos.sp"
-#include "chaos/effects/meta/effect_effectduration.sp"
+public Plugin myinfo =
+{
+	name = "[TF2] Chaos Mod",
+	author = "Mikusch",
+	description = "Chaos Mod for Team Fortress 2, heavily inspired by Chaos Mod V.",
+	version = "1.0.0",
+	url = "https://github.com/Mikusch/ChaosModTF2"
+}
 
 public void OnPluginStart()
 {
@@ -430,6 +440,12 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		return false;
 	}
 	
+	// If forced, expire all other effects of the same class
+	if (bForce)
+	{
+		ExpireActiveEffectsOfClass(effect.effect_class, true);
+	}
+	
 	// Run OnStart callback
 	Function callback = effect.GetCallbackFunction("OnStart");
 	if (callback != INVALID_FUNCTION)
@@ -441,13 +457,12 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			if (!bForce)
-			{
-				return false;
-			}
+			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
+			return false;
 		}
 	}
 	
+	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
 	EmitGameSoundToAll("CYOA.NodeActivate");
 	CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", effect.name);
 	
@@ -571,6 +586,31 @@ void DisplayActiveEffects()
 		}
 		
 		PrintKeyHintText(client, szMessage);
+	}
+}
+
+void ExpireActiveEffectsOfClass(const char[] szEffectClass, bool bForce = false)
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active)
+		{
+			// Check if the effect actually expired
+			if (!bForce && effect.activate_time + effect.GetEffectDuration() > GetGameTime())
+				continue;
+			
+			Function callback = effect.GetCallbackFunction("OnEnd");
+			if (callback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_Finish();
+			}
+			
+			effect.active = false;
+			g_hEffects.SetArray(i, effect);
+		}
 	}
 }
 

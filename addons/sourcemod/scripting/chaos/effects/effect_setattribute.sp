@@ -6,7 +6,7 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
-	// Avoid setting the same attribute multiple times
+	// Don't set the same attribute twice
 	if (IsEffectWithKeyAlreadyActive(effect, "name"))
 		return false;
 	

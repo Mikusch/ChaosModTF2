@@ -13,6 +13,14 @@ public bool InvertConVar_OnStart(ChaosEffect effect)
 	if (!convar)
 		return false;
 	
+	// Don't set the same convar twice
+	if (FindKeyValuePairInActiveEffects(effect.effect_class, "convar", szName))
+		return false;
+	
+	// Avoid a potential clash
+	if (FindKeyValuePairInActiveEffects("SetConVar", "convar", szName))
+		return false;
+	
 	convar.FloatValue = -convar.FloatValue;
 	
 	return true;

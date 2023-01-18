@@ -294,6 +294,14 @@
 	{
 		"en"		"Cowardly Combat"
 	}
+	"#Chaos_Effect_LowGravity"
+	{
+		"en"		"Low Gravity"
+	}
+	"#Chaos_Effect_HighGravity"
+	{
+		"en"		"Extreme Gravity"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
