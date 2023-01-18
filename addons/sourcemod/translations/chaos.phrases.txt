@@ -270,6 +270,10 @@
 	{
 		"en"		"Balloon Heads"
 	}
+	"#Chaos_Effect_ExtremeFog"
+	{
+		"en"		"Extreme Fog"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

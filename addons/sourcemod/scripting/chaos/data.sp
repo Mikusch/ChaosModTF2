@@ -94,9 +94,8 @@ void ParseConfig()
 					Call_StartFunction(null, callback);
 					Call_PushArray(effect, sizeof(effect));
 					
-					// If Initialize returns false, the effect is not added to our effects list
-					bool bReturn;
-					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+					// If Initialize throws an error, the effect is not added to our effects list
+					if (Call_Finish() != SP_ERROR_NONE)
 					{
 						continue;
 					}

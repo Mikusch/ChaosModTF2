@@ -65,6 +65,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_removerandomentity.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
 #include "chaos/effects/effect_mannpower.sp"
+#include "chaos/effects/effect_extremefog.sp"
 
 #include "chaos/effects/meta/effect_timerspeed.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"
@@ -113,10 +114,7 @@ public void OnMapEnd()
 
 public void OnMapStart()
 {
-	g_flLastEffectActivateTime = 0.0;
-	g_flLastMetaEffectActivateTime = 0.0;
-	g_flLastEffectDisplayTime = 0.0;
-	g_flTimerBarDisplayTime = 0.0;
+	SetTimers(GetGameTime());
 	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -354,12 +352,14 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	}
 }
 
+public void TF2_OnWaitingForPlayersStart()
+{
+	SetTimers(0.0);
+}
+
 public void TF2_OnWaitingForPlayersEnd()
 {
-	g_flLastEffectActivateTime = GetGameTime();
-	g_flLastMetaEffectActivateTime = GetGameTime();
-	g_flLastEffectDisplayTime = GetGameTime();
-	g_flTimerBarDisplayTime = GetGameTime();
+	SetTimers(GetGameTime());
 }
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDefIndex, Handle &item)
@@ -611,6 +611,14 @@ bool IsEffectOfClassActive(const char[] class)
 	}
 	
 	return false;
+}
+
+void SetTimers(float flTime)
+{
+	g_flLastEffectActivateTime = flTime;
+	g_flLastMetaEffectActivateTime = flTime;
+	g_flLastEffectDisplayTime = flTime;
+	g_flTimerBarDisplayTime = flTime;
 }
 
 bool IsChaosPaused()

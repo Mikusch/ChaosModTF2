@@ -20,12 +20,10 @@ static TFCond g_aPowerupConds[] =
 static ConVar tf_powerup_mode;
 static ConVar tf_grapplinghook_enable;
 
-public bool Mannpower_Initialize(ChaosEffect effect)
+public void Mannpower_Initialize(ChaosEffect effect)
 {
 	tf_powerup_mode = FindConVar("tf_powerup_mode");
 	tf_grapplinghook_enable = FindConVar("tf_grapplinghook_enable");
-	
-	return true;
 }
 
 public bool Mannpower_OnStart(ChaosEffect effect)

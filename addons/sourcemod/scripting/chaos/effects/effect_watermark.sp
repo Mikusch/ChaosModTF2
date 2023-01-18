@@ -2,17 +2,13 @@
 #pragma newdecls required
 
 static Handle g_hHudSync;
+static ConVar hostname;
 static float g_flNextDisplayTime;
 
-static ConVar hostname;
-
-public bool Watermark_Initialize(ChaosEffect effect)
+public void Watermark_Initialize(ChaosEffect effect)
 {
 	g_hHudSync = CreateHudSynchronizer();
-	
 	hostname = FindConVar("hostname");
-	
-	return true;
 }
 
 public bool Watermark_OnStart(ChaosEffect effect)

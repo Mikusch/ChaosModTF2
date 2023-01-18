@@ -7,14 +7,12 @@ static ConVar sm_chaos_effect_slowmotion_timescale;
 
 static float flOldTimescale;
 
-public bool SlowMotion_Initialize(ChaosEffect effect)
+public void SlowMotion_Initialize(ChaosEffect effect)
 {
 	host_timescale = FindConVar("host_timescale");
 	sv_cheats = FindConVar("sv_cheats");
 	
 	sm_chaos_effect_slowmotion_timescale = CreateConVar("sm_chaos_effect_slowmotion_timescale", "0.5", "How much to slow the game down.");
-	
-	return true;
 }
 
 public void SlowMotion_OnMapStart(ChaosEffect effect)

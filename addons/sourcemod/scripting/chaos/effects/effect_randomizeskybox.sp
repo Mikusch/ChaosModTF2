@@ -29,11 +29,9 @@ static char g_aSkyNames[][] =
 
 static ConVar sv_skyname;
 
-public bool RandomizeSkybox_Initialize(ChaosEffect effect)
+public void RandomizeSkybox_Initialize(ChaosEffect effect)
 {
 	sv_skyname = FindConVar("sv_skyname");
-	
-	return true;
 }
 
 public bool RandomizeSkybox_OnStart(ChaosEffect effect)
