@@ -163,7 +163,7 @@
 	}
 	"#Chaos_Effect_Ghosts"
 	{
-		"en"		"Loads Of Ghosts"
+		"en"		"Ghosting"
 	}
 	"#Chaos_Effect_Pacifist"
 	{
@@ -175,7 +175,7 @@
 	}
 	"#Chaos_Effect_BonusDucks"
 	{
-		"en"		"BONUS DUCKS!"
+		"en"		"Bonus Ducks!"
 	}
 	"#Chaos_Effect_Bouncy"
 	{
@@ -187,7 +187,7 @@
 	}
 	"#Chaos_Effect_Pyrovision"
 	{
-		"en"		"Pyrovision"
+		"en"		"Visit Pyroland"
 	}
 	"#Chaos_Effect_Taunt"
 	{
@@ -301,6 +301,14 @@
 	"#Chaos_Effect_HighGravity"
 	{
 		"en"		"Extreme Gravity"
+	}
+	"#Chaos_Effect_LoudSpeaker"
+	{
+		"en"		"Is This Thing On?"
+	}
+	"#Chaos_Effect_Tinnitus"
+	{
+		"en"		"Tinnitus"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
