@@ -448,12 +448,6 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		return false;
 	}
 	
-	// If forced, expire all other effects of the same class
-	if (bForce)
-	{
-		ExpireActiveEffectsOfClass(effect.effect_class, true);
-	}
-	
 	// Run OnStart callback
 	Function callback = effect.GetCallbackFunction("OnStart");
 	if (callback != INVALID_FUNCTION)
@@ -461,12 +455,29 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		Call_StartFunction(null, callback);
 		Call_PushArray(effect, sizeof(effect));
 		
-		// If OnStart returned false, do not start the effect
+		// If OnStart returns false, do not start the effect
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
-			return false;
+			if (bForce)
+			{
+				// If force failed, try expiring other effects of the same class
+				ExpireActiveEffectsOfClass(effect.effect_class, true);
+				
+				// Re-run OnStart callback
+				Call_StartFunction(null, callback);
+				Call_PushArray(effect, sizeof(effect));
+				if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+				{
+					ThrowError("Failed to force-enable effect '%T'", effect.name, LANG_SERVER);
+					return false;
+				}
+			}
+			else
+			{
+				LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
+				return false;
+			}
 		}
 	}
 	
