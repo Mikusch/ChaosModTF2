@@ -67,11 +67,11 @@
 	}
 	"#Chaos_Effect_HighFOV"
 	{
-		"en"		"Quake Pro"
+		"en"		"Quake FOV"
 	}
 	"#Chaos_Effect_LowFOV"
 	{
-		"en"		"Zoomed View"
+		"en"		"Zoomed FOV"
 	}
 	"#Chaos_Effect_Crits"
 	{
@@ -83,7 +83,7 @@
 	}
 	"#Chaos_Effect_BumperCars"
 	{
-		"en"		"Bumper Cars!"
+		"en"		"Bumper Cars"
 	}
 	"#Chaos_Effect_ViewRoll"
 	{
@@ -99,7 +99,7 @@
 	}
 	"#Chaos_Effect_SquidFootsteps"
 	{
-		"en"		"Squid Fortress 2"
+		"en"		"Squid Game"
 	}
 	"#Chaos_Effect_JingleAllTheWay"
 	{
@@ -107,7 +107,7 @@
 	}
 	"#Chaos_Effect_SkeletonModels"
 	{
-		"en"		"Skeletons!"
+		"en"		"Spooky Scary Skeletons"
 	}
 	"#Chaos_Effect_Lag"
 	{
@@ -163,7 +163,7 @@
 	}
 	"#Chaos_Effect_Ghosts"
 	{
-		"en"		"Boo!"
+		"en"		"Loads Of Ghosts"
 	}
 	"#Chaos_Effect_Pacifist"
 	{
@@ -171,7 +171,7 @@
 	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"Randomized Classes"
+		"en"		"Randomize Everyone's Classes"
 	}
 	"#Chaos_Effect_BonusDucks"
 	{
@@ -179,7 +179,7 @@
 	}
 	"#Chaos_Effect_Bouncy"
 	{
-		"en"		"Everything Is Bouncy"
+		"en"		"Bouncy Castle"
 	}
 	"#Chaos_Effect_FlyVoices"
 	{
@@ -191,11 +191,11 @@
 	}
 	"#Chaos_Effect_Taunt"
 	{
-		"en"		"Force Every Player To Taunt"
+		"en"		"Taunt"
 	}
 	"#Chaos_Effect_RandomizeSkybox"
 	{
-		"en"		"Change Skybox"
+		"en"		"Change Skybox Texture"
 	}
 	"#Chaos_Effect_Noclip"
 	{
@@ -284,7 +284,7 @@
 	}
 	"#Chaos_Effect_NoOverhealLimit"
 	{
-		"en"		"Disable Overheal Limit"
+		"en"		"No Overheal Limit"
 	}
 	"#Chaos_Effect_10xChargeSpeed"
 	{
