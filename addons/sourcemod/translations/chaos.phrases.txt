@@ -209,6 +209,14 @@
 	{
 		"en"		"Remove Random Entity"
 	}
+	"#Chaos_Effect_LaunchUp"
+	{
+		"en"		"Launch Players Up"
+	}
+	"#Chaos_Effect_Fling"
+	{
+		"en"		"Fling Players"
+	}
 	"#Chaos_Effect_RemoveRandomEntity_Success"
 	{
 		"#format"	"{1:d},{2:s}"
