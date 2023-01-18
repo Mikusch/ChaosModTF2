@@ -274,6 +274,26 @@
 	{
 		"en"		"Extreme Fog"
 	}
+	"#Chaos_Effect_CheapObjects"
+	{
+		"en"		"All Buildings Cost 0 Metal"
+	}
+	"#Chaos_Effect_FastBuild"
+	{
+		"en"		"Fast Building"
+	}
+	"#Chaos_Effect_NoOverhealLimit"
+	{
+		"en"		"Disable Overheal Limit"
+	}
+	"#Chaos_Effect_10xChargeSpeed"
+	{
+		"en"		"10x Shield Charge Speed"
+	}
+	"#Chaos_Effect_AlwaysLoser"
+	{
+		"en"		"Cowardly Combat"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
