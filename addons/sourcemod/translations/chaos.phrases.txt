@@ -346,6 +346,10 @@
 	{
 		"en"		"Spawn Beach Ball"
 	}
+	"#Chaos_Effect_PaintCosmetics"
+	{
+		"en"		"Apply Random Paint To Cosmetics"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

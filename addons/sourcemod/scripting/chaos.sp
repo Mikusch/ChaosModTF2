@@ -52,6 +52,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_launchup.sp"
 #include "chaos/effects/effect_mannpower.sp"
 #include "chaos/effects/effect_noclip.sp"
+#include "chaos/effects/effect_paintcosmetics.sp"
 #include "chaos/effects/effect_randomizeskybox.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
