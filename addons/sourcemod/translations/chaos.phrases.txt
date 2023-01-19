@@ -322,6 +322,14 @@
 	{
 		"en"		"Spawn Orange Ball"
 	}
+	"#Chaos_Effect_PoorBoy"
+	{
+		"en"		"Poor Boy"
+	}
+	"#Chaos_Effect_AddCurrency"
+	{
+		"en"		"Give Everyone 30000 Credits"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

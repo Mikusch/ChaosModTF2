@@ -60,6 +60,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_screenoverlay.sp"
 #include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_setconvar.sp"
+#include "chaos/effects/effect_setcurrency.sp"
 #include "chaos/effects/effect_setcustommodel.sp"
 #include "chaos/effects/effect_sethealth.sp"
 #include "chaos/effects/effect_setspeed.sp"
