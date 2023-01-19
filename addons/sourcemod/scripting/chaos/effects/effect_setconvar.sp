@@ -38,6 +38,7 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	
 	g_hOldConvarValues.SetString(szName, szOldValue);
 	convar.SetString(szValue, true);
+	convar.AddChangeHook(OnConVarChanged);
 	
 	return true;
 }
@@ -49,6 +50,18 @@ public void SetConVar_OnEnd(ChaosEffect effect)
 	g_hOldConvarValues.GetString(szName, szValue, sizeof(szValue));
 	
 	ConVar convar = FindConVar(szName);
+	
+	convar.RemoveChangeHook(OnConVarChanged);
 	convar.SetString(szValue, true);
 	g_hOldConvarValues.Remove(szName);
+}
+
+static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	char szName[512];
+	convar.GetName(szName, sizeof(szName));
+	
+	// Restore the old value but update our list
+	convar.SetString(oldValue, true);
+	g_hOldConvarValues.SetString(szName, newValue);
 }

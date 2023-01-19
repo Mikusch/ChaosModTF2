@@ -22,6 +22,7 @@ public bool InvertConVar_OnStart(ChaosEffect effect)
 		return false;
 	
 	convar.FloatValue = -convar.FloatValue;
+	convar.AddChangeHook(OnConVarChanged);
 	
 	return true;
 }
@@ -32,5 +33,12 @@ public void InvertConVar_OnEnd(ChaosEffect effect)
 	effect.data.GetString("convar", szName, sizeof(szName));
 	
 	ConVar convar = FindConVar(szName);
+	
+	convar.RemoveChangeHook(OnConVarChanged);
+	convar.FloatValue = -convar.FloatValue;
+}
+
+static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
 	convar.FloatValue = -convar.FloatValue;
 }
