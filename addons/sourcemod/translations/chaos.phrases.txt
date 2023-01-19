@@ -49,9 +49,9 @@
 	{
 		"en"		"Set Everyone To 1000 HP"
 	}
-	"#Chaos_Effect_MidgetMercenaries"
+	"#Chaos_Effect_ShortMercs"
 	{
-		"en"		"Midget Mercenaries"
+		"en"		"Midget Mercs"
 	}
 	"#Chaos_Effect_Watermark"
 	{
@@ -318,17 +318,29 @@
 	{
 		"en"		"Tinnitus"
 	}
-	"#Chaos_Effect_SpawnBall"
+	"#Chaos_Effect_SpawnOrangeBall"
 	{
 		"en"		"Spawn Orange Ball"
 	}
-	"#Chaos_Effect_PoorBoy"
+	"#Chaos_Effect_RemoveCurrency"
 	{
 		"en"		"Poor Boy"
 	}
 	"#Chaos_Effect_AddCurrency"
 	{
-		"en"		"Give Everyone 30000 Credits"
+		"en"		"Rich Man"
+	}
+	"#Chaos_Effect_ExtraAirDashes"
+	{
+		"en"		"Scout Has 10 Jumps"
+	}
+	"#Chaos_Effect_TallMercs"
+	{
+		"en"		"Stretchy Mercs"
+	}
+	"#Chaos_Effect_SpawnSoccerBall"
+	{
+		"en"		"Spawn Soccer Ball"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

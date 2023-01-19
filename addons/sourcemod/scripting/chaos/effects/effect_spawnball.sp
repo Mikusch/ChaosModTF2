@@ -3,10 +3,16 @@
 
 public bool SpawnBall_OnStart(ChaosEffect effect)
 {
+	if (!effect.data)
+		return false;
+	
+	char szModel[PLATFORM_MAX_PATH];
+	effect.data.GetString("model", szModel, sizeof(szModel));
+	
 	int ball = CreateEntityByName("prop_soccer_ball");
 	if (IsValidEntity(ball))
 	{
-		DispatchKeyValue(ball, "model", "models/props_halloween/hwn_kart_ball01.mdl");
+		DispatchKeyValue(ball, "model", szModel);
 		DispatchSpawn(ball);
 		
 		int client = GetRandomPlayer();
