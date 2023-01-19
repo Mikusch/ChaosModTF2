@@ -40,5 +40,7 @@ public void InvertConVar_OnEnd(ChaosEffect effect)
 
 static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
+	convar.RemoveChangeHook(OnConVarChanged);
 	convar.FloatValue = -convar.FloatValue;
+	convar.AddChangeHook(OnConVarChanged);
 }

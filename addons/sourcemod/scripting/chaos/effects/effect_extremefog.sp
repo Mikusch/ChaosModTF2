@@ -25,7 +25,7 @@ public bool ExtremeFog_OnStart(ChaosEffect effect)
 		data.flFogEnd = GetEntPropFloat(controller, Prop_Send, "m_fog.end");
 		g_hOldFogStarts.PushArray(data);
 		
-		SetEntPropFloat(controller, Prop_Send, "m_fog.end", 250.0);
+		SetEntPropFloat(controller, Prop_Send, "m_fog.end", 100.0);
 	}
 	
 	return g_hOldFogStarts.Length != 0;

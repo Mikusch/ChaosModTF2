@@ -61,7 +61,11 @@ static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] n
 	char szName[512];
 	convar.GetName(szName, sizeof(szName));
 	
-	// Restore the old value but update our list
+	// Restore the old value
+	convar.RemoveChangeHook(OnConVarChanged);
 	convar.SetString(oldValue, true);
+	convar.AddChangeHook(OnConVarChanged);
+	
+	// Update our stored value
 	g_hOldConvarValues.SetString(szName, newValue);
 }

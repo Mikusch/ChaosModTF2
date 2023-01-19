@@ -398,6 +398,10 @@
 	{
 		"en"		"Make All Players Glow"
 	}
+	"#Chaos_Effect_DisableRespawnTimes"
+	{
+		"en"		"Disable Respawn Times"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
