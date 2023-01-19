@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public bool PoorBoy_OnStart(ChaosEffect effect)
+public bool SetCurrency_OnStart(ChaosEffect effect)
 {
 	if (!GameRules_GetProp("m_nForceUpgrades") && !GameRules_GetProp("m_bPlayingMannVsMachine"))
 		return false;
