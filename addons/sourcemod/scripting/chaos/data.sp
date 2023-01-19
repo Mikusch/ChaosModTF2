@@ -23,7 +23,7 @@ enum struct ChaosEffect
 		if (kv.GetSectionName(section, sizeof(section)) && StringToIntEx(section, this.id))
 		{
 			kv.GetString("name", this.name, sizeof(this.name));
-			this.duration = kv.GetFloat("duration", 30.0);
+			this.duration = kv.GetFloat("duration");
 			this.meta = kv.GetNum("meta") != 0;
 			this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
 			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class), "InvalidEffect");
@@ -88,13 +88,19 @@ void Data_Initialize()
 				ChaosEffect effect;
 				effect.Parse(kv);
 				
+				if (g_hEffects.FindValue(effect.id) != -1)
+				{
+					LogError("The effect '%s' has duplicate ID (%d), skipping...", effect.name, LANG_SERVER, effect.id);
+					continue;
+				}
+				
 				Function fnCallback = effect.GetCallbackFunction("Initialize");
 				if (fnCallback != INVALID_FUNCTION)
 				{
 					Call_StartFunction(null, fnCallback);
 					Call_PushArray(effect, sizeof(effect));
 					
-					// If Initialize throws an error, the effect is not added to our effects list
+					// If Initialize throws, the effect is not added to our list
 					if (Call_Finish() != SP_ERROR_NONE)
 					{
 						continue;
