@@ -332,7 +332,7 @@
 	}
 	"#Chaos_Effect_ExtraAirDashes"
 	{
-		"en"		"Scout Has 10 Jumps"
+		"en"		"Infinite Double Jumps"
 	}
 	"#Chaos_Effect_TallMercs"
 	{
@@ -349,6 +349,50 @@
 	"#Chaos_Effect_PaintCosmetics"
 	{
 		"en"		"Apply Random Paint To Cosmetics"
+	}
+	"#Chaos_Effect_Nothing"
+	{
+		"en"		"Nothing"
+	}
+	"#Chaos_Effect_Nothing_SpawnAir"
+	{
+		"en"		"Spawn Air"
+	}
+	"#Chaos_Effect_Nothing_GiveEveryoneANose"
+	{
+		"en"		"Give Everyone A Nose"
+	}
+	"#Chaos_Effect_Nothing_TeleportEveryone1Millimeter"
+	{
+		"en"		"Teleport Everyone 1 Millimeter"
+	}
+	"#Chaos_Effect_Nothing_KillAllDeadPlayers"
+	{
+		"en"		"Kill All Dead Players"
+	}
+	"#Chaos_Effect_Nothing_RemoveTheObserver"
+	{
+		"en"		"Remove The Observer"
+	}
+	"#Chaos_Effect_Nothing_IncreasePingBy1"
+	{
+		"en"		"Increase Ping By 1"
+	}
+	"#Chaos_Effect_Nothing_AllPlayersArePlayers"
+	{
+		"en"		"All Players Are Players"
+	}
+	"#Chaos_Effect_Nothing_Blank"
+	{
+		"en"		" "
+	}
+	"#Chaos_Effect_Nothing_Error"
+	{
+		"en"		"ERROR_EFFECT_NOT_FOUND"
+	}
+	"#Chaos_Effect_Nothing_Mikusch"
+	{
+		"en"		"Make Mikusch Happy"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

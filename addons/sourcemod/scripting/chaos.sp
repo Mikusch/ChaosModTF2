@@ -52,6 +52,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_launchup.sp"
 #include "chaos/effects/effect_mannpower.sp"
 #include "chaos/effects/effect_noclip.sp"
+#include "chaos/effects/effect_nothing.sp"
 #include "chaos/effects/effect_paintcosmetics.sp"
 #include "chaos/effects/effect_randomizeskybox.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
@@ -487,10 +488,6 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		}
 	}
 	
-	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
-	EmitGameSoundToAll("CYOA.NodeActivate");
-	CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", effect.name);
-	
 	// One-shot effects are never set to active state
 	if (effect.duration)
 	{
@@ -521,6 +518,15 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 			// Never lower cooldown below 0
 			g_hEffects.Set(i, Max(0, other.cooldown_left - 1), ChaosEffect::cooldown_left);
 		}
+	}
+	
+	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
+	EmitGameSoundToAll("CYOA.NodeActivate");
+	
+	char szName[64];
+	if (effect.GetName(szName, sizeof(szName)))
+	{
+		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
 	}
 	
 	return true;
@@ -576,12 +582,16 @@ void DisplayActiveEffects()
 			ChaosEffect effect;
 			if (g_hEffects.GetArray(i, effect) && effect.activate_time)
 			{
+				char szName[64];
+				if (!effect.GetName(szName, sizeof(szName)))
+					continue;
+				
 				char szLine[128];
 				
 				// Expiring effects stay on screen while active
 				if (effect.active)
 				{
-					float flEndTime = effect.activate_time + effect.GetEffectDuration();
+					float flEndTime = effect.activate_time + effect.GetDuration();
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
 					char szProgressBar[64];
@@ -600,12 +610,12 @@ void DisplayActiveEffects()
 						}
 					}
 					
-					Format(szLine, sizeof(szLine), "%T %s", effect.name, client, szProgressBar);
+					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
 				}
 				// One-shot effects stay on screen for 60 seconds
 				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
 				{
-					Format(szLine, sizeof(szLine), "%T", effect.name, client);
+					Format(szLine, sizeof(szLine), "%T", szName, client);
 				}
 				
 				// -2 to include null terminators
@@ -628,7 +638,7 @@ void ExpireActiveEffectsOfClass(const char[] szEffectClass, bool bForce = false)
 		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active)
 		{
 			// Check if the effect actually expired
-			if (!bForce && effect.activate_time + effect.GetEffectDuration() > GetGameTime())
+			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
 				continue;
 			
 			Function fnCallback = effect.GetCallbackFunction("OnEnd");
@@ -653,7 +663,7 @@ void ExpireAllActiveEffects(bool bForce = false)
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
 			// Check if the effect actually expired
-			if (!bForce && effect.activate_time + effect.GetEffectDuration() > GetGameTime())
+			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
 				continue;
 			
 			Function fnCallback = effect.GetCallbackFunction("OnEnd");

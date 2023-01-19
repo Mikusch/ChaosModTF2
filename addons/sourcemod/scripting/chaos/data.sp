@@ -44,7 +44,28 @@ enum struct ChaosEffect
 		return GetFunctionByName(hPlugin, szFunctionName);
 	}
 	
-	float GetEffectDuration()
+	bool GetName(char[] szName, int iMaxLength)
+	{
+		// This callback only applies to the current effect
+		Function fnCallback = this.GetCallbackFunction("ModifyEffectName");
+		if (fnCallback != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, fnCallback);
+			Call_PushArray(this, sizeof(this));
+			Call_PushStringEx(szName, iMaxLength, SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+			Call_PushCell(iMaxLength);
+			
+			bool bReturn;
+			if (Call_Finish(bReturn) == SP_ERROR_NONE && bReturn)
+			{
+				return bReturn;
+			}
+		}
+		
+		return strcopy(szName, iMaxLength, this.name) != 0;
+	}
+	
+	float GetDuration()
 	{
 		float flDuration = this.duration;
 		
