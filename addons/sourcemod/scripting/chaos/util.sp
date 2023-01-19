@@ -6,13 +6,13 @@ any Max(any a, any b)
 	return (a >= b) ? a : b;
 }
 
-int Compare(any val1, any val2)
+int Compare(any a, any b)
 {
-	if (val1 > val2)
+	if (a > b)
 	{
 		return 1;
 	}
-	else if (val1 < val2)
+	else if (a < b)
 	{
 		return -1;
 	}
@@ -130,7 +130,7 @@ void PrintKeyHintText(int client, const char[] format, any...)
 
 int GetRandomPlayer(bool bIsAlive = true)
 {
-	ArrayList players = new ArrayList();
+	ArrayList hPlayers = new ArrayList();
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -140,17 +140,17 @@ int GetRandomPlayer(bool bIsAlive = true)
 		if (bIsAlive && !IsPlayerAlive(client))
 			continue;
 		
-		players.Push(client);
+		hPlayers.Push(client);
 	}
 	
-	if (!players.Length)
+	if (!hPlayers.Length)
 	{
-		delete players;
+		delete hPlayers;
 		return false;
 	}
 	
-	int client = players.Get(GetRandomInt(0, players.Length - 1));
-	delete players;
+	int client = hPlayers.Get(GetRandomInt(0, hPlayers.Length - 1));
+	delete hPlayers;
 	
 	return client;
 }

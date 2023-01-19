@@ -1,31 +1,35 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void DHooks_Initialize(GameData gamedata)
+void DHooks_Initialize(GameData hGameData)
 {
-	DHooks_CreateDynamicDetour(gamedata, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
+	DHooks_CreateDynamicDetour(hGameData, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
 }
 
-static void DHooks_CreateDynamicDetour(GameData gamedata, const char[] name, DHookCallback callbackPre = INVALID_FUNCTION, DHookCallback callbackPost = INVALID_FUNCTION)
+static void DHooks_CreateDynamicDetour(GameData hGameData, const char[] szName, DHookCallback fnCallbackPre = INVALID_FUNCTION, DHookCallback fnCallbackPost = INVALID_FUNCTION)
 {
-	DynamicDetour detour = DynamicDetour.FromConf(gamedata, name);
-	if (detour)
+	DynamicDetour hDetour = DynamicDetour.FromConf(hGameData, szName);
+	if (hDetour)
 	{
-		if (callbackPre != INVALID_FUNCTION)
-			detour.Enable(Hook_Pre, callbackPre);
+		if (fnCallbackPre != INVALID_FUNCTION)
+		{
+			hDetour.Enable(Hook_Pre, fnCallbackPre);
+		}
 		
-		if (callbackPost != INVALID_FUNCTION)
-			detour.Enable(Hook_Post, callbackPost);
+		if (fnCallbackPost != INVALID_FUNCTION)
+		{
+			hDetour.Enable(Hook_Post, fnCallbackPost);
+		}
 	}
 	else
 	{
-		LogError("Failed to create detour setup handle for %s", name);
+		LogError("Failed to create detour setup handle: %s", szName);
 	}
 }
 
 static MRESReturn DHookCallback_CalculateMaxSpeed_Post(int player, DHookReturn hReturn)
 {
-	// Do not allow changing speed while completely to a halt
+	// Do not allow changing speed while the game wants to stop us
 	if (hReturn.Value == 1.0)
 		return MRES_Ignored;
 	
@@ -36,24 +40,24 @@ static MRESReturn DHookCallback_CalculateMaxSpeed_Post(int player, DHookReturn h
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("CalculateMaxSpeed");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("CalculateMaxSpeed");
+			if (fnCallback != INVALID_FUNCTION)
 			{
 				float flSpeed = hReturn.Value;
 				
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(player);
 				Call_PushFloatRef(flSpeed);
 				
-				MRESReturn nCallbackReturn;
-				if (Call_Finish(nCallbackReturn) == SP_ERROR_NONE)
+				MRESReturn nResult;
+				if (Call_Finish(nResult) == SP_ERROR_NONE)
 				{
 					hReturn.Value = flSpeed;
 					
-					if (nCallbackReturn > nReturn)
+					if (nResult > nReturn)
 					{
-						nReturn = nCallbackReturn;
+						nReturn = nResult;
 					}
 				}
 			}

@@ -19,8 +19,8 @@ enum struct ChaosEffect
 	
 	void Parse(KeyValues kv)
 	{
-		char szSection[64];
-		if (kv.GetSectionName(szSection, sizeof(szSection)) && StringToIntEx(szSection, this.id))
+		char section[64];
+		if (kv.GetSectionName(section, sizeof(section)) && StringToIntEx(section, this.id))
 		{
 			kv.GetString("name", this.name, sizeof(this.name));
 			this.duration = kv.GetFloat("duration", 30.0);
@@ -58,10 +58,10 @@ enum struct ChaosEffect
 				if (effect.id == this.id)
 					continue;
 				
-				Function callback = effect.GetCallbackFunction("ModifyEffectDuration");
-				if (callback != INVALID_FUNCTION)
+				Function fnCallback = effect.GetCallbackFunction("ModifyEffectDuration");
+				if (fnCallback != INVALID_FUNCTION)
 				{
-					Call_StartFunction(null, callback);
+					Call_StartFunction(null, fnCallback);
 					Call_PushArray(effect, sizeof(effect));
 					Call_PushFloatRef(flDuration);
 					Call_Finish();
@@ -75,11 +75,11 @@ enum struct ChaosEffect
 
 void Data_Initialize()
 {
-	char file[PLATFORM_MAX_PATH];
-	BuildPath(Path_SM, file, sizeof(file), "configs/chaos/effects.cfg");
+	char szFilePath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
 	
 	KeyValues kv = new KeyValues("effects");
-	if (kv.ImportFromFile(file))
+	if (kv.ImportFromFile(szFilePath))
 	{
 		if (kv.GotoFirstSubKey(false))
 		{
@@ -88,10 +88,10 @@ void Data_Initialize()
 				ChaosEffect effect;
 				effect.Parse(kv);
 				
-				Function callback = effect.GetCallbackFunction("Initialize");
-				if (callback != INVALID_FUNCTION)
+				Function fnCallback = effect.GetCallbackFunction("Initialize");
+				if (fnCallback != INVALID_FUNCTION)
 				{
-					Call_StartFunction(null, callback);
+					Call_StartFunction(null, fnCallback);
 					Call_PushArray(effect, sizeof(effect));
 					
 					// If Initialize throws an error, the effect is not added to our effects list
@@ -110,7 +110,7 @@ void Data_Initialize()
 	}
 	else
 	{
-		LogError("Could not read from file '%s'", file);
+		LogError("Could not read from file '%s'", szFilePath);
 	}
 	delete kv;
 	

@@ -106,12 +106,12 @@ public void OnPluginStart()
 	
 	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 	
-	GameData gamedata = new GameData("chaos");
-	if (gamedata)
+	GameData hGameData = new GameData("chaos");
+	if (hGameData)
 	{
-		DHooks_Initialize(gamedata);
-		SDKCalls_Initialize(gamedata);
-		delete gamedata;
+		DHooks_Initialize(hGameData);
+		SDKCalls_Initialize(hGameData);
+		delete hGameData;
 	}
 	else
 	{
@@ -133,14 +133,15 @@ public void OnMapStart()
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{
-			Function callback = effect.GetCallbackFunction("OnMapStart");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnMapStart");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
 			
+			// Reset their activation time
 			g_hEffects.Set(i, 0.0, ChaosEffect::activate_time);
 		}
 	}
@@ -158,10 +159,10 @@ public void OnClientPutInServer(int client)
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnClientPutInServer");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnClientPutInServer");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_Finish();
@@ -191,10 +192,10 @@ public void OnGameFrame()
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnGameFrame");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnGameFrame");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
@@ -209,10 +210,10 @@ public void OnGameFrame()
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("ModifyTimerSpeed");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("ModifyTimerSpeed");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushFloatRef(flTimerSpeed);
 				Call_Finish();
@@ -240,15 +241,15 @@ public void OnGameFrame()
 		}
 		else
 		{
-			int index = g_hEffects.FindValue(iForceId, ChaosEffect::id);
-			if (index == -1)
+			int nIndex = g_hEffects.FindValue(iForceId, ChaosEffect::id);
+			if (nIndex == -1)
 			{
 				LogError("Failed to force unknown effect '%d'", iForceId);
 				return;
 			}
 			
 			ChaosEffect effect;
-			if (g_hEffects.GetArray(index, effect))
+			if (g_hEffects.GetArray(nIndex, effect))
 			{
 				StartEffect(effect, true);
 			}
@@ -275,10 +276,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnEntityCreated");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnEntityCreated");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(entity);
 				Call_PushString(classname);
@@ -290,17 +291,17 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
-	Action action = Plugin_Continue;
+	Action nReturn = Plugin_Continue;
 	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnPlayerRunCmd");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnPlayerRunCmd");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_PushCellRef(buttons);
@@ -314,19 +315,19 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_PushCellRef(seed);
 				Call_PushArrayEx(mouse, sizeof(mouse), SM_PARAM_COPYBACK);
 				
-				Action ret;
-				if (Call_Finish(ret) == SP_ERROR_NONE)
+				Action nResult;
+				if (Call_Finish(nResult) == SP_ERROR_NONE)
 				{
-					if (ret > action)
+					if (nResult > nReturn)
 					{
-						action = ret;
+						nReturn = nResult;
 					}
 				}
 			}
 		}
 	}
 	
-	return action;
+	return nReturn;
 }
 
 public void TF2_OnConditionAdded(int client, TFCond condition)
@@ -336,10 +337,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnConditionAdded");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnConditionAdded");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_PushCell(condition);
@@ -356,10 +357,10 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnConditionRemoved");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnConditionRemoved");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_PushCell(condition);
@@ -381,36 +382,36 @@ public void TF2_OnWaitingForPlayersEnd()
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDefIndex, Handle &item)
 {
-	Action action = Plugin_Continue;
+	Action nReturn = Plugin_Continue;
 	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnGiveNamedItem");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnGiveNamedItem");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_PushString(classname);
 				Call_PushCell(itemDefIndex);
 				Call_PushCellRef(item);
 				
-				Action ret;
-				if (Call_Finish(ret) == SP_ERROR_NONE)
+				Action nResult;
+				if (Call_Finish(nResult) == SP_ERROR_NONE)
 				{
-					if (ret > action)
+					if (nResult > nReturn)
 					{
-						action = ret;
+						nReturn = nResult;
 					}
 				}
 			}
 		}
 	}
 	
-	return action;
+	return nReturn;
 }
 
 // --------------------------------------------------------------------------------------------------- //
@@ -444,18 +445,18 @@ void SelectRandomEffect(bool bMeta = false)
 
 bool StartEffect(ChaosEffect effect, bool bForce = false)
 {
-	int index = g_hEffects.FindValue(effect.id, ChaosEffect::id);
-	if (index == -1)
+	int nIndex = g_hEffects.FindValue(effect.id, ChaosEffect::id);
+	if (nIndex == -1)
 	{
 		LogError("Failed to start unknown effect with id '%d'", effect.id);
 		return false;
 	}
 	
 	// Run OnStart callback
-	Function callback = effect.GetCallbackFunction("OnStart");
-	if (callback != INVALID_FUNCTION)
+	Function fnCallback = effect.GetCallbackFunction("OnStart");
+	if (fnCallback != INVALID_FUNCTION)
 	{
-		Call_StartFunction(null, callback);
+		Call_StartFunction(null, fnCallback);
 		Call_PushArray(effect, sizeof(effect));
 		
 		// If OnStart returns false, do not start the effect
@@ -468,7 +469,7 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 				ExpireActiveEffectsOfClass(effect.effect_class, true);
 				
 				// Re-run OnStart callback
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 				{
@@ -497,12 +498,12 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	effect.cooldown_left = effect.cooldown;
 	effect.activate_time = GetGameTime();
 	
-	g_hEffects.SetArray(index, effect);
+	g_hEffects.SetArray(nIndex, effect);
 	
 	// Lower cooldown of all other effects
-	for (int j = 0; j < g_hEffects.Length; j++)
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
-		if (g_hEffects.Get(j, ChaosEffect::id) == effect.id)
+		if (g_hEffects.Get(i, ChaosEffect::id) == effect.id)
 			continue;
 		
 		// Meta effects have no cooldowns
@@ -510,8 +511,8 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 			continue;
 		
 		// Never lower cooldown below 0
-		int cooldown = Max(0, g_hEffects.Get(j, ChaosEffect::cooldown_left) - 1);
-		g_hEffects.Set(j, cooldown, ChaosEffect::cooldown_left);
+		int iCooldown = Max(0, g_hEffects.Get(i, ChaosEffect::cooldown_left) - 1);
+		g_hEffects.Set(i, iCooldown, ChaosEffect::cooldown_left);
 	}
 	
 	return true;
@@ -622,10 +623,10 @@ void ExpireActiveEffectsOfClass(const char[] szEffectClass, bool bForce = false)
 			if (!bForce && effect.activate_time + effect.GetEffectDuration() > GetGameTime())
 				continue;
 			
-			Function callback = effect.GetCallbackFunction("OnEnd");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnEnd");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
@@ -647,10 +648,10 @@ void ExpireAllActiveEffects(bool bForce = false)
 			if (!bForce && effect.activate_time + effect.GetEffectDuration() > GetGameTime())
 				continue;
 			
-			Function callback = effect.GetCallbackFunction("OnEnd");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnEnd");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
 			}
@@ -735,17 +736,17 @@ static void SetTimers(float flTime)
 
 static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-	Action action = Plugin_Continue;
+	Action nReturn = Plugin_Continue;
 	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnSoundPlayed");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnSoundPlayed");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushArrayEx(clients, sizeof(clients), SM_PARAM_COPYBACK);
 				Call_PushCellRef(numClients);
@@ -759,17 +760,17 @@ static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients
 				Call_PushStringEx(soundEntry, sizeof(soundEntry), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 				Call_PushCellRef(seed);
 				
-				Action ret;
-				if (Call_Finish(ret) == SP_ERROR_NONE)
+				Action nResult;
+				if (Call_Finish(nResult) == SP_ERROR_NONE)
 				{
-					if (ret > action)
+					if (nResult > nReturn)
 					{
-						action = ret;
+						nReturn = nResult;
 					}
 				}
 			}
 		}
 	}
 	
-	return action;
+	return nReturn;
 }

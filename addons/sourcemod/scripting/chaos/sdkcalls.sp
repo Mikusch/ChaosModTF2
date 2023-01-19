@@ -3,22 +3,22 @@
 
 static Handle g_hSDKCall_IsAllowedToTaunt;
 
-void SDKCalls_Initialize(GameData gamedata)
+void SDKCalls_Initialize(GameData hGameData)
 {
-	g_hSDKCall_IsAllowedToTaunt = PrepSDKCall_IsAllowedToTaunt(gamedata);
+	g_hSDKCall_IsAllowedToTaunt = PrepSDKCall_IsAllowedToTaunt(hGameData);
 }
 
-static Handle PrepSDKCall_IsAllowedToTaunt(GameData gamedata)
+static Handle PrepSDKCall_IsAllowedToTaunt(GameData hGameData)
 {
 	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayer::IsAllowedToTaunt");
+	PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "CTFPlayer::IsAllowedToTaunt");
 	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
 	
-	Handle call = EndPrepSDKCall();
-	if (!call)
+	Handle hCall = EndPrepSDKCall();
+	if (!hCall)
 		LogError("Failed to create SDKCall: CTFPlayer::IsAllowedToTaunt");
 	
-	return call;
+	return hCall;
 }
 
 bool SDKCall_IsAllowedToTaunt(int player)

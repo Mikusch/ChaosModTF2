@@ -3,7 +3,7 @@
 
 public bool RemoveRandomEntity_OnStart(ChaosEffect effect)
 {
-	ArrayList entities = new ArrayList();
+	ArrayList hEntities = new ArrayList();
 	
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
@@ -11,17 +11,17 @@ public bool RemoveRandomEntity_OnStart(ChaosEffect effect)
 		if (entity <= MaxClients)
 			continue;
 		
-		entities.Push(entity);
+		hEntities.Push(entity);
 	}
 	
-	if (!entities.Length)
+	if (!hEntities.Length)
 	{
-		delete entities;
+		delete hEntities;
 		return false;
 	}
 	
-	entity = entities.Get(GetRandomInt(0, entities.Length - 1));
-	delete entities;
+	entity = hEntities.Get(GetRandomInt(0, hEntities.Length - 1));
+	delete hEntities;
 	
 	RemoveEntity(entity);
 	

@@ -40,7 +40,7 @@ public void ExtremeFog_OnEnd(ChaosEffect effect)
 		if (index == -1)
 			continue;
 		
-		// Set old fog controller data back from storage
+		// Reset fog controller from stored data
 		SetEntPropFloat(controller, Prop_Send, "m_fog.end", g_hOldFogStarts.Get(index, FogControllerData::flFogEnd));
 		
 		g_hOldFogStarts.Erase(index);

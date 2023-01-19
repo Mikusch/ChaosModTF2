@@ -15,10 +15,10 @@ static void EventHook_PlayerSpawn(Event event, const char[] name, bool dontBroad
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function callback = effect.GetCallbackFunction("OnPlayerSpawn");
-			if (callback != INVALID_FUNCTION)
+			Function fnCallback = effect.GetCallbackFunction("OnPlayerSpawn");
+			if (fnCallback != INVALID_FUNCTION)
 			{
-				Call_StartFunction(null, callback);
+				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_PushCell(client);
 				Call_Finish();

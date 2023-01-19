@@ -19,11 +19,11 @@ public void TeleporterMalfunction_OnGameFrame(ChaosEffect effect)
 	{
 		g_flNextTeleportTime = GetGameTime() + GetRandomFloat(4.0, 6.0);
 		
-		ArrayList areas = new ArrayList();
+		ArrayList hAreas = new ArrayList();
 		
 		for (int i = 0; i < TheNavAreas.Length; i++)
 		{
-			areas.Push(TheNavAreas.Get(i));
+			hAreas.Push(TheNavAreas.Get(i));
 		}
 		
 		for (int client = 1; client <= MaxClients; client++)
@@ -34,15 +34,15 @@ public void TeleporterMalfunction_OnGameFrame(ChaosEffect effect)
 			if (!IsPlayerAlive(client))
 				continue;
 			
-			int index = GetRandomInt(0, areas.Length - 1);
-			CNavArea area = areas.Get(index);
+			int nIndex = GetRandomInt(0, hAreas.Length - 1);
+			CNavArea area = hAreas.Get(nIndex);
 			if (!area)
 				continue;
 			
 			if (area.IsBlocked(GetClientTeam(client)))
 				continue;
 			
-			areas.Erase(index);
+			hAreas.Erase(nIndex);
 			
 			float vecCenter[3];
 			area.GetCenter(vecCenter);
@@ -50,6 +50,6 @@ public void TeleporterMalfunction_OnGameFrame(ChaosEffect effect)
 			TeleportEntity(client, vecCenter);
 		}
 		
-		delete areas;
+		delete hAreas;
 	}
 }
