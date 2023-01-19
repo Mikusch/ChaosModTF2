@@ -7,8 +7,8 @@ enum struct ChaosEffect
 	int id;
 	char name[64];
 	float duration;
-	bool meta;
 	int cooldown;
+	bool meta;
 	char effect_class[64];
 	KeyValues data;
 	
@@ -24,8 +24,8 @@ enum struct ChaosEffect
 		{
 			kv.GetString("name", this.name, sizeof(this.name));
 			this.duration = kv.GetFloat("duration");
-			this.meta = kv.GetNum("meta") != 0;
 			this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
+			this.meta = kv.GetNum("meta") != 0;
 			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class), "InvalidEffect");
 			
 			if (kv.JumpToKey("data", false))

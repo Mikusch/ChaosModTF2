@@ -433,8 +433,8 @@ void SelectRandomEffect(bool bMeta = false)
 			if (effect.meta != bMeta)
 				continue;
 			
-			// Skip already activate effects or effects still on cooldown (meta effects have no cooldowns)
-			if (effect.active || (!effect.meta && effect.cooldown_left > 0))
+			// Skip already activate effects or effects still on cooldown
+			if (effect.active || effect.cooldown_left > 0)
 				continue;
 			
 			if (StartEffect(effect))
@@ -500,25 +500,24 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	
 	g_hEffects.SetArray(nIndex, effect);
 	
-	if (!effect.meta)
+	// Lower cooldown of all other effects
+	for (int i = 0; i < g_hEffects.Length; i++)
 	{
-		// Lower cooldown of all other effects
-		for (int i = 0; i < g_hEffects.Length; i++)
+		ChaosEffect other;
+		if (g_hEffects.GetArray(i, other))
 		{
-			ChaosEffect other;
-			if (g_hEffects.GetArray(i, other))
-			{
-				if (other.id == effect.id)
-					continue;
-				
-				// Don't lower cooldown of active or meta effects
-				if (other.active || other.meta)
-					continue;
-				
-				// Never lower cooldown below 0
-				other.cooldown_left = Max(0, --other.cooldown_left);
-				g_hEffects.SetArray(i, other);
-			}
+			if (other.id == effect.id)
+				continue;
+			
+			// Only meta effects can lower meta cooldowns
+			if (other.meta != effect.meta)
+				continue;
+			
+			if (other.active)
+				continue;
+			
+			// Never lower cooldown below 0
+			g_hEffects.Set(i, Max(0, other.cooldown_left - 1), ChaosEffect::cooldown_left);
 		}
 	}
 	
