@@ -500,19 +500,26 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	
 	g_hEffects.SetArray(nIndex, effect);
 	
-	// Lower cooldown of all other effects
-	for (int i = 0; i < g_hEffects.Length; i++)
+	if (!effect.meta)
 	{
-		if (g_hEffects.Get(i, ChaosEffect::id) == effect.id)
-			continue;
-		
-		// Meta effects have no cooldowns
-		if (effect.meta)
-			continue;
-		
-		// Never lower cooldown below 0
-		int iCooldown = Max(0, g_hEffects.Get(i, ChaosEffect::cooldown_left) - 1);
-		g_hEffects.Set(i, iCooldown, ChaosEffect::cooldown_left);
+		// Lower cooldown of all other effects
+		for (int i = 0; i < g_hEffects.Length; i++)
+		{
+			ChaosEffect other;
+			if (g_hEffects.GetArray(i, other))
+			{
+				if (other.id == effect.id)
+					continue;
+				
+				// Don't lower cooldown of active or meta effects
+				if (other.active || other.meta)
+					continue;
+				
+				// Never lower cooldown below 0
+				other.cooldown_left = Max(0, --other.cooldown_left);
+				g_hEffects.SetArray(i, other);
+			}
+		}
 	}
 	
 	return true;
