@@ -394,6 +394,10 @@
 	{
 		"en"		"Make Mikusch Happy"
 	}
+	"#Chaos_Effect_PlayerGlow"
+	{
+		"en"		"Make All Players Glow"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

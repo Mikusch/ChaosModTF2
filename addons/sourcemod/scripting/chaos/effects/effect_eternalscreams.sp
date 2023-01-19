@@ -1,10 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public Action EternalScreams_OnPlayerRunCmd(ChaosEffect effect, int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
+public void EternalScreams_OnGameFrame(ChaosEffect effect)
 {
-	SetVariantString("HalloweenLongFall");
-	AcceptEntityInput(client, "SpeakResponseConcept");
-	
-	return Plugin_Continue;
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		SetVariantString("HalloweenLongFall");
+		AcceptEntityInput(client, "SpeakResponseConcept");
+	}
 }
