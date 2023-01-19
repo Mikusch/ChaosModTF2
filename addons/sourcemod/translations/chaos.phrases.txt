@@ -342,6 +342,10 @@
 	{
 		"en"		"Spawn Soccer Ball"
 	}
+	"#Chaos_Effect_SpawnBeachBall"
+	{
+		"en"		"Spawn Beach Ball"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

@@ -7,6 +7,8 @@
 
 #define MAX_USER_MSG_DATA	255
 
+#define PI	3.14159265358979323846
+
 // Hud Element hiding flags
 #define HIDEHUD_WEAPONSELECTION		( 1<<0 )	// Hide ammo count & weapon selection
 #define HIDEHUD_FLASHLIGHT			( 1<<1 )
