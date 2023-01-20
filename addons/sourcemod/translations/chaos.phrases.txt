@@ -402,6 +402,10 @@
 	{
 		"en"		"Disable Respawn Times"
 	}
+	"#Chaos_Effect_IncreasedSpread"
+	{
+		"en"		"Accurately Weapons"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
