@@ -532,7 +532,7 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 	char szName[64];
 	if (effect.GetName(szName, sizeof(szName)) && szName[0])
 	{
-		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
+		PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
 	}
 	
 	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
