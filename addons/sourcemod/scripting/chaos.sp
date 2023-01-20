@@ -521,14 +521,14 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		}
 	}
 	
-	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
-	EmitGameSoundToAll("CYOA.NodeActivate");
-	
 	char szName[64];
-	if (effect.GetName(szName, sizeof(szName)))
+	if (effect.GetName(szName, sizeof(szName)) && szName[0])
 	{
 		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
+		EmitGameSoundToAll("CYOA.NodeActivate");
 	}
+	
+	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
 	
 	return true;
 }
@@ -584,7 +584,7 @@ void DisplayActiveEffects()
 			if (g_hEffects.GetArray(i, effect) && effect.activate_time)
 			{
 				char szName[64];
-				if (!effect.GetName(szName, sizeof(szName)))
+				if (!effect.GetName(szName, sizeof(szName)) || !szName[0])
 					continue;
 				
 				char szLine[128];
