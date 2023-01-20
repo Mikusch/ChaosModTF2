@@ -44,6 +44,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_eternalscreams.sp"
 #include "chaos/effects/effect_extremefog.sp"
 #include "chaos/effects/effect_fakeclientcommand.sp"
+#include "chaos/effects/effect_fakecrash.sp"
 #include "chaos/effects/effect_fling.sp"
 #include "chaos/effects/effect_fov.sp"
 #include "chaos/effects/effect_hidehud.sp"

@@ -406,6 +406,10 @@
 	{
 		"en"		"Accurately Weapons"
 	}
+	"#Chaos_Effect_FakeCrash"
+	{
+		"en"		"Fake Crash"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
