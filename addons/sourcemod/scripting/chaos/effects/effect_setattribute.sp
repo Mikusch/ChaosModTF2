@@ -10,28 +10,12 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 	if (IsEffectWithKeyAlreadyActive(effect, "name"))
 		return false;
 	
-	bool bWeapons = effect.data.GetNum("weapons") != 0;
-	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 		
-		if (bWeapons)
-		{
-			for (int i = 0; i < MAX_WEAPONS; i++)
-			{
-				int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-				if (myWeapon != -1)
-				{
-					ApplyAttributesFromEffectData(effect, myWeapon);
-				}
-			}
-		}
-		else
-		{
-			ApplyAttributesFromEffectData(effect, client);
-		}
+		ApplyAttributesFromEffectData(effect.data, client);
 	}
 	
 	return true;
@@ -39,61 +23,23 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 
 public void SetAttribute_OnEnd(ChaosEffect effect)
 {
-	bool bWeapons = effect.data.GetNum("weapons") != 0;
-	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 		
-		if (bWeapons)
-		{
-			for (int i = 0; i < MAX_WEAPONS; i++)
-			{
-				int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-				if (myWeapon != -1)
-				{
-					ApplyAttributesFromEffectData(effect, myWeapon, true);
-				}
-			}
-		}
-		else
-		{
-			ApplyAttributesFromEffectData(effect, client, true);
-		}
-	}
-}
-
-public void SetAttribute_OnPlayerSpawn(ChaosEffect effect, int client)
-{
-	bool bWeapons = effect.data.GetNum("weapons") != 0;
-	
-	if (!bWeapons)
-	{
-		ApplyAttributesFromEffectData(effect, client);
+		ApplyAttributesFromEffectData(effect.data, client, true);
 	}
 }
 
 public void SetAttribute_OnPostInventoryApplication(ChaosEffect effect, int client)
 {
-	bool bWeapons = effect.data.GetNum("weapons") != 0;
-	
-	if (bWeapons)
-	{
-		for (int i = 0; i < MAX_WEAPONS; i++)
-		{
-			int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-			if (myWeapon != -1)
-			{
-				ApplyAttributesFromEffectData(effect, myWeapon);
-			}
-		}
-	}
+	ApplyAttributesFromEffectData(effect.data, client);
 }
 
-static void ApplyAttributesFromEffectData(ChaosEffect effect, int entity, bool bRemove = false)
+static void ApplyAttributesFromEffectData(KeyValues kv, int client, bool bRemove = false)
 {
-	KeyValues kv = effect.data;
+	bool bApplyToWeapons = kv.GetNum("weapons") != 0;
 	
 	if (kv.JumpToKey("attributes", false))
 	{
@@ -103,15 +49,36 @@ static void ApplyAttributesFromEffectData(ChaosEffect effect, int entity, bool b
 			{
 				char szAttrib[64];
 				kv.GetString("name", szAttrib, sizeof(szAttrib));
+				float flValue = kv.GetFloat("value");
 				
-				if (!bRemove)
+				if (bApplyToWeapons)
 				{
-					float flValue = kv.GetFloat("value");
-					TF2Attrib_SetByName(entity, szAttrib, flValue);
+					for (int i = 0; i < MAX_WEAPONS; i++)
+					{
+						int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+						if (myWeapon != -1)
+						{
+							if (!bRemove)
+							{
+								TF2Attrib_SetByName(myWeapon, szAttrib, flValue);
+							}
+							else
+							{
+								TF2Attrib_RemoveByName(myWeapon, szAttrib);
+							}
+						}
+					}
 				}
 				else
 				{
-					TF2Attrib_RemoveByName(entity, szAttrib);
+					if (!bRemove)
+					{
+						TF2Attrib_SetByName(client, szAttrib, flValue);
+					}
+					else
+					{
+						TF2Attrib_RemoveByName(client, szAttrib);
+					}
 				}
 			}
 			while (kv.GotoNextKey(false));
