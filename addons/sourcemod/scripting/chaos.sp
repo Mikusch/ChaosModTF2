@@ -71,7 +71,7 @@ ConVar sm_chaos_force_effect;
 #include "chaos/effects/effect_showscoreboard.sp"
 #include "chaos/effects/effect_shuffleclasses.sp"
 #include "chaos/effects/effect_silence.sp"
-#include "chaos/effects/effect_slowmotion.sp"
+#include "chaos/effects/effect_slap.sp"
 #include "chaos/effects/effect_spawnball.sp"
 #include "chaos/effects/effect_teleportermalfunction.sp"
 #include "chaos/effects/effect_thirdperson.sp"
@@ -471,7 +471,7 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 			if (bForce)
 			{
 				// If force failed, try expiring other effects of the same class
-				ExpireActiveEffectsOfClass(effect.effect_class, true);
+				ExpireAllActiveEffects(true, effect.effect_class);
 				
 				// Re-run OnStart callback
 				Call_StartFunction(null, fnCallback);
@@ -522,11 +522,17 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 		}
 	}
 	
+	EmitGameSoundToAll("CYOA.NodeActivate");
+	
+	if (effect.start_sound[0])
+	{
+		PlayStaticSound(effect.start_sound);
+	}
+	
 	char szName[64];
 	if (effect.GetName(szName, sizeof(szName)) && szName[0])
 	{
 		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
-		EmitGameSoundToAll("CYOA.NodeActivate");
 	}
 	
 	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
@@ -632,32 +638,7 @@ void DisplayActiveEffects()
 	}
 }
 
-void ExpireActiveEffectsOfClass(const char[] szEffectClass, bool bForce = false)
-{
-	for (int i = 0; i < g_hEffects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active)
-		{
-			// Check if the effect actually expired
-			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
-				continue;
-			
-			Function fnCallback = effect.GetCallbackFunction("OnEnd");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_Finish();
-			}
-			
-			effect.active = false;
-			g_hEffects.SetArray(i, effect);
-		}
-	}
-}
-
-void ExpireAllActiveEffects(bool bForce = false)
+void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = "")
 {
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -668,12 +649,26 @@ void ExpireAllActiveEffects(bool bForce = false)
 			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
 				continue;
 			
+			// Expire a specific effect class if requested
+			if (szEffectClass[0] && !StrEqual(effect.effect_class, szEffectClass))
+				continue;
+			
 			Function fnCallback = effect.GetCallbackFunction("OnEnd");
 			if (fnCallback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
+			}
+			
+			if (effect.start_sound[0])
+			{
+				StopStaticSound(effect.start_sound);
+			}
+			
+			if (effect.end_sound[0])
+			{
+				PlayStaticSound(effect.end_sound);
 			}
 			
 			effect.active = false;

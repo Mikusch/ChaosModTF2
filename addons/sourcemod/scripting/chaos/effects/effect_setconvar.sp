@@ -2,10 +2,12 @@
 #pragma newdecls required
 
 static StringMap g_hOldConvarValues;
+static ConVar sv_cheats;
 
 public void SetConVar_Initialize(ChaosEffect effect)
 {
 	g_hOldConvarValues = new StringMap();
+	sv_cheats = FindConVar("sv_cheats");
 }
 
 public bool SetConVar_OnStart(ChaosEffect effect)
@@ -40,6 +42,25 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	convar.SetString(szValue, true);
 	convar.AddChangeHook(OnConVarChanged);
 	
+	if (effect.data.GetNum("replicate_cheats"))
+	{
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!IsClientInGame(client))
+				continue;
+			
+			if (IsFakeClient(client))
+			{
+				SetFakeClientConVar(client, "sv_cheats", "1");
+			}
+			else
+			{
+				sv_cheats.ReplicateToClient(client, "1");
+			}
+			
+		}
+	}
+	
 	return true;
 }
 
@@ -54,6 +75,24 @@ public void SetConVar_OnEnd(ChaosEffect effect)
 	convar.RemoveChangeHook(OnConVarChanged);
 	convar.SetString(szValue, true);
 	g_hOldConvarValues.Remove(szName);
+	
+	if (effect.data.GetNum("replicate_cheats"))
+	{
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (IsClientInGame(client))
+			{
+				if (IsFakeClient(client))
+				{
+					SetFakeClientConVar(client, "sv_cheats", "0");
+				}
+				else
+				{
+					sv_cheats.ReplicateToClient(client, "0");
+				}
+			}
+		}
+	}
 }
 
 static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)

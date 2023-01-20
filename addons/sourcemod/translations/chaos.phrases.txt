@@ -394,6 +394,10 @@
 	{
 		"en"		"Make Mikusch Happy"
 	}
+	"#Chaos_Effect_Nothing_NoCrash"
+	{
+		"en"		"No Crash"
+	}
 	"#Chaos_Effect_PlayerGlow"
 	{
 		"en"		"Make All Players Glow"
@@ -409,6 +413,14 @@
 	"#Chaos_Effect_FakeCrash"
 	{
 		"en"		"Fake Crash"
+	}
+	"#Chaos_Effect_TracerRounds"
+	{
+		"en"		"Tracer Rounds"
+	}
+	"#Chaos_Effect_Slap"
+	{
+		"en"		"That's Some Slappin'"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

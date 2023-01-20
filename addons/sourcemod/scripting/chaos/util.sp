@@ -174,3 +174,33 @@ int Color32ToInt(int r, int g, int b, int a)
 {
 	return (r << 24) | (g << 16) | (b << 8) | (a);
 }
+
+void PlayStaticSound(const char[] sound)
+{
+	if (PrecacheScriptSound(sound))
+	{
+		EmitGameSoundToAll(sound);
+	}
+	else if (PrecacheSound(sound))
+	{
+		EmitSoundToAll(sound, _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+	}
+}
+
+void StopStaticSound(const char[] sound)
+{
+	if (PrecacheScriptSound(sound))
+	{
+		EmitGameSoundToAll(sound, _, SND_STOP | SND_STOPLOOPING);
+	}
+	else if (PrecacheSound(sound))
+	{
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!IsClientInGame(client))
+				continue;
+			
+			StopSound(client, SNDCHAN_STATIC, sound);
+		}
+	}
+}
