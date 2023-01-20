@@ -43,11 +43,11 @@
 	}
 	"#Chaos_Effect_SetEveryoneTo1HP"
 	{
-		"en"		"Set Everyone To 1 HP"
+		"en"		"Set Everyone's HP To 1"
 	}
 	"#Chaos_Effect_SetEveryoneTo1000HP"
 	{
-		"en"		"Set Everyone To 1000 HP"
+		"en"		"Give Everyone 1000 HP"
 	}
 	"#Chaos_Effect_ShortMercs"
 	{
@@ -75,11 +75,11 @@
 	}
 	"#Chaos_Effect_Crits"
 	{
-		"en"		"Critical Hits"
+		"en"		"Not-So-Random Crits"
 	}
 	"#Chaos_Effect_Ubercharge"
 	{
-		"en"		"Übercharged"
+		"en"		"All Players Are Übercharged"
 	}
 	"#Chaos_Effect_BumperCars"
 	{
@@ -143,7 +143,7 @@
 	}
 	"#Chaos_Effect_Blindness"
 	{
-		"en"		"Blindness"
+		"en"		"All Players Are Blind"
 	}
 	"#Chaos_Effect_Greyscale"
 	{
@@ -163,7 +163,7 @@
 	}
 	"#Chaos_Effect_Ghosts"
 	{
-		"en"		"Ghosting"
+		"en"		"All Players Are Ghosts"
 	}
 	"#Chaos_Effect_Pacifist"
 	{
@@ -228,15 +228,15 @@
 	}
 	"#Chaos_Effect_BulletImmune"
 	{
-		"en"		"Bullet Damage Immunity"
+		"en"		"All Players Have Bullet Immunity"
 	}
 	"#Chaos_Effect_BlastImmune"
 	{
-		"en"		"Blast Damage Immunity"
+		"en"		"All Players Have Blast Immunity"
 	}
 	"#Chaos_Effect_FireImmune"
 	{
-		"en"		"Fire Damage Immunity"
+		"en"		"All Players Have Fire Immunity"
 	}
 	"#Chaos_Effect_10xCaptureRate"
 	{
@@ -248,7 +248,7 @@
 	}
 	"#Chaos_Effect_HitSelfOnMiss"
 	{
-		"en"		"Hit yourself. Idiot."
+		"en"		"All Players Are Idiots"
 	}
 	"#Chaos_Effect_DamageForceIncrease"
 	{
@@ -272,7 +272,7 @@
 	}
 	"#Chaos_Effect_Stealthed"
 	{
-		"en"		"Stealth"
+		"en"		"All Players Are Invisible"
 	}
 	"#Chaos_Effect_BalloonHeads"
 	{
@@ -328,11 +328,11 @@
 	}
 	"#Chaos_Effect_AddCurrency"
 	{
-		"en"		"Rich Man"
+		"en"		"Give Everyone $30000"
 	}
 	"#Chaos_Effect_ExtraAirDashes"
 	{
-		"en"		"Infinite Double Jumps"
+		"en"		"Infinite Scout Jumps"
 	}
 	"#Chaos_Effect_TallMercs"
 	{
@@ -400,7 +400,7 @@
 	}
 	"#Chaos_Effect_PlayerGlow"
 	{
-		"en"		"Make All Players Glow"
+		"en"		"All Players Are Glowing"
 	}
 	"#Chaos_Effect_DisableRespawnTimes"
 	{
