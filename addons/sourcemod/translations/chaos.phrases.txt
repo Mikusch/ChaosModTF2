@@ -434,6 +434,10 @@
 	{
 		"en"		"Inclinity Problem"
 	}
+	"#Chaos_Effect_DisassembleMap"
+	{
+		"en"		"Disassemble Map"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

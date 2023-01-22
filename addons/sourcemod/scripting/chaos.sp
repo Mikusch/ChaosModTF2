@@ -40,6 +40,7 @@ bool g_bNoChaos;
 
 // Regular effects
 #include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_disassemblemap.sp"
 #include "chaos/effects/effect_empty.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
 #include "chaos/effects/effect_extremefog.sp"
