@@ -14,11 +14,14 @@ public void Slap_OnGameFrame(ChaosEffect effect)
 {
 	if (g_flNextSlapTime <= GetGameTime())
 	{
-		g_flNextSlapTime = GetGameTime() + GetRandomFloat(1.5, 3.0);
+		g_flNextSlapTime = GetGameTime() + GetRandomFloat(1.0, 2.0);
 		
 		for (int client = 1; client <= MaxClients; client++)
 		{
 			if (!IsClientInGame(client))
+				continue;
+			
+			if (!IsPlayerAlive(client))
 				continue;
 			
 			SlapPlayer(client, 0);

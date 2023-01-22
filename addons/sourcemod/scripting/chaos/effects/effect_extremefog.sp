@@ -1,53 +1,88 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-enum struct FogControllerData
-{
-	int hController;
-	float flFogEnd;
-}
+#define SF_FOG_MASTER		0x0001
 
-static ArrayList g_hOldFogStarts;
-
-public void ExtremeFog_Initialize(ChaosEffect effect)
-{
-	g_hOldFogStarts = new ArrayList(sizeof(FogControllerData));
-}
+static int g_hCustomFogController = INVALID_ENT_REFERENCE;
 
 public bool ExtremeFog_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	if (IsValidEntity(g_hCustomFogController))
 		return false;
 	
-	float flFogEnd = effect.data.GetFloat("fog_end");
-	
-	int controller = -1;
-	while ((controller = FindEntityByClassname(controller, "env_fog_controller")) != -1)
+	int controller = CreateEntityByName("env_fog_controller");
+	if (IsValidEntity(controller))
 	{
-		// Save old fog controller data
-		FogControllerData data;
-		data.hController = EntIndexToEntRef(controller);
-		data.flFogEnd = GetEntPropFloat(controller, Prop_Send, "m_fog.end");
-		g_hOldFogStarts.PushArray(data);
+		DispatchKeyValue(controller, "fogenable", "1");
+		DispatchKeyValue(controller, "fogstart", "5");
+		DispatchKeyValue(controller, "fogend", "200");
+		DispatchKeyValue(controller, "fogmaxdensity", "1");
+		DispatchKeyValue(controller, "foglerptime", "1.5");
+		DispatchKeyValue(controller, "fogcolor", "200 200 200");
+		DispatchKeyValue(controller, "fogblend", "0");
+		DispatchKeyValue(controller, "farz", "8400");
+		DispatchSpawn(controller);
 		
-		SetEntPropFloat(controller, Prop_Send, "m_fog.end", flFogEnd);
+		SetFogController(controller);
+		
+		g_hCustomFogController = EntIndexToEntRef(controller);
+		return true;
 	}
 	
-	return g_hOldFogStarts.Length != 0;
+	return false;
+}
+
+public void ExtremeFog_OnClientPutInServer(ChaosEffect effect, int client)
+{
+	SetEntPropEnt(client, Prop_Send, "m_PlayerFog.m_hCtrl", g_hCustomFogController);
 }
 
 public void ExtremeFog_OnEnd(ChaosEffect effect)
 {
+	RemoveEntity(g_hCustomFogController);
+	g_hCustomFogController = INVALID_ENT_REFERENCE;
+	
+	// Find master controller first, the try others
+	int controller = FindFogController(true);
+	if (IsValidEntity(controller))
+	{
+		SetFogController(controller);
+	}
+	else
+	{
+		controller = FindFogController();
+		if (IsValidEntity(controller))
+		{
+			SetFogController(controller);
+		}
+	}
+}
+
+static int FindFogController(bool bMaster = false)
+{
 	int controller = -1;
 	while ((controller = FindEntityByClassname(controller, "env_fog_controller")) != -1)
 	{
-		int index = g_hOldFogStarts.FindValue(EntIndexToEntRef(controller), FogControllerData::hController);
-		if (index == -1)
+		// Don't find our custom fog controller
+		if (EntRefToEntIndex(g_hCustomFogController) == controller)
 			continue;
 		
-		// Reset fog controller from stored data
-		SetEntPropFloat(controller, Prop_Send, "m_fog.end", g_hOldFogStarts.Get(index, FogControllerData::flFogEnd));
+		if (bMaster && !(GetEntProp(controller, Prop_Data, "m_spawnflags") & SF_FOG_MASTER))
+			continue;
 		
-		g_hOldFogStarts.Erase(index);
+		return controller;
+	}
+	
+	return -1;
+}
+
+static void SetFogController(int controller)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		SetEntPropEnt(client, Prop_Send, "m_PlayerFog.m_hCtrl", controller);
 	}
 }

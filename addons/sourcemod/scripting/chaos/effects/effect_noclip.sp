@@ -31,7 +31,7 @@ public void Noclip_OnEnd(ChaosEffect effect)
 	}
 }
 
-public void Noclip_OnPlayerSpawned(ChaosEffect effect, int client)
+public void Noclip_OnPlayerSpawn(ChaosEffect effect, int client)
 {
 	CBaseEntity(client).SetMoveType(MOVETYPE_NOCLIP);
 }

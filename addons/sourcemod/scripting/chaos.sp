@@ -12,6 +12,12 @@
 #include <cbasenpc>
 #include <morecolors>
 
+ConVar sm_chaos_effect_cooldown;
+ConVar sm_chaos_effect_interval;
+ConVar sm_chaos_meta_effect_interval;
+ConVar sm_chaos_meta_effect_chance;
+ConVar sm_chaos_force_effect;
+
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
 float g_flLastEffectActivateTime;
@@ -19,12 +25,6 @@ float g_flLastMetaEffectActivateTime;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 bool g_bNoChaos;
-
-ConVar sm_chaos_effect_cooldown;
-ConVar sm_chaos_effect_interval;
-ConVar sm_chaos_meta_effect_interval;
-ConVar sm_chaos_meta_effect_chance;
-ConVar sm_chaos_force_effect;
 
 #include "chaos/data.sp"
 #include "chaos/dhooks.sp"
@@ -97,14 +97,14 @@ public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
 	
-	g_hEffects = new ArrayList(sizeof(ChaosEffect));
-	g_hTimerBarHudSync = CreateHudSynchronizer();
-	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.01", "Chance for a meta effect to be activated every interval.");
 	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "ID of the effect to force.");
+	
+	g_hEffects = new ArrayList(sizeof(ChaosEffect));
+	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
 	Events_Initialize();
 	Data_Initialize();
@@ -256,7 +256,7 @@ public void OnGameFrame()
 			ChaosEffect effect;
 			if (g_hEffects.GetArray(nIndex, effect))
 			{
-				StartEffect(effect, true);
+				ActivateEffect(effect, true);
 			}
 		}
 	}
@@ -432,7 +432,7 @@ void SelectRandomEffect(bool bMeta = false)
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect))
+		if (g_hEffects.GetArray(i, effect) && effect.enabled)
 		{
 			// Filter by meta effects
 			if (effect.meta != bMeta)
@@ -442,18 +442,20 @@ void SelectRandomEffect(bool bMeta = false)
 			if (effect.active || effect.cooldown_left > 0)
 				continue;
 			
-			if (StartEffect(effect))
-				break;
+			if (ActivateEffect(effect))
+				return;
 		}
 	}
+	
+	LogError("Failed to find valid effect to activate");
 }
 
-bool StartEffect(ChaosEffect effect, bool bForce = false)
+bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 {
 	int nIndex = g_hEffects.FindValue(effect.id, ChaosEffect::id);
 	if (nIndex == -1)
 	{
-		LogError("Failed to start unknown effect with id '%d'", effect.id);
+		LogError("Failed to activate unknown effect with id '%d'", effect.id);
 		return false;
 	}
 	
@@ -510,11 +512,11 @@ bool StartEffect(ChaosEffect effect, bool bForce = false)
 			if (other.id == effect.id)
 				continue;
 			
-			// Only meta effects can lower meta cooldowns
-			if (other.meta != effect.meta)
+			if (other.active)
 				continue;
 			
-			if (other.active)
+			// Only meta effects can lower meta cooldowns
+			if (other.meta != effect.meta)
 				continue;
 			
 			// Never lower cooldown below 0

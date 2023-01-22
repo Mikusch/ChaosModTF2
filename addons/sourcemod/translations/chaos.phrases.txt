@@ -314,9 +314,9 @@
 	{
 		"en"		"Is This Thing On?"
 	}
-	"#Chaos_Effect_Tinnitus"
+	"#Chaos_Effect_WeirdPitch"
 	{
-		"en"		"Tinnitus"
+		"en"		"Weird Pitch"
 	}
 	"#Chaos_Effect_SpawnOrangeBall"
 	{

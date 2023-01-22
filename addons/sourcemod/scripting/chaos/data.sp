@@ -3,10 +3,12 @@
 
 enum struct ChaosEffect
 {
-	// Effect data
+	// Static data
 	int id;
 	char name[64];
+	bool enabled;
 	float duration;
+	float chance;
 	int cooldown;
 	bool meta;
 	char effect_class[64];
@@ -25,6 +27,7 @@ enum struct ChaosEffect
 		if (kv.GetSectionName(section, sizeof(section)) && StringToIntEx(section, this.id))
 		{
 			kv.GetString("name", this.name, sizeof(this.name));
+			this.enabled = kv.GetNum("enabled", true) != 0;
 			this.duration = kv.GetFloat("duration");
 			this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
 			this.meta = kv.GetNum("meta") != 0;
@@ -115,7 +118,7 @@ void Data_Initialize()
 				
 				if (g_hEffects.FindValue(effect.id) != -1)
 				{
-					LogError("The effect '%s' has duplicate ID (%d), skipping...", effect.name, LANG_SERVER, effect.id);
+					LogError("Effect '%s' has duplicate ID (%d), skipping...", effect.name, LANG_SERVER, effect.id);
 					continue;
 				}
 				
