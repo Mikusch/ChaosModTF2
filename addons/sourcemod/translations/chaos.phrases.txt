@@ -426,6 +426,14 @@
 	{
 		"en"		"The Floor Is Lava"
 	}
+	"#Chaos_Effect_TiltedCamera"
+	{
+		"en"		"Tilted Camera"
+	}
+	"#Chaos_Effect_StepSize"
+	{
+		"en"		"Inclinity Problem"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

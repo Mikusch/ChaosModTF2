@@ -5,6 +5,8 @@
 
 #define PLUGIN_TAG	"[{darkorange}TF2 CHAOS{default}]"
 
+#define FLT_MAX	340282346600000000000000000000000000000.0
+
 #define MAX_USER_MSG_DATA	255
 
 #define MAX_WEAPONS				48	// Max number of weapons available
