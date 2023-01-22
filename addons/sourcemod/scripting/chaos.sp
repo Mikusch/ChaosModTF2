@@ -46,6 +46,7 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_fakeclientcommand.sp"
 #include "chaos/effects/effect_fakecrash.sp"
 #include "chaos/effects/effect_fling.sp"
+#include "chaos/effects/effect_floorislava.sp"
 #include "chaos/effects/effect_fov.sp"
 #include "chaos/effects/effect_hidehud.sp"
 #include "chaos/effects/effect_invertconvar.sp"
