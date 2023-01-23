@@ -135,7 +135,8 @@ public void OnPluginEnd()
 
 public void OnMapStart()
 {
-	SetTimers(GetGameTime());
+	SetChaosTimers(GetGameTime());
+	g_flLastEffectDisplayTime = GetGameTime();
 	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -192,9 +193,6 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
-	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_Preround || GameRules_GetProp("m_bInWaitingForPlayers"))
-		return;
-	
 	// Execute OnGameFrame callback
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -210,6 +208,9 @@ public void OnGameFrame()
 			}
 		}
 	}
+	
+	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
+		return;
 	
 	float flTimerSpeed = sm_chaos_effect_interval.FloatValue;
 	
@@ -381,12 +382,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 
 public void TF2_OnWaitingForPlayersStart()
 {
-	SetTimers(0.0);
-}
-
-public void TF2_OnWaitingForPlayersEnd()
-{
-	SetTimers(GetGameTime());
+	SetChaosTimers(0.0);
 }
 
 public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDefIndex, Handle &item)
@@ -747,11 +743,10 @@ bool IsEffectWithKeyAlreadyActive(ChaosEffect effect, const char[] szKey)
 	return false;
 }
 
-static void SetTimers(float flTime)
+void SetChaosTimers(float flTime)
 {
 	g_flLastEffectActivateTime = flTime;
 	g_flLastMetaEffectActivateTime = flTime;
-	g_flLastEffectDisplayTime = flTime;
 	g_flTimerBarDisplayTime = flTime;
 }
 
