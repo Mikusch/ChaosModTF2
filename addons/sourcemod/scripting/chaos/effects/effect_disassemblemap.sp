@@ -14,8 +14,7 @@ static char g_aBrushClassNames[][] =
 
 static char g_aPropClassNames[][] =
 {
-	"prop_dynamic*",
-	"prop_physics*",
+	"prop_*",
 	"item_*",
 	"obj_*",
 	"tf_dropped_weapon",
