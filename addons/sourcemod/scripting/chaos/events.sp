@@ -60,6 +60,21 @@ static void EventHook_ArenaRoundStart(Event event, const char[] name, bool dontB
 static void EventHook_TeamplayRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	SetChaosTimers(0.0);
+	
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && effect.active)
+		{
+			Function fnCallback = effect.GetCallbackFunction("OnRoundStart");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_Finish();
+			}
+		}
+	}
 }
 
 static void EventHook_TeamplayRoundActive(Event event, const char[] name, bool dontBroadcast)

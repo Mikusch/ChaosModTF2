@@ -37,6 +37,11 @@ public void ExtremeFog_OnClientPutInServer(ChaosEffect effect, int client)
 	SetEntPropEnt(client, Prop_Send, "m_PlayerFog.m_hCtrl", g_hCustomFogController);
 }
 
+public void ExtremeFog_OnRoundStart(ChaosEffect effect)
+{
+	SetFogController(g_hCustomFogController);
+}
+
 public void ExtremeFog_OnEnd(ChaosEffect effect)
 {
 	RemoveEntity(g_hCustomFogController);
