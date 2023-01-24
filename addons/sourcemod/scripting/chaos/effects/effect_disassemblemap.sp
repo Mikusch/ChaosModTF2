@@ -20,8 +20,14 @@ static char g_aPropClassNames[][] =
 	"tf_dropped_weapon",
 };
 
+static bool g_bActivated;
+
 public bool DisassembleMap_OnStart(ChaosEffect effect)
 {
+	// Only activate once per round
+	if (g_bActivated)
+		return false;
+	
 	int converter = CreateEntityByName("phys_convert");
 	if (IsValidEntity(converter) && DispatchSpawn(converter))
 	{
@@ -71,5 +77,11 @@ public bool DisassembleMap_OnStart(ChaosEffect effect)
 		}
 	}
 	
+	g_bActivated = true;
 	return true;
+}
+
+public void DisassembleMap_OnRoundStart(ChaosEffect effect)
+{
+	g_bActivated = false;
 }
