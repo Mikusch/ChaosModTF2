@@ -48,6 +48,7 @@ public bool DisassembleMap_OnStart(ChaosEffect effect)
 	}
 	
 	AcceptEntityInput(converter, "ConvertTarget");
+	RemoveEntity(converter);
 	
 	// Turn props into soccer balls
 	for (int i = 0; i < sizeof(g_aPropClassNames); i++)
