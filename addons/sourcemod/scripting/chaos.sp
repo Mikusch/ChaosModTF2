@@ -40,6 +40,7 @@ bool g_bNoChaos;
 
 // Regular effects
 #include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_decompiled.sp"
 #include "chaos/effects/effect_disassemblemap.sp"
 #include "chaos/effects/effect_empty.sp"
 #include "chaos/effects/effect_eternalscreams.sp"
@@ -131,6 +132,25 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
 	ExpireAllActiveEffects(true);
+}
+
+public void OnMapInit(const char[] mapName)
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect))
+		{
+			Function fnCallback = effect.GetCallbackFunction("OnMapInit");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushString(mapName);
+				Call_Finish();
+			}
+		}
+	}
 }
 
 public void OnMapStart()

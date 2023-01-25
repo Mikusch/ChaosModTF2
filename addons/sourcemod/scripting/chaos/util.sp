@@ -204,3 +204,25 @@ void StopStaticSound(const char[] sound)
 		}
 	}
 }
+
+void StringToVector(const char[] str, float vec[3])
+{
+	char buffer[3][16];
+	ExplodeString(str, " ", buffer, sizeof(buffer), sizeof(buffer[]));
+	
+	for (int i = 0; i < sizeof(vec); i++)
+	{
+		vec[i] = StringToFloat(buffer[i]);
+	}
+}
+
+void StringToColor(const char[] str, int color[4])
+{
+	char buffer[4][16];
+	ExplodeString(str, " ", buffer, sizeof(buffer), sizeof(buffer[]));
+	
+	for (int i = 0; i < sizeof(color); i++)
+	{
+		color[i] = StringToInt(buffer[i]);
+	}
+}
