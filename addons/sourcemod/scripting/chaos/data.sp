@@ -12,6 +12,7 @@ enum struct ChaosEffect
 	int cooldown;
 	bool meta;
 	char effect_class[64];
+	char script_file[PLATFORM_MAX_PATH];
 	char start_sound[PLATFORM_MAX_PATH];
 	char end_sound[PLATFORM_MAX_PATH];
 	KeyValues data;
@@ -31,7 +32,8 @@ enum struct ChaosEffect
 			this.duration = kv.GetFloat("duration");
 			this.cooldown = kv.GetNum("cooldown", sm_chaos_effect_cooldown.IntValue);
 			this.meta = kv.GetNum("meta") != 0;
-			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class), "InvalidEffect");
+			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class));
+			kv.GetString("script_file", this.script_file, sizeof(this.script_file));
 			kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 			kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 			
@@ -46,6 +48,11 @@ enum struct ChaosEffect
 	
 	Function GetCallbackFunction(const char[] szKey, Handle hPlugin = null)
 	{
+		if (!this.effect_class[0])
+		{
+			return INVALID_FUNCTION;
+		}
+		
 		char szFunctionName[64];
 		Format(szFunctionName, sizeof(szFunctionName), "%s_%s", this.effect_class, szKey);
 		return GetFunctionByName(hPlugin, szFunctionName);

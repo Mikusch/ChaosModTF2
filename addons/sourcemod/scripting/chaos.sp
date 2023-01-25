@@ -138,6 +138,10 @@ public void OnMapStart()
 	SetChaosTimers(GetGameTime());
 	g_flLastEffectDisplayTime = GetGameTime();
 	
+	// Initialize VScript system
+	SetVariantString("chaos");
+	AcceptEntityInput(0, "RunScriptFile");
+	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -208,6 +212,10 @@ public void OnGameFrame()
 			}
 		}
 	}
+	
+	// Update VScript effects
+	SetVariantString("Chaos_API_UpdateEffects");
+	AcceptEntityInput(0, "CallScriptFunction");
 	
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
@@ -492,6 +500,15 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		}
 	}
 	
+	// Start VScript effect
+	if (effect.script_file[0])
+	{
+		char str[64];
+		Format(str, sizeof(str), "Chaos_API_StartEffect(\"%s\")", effect.script_file);
+		SetVariantString(str);
+		AcceptEntityInput(0, "RunScriptCode");
+	}
+	
 	// One-shot effects are never set to active state
 	if (effect.duration)
 	{
@@ -661,6 +678,15 @@ void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = ""
 				Call_StartFunction(null, fnCallback);
 				Call_PushArray(effect, sizeof(effect));
 				Call_Finish();
+			}
+			
+			// End VScript effect
+			if (effect.script_file[0])
+			{
+				char str[64];
+				Format(str, sizeof(str), "Chaos_API_StopEffect(\"%s\")", effect.script_file);
+				SetVariantString(str);
+				AcceptEntityInput(0, "RunScriptCode");
 			}
 			
 			if (effect.start_sound[0])
