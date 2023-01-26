@@ -1,5 +1,3 @@
-ClearGameEventCallbacks()
-
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)
@@ -35,7 +33,7 @@ function OnGameEvent_player_spawn(params)
 
 function PostPlayerSpawn()
 {
-    self.SetForcedTauntCam(1)
+    NetProps.SetPropFloat(player, "m_Local.m_flStepSize", 0)
 }
 
-__CollectGameEventCallbacks(this)
+Chaos_CollectEvents()

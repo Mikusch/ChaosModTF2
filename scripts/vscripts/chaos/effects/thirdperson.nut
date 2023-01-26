@@ -1,5 +1,3 @@
-ClearGameEventCallbacks()
-
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)
@@ -38,4 +36,4 @@ function PostPlayerSpawn()
     self.SetForcedTauntCam(1)
 }
 
-__CollectGameEventCallbacks(this)
+Chaos_CollectEvents()

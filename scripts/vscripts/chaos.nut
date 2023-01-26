@@ -75,3 +75,8 @@ function Chaos_EndEffect(name)
 	
 	return true
 }
+
+function Chaos_CollectEvents()
+{
+    __CollectGameEventCallbacks(this)
+}

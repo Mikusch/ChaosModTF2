@@ -1,4 +1,4 @@
-const LIFE_ALIVE = 0
+IncludeScript("chaos_util")
 
 function ChaosEffect_OnStart()
 {
@@ -8,7 +8,7 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 		
-		if (NetProps.GetPropInt(player, "m_lifeState") == LIFE_ALIVE)
+		if (player.IsAlive())
 			continue
 		
 		player.ForceRespawn()

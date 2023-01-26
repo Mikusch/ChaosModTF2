@@ -42,7 +42,6 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_addcond.sp"
 #include "chaos/effects/effect_disassemblemap.sp"
 #include "chaos/effects/effect_empty.sp"
-#include "chaos/effects/effect_extremefog.sp"
 #include "chaos/effects/effect_fakeclientcommand.sp"
 #include "chaos/effects/effect_fakecrash.sp"
 #include "chaos/effects/effect_fling.sp"
@@ -494,7 +493,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	if (effect.script_file[0])
 	{
 		char str[64];
-		Format(str, sizeof(str), "Chaos_StartEffect(\"%s\", %d)", effect.script_file, effect.duration);
+		Format(str, sizeof(str), "Chaos_StartEffect(\"%s\", %f)", effect.script_file, effect.duration);
 		SetVariantString(str);
 		AcceptEntityInput(0, "RunScriptCode");
 	}
