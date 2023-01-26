@@ -1,4 +1,4 @@
-function Chaos_Update()
+function ChaosEffect_Update()
 {
 	for (local i = 1; i <= MaxClients(); i++)
 	{
@@ -10,12 +10,12 @@ function Chaos_Update()
 
 		if (!player.InCond(Constants.ETFCond.TF_COND_TAUNTING) && player.IsAllowedToTaunt())
 		{
-			//player.Taunt()
+			player.Taunt()
 		}
 	}
 }
 
-function Chaos_Stop()
+function ChaosEffect_OnEnd()
 {
 	for (local i = 1; i <= MaxClients(); i++)
 	{

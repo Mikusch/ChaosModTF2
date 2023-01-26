@@ -214,7 +214,7 @@ public void OnGameFrame()
 	}
 	
 	// Update VScript effects
-	SetVariantString("Chaos_API_UpdateEffects");
+	SetVariantString("Chaos_UpdateEffects");
 	AcceptEntityInput(0, "CallScriptFunction");
 	
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
@@ -504,7 +504,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	if (effect.script_file[0])
 	{
 		char str[64];
-		Format(str, sizeof(str), "Chaos_API_StartEffect(\"%s\")", effect.script_file);
+		Format(str, sizeof(str), "Chaos_StartEffect(\"%s\", %d)", effect.script_file, effect.duration);
 		SetVariantString(str);
 		AcceptEntityInput(0, "RunScriptCode");
 	}
@@ -684,7 +684,7 @@ void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = ""
 			if (effect.script_file[0])
 			{
 				char str[64];
-				Format(str, sizeof(str), "Chaos_API_StopEffect(\"%s\")", effect.script_file);
+				Format(str, sizeof(str), "Chaos_StopEffect(\"%s\")", effect.script_file);
 				SetVariantString(str);
 				AcceptEntityInput(0, "RunScriptCode");
 			}

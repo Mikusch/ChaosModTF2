@@ -1,63 +1,64 @@
-const ChaosNamespace = "CHAOS_"
-const ChaosLog = "[Chaos VScript] ";
+const CHAOS_NAMESPACE = "CHAOS_"
+const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] ";
 
 ChaosEffectScopes <- {};
 
-function Chaos_API_StartEffect(name)
+function Chaos_StartEffect(name, duration)
 {
-	local scopeName = ChaosNamespace + name;
+	local scopeName = CHAOS_NAMESPACE + name;
 	if (scopeName in ChaosEffectScopes)
 	{
-		printl(format(ChaosLog + "Attempted to start effect '%s' that is already started, restarting...", name));
-		Chaos_API_StopEffect(name);
+		printl(format(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...", name));
+		Chaos_EndEffect(name);
 	}
 
-	printl(format(ChaosLog + "Starting effect '%s'", name));
+	printl(format(CHAOS_LOG_PREFIX + "Starting effect '%s'", name));
 
 	getroottable()[scopeName] <- {};
 	local scope = getroottable()[scopeName];
-	
+
 	IncludeScript("chaos/effects/" + name + ".nut", scope);
 
-	if ("Chaos_Start" in scope)
-		scope.Chaos_Start();
+	if ("ChaosEffect_OnStart" in scope)
+		scope.ChaosEffect_OnStart();
 
-	ChaosEffectScopes[scopeName] <- scope;
+	if (duration > 0)
+		ChaosEffectScopes[scopeName] <- scope;
 
 	return true;
 }
 
-function Chaos_API_UpdateEffects()
+function Chaos_UpdateEffects()
 {
 	foreach (scopeName, scope in ChaosEffectScopes)
 	{
-		if ("Chaos_Update" in scope)
-			scope.Chaos_Update();
+		if ("ChaosEffect_Update" in scope)
+			scope.ChaosEffect_Update();
 	}
 
 	return true;
 }
 
-function Chaos_API_StopEffect(name)
+function Chaos_EndEffect(name)
 {
-	printl(format(ChaosLog + "Stopping effect '%s'", name));
-		
-	local scopeName = ChaosNamespace + name;
+	printl(format(CHAOS_LOG_PREFIX + "Stopping effect '%s'", name));
+
+	local scopeName = CHAOS_NAMESPACE + name;
 	if (!(scopeName in ChaosEffectScopes))
 	{
-		printl(format(ChaosLog + "Effect '%s' not found in scope list!", name));
-		return false;
-	}
-		
-	local scope = ChaosEffectScopes[scopeName];
-	if (scope == null)
-	{
-		printl(format(ChaosLog + "Effect '%s' scope was deleted early!", name));
+		printl(format(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!", name));
 		return false;
 	}
 
-	if ("Chaos_Stop" in scope)
-		scope.Chaos_Stop();
+	local scope = ChaosEffectScopes[scopeName];
+	if (scope == null)
+	{
+		printl(format(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!", name));
+		return false;
+	}
+
+	if ("ChaosEffect_OnEnd" in scope)
+		scope.ChaosEffect_OnEnd();
 
 	if ("GameEventCallbacks" in getroottable())
 	{
@@ -69,8 +70,8 @@ function Chaos_API_StopEffect(name)
 				scopeList.remove(scopeIndex);
 		}
 	}
-	
+
 	delete ChaosEffectScopes[scopeName];
-		
+
 	return true;
 }
