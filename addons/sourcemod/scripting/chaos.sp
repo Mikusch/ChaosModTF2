@@ -456,6 +456,18 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		return false;
 	}
 	
+	if (effect.active)
+	{
+		if (bForce)
+		{
+			ForceExpireEffect(effect);
+		}
+		else
+		{
+			ThrowError("Failed to activate effect '%T' because it is already active", effect.name, LANG_SERVER);
+		}
+	}
+	
 	// Run OnStart callback
 	Function fnCallback = effect.GetCallbackFunction("OnStart");
 	if (fnCallback != INVALID_FUNCTION)
@@ -467,25 +479,8 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			if (bForce)
-			{
-				// If force failed, try expiring other effects of the same class
-				ExpireAllActiveEffects(true, effect.effect_class);
-				
-				// Re-run OnStart callback
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
-				{
-					ThrowError("Failed to force-enable effect '%T'", effect.name, LANG_SERVER);
-					return false;
-				}
-			}
-			else
-			{
-				LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
-				return false;
-			}
+			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
+			return false;
 		}
 	}
 	
@@ -646,7 +641,7 @@ void DisplayActiveEffects()
 	}
 }
 
-void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = "")
+void ExpireAllActiveEffects(bool bForce = false)
 {
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -657,41 +652,49 @@ void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = ""
 			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
 				continue;
 			
-			// Expire a specific effect class if requested
-			if (szEffectClass[0] && !StrEqual(effect.effect_class, szEffectClass))
-				continue;
-			
-			Function fnCallback = effect.GetCallbackFunction("OnEnd");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_Finish();
-			}
-			
-			// End VScript effect
-			if (effect.script_file[0])
-			{
-				char str[64];
-				Format(str, sizeof(str), "Chaos_EndEffect(\"%s\")", effect.script_file);
-				SetVariantString(str);
-				AcceptEntityInput(0, "RunScriptCode");
-			}
-			
-			if (effect.start_sound[0])
-			{
-				StopStaticSound(effect.start_sound);
-			}
-			
-			if (effect.end_sound[0])
-			{
-				PlayStaticSound(effect.end_sound);
-			}
-			
-			effect.active = false;
-			g_hEffects.SetArray(i, effect);
+			ForceExpireEffect(effect);
 		}
 	}
+}
+
+void ForceExpireEffect(ChaosEffect effect)
+{
+	int nIndex = g_hEffects.FindValue(effect.id, ChaosEffect::id);
+	if (nIndex == -1)
+	{
+		LogError("Failed to expire unknown effect with id '%d'", effect.id);
+		return;
+	}
+	
+	Function fnCallback = effect.GetCallbackFunction("OnEnd");
+	if (fnCallback != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, fnCallback);
+		Call_PushArray(effect, sizeof(effect));
+		Call_Finish();
+	}
+	
+	// End VScript effect
+	if (effect.script_file[0])
+	{
+		char str[64];
+		Format(str, sizeof(str), "Chaos_EndEffect(\"%s\")", effect.script_file);
+		SetVariantString(str);
+		AcceptEntityInput(0, "RunScriptCode");
+	}
+	
+	if (effect.start_sound[0])
+	{
+		StopStaticSound(effect.start_sound);
+	}
+	
+	if (effect.end_sound[0])
+	{
+		PlayStaticSound(effect.end_sound);
+	}
+	
+	effect.active = false;
+	g_hEffects.SetArray(nIndex, effect);
 }
 
 /*
