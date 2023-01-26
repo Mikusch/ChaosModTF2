@@ -1,4 +1,4 @@
-local skyNames =
+local availableSkyNames =
 [
 	"sky_dustbowl_01",
 	"sky_granary_01",
@@ -26,12 +26,9 @@ local skyNames =
 
 function ChaosEffect_OnStart()
 {
-	local newSky
-	do
-	{
-		newSky = skyNames[RandomInt(0, skyNames.len())]
-	}
-	while (newSky == Convars.GetStr("sv_skyname"))
+	local skyNames = availableSkyNames.filter(function(index, value) {
+		return Convars.GetStr("sv_skyname") != value
+	})
 
-	SetSkyboxTexture(newSky)
+	SetSkyboxTexture(skyNames[RandomInt(0, skyNames.len() - 1)])
 }
