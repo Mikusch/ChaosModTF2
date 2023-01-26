@@ -42,27 +42,22 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_addcond.sp"
 #include "chaos/effects/effect_disassemblemap.sp"
 #include "chaos/effects/effect_empty.sp"
-#include "chaos/effects/effect_eternalscreams.sp"
 #include "chaos/effects/effect_extremefog.sp"
 #include "chaos/effects/effect_fakeclientcommand.sp"
 #include "chaos/effects/effect_fakecrash.sp"
 #include "chaos/effects/effect_fling.sp"
 #include "chaos/effects/effect_floorislava.sp"
 #include "chaos/effects/effect_fov.sp"
-#include "chaos/effects/effect_hidehud.sp"
 #include "chaos/effects/effect_invertconvar.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
 #include "chaos/effects/effect_launchup.sp"
 #include "chaos/effects/effect_mannpower.sp"
 #include "chaos/effects/effect_noclip.sp"
 #include "chaos/effects/effect_nothing.sp"
-#include "chaos/effects/effect_paintcosmetics.sp"
-#include "chaos/effects/effect_playerglow.sp"
 #include "chaos/effects/effect_randomizeskybox.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
 #include "chaos/effects/effect_removewearables.sp"
-#include "chaos/effects/effect_respawnalldead.sp"
 #include "chaos/effects/effect_screenoverlay.sp"
 #include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_setconvar.sp"
@@ -71,13 +66,10 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_sethealth.sp"
 #include "chaos/effects/effect_setspeed.sp"
 #include "chaos/effects/effect_showscoreboard.sp"
-#include "chaos/effects/effect_shuffleclasses.sp"
 #include "chaos/effects/effect_silence.sp"
 #include "chaos/effects/effect_slap.sp"
 #include "chaos/effects/effect_spawnball.sp"
-#include "chaos/effects/effect_stepsize.sp"
 #include "chaos/effects/effect_teleportermalfunction.sp"
-#include "chaos/effects/effect_thirdperson.sp"
 #include "chaos/effects/effect_thriller.sp"
 #include "chaos/effects/effect_tiltedcamera.sp"
 #include "chaos/effects/effect_truce.sp"
@@ -684,7 +676,7 @@ void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = ""
 			if (effect.script_file[0])
 			{
 				char str[64];
-				Format(str, sizeof(str), "Chaos_StopEffect(\"%s\")", effect.script_file);
+				Format(str, sizeof(str), "Chaos_EndEffect(\"%s\")", effect.script_file);
 				SetVariantString(str);
 				AcceptEntityInput(0, "RunScriptCode");
 			}

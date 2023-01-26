@@ -155,26 +155,6 @@ int GetRandomPlayer(bool bIsAlive = true)
 	return client;
 }
 
-void GetRandomColorRGB(int &r, int &g, int &b, int &a)
-{
-	r = GetRandomInt(0, 255);
-	g = GetRandomInt(0, 255);
-	b = GetRandomInt(0, 255);
-	a = GetRandomInt(0, 255);
-}
-
-int GetRandomColorInt()
-{
-	int r, g, b, a;
-	GetRandomColorRGB(r, g, b, a);
-	return Color32ToInt(r, g, b, a);
-}
-
-int Color32ToInt(int r, int g, int b, int a)
-{
-	return (r << 24) | (g << 16) | (b << 8) | (a);
-}
-
 void PlayStaticSound(const char[] sound)
 {
 	if (PrecacheScriptSound(sound))
