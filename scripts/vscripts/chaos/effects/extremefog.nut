@@ -60,7 +60,7 @@ function SetFogController(controller)
 	}
 }
 
-function OnGameEvent_player_initial_spawn(params)
+function Chaos_OnGameEvent_player_initial_spawn(params)
 {
 	local player = PlayerInstanceFromIndex(params.index)
 	if (player == null)
@@ -69,9 +69,9 @@ function OnGameEvent_player_initial_spawn(params)
 	NetProps.SetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl", controller)
 }
 
-function OnGameEvent_teamplay_round_start(params)
+function Chaos_OnGameEvent_teamplay_round_start(params)
 {
 	SetFogController(customFogController)
 }
 
-Chaos_CollectEvents()
+Chaos_CollectEventCallbacks(this)

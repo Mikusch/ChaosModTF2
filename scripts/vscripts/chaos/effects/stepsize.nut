@@ -22,7 +22,7 @@ function ChaosEffect_OnEnd()
 	}
 }
 
-function OnGameEvent_player_spawn(params)
+function Chaos_OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -36,4 +36,4 @@ function PostPlayerSpawn()
     NetProps.SetPropFloat(self, "m_Local.m_flStepSize", 0)
 }
 
-Chaos_CollectEvents()
+Chaos_CollectEventCallbacks(this)
