@@ -6,7 +6,7 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 
-		NetProps.SetPropFloat(player, "m_Local.m_flStepSize", 0)
+		player.AddCustomAttribute("SET BONUS: calling card on kill", RandomFloat(1, 4), -1)
 	}
 }
 
@@ -18,7 +18,7 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
-		NetProps.SetPropFloat(player, "m_Local.m_flStepSize", Convars.GetInt("sv_stepsize"))
+		player.RemoveCustomAttribute("SET BONUS: calling card on kill")
 	}
 }
 
@@ -33,7 +33,7 @@ function OnGameEvent_player_spawn(params)
 
 function PostPlayerSpawn()
 {
-    NetProps.SetPropFloat(self, "m_Local.m_flStepSize", 0)
+    self.AddCustomAttribute("SET BONUS: calling card on kill", RandomFloat(1, 4), -1)
 }
 
 Chaos_CollectEvents()

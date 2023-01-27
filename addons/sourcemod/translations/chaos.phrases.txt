@@ -438,6 +438,18 @@
 	{
 		"en"		"Disassemble Map"
 	}
+	"#Chaos_Effect_RegeneratePlayers"
+	{
+		"en"		"Regenerate All Players"
+	}
+	"#Chaos_Effect_ToggleTriggers"
+	{
+		"en"		"Toggle All Triggers"
+	}
+	"#Chaos_Effect_MemorialDay"
+	{
+		"en"		"Memorial Day"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
