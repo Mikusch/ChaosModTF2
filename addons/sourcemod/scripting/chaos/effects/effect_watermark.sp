@@ -18,7 +18,7 @@ public bool Watermark_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void Watermark_OnGameFrame(ChaosEffect effect)
+public void Watermark_Update(ChaosEffect effect)
 {
 	if (g_flNextDisplayTime <= GetGameTime())
 	{

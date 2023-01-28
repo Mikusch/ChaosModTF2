@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void FloorIsLava_OnGameFrame(ChaosEffect effect)
+public void FloorIsLava_Update(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{

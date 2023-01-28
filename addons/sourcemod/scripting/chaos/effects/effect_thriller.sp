@@ -1,19 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void Thriller_OnEnd(ChaosEffect effect)
-{
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-		
-		TF2_RemoveCondition(client, TFCond_HalloweenThriller);
-		TF2_RemoveCondition(client, TFCond_Taunting);
-	}
-}
-
-public void Thriller_OnGameFrame(ChaosEffect effect)
+public void Thriller_Update(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -26,5 +14,17 @@ public void Thriller_OnGameFrame(ChaosEffect effect)
 		{
 			FakeClientCommand(client, "taunt");
 		}
+	}
+}
+
+public void Thriller_OnEnd(ChaosEffect effect)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		TF2_RemoveCondition(client, TFCond_HalloweenThriller);
+		TF2_RemoveCondition(client, TFCond_Taunting);
 	}
 }

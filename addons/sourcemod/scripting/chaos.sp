@@ -185,13 +185,12 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
-	// Execute OnGameFrame callback
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function fnCallback = effect.GetCallbackFunction("OnGameFrame");
+			Function fnCallback = effect.GetCallbackFunction("Update");
 			if (fnCallback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, fnCallback);
@@ -201,7 +200,6 @@ public void OnGameFrame()
 		}
 	}
 	
-	// Update VScript effects
 	SetVariantString("Chaos_UpdateEffects");
 	AcceptEntityInput(0, "CallScriptFunction");
 	
@@ -467,7 +465,6 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		}
 	}
 	
-	// Run OnStart callback
 	Function fnCallback = effect.GetCallbackFunction("OnStart");
 	if (fnCallback != INVALID_FUNCTION)
 	{
@@ -483,7 +480,6 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		}
 	}
 	
-	// Start VScript effect
 	if (effect.script_file[0])
 	{
 		char str[64];
@@ -673,7 +669,6 @@ void ForceExpireEffect(ChaosEffect effect)
 		Call_Finish();
 	}
 	
-	// End VScript effect
 	if (effect.script_file[0])
 	{
 		char str[64];

@@ -17,7 +17,7 @@ public bool TiltedCamera_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void TiltedCamera_OnGameFrame(ChaosEffect effect)
+public void TiltedCamera_Update(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
