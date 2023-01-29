@@ -450,6 +450,10 @@
 	{
 		"en"		"Memorial Day"
 	}
+	"#Chaos_Effect_ForceDraw"
+	{
+		"en"		"Self-Awareness Day"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

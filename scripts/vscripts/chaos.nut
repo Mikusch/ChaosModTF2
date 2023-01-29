@@ -5,7 +5,7 @@ const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 
 ::__RunGameEventCallbacks <- function(event, params)
 {
-    __RunEventCallbacks(event, params, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", true)
+    __RunEventCallbacks(event, params, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", false)
 
     if ("GameEventCallbacks" in getroottable())
         __RunEventCallbacks(event, params, "OnGameEvent_", "GameEventCallbacks", true)
