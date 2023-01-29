@@ -28,12 +28,7 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	EntFireByHandle(player, "CallScriptFunction", "PostPlayerSpawn", 0.0, null, null)
-}
-
-function PostPlayerSpawn()
-{
-    NetProps.SetPropFloat(self, "m_Local.m_flStepSize", 0)
+	 NetProps.SetPropFloat(player, "m_Local.m_flStepSize", 0)
 }
 
 Chaos_CollectEventCallbacks(this)

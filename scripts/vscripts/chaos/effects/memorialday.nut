@@ -28,12 +28,15 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	EntFireByHandle(player, "CallScriptFunction", "PostPlayerSpawn", 0.0, null, null)
+	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostPlayerSpawn()", 0, player, player)
 }
 
 function PostPlayerSpawn()
 {
-    self.AddCustomAttribute("SET BONUS: calling card on kill", RandomFloat(1, 4), -1)
+	if (activator == null)
+		return
+
+    activator.AddCustomAttribute("SET BONUS: calling card on kill", RandomFloat(1, 4), -1)
 }
 
 Chaos_CollectEventCallbacks(this)

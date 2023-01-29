@@ -6,7 +6,9 @@ const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 ::__RunGameEventCallbacks <- function(event, params)
 {
     __RunEventCallbacks(event, params, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", true)
-    __RunEventCallbacks(event, params, "OnGameEvent_", "GameEventCallbacks", true)
+
+    if ("GameEventCallbacks" in getroottable())
+        __RunEventCallbacks(event, params, "OnGameEvent_", "GameEventCallbacks", true)
 }
 
 ::Chaos_CollectEventCallbacks <- function(scope)
@@ -30,7 +32,9 @@ function Chaos_StartEffect(name, duration)
 	getroottable()[scopeName] <- {}
 	local scope = getroottable()[scopeName]
 
-	IncludeScript("chaos/effects/" + name + ".nut", scope)
+	IncludeScript("chaos/effects/" + name.tolower() + ".nut", scope)
+
+	scope.Chaos_EffectName <- CHAOS_NAMESPACE + name
 
 	if ("ChaosEffect_OnStart" in scope)
 		scope.ChaosEffect_OnStart()
@@ -85,6 +89,6 @@ function Chaos_EndEffect(name)
 	}
 
 	delete ChaosEffectScopes[scopeName]
-	
+
 	return true
 }
