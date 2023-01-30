@@ -452,7 +452,11 @@
 	}
 	"#Chaos_Effect_ForceDraw"
 	{
-		"en"		"Self-Awareness Day"
+		"en"		"Self-Awareness"
+	}
+	"#Chaos_Effect_LargeSmokeExplosions"
+	{
+		"en"		"Directed By Michael Bay"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

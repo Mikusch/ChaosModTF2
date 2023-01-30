@@ -7,7 +7,7 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 		return false;
 	
 	// Don't set the same attribute twice
-	if (IsEffectWithKeyAlreadyActive(effect, "name"))
+	if (IsAlreadyActive(effect))
 		return false;
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -15,7 +15,7 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		ApplyAttributesFromEffectData(effect.data, client);
+		ApplyAttributes(effect, client);
 	}
 	
 	return true;
@@ -28,17 +28,48 @@ public void SetAttribute_OnEnd(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		ApplyAttributesFromEffectData(effect.data, client, true);
+		ApplyAttributes(effect, client, true);
 	}
 }
 
 public void SetAttribute_OnPostInventoryApplication(ChaosEffect effect, int client)
 {
-	ApplyAttributesFromEffectData(effect.data, client);
+	ApplyAttributes(effect, client);
 }
 
-static void ApplyAttributesFromEffectData(KeyValues kv, int client, bool bRemove = false)
+static bool IsAlreadyActive(ChaosEffect effect)
 {
+	KeyValues kv = effect.data;
+	
+	// Make sure we traverse back to not mess up effect data
+	bool bFoundKey = false;
+	
+	if (kv.JumpToKey("attributes", false))
+	{
+		if (kv.GotoFirstSubKey(false))
+		{
+			do
+			{
+				// Check if the same attribute is already active in this effect class
+				char szAttrib[64];
+				if (kv.GetSectionName(szAttrib, sizeof(szAttrib)) && FindKeyInActiveEffects(effect.effect_class, szAttrib))
+				{
+					bFoundKey = true;
+				}
+			}
+			while (!bFoundKey && kv.GotoNextKey(false));
+			kv.GoBack();
+		}
+		kv.GoBack();
+	}
+	
+	return bFoundKey;
+}
+
+static void ApplyAttributes(ChaosEffect effect, int client, bool bRemove = false)
+{
+	KeyValues kv = effect.data;
+	
 	bool bApplyToWeapons = kv.GetNum("weapons") != 0;
 	
 	if (kv.JumpToKey("attributes", false))
@@ -48,36 +79,38 @@ static void ApplyAttributesFromEffectData(KeyValues kv, int client, bool bRemove
 			do
 			{
 				char szAttrib[64];
-				kv.GetString("name", szAttrib, sizeof(szAttrib));
-				float flValue = kv.GetFloat("value");
-				
-				if (bApplyToWeapons)
+				if (kv.GetSectionName(szAttrib, sizeof(szAttrib)))
 				{
-					for (int i = 0; i < MAX_WEAPONS; i++)
+					float flValue = kv.GetFloat(NULL_STRING);
+					
+					if (bApplyToWeapons)
 					{
-						int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-						if (myWeapon != -1)
+						for (int i = 0; i < MAX_WEAPONS; i++)
 						{
-							if (!bRemove)
+							int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+							if (myWeapon != -1)
 							{
-								TF2Attrib_SetByName(myWeapon, szAttrib, flValue);
-							}
-							else
-							{
-								TF2Attrib_RemoveByName(myWeapon, szAttrib);
+								if (!bRemove)
+								{
+									TF2Attrib_SetByName(myWeapon, szAttrib, flValue);
+								}
+								else
+								{
+									TF2Attrib_RemoveByName(myWeapon, szAttrib);
+								}
 							}
 						}
 					}
-				}
-				else
-				{
-					if (!bRemove)
-					{
-						TF2Attrib_SetByName(client, szAttrib, flValue);
-					}
 					else
 					{
-						TF2Attrib_RemoveByName(client, szAttrib);
+						if (!bRemove)
+						{
+							TF2Attrib_SetByName(client, szAttrib, flValue);
+						}
+						else
+						{
+							TF2Attrib_RemoveByName(client, szAttrib);
+						}
 					}
 				}
 			}

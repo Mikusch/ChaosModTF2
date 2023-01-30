@@ -43,14 +43,14 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	return (effect1.activate_time == effect2.activate_time) ? Compare(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
 }
 
-bool GetValueForKeyInKeyValues(KeyValues kv, const char[] szKeyToFind, char[] szValue, int iMaxLength)
+bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
 {
 	do
 	{
 		if (kv.GotoFirstSubKey(false))
 		{
 			// Current key is a section. Browse it recursively.
-			return GetValueForKeyInKeyValues(kv, szKeyToFind, szValue, iMaxLength);
+			return FindKeyInKeyValues(kv, szKeyToFind);
 		}
 		else
 		{
@@ -60,12 +60,7 @@ bool GetValueForKeyInKeyValues(KeyValues kv, const char[] szKeyToFind, char[] sz
 				char szKey[64];
 				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
 				{
-					kv.GetString(NULL_STRING, szValue, iMaxLength);
-					
-					if (szValue[0])
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 		}

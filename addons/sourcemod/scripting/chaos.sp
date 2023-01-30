@@ -691,7 +691,7 @@ void ForceExpireEffect(ChaosEffect effect)
 	g_hEffects.SetArray(nIndex, effect);
 }
 
-/*
+/**
  * Returns true if the given effect class is currently active.
  */
 bool IsEffectOfClassActive(const char[] szEffectClass)
@@ -708,7 +708,34 @@ bool IsEffectOfClassActive(const char[] szEffectClass)
 	return false;
 }
 
-/*
+/**
+ * Returns true if the given key was found in active effects with the given class.
+ */
+bool FindKeyInActiveEffects(const char[] szEffectClass, const char[] szKey)
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active && effect.data)
+		{
+			KeyValues kv = new KeyValues("data");
+			kv.Import(effect.data);
+			
+			// Horribly slow and inefficient, but we'll survive
+			if (FindKeyInKeyValues(kv, szKey))
+			{
+				delete kv;
+				return true;
+			}
+			
+			delete kv;
+		}
+	}
+	
+	return false;
+}
+
+/**
  * Returns true if the given key value pair was found in active effects with the given class.
  */
 bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] szKey, const char[] szValue)
@@ -730,26 +757,6 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 			
 			delete kv;
 		}
-	}
-	
-	return false;
-}
-
-/**
- * Returns true if the given effect is already active, but only if the given key was found in its 'data' section.
- * If you already have the key, it is significantly faster to call 'FindKeyValuePairInActiveEffects' directly.
- */
-bool IsEffectWithKeyAlreadyActive(ChaosEffect effect, const char[] szKey)
-{
-	KeyValues kv = new KeyValues("data");
-	kv.Import(effect.data);
-	
-	// Grab the value, then check if we can find it in active effects
-	char szValue[64];
-	if (GetValueForKeyInKeyValues(kv, szKey, szValue, sizeof(szValue)) && FindKeyValuePairInActiveEffects(effect.effect_class, szKey, szValue))
-	{
-		delete kv;
-		return true;
 	}
 	
 	return false;
