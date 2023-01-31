@@ -9,13 +9,13 @@ enum struct LightData
 	int color[4];
 }
 
-static ArrayList g_hLightPositions;
+static ArrayList g_hLightData;
 static StringMap g_hEntityToSpriteMap;
 static StringMap g_hEntityToModelMap;
 
 public void Decompiled_Initialize(ChaosEffect effect)
 {
-	g_hLightPositions = new ArrayList(sizeof(LightData));
+	g_hLightData = new ArrayList(sizeof(LightData));
 	g_hEntityToSpriteMap = new StringMap();
 	g_hEntityToModelMap = new StringMap();
 	
@@ -83,7 +83,7 @@ public void Decompiled_Initialize(ChaosEffect effect)
 public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
 {
 	// Clear previous light data
-	g_hLightPositions.Clear();
+	g_hLightData.Clear();
 	
 	// Parse entity lump for light information
 	for (int i = 0; i < EntityLump.Length(); i++)
@@ -117,9 +117,15 @@ public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
 			if (entry.GetNextKey("angles", value, sizeof(value)) != -1)
 			{
 				StringToVector(value, data.angles);
+				
+				if (entry.GetNextKey("pitch", value, sizeof(value)) != -1)
+				{
+					float angle = StringToFloat(value);
+					data.angles[0] = -angle;
+				}
 			}
 			
-			g_hLightPositions.PushArray(data);
+			g_hLightData.PushArray(data);
 		}
 		
 		delete entry;
@@ -141,7 +147,6 @@ public bool Decompiled_OnStart(ChaosEffect effect)
 	if (float(nCurrentEntities) / float(nMaxEntities) > 0.5)
 		return false;
 	
-	// Parse light data
 	SpawnLightsFromData();
 	
 	entity = -1;
@@ -241,10 +246,16 @@ static int CreateModel(const char[] szModel, const float vecOrigin[3], const flo
 
 static void SpawnLightsFromData()
 {
-	for (int i = 0; i < g_hLightPositions.Length; i++)
+	if (g_hLightData.Length == 0)
+	{
+		LogError("No light data found!")
+		return;
+	}
+	
+	for (int i = 0; i < g_hLightData.Length; i++)
 	{
 		LightData data;
-		if (g_hLightPositions.GetArray(i, data))
+		if (g_hLightData.GetArray(i, data))
 		{
 			int visual = -1;
 			
