@@ -128,6 +128,8 @@ static int AddItem(int client, const char[] szItemName)
 			}
 		}
 		
+		SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
+		
 		SDKCall_PostInventoryApplication(client);
 		
 		delete hItem;

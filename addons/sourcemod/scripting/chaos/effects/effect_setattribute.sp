@@ -85,7 +85,7 @@ static void ApplyAttributes(ChaosEffect effect, int client, bool bRemove = false
 					
 					if (bApplyToWeapons)
 					{
-						for (int i = 0; i < MAX_WEAPONS; i++)
+						for (int i = 0; i < GetEntPropArraySize(client , Prop_Send,"m_hMyWeapons"); i++)
 						{
 							int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 							if (myWeapon != -1)

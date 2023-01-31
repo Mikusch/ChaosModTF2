@@ -478,6 +478,10 @@
 	{
 		"en"		"I'm The Real Notch"
 	}
+	"#Chaos_Effect_FlipViewModels"
+	{
+		"en"		"Flip Viewmodels"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

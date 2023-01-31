@@ -9,8 +9,6 @@
 
 #define MAX_USER_MSG_DATA	255
 
-#define MAX_WEAPONS				48	// Max number of weapons available
-
 #define PI	3.14159265358979323846
 
 enum HudNotification_t
