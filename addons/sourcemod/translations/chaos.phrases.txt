@@ -482,6 +482,10 @@
 	{
 		"en"		"Flip Viewmodels"
 	}
+	"#Chaos_Effect_GiveGoldPan"
+	{
+		"en"		"Econ Violation"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

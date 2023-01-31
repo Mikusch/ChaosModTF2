@@ -114,6 +114,7 @@ static int AddItem(int client, const char[] szItemName)
 		
 		TF2Items_SetClassname(hItem, szClassname);
 		TF2Items_SetItemIndex(hItem, iItemDefIndex);
+		TF2Items_SetLevel(hItem, 1);
 		
 		int newItem = TF2Items_GiveNamedItem(client, hItem);
 		if (newItem != -1)
