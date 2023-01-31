@@ -438,6 +438,55 @@
 	{
 		"en"		"Disassemble Map"
 	}
+
+	"#Chaos_Effect_RegeneratePlayers"
+	{
+		"en"		"Regenerate All Players"
+	}
+	"#Chaos_Effect_ToggleTriggers"
+	{
+		"en"		"Toggle All Triggers"
+	}
+	"#Chaos_Effect_MemorialDay"
+	{
+		"en"		"Memorial Day"
+	}
+	"#Chaos_Effect_ForceDraw"
+	{
+		"en"		"Self-Awareness"
+	}
+	"#Chaos_Effect_LargeSmokeExplosions"
+	{
+		"en"		"Directed By Michael Bay"
+	}
+	"#Chaos_Effect_InfiniteMeleeRange"
+	{
+		"en"		"Infinite Melee Range"
+	}
+	"#Chaos_Effect_NoAirAcceleration"
+	{
+		"en"		"No Air Acceleration"
+	}
+	"#Chaos_Effect_CattoGuns"
+	{
+		"en"		"Catto Guns"
+	}
+	"#Chaos_Effect_GiveGibus"
+	{
+		"en"		"Give Everyone A Gibus"
+	}
+	"#Chaos_Effect_GiveTopNotch"
+	{
+		"en"		"I'm The Real Notch"
+	}
+	"#Chaos_Effect_FlipViewModels"
+	{
+		"en"		"Flip Viewmodels"
+	}
+	"#Chaos_Effect_GiveGoldPan"
+	{
+		"en"		"Econ Violation"
+	}
 	"#Chaos_Effect_Decompiled"
 	{
 		"en"		"Decompiled"

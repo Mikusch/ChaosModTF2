@@ -9,6 +9,7 @@
 #include <tf2_stocks>
 #include <tf2items>
 #include <tf2utils>
+#include <tf_econ_data>
 #include <cbasenpc>
 #include <morecolors>
 
@@ -40,30 +41,23 @@ bool g_bNoChaos;
 
 // Regular effects
 #include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_cattoguns.sp"
 #include "chaos/effects/effect_decompiled.sp"
 #include "chaos/effects/effect_disassemblemap.sp"
-#include "chaos/effects/effect_empty.sp"
-#include "chaos/effects/effect_eternalscreams.sp"
-#include "chaos/effects/effect_extremefog.sp"
 #include "chaos/effects/effect_fakeclientcommand.sp"
 #include "chaos/effects/effect_fakecrash.sp"
 #include "chaos/effects/effect_fling.sp"
+#include "chaos/effects/effect_flipviewmodels.sp"
 #include "chaos/effects/effect_floorislava.sp"
 #include "chaos/effects/effect_fov.sp"
-#include "chaos/effects/effect_hidehud.sp"
+#include "chaos/effects/effect_giveitem.sp"
 #include "chaos/effects/effect_invertconvar.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
 #include "chaos/effects/effect_launchup.sp"
 #include "chaos/effects/effect_mannpower.sp"
 #include "chaos/effects/effect_noclip.sp"
-#include "chaos/effects/effect_nothing.sp"
-#include "chaos/effects/effect_paintcosmetics.sp"
-#include "chaos/effects/effect_playerglow.sp"
-#include "chaos/effects/effect_randomizeskybox.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
-#include "chaos/effects/effect_removewearables.sp"
-#include "chaos/effects/effect_respawnalldead.sp"
 #include "chaos/effects/effect_screenoverlay.sp"
 #include "chaos/effects/effect_setattribute.sp"
 #include "chaos/effects/effect_setconvar.sp"
@@ -72,13 +66,10 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_sethealth.sp"
 #include "chaos/effects/effect_setspeed.sp"
 #include "chaos/effects/effect_showscoreboard.sp"
-#include "chaos/effects/effect_shuffleclasses.sp"
 #include "chaos/effects/effect_silence.sp"
 #include "chaos/effects/effect_slap.sp"
 #include "chaos/effects/effect_spawnball.sp"
-#include "chaos/effects/effect_stepsize.sp"
 #include "chaos/effects/effect_teleportermalfunction.sp"
-#include "chaos/effects/effect_thirdperson.sp"
 #include "chaos/effects/effect_thriller.sp"
 #include "chaos/effects/effect_tiltedcamera.sp"
 #include "chaos/effects/effect_truce.sp"
@@ -158,6 +149,10 @@ public void OnMapStart()
 	SetChaosTimers(GetGameTime());
 	g_flLastEffectDisplayTime = GetGameTime();
 	
+	// Initialize VScript system
+	SetVariantString("chaos");
+	AcceptEntityInput(0, "RunScriptFile");
+	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -213,13 +208,12 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
-	// Execute OnGameFrame callback
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function fnCallback = effect.GetCallbackFunction("OnGameFrame");
+			Function fnCallback = effect.GetCallbackFunction("Update");
 			if (fnCallback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, fnCallback);
@@ -228,6 +222,9 @@ public void OnGameFrame()
 			}
 		}
 	}
+	
+	SetVariantString("Chaos_UpdateEffects");
+	AcceptEntityInput(0, "CallScriptFunction");
 	
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
@@ -479,7 +476,18 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		return false;
 	}
 	
-	// Run OnStart callback
+	if (effect.active)
+	{
+		if (bForce)
+		{
+			ForceExpireEffect(effect);
+		}
+		else
+		{
+			ThrowError("Failed to activate effect '%T' because it is already active", effect.name, LANG_SERVER);
+		}
+	}
+	
 	Function fnCallback = effect.GetCallbackFunction("OnStart");
 	if (fnCallback != INVALID_FUNCTION)
 	{
@@ -490,26 +498,17 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			if (bForce)
-			{
-				// If force failed, try expiring other effects of the same class
-				ExpireAllActiveEffects(true, effect.effect_class);
-				
-				// Re-run OnStart callback
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
-				{
-					ThrowError("Failed to force-enable effect '%T'", effect.name, LANG_SERVER);
-					return false;
-				}
-			}
-			else
-			{
-				LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
-				return false;
-			}
+			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
+			return false;
 		}
+	}
+	
+	if (effect.script_file[0])
+	{
+		char str[64];
+		Format(str, sizeof(str), "Chaos_StartEffect(\"%s\", %f)", effect.script_file, effect.duration);
+		SetVariantString(str);
+		AcceptEntityInput(0, "RunScriptCode");
 	}
 	
 	// One-shot effects are never set to active state
@@ -660,7 +659,7 @@ void DisplayActiveEffects()
 	}
 }
 
-void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = "")
+void ExpireAllActiveEffects(bool bForce = false)
 {
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
@@ -671,35 +670,51 @@ void ExpireAllActiveEffects(bool bForce = false, const char[] szEffectClass = ""
 			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
 				continue;
 			
-			// Expire a specific effect class if requested
-			if (szEffectClass[0] && !StrEqual(effect.effect_class, szEffectClass))
-				continue;
-			
-			Function fnCallback = effect.GetCallbackFunction("OnEnd");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_Finish();
-			}
-			
-			if (effect.start_sound[0])
-			{
-				StopStaticSound(effect.start_sound);
-			}
-			
-			if (effect.end_sound[0])
-			{
-				PlayStaticSound(effect.end_sound);
-			}
-			
-			effect.active = false;
-			g_hEffects.SetArray(i, effect);
+			ForceExpireEffect(effect);
 		}
 	}
 }
 
-/*
+void ForceExpireEffect(ChaosEffect effect)
+{
+	int nIndex = g_hEffects.FindValue(effect.id, ChaosEffect::id);
+	if (nIndex == -1)
+	{
+		LogError("Failed to expire unknown effect with id '%d'", effect.id);
+		return;
+	}
+	
+	Function fnCallback = effect.GetCallbackFunction("OnEnd");
+	if (fnCallback != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, fnCallback);
+		Call_PushArray(effect, sizeof(effect));
+		Call_Finish();
+	}
+	
+	if (effect.script_file[0])
+	{
+		char str[64];
+		Format(str, sizeof(str), "Chaos_EndEffect(\"%s\")", effect.script_file);
+		SetVariantString(str);
+		AcceptEntityInput(0, "RunScriptCode");
+	}
+	
+	if (effect.start_sound[0])
+	{
+		StopStaticSound(effect.start_sound);
+	}
+	
+	if (effect.end_sound[0])
+	{
+		PlayStaticSound(effect.end_sound);
+	}
+	
+	effect.active = false;
+	g_hEffects.SetArray(nIndex, effect);
+}
+
+/**
  * Returns true if the given effect class is currently active.
  */
 bool IsEffectOfClassActive(const char[] szEffectClass)
@@ -716,7 +731,34 @@ bool IsEffectOfClassActive(const char[] szEffectClass)
 	return false;
 }
 
-/*
+/**
+ * Returns true if the given key was found in active effects with the given class.
+ */
+bool FindKeyInActiveEffects(const char[] szEffectClass, const char[] szKey)
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active && effect.data)
+		{
+			KeyValues kv = new KeyValues("data");
+			kv.Import(effect.data);
+			
+			// Horribly slow and inefficient, but we'll survive
+			if (FindKeyInKeyValues(kv, szKey))
+			{
+				delete kv;
+				return true;
+			}
+			
+			delete kv;
+		}
+	}
+	
+	return false;
+}
+
+/**
  * Returns true if the given key value pair was found in active effects with the given class.
  */
 bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] szKey, const char[] szValue)
@@ -738,26 +780,6 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 			
 			delete kv;
 		}
-	}
-	
-	return false;
-}
-
-/**
- * Returns true if the given effect is already active, but only if the given key was found in its 'data' section.
- * If you already have the key, it is significantly faster to call 'FindKeyValuePairInActiveEffects' directly.
- */
-bool IsEffectWithKeyAlreadyActive(ChaosEffect effect, const char[] szKey)
-{
-	KeyValues kv = new KeyValues("data");
-	kv.Import(effect.data);
-	
-	// Grab the value, then check if we can find it in active effects
-	char szValue[64];
-	if (GetValueForKeyInKeyValues(kv, szKey, szValue, sizeof(szValue)) && FindKeyValuePairInActiveEffects(effect.effect_class, szKey, szValue))
-	{
-		delete kv;
-		return true;
 	}
 	
 	return false;

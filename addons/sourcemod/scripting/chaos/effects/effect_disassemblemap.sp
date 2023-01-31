@@ -3,21 +3,15 @@
 
 #define CONVERTER_TARGET	"chaos_physics_prop"
 
-static char g_aBrushClassNames[][] =
+static char g_aClassNames[][] =
 {
 	"func_brush",
 	"func_button",
 	"func_illusionary",
 	"func_lod",
 	"func_breakable",
-};
-
-static char g_aPropClassNames[][] =
-{
 	"prop_*",
 	"item_*",
-	"obj_*",
-	"tf_dropped_weapon",
 };
 
 static bool g_bActivated;
@@ -35,10 +29,10 @@ public bool DisassembleMap_OnStart(ChaosEffect effect)
 	}
 	
 	// Turn brush entities into physics props
-	for (int i = 0; i < sizeof(g_aBrushClassNames); i++)
+	for (int i = 0; i < sizeof(g_aClassNames); i++)
 	{
 		int entity = -1;
-		while ((entity = FindEntityByClassname(entity, g_aBrushClassNames[i])) != -1)
+		while ((entity = FindEntityByClassname(entity, g_aClassNames[i])) != -1)
 		{
 			if (CBaseEntity(entity).GetMoveType() == MOVETYPE_VPHYSICS)
 				continue;
@@ -49,34 +43,6 @@ public bool DisassembleMap_OnStart(ChaosEffect effect)
 	
 	AcceptEntityInput(converter, "ConvertTarget");
 	RemoveEntity(converter);
-	
-	// Turn props into soccer balls
-	for (int i = 0; i < sizeof(g_aPropClassNames); i++)
-	{
-		int entity = -1;
-		while ((entity = FindEntityByClassname(entity, g_aPropClassNames[i])) != -1)
-		{
-			char szModel[PLATFORM_MAX_PATH];
-			GetEntPropString(entity, Prop_Data, "m_ModelName", szModel, sizeof(szModel));
-			
-			float vecOrigin[3], angRotation[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecOrigin);
-			GetEntPropVector(entity, Prop_Data, "m_angAbsRotation", angRotation);
-			
-			int ball = CreateEntityByName("prop_soccer_ball");
-			if (IsValidEntity(ball))
-			{
-				DispatchKeyValue(ball, "model", szModel);
-				DispatchKeyValueVector(ball, "origin", vecOrigin);
-				DispatchKeyValueVector(ball, "angles", angRotation);
-				
-				if (DispatchSpawn(ball))
-				{
-					RemoveEntity(entity);
-				}
-			}
-		}
-	}
 	
 	g_bActivated = true;
 	return true;

@@ -13,7 +13,7 @@ public bool TeleporterMalfunction_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void TeleporterMalfunction_OnGameFrame(ChaosEffect effect)
+public void TeleporterMalfunction_Update(ChaosEffect effect)
 {
 	if (g_flNextTeleportTime <= GetGameTime())
 	{

@@ -10,7 +10,7 @@ public bool Slap_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void Slap_OnGameFrame(ChaosEffect effect)
+public void Slap_Update(ChaosEffect effect)
 {
 	if (g_flNextSlapTime <= GetGameTime())
 	{

@@ -43,14 +43,14 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	return (effect1.activate_time == effect2.activate_time) ? Compare(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
 }
 
-bool GetValueForKeyInKeyValues(KeyValues kv, const char[] szKeyToFind, char[] szValue, int iMaxLength)
+bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
 {
 	do
 	{
 		if (kv.GotoFirstSubKey(false))
 		{
 			// Current key is a section. Browse it recursively.
-			return GetValueForKeyInKeyValues(kv, szKeyToFind, szValue, iMaxLength);
+			return FindKeyInKeyValues(kv, szKeyToFind);
 		}
 		else
 		{
@@ -60,12 +60,7 @@ bool GetValueForKeyInKeyValues(KeyValues kv, const char[] szKeyToFind, char[] sz
 				char szKey[64];
 				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
 				{
-					kv.GetString(NULL_STRING, szValue, iMaxLength);
-					
-					if (szValue[0])
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 		}
@@ -155,26 +150,6 @@ int GetRandomPlayer(bool bIsAlive = true)
 	return client;
 }
 
-void GetRandomColorRGB(int &r, int &g, int &b, int &a)
-{
-	r = GetRandomInt(0, 255);
-	g = GetRandomInt(0, 255);
-	b = GetRandomInt(0, 255);
-	a = GetRandomInt(0, 255);
-}
-
-int GetRandomColorInt()
-{
-	int r, g, b, a;
-	GetRandomColorRGB(r, g, b, a);
-	return Color32ToInt(r, g, b, a);
-}
-
-int Color32ToInt(int r, int g, int b, int a)
-{
-	return (r << 24) | (g << 16) | (b << 8) | (a);
-}
-
 void PlayStaticSound(const char[] sound)
 {
 	if (PrecacheScriptSound(sound))
@@ -225,4 +200,85 @@ void StringToColor(const char[] str, int color[4])
 	{
 		color[i] = StringToInt(buffer[i]);
 	}
+}
+
+bool IsMiscSlot(int iSlot)
+{
+	return iSlot == LOADOUT_POSITION_MISC
+		|| iSlot == LOADOUT_POSITION_MISC2
+		|| iSlot == LOADOUT_POSITION_HEAD;
+}
+
+bool IsTauntSlot(int iSlot)
+{
+	return iSlot == LOADOUT_POSITION_TAUNT
+		|| iSlot == LOADOUT_POSITION_TAUNT2
+		|| iSlot == LOADOUT_POSITION_TAUNT3
+		|| iSlot == LOADOUT_POSITION_TAUNT4
+		|| iSlot == LOADOUT_POSITION_TAUNT5
+		|| iSlot == LOADOUT_POSITION_TAUNT6
+		|| iSlot == LOADOUT_POSITION_TAUNT7
+		|| iSlot == LOADOUT_POSITION_TAUNT8;
+}
+
+bool IsWearableSlot(int iSlot)
+{
+	return iSlot == LOADOUT_POSITION_HEAD
+		|| iSlot == LOADOUT_POSITION_MISC
+		|| iSlot == LOADOUT_POSITION_ACTION
+		|| IsMiscSlot(iSlot)
+		|| IsTauntSlot(iSlot);
+}
+
+int GetItemDefinitionIndexByName(const char[] szItemName)
+{
+	if (!szItemName[0])
+	{
+		return TF_ITEMDEF_DEFAULT;
+	}
+	
+	static StringMap s_hItemDefsByName;
+	
+	if (!s_hItemDefsByName)
+	{
+		s_hItemDefsByName = new StringMap();
+	}
+	
+	if (s_hItemDefsByName.ContainsKey(szItemName))
+	{
+		// get cached item def from map
+		int iItemDefIndex = TF_ITEMDEF_DEFAULT;
+		return s_hItemDefsByName.GetValue(szItemName, iItemDefIndex) ? iItemDefIndex : TF_ITEMDEF_DEFAULT;
+	}
+	else
+	{
+		DataPack hDataPack = new DataPack();
+		hDataPack.WriteString(szItemName);
+		
+		// search the item list and cache the result
+		ArrayList hItemList = TF2Econ_GetItemList(ItemFilterCriteria_FilterByName, hDataPack);
+		int iItemDefIndex = (hItemList.Length > 0) ? hItemList.Get(0) : TF_ITEMDEF_DEFAULT;
+		s_hItemDefsByName.SetValue(szItemName, iItemDefIndex);
+		
+		delete hDataPack;
+		delete hItemList;
+		
+		return iItemDefIndex;
+	}
+}
+
+static bool ItemFilterCriteria_FilterByName(int iItemDefIndex, DataPack hDataPack)
+{
+	hDataPack.Reset();
+	
+	char szName1[64];
+	hDataPack.ReadString(szName1, sizeof(szName1));
+	
+	char szName2[64];
+	if (TF2Econ_GetItemName(iItemDefIndex, szName2, sizeof(szName2)) && StrEqual(szName1, szName2, false))
+	{
+		return true;
+	}
+	
+	return false;
 }
