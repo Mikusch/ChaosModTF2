@@ -9,6 +9,7 @@
 #include <tf2_stocks>
 #include <tf2items>
 #include <tf2utils>
+#include <tf_econ_data>
 #include <cbasenpc>
 #include <morecolors>
 
@@ -40,13 +41,14 @@ bool g_bNoChaos;
 
 // Regular effects
 #include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_cattoguns.sp"
 #include "chaos/effects/effect_disassemblemap.sp"
-#include "chaos/effects/effect_empty.sp"
 #include "chaos/effects/effect_fakeclientcommand.sp"
 #include "chaos/effects/effect_fakecrash.sp"
 #include "chaos/effects/effect_fling.sp"
 #include "chaos/effects/effect_floorislava.sp"
 #include "chaos/effects/effect_fov.sp"
+#include "chaos/effects/effect_giveitem.sp"
 #include "chaos/effects/effect_invertconvar.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
 #include "chaos/effects/effect_launchup.sp"

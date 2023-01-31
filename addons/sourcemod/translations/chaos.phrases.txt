@@ -458,6 +458,26 @@
 	{
 		"en"		"Directed By Michael Bay"
 	}
+	"#Chaos_Effect_InfiniteMeleeRange"
+	{
+		"en"		"Infinite Melee Range"
+	}
+	"#Chaos_Effect_NoAirAcceleration"
+	{
+		"en"		"No Air Acceleration"
+	}
+	"#Chaos_Effect_CattoGuns"
+	{
+		"en"		"Catto Guns"
+	}
+	"#Chaos_Effect_GiveGibus"
+	{
+		"en"		"Give Everyone A Gibus"
+	}
+	"#Chaos_Effect_GiveTopNotch"
+	{
+		"en"		"I'm The Real Notch"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
