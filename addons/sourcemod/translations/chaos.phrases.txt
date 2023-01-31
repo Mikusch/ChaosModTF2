@@ -438,7 +438,6 @@
 	{
 		"en"		"Disassemble Map"
 	}
-
 	"#Chaos_Effect_RegeneratePlayers"
 	{
 		"en"		"Regenerate All Players"
