@@ -9,16 +9,20 @@ enum struct LightData
 	int color[4];
 }
 
+static ConVar showtriggers;
 static ArrayList g_hLightData;
+static ArrayList g_hCreatedVisuals;
 static StringMap g_hEntityToSpriteMap;
 static StringMap g_hEntityToModelMap;
 
 public void Decompiled_Initialize(ChaosEffect effect)
 {
-	g_hLightData = new ArrayList(sizeof(LightData));
-	g_hEntityToSpriteMap = new StringMap();
-	g_hEntityToModelMap = new StringMap();
+	showtriggers = FindConVar("showtriggers");
 	
+	g_hLightData = new ArrayList(sizeof(LightData));
+	g_hCreatedVisuals = new ArrayList();
+	
+	g_hEntityToSpriteMap = new StringMap();
 	g_hEntityToSpriteMap.SetString("ambient_generic", "editor/ambient_generic.vmt");
 	g_hEntityToSpriteMap.SetString("color_correction", "editor/color_correction.vmt");
 	g_hEntityToSpriteMap.SetString("env_cubemap", "editor/env_cubemap.vmt");
@@ -61,6 +65,7 @@ public void Decompiled_Initialize(ChaosEffect effect)
 	g_hEntityToSpriteMap.SetString("shadow_control", "editor/shadow_control.vmt");
 	g_hEntityToSpriteMap.SetString("water_lod_control", "editor/waterlodcontrol.vmt");
 	
+	g_hEntityToModelMap = new StringMap();
 	g_hEntityToModelMap.SetString("bot_hint_engineer_nest", "models/bots/engineer/bot_engineer.mdl");
 	g_hEntityToModelMap.SetString("bot_hint_sentrygun", "models/buildables/sentry3.mdl");
 	g_hEntityToModelMap.SetString("bot_hint_sniper_spot", "models/player/sniper.mdl");
@@ -82,10 +87,9 @@ public void Decompiled_Initialize(ChaosEffect effect)
 
 public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
 {
-	// Clear previous light data
 	g_hLightData.Clear();
 	
-	// Parse entity lump for light information
+	// Parse entity lump for light data
 	for (int i = 0; i < EntityLump.Length(); i++)
 	{
 		EntityLumpEntry entry = EntityLump.Get(i);
@@ -134,61 +138,106 @@ public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
 
 public bool Decompiled_OnStart(ChaosEffect effect)
 {
-	int nMaxEntities = GetMaxEntities();
-	int nCurrentEntities = 0;
+	showtriggers.BoolValue = true;
+	ShowTriggers_Toggle();
+	
+	SpawnLightsFromData();
 	
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		nCurrentEntities++;
-	}
-	
-	// We need a LOT of free edicts for this effect, so just early out if there's too many
-	if (float(nCurrentEntities) / float(nMaxEntities) > 0.5)
-		return false;
-	
-	SpawnLightsFromData();
-	
-	entity = -1;
-	while ((entity = FindEntityByClassname(entity, "*")) != -1)
-	{
-		char classname[64];
-		if (!GetEntityClassname(entity, classname, sizeof(classname)))
-			continue;
-		
-		char szModel[PLATFORM_MAX_PATH];
-		
-		float vecOrigin[3], angRotation[3];
-		CBaseEntity(entity).GetAbsOrigin(vecOrigin);
-		CBaseEntity(entity).GetAbsAngles(angRotation);
-		
-		if (g_hEntityToSpriteMap.GetString(classname, szModel, sizeof(szModel)))
-		{
-			CreateSprite(szModel, vecOrigin, angRotation, entity);
-		}
-		else if (g_hEntityToModelMap.GetString(classname, szModel, sizeof(szModel)))
-		{
-			CreateModel(szModel, vecOrigin, angRotation, entity);
-		}
-	}
-	
-	int trigger = -1;
-	while ((trigger = FindEntityByClassname(trigger, "trigger_*")) != -1)
-	{
-		CBaseEntity(trigger).AddEFlags(128);
-		SetEntProp(trigger, Prop_Send, "m_fEffects", GetEntProp(trigger, Prop_Send, "m_fEffects") | EF_NODRAW);
+		OnEntitySpawned(entity);
 	}
 	
 	return true;
 }
 
+public void Decompiled_OnEntityCreated(ChaosEffect effect, int entity, const char[] classname)
+{
+	SDKHook(entity, SDKHook_SpawnPost, OnEntitySpawned);
+}
+
 public void Decompiled_OnEnd(ChaosEffect effect)
 {
-	int trigger = -1;
-	while ((trigger = FindEntityByClassname(trigger, "trigger_*")) != -1)
+	showtriggers.BoolValue = false;
+	ShowTriggers_Toggle();
+	
+	for (int i = 0; i < g_hCreatedVisuals.Length; i++)
 	{
-		CBaseEntity(trigger).AddEFlags(128);
-		SetEntProp(trigger, Prop_Send, "m_fEffects", GetEntProp(trigger, Prop_Send, "m_fEffects") & ~EF_NODRAW);
+		int visual = g_hCreatedVisuals.Get(i);
+		
+		if (!IsValidEntity(visual))
+			continue;
+		
+		RemoveEntity(visual);
+	}
+	
+	g_hCreatedVisuals.Clear();
+}
+
+static void OnEntitySpawned(int entity)
+{
+	if (ShouldSpawnVisual())
+	{
+		char szClassname[64];
+		if (GetEntityClassname(entity, szClassname, sizeof(szClassname)))
+		{
+			CreateVisualFromEntity(entity, szClassname);
+		}
+	}
+}
+
+static void SpawnLightsFromData()
+{
+	if (g_hLightData.Length == 0)
+	{
+		LogMessage("No light data found! Restart the map to allow OnMapInit to parse light entities.");
+		return;
+	}
+	
+	for (int i = 0; i < g_hLightData.Length; i++)
+	{
+		if (!ShouldSpawnVisual())
+			break;
+		
+		LightData data;
+		if (g_hLightData.GetArray(i, data))
+		{
+			int visual = -1;
+			
+			char szModel[64];
+			if (g_hEntityToSpriteMap.GetString(data.classname, szModel, sizeof(szModel)))
+			{
+				visual = CreateSprite(szModel, data.origin, data.angles);
+			}
+			else if (g_hEntityToModelMap.GetString(data.classname, szModel, sizeof(szModel)))
+			{
+				visual = CreateModel(szModel, data.origin, data.angles);
+			}
+			
+			if (IsValidEntity(visual))
+			{
+				SetEntProp(visual, Prop_Send, "m_clrRender", Color32ToInt(data.color[0], data.color[1], data.color[2], 255));
+			}
+		}
+	}
+}
+
+static void CreateVisualFromEntity(int entity, const char[] szClassname)
+{
+	float vecOrigin[3], angRotation[3];
+	CBaseEntity(entity).GetAbsOrigin(vecOrigin);
+	CBaseEntity(entity).GetAbsAngles(angRotation);
+	
+	char szModel[PLATFORM_MAX_PATH];
+	
+	if (g_hEntityToSpriteMap.GetString(szClassname, szModel, sizeof(szModel)))
+	{
+		CreateSprite(szModel, vecOrigin, angRotation, entity);
+	}
+	else if (g_hEntityToModelMap.GetString(szClassname, szModel, sizeof(szModel)))
+	{
+		CreateModel(szModel, vecOrigin, angRotation, entity);
 	}
 }
 
@@ -212,6 +261,7 @@ static int CreateSprite(const char[] szModel, const float vecOrigin[3], const fl
 			}
 		}
 		
+		g_hCreatedVisuals.Push(EntIndexToEntRef(sprite));
 		return sprite;
 	}
 	
@@ -238,41 +288,36 @@ static int CreateModel(const char[] szModel, const float vecOrigin[3], const flo
 			}
 		}
 		
+		g_hCreatedVisuals.Push(EntIndexToEntRef(prop));
 		return prop;
 	}
 	
 	return -1;
 }
 
-static void SpawnLightsFromData()
+static int GetCurrentEntities()
 {
-	if (g_hLightData.Length == 0)
+	int nCurrentEntities = 0;
+	
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		LogError("No light data found!")
-		return;
+		nCurrentEntities++;
 	}
 	
-	for (int i = 0; i < g_hLightData.Length; i++)
-	{
-		LightData data;
-		if (g_hLightData.GetArray(i, data))
-		{
-			int visual = -1;
-			
-			char szModel[64];
-			if (g_hEntityToSpriteMap.GetString(data.classname, szModel, sizeof(szModel)))
-			{
-				visual = CreateSprite(szModel, data.origin, data.angles);
-			}
-			else if (g_hEntityToModelMap.GetString(data.classname, szModel, sizeof(szModel)))
-			{
-				visual = CreateModel(szModel, data.origin, data.angles);
-			}
-			
-			if (IsValidEntity(visual))
-			{
-				SetEntProp(visual, Prop_Send, "m_clrRender", Color32ToInt(data.color[0], data.color[1], data.color[2], 255));
-			}
-		}
-	}
+	return nCurrentEntities;
+}
+
+static bool ShouldSpawnVisual()
+{
+	// Don't spawn more entities if we're already near the limit
+	return float(GetCurrentEntities()) / float(GetMaxEntities()) < 0.9;
+}
+
+static void ShowTriggers_Toggle()
+{
+	// Remove FCVAR_CHEAT to allow us to call it without cheats
+	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") & ~FCVAR_CHEAT);
+	ServerCommand("showtriggers_toggle");
+	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") | FCVAR_CHEAT);
 }
