@@ -518,6 +518,10 @@
 	{
 		"en"		"High Pitch"
 	}
+	"#Chaos_Effect_SwapTeams"
+	{
+		"en"		"Swap Teams"
+	}
 	"#Chaos_Effect_ForceForward"
 	{
 		"en"		"Help My W Key Is Stuck"
