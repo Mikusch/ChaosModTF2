@@ -502,6 +502,14 @@
 	{
 		"en"		"U-Turn"
 	}
+	"#Chaos_Effect_GrantAllUpgrades"
+	{
+		"en"		"Grant All Upgrades"
+	}
+	"#Chaos_Effect_RemoveAllUpgrades"
+	{
+		"en"		"Remove All Upgrades"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

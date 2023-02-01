@@ -52,6 +52,7 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_floorislava.sp"
 #include "chaos/effects/effect_fov.sp"
 #include "chaos/effects/effect_giveitem.sp"
+#include "chaos/effects/effect_grantorremoveallupgrades.sp"
 #include "chaos/effects/effect_invertconvar.sp"
 #include "chaos/effects/effect_killrandomplayer.sp"
 #include "chaos/effects/effect_launchup.sp"
