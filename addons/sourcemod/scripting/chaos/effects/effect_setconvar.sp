@@ -1,12 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static StringMap g_hOldConvarValues;
+static StringMap g_hOldConVarValues;
 static ConVar sv_cheats;
 
 public void SetConVar_Initialize(ChaosEffect effect)
 {
-	g_hOldConvarValues = new StringMap();
+	g_hOldConVarValues = new StringMap();
 	sv_cheats = FindConVar("sv_cheats");
 }
 
@@ -38,8 +38,13 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	if (StrEqual(szOldValue, szValue))
 		return false;
 	
-	g_hOldConvarValues.SetString(szName, szOldValue);
+	g_hOldConVarValues.SetString(szName, szOldValue);
 	convar.SetString(szValue, true);
+	
+	// If this effect has no duration, we don't need the stuff below
+	if (effect.duration == 0.0)
+		return true;
+	
 	convar.AddChangeHook(OnConVarChanged);
 	
 	if (effect.data.GetNum("replicate_cheats"))
@@ -68,13 +73,13 @@ public void SetConVar_OnEnd(ChaosEffect effect)
 {
 	char szName[512], szValue[512];
 	effect.data.GetString("convar", szName, sizeof(szName));
-	g_hOldConvarValues.GetString(szName, szValue, sizeof(szValue));
+	g_hOldConVarValues.GetString(szName, szValue, sizeof(szValue));
 	
 	ConVar convar = FindConVar(szName);
 	
 	convar.RemoveChangeHook(OnConVarChanged);
 	convar.SetString(szValue, true);
-	g_hOldConvarValues.Remove(szName);
+	g_hOldConVarValues.Remove(szName);
 	
 	if (effect.data.GetNum("replicate_cheats"))
 	{
@@ -106,5 +111,5 @@ static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] n
 	convar.AddChangeHook(OnConVarChanged);
 	
 	// Update our stored value
-	g_hOldConvarValues.SetString(szName, newValue);
+	g_hOldConVarValues.SetString(szName, newValue);
 }

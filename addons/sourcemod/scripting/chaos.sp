@@ -268,7 +268,7 @@ public void OnGameFrame()
 		char szForceId[64];
 		sm_chaos_force_effect.GetString(szForceId, sizeof(szForceId));
 		
-		if (strlen(szForceId) == 0)
+		if (!szForceId[0])
 		{
 			SelectRandomEffect();
 		}
