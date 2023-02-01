@@ -486,6 +486,10 @@
 	{
 		"en"		"Econ Violation"
 	}
+	"#Chaos_Effect_Decompiled"
+	{
+		"en"		"Decompiled"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

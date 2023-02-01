@@ -180,6 +180,33 @@ void StopStaticSound(const char[] sound)
 	}
 }
 
+void StringToVector(const char[] str, float vec[3])
+{
+	char buffer[3][16];
+	ExplodeString(str, " ", buffer, sizeof(buffer), sizeof(buffer[]));
+	
+	for (int i = 0; i < sizeof(vec); i++)
+	{
+		vec[i] = StringToFloat(buffer[i]);
+	}
+}
+
+void StringToColor(const char[] str, int color[4])
+{
+	char buffer[4][16];
+	ExplodeString(str, " ", buffer, sizeof(buffer), sizeof(buffer[]));
+	
+	for (int i = 0; i < sizeof(color); i++)
+	{
+		color[i] = StringToInt(buffer[i]);
+	}
+}
+
+int Color32ToInt(int r, int g, int b, int a)
+{
+	return (r << 24) | (g << 16) | (b << 8) | (a);
+}
+
 bool IsMiscSlot(int iSlot)
 {
 	return iSlot == LOADOUT_POSITION_MISC
