@@ -4,7 +4,7 @@
 enum struct ChaosEffect
 {
 	// Static data
-	int id;
+	char id[64];
 	char name[64];
 	bool enabled;
 	float duration;
@@ -24,8 +24,7 @@ enum struct ChaosEffect
 	
 	void Parse(KeyValues kv)
 	{
-		char section[64];
-		if (kv.GetSectionName(section, sizeof(section)) && StringToIntEx(section, this.id))
+		if (kv.GetSectionName(this.id, sizeof(this.id)))
 		{
 			kv.GetString("name", this.name, sizeof(this.name));
 			this.enabled = kv.GetNum("enabled", true) != 0;
@@ -90,7 +89,7 @@ enum struct ChaosEffect
 			if (g_hEffects.GetArray(i, effect) && effect.active)
 			{
 				// Don't modify our own duration
-				if (effect.id == this.id)
+				if (StrEqual(effect.id, this.id))
 					continue;
 				
 				Function fnCallback = effect.GetCallbackFunction("ModifyEffectDuration");
@@ -123,9 +122,9 @@ void Data_Initialize()
 				ChaosEffect effect;
 				effect.Parse(kv);
 				
-				if (g_hEffects.FindValue(effect.id) != -1)
+				if (g_hEffects.FindString(effect.id) != -1)
 				{
-					LogError("Effect '%s' has duplicate ID (%d), skipping...", effect.name, LANG_SERVER, effect.id);
+					LogError("Effect '%s' has duplicate ID '%s', skipping...", effect.name, LANG_SERVER, effect.id);
 					continue;
 				}
 				

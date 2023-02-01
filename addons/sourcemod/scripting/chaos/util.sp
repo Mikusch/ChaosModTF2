@@ -40,7 +40,7 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	list.GetArray(index1, effect1);
 	list.GetArray(index2, effect2);
 	
-	return (effect1.activate_time == effect2.activate_time) ? Compare(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
+	return (effect1.activate_time == effect2.activate_time) ? strcmp(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
 }
 
 bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)

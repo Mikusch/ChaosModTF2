@@ -96,11 +96,11 @@ public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
 	
-	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "8", "Default cooldown between effects.");
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "20", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.01", "Chance for a meta effect to be activated every interval.");
-	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "-1", "ID of the effect to force.");
+	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "", "ID of the effect to force.");
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
@@ -265,17 +265,19 @@ public void OnGameFrame()
 	{
 		g_flLastEffectActivateTime = GetGameTime();
 		
-		int iForceId = sm_chaos_force_effect.IntValue;
-		if (iForceId == INVALID_EFFECT_ID)
+		char szForceId[64];
+		sm_chaos_force_effect.GetString(szForceId, sizeof(szForceId));
+		
+		if (strlen(szForceId) == 0)
 		{
 			SelectRandomEffect();
 		}
 		else
 		{
-			int nIndex = g_hEffects.FindValue(iForceId, ChaosEffect::id);
+			int nIndex = g_hEffects.FindString(szForceId);
 			if (nIndex == -1)
 			{
-				LogError("Failed to force unknown effect '%d'", iForceId);
+				LogError("Failed to force unknown effect with ID '%s'", szForceId);
 				return;
 			}
 			
@@ -473,10 +475,10 @@ void SelectRandomEffect(bool bMeta = false)
 
 bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 {
-	int nIndex = g_hEffects.FindValue(effect.id, ChaosEffect::id);
+	int nIndex = g_hEffects.FindString(effect.id);
 	if (nIndex == -1)
 	{
-		LogError("Failed to activate unknown effect with id '%d'", effect.id);
+		LogError("Failed to activate unknown effect with id '%s'", effect.id);
 		return false;
 	}
 	
@@ -532,7 +534,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		ChaosEffect other;
 		if (g_hEffects.GetArray(i, other))
 		{
-			if (other.id == effect.id)
+			if (StrEqual(other.id, effect.id))
 				continue;
 			
 			if (other.active)
@@ -687,10 +689,10 @@ void ExpireAllActiveEffects(bool bForce = false)
 
 void ForceExpireEffect(ChaosEffect effect)
 {
-	int nIndex = g_hEffects.FindValue(effect.id, ChaosEffect::id);
+	int nIndex = g_hEffects.FindString(effect.id);
 	if (nIndex == -1)
 	{
-		LogError("Failed to expire unknown effect with id '%d'", effect.id);
+		LogError("Failed to expire unknown effect with id '%s'", effect.id);
 		return;
 	}
 	
