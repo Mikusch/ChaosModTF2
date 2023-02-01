@@ -498,6 +498,10 @@
 	{
 		"en"		"All Players Are Backstab Immune"
 	}
+	"#Chaos_Effect_UTurn"
+	{
+		"en"		"U-Turn"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
