@@ -23,13 +23,13 @@ public bool RemoveRandomEntity_OnStart(ChaosEffect effect)
 	entity = hEntities.Get(GetRandomInt(0, hEntities.Length - 1));
 	delete hEntities;
 	
-	RemoveEntity(entity);
-	
 	char szClassname[64];
 	if (GetEntityClassname(entity, szClassname, sizeof(szClassname)))
 	{
 		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_RemoveRandomEntity_Success", entity, szClassname);
 	}
+	
+	RemoveEntity(entity);
 	
 	return true;
 }
