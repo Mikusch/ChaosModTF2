@@ -18,7 +18,7 @@ public Action ModifyPitch_OnNormalSoundPlayed(ChaosEffect effect, int clients[MA
 	return Plugin_Changed;
 }
 
-public Action ModifyPitch_OnAmbientSoundPlayed(ChaosEffect effect, char sample[PLATFORM_MAX_PATH], int & entity, float & volume, int & level, int & pitch, float pos[3], int & flags, float & delay)
+public Action ModifyPitch_OnAmbientSoundPlayed(ChaosEffect effect, char sample[PLATFORM_MAX_PATH], int &entity, float &volume, int &level, int &pitch, float pos[3], int &flags, float &delay)
 {
 	pitch = effect.data.GetNum("pitch");
 	return Plugin_Changed;
