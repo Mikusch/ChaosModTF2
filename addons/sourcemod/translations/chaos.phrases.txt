@@ -518,6 +518,10 @@
 	{
 		"en"		"High Pitch"
 	}
+	"#Chaos_Effect_ForceForward"
+	{
+		"en"		"Help My W Key Is Stuck"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

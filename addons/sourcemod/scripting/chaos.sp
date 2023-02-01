@@ -50,6 +50,7 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_fling.sp"
 #include "chaos/effects/effect_flipviewmodels.sp"
 #include "chaos/effects/effect_floorislava.sp"
+#include "chaos/effects/effect_forceforward.sp"
 #include "chaos/effects/effect_fov.sp"
 #include "chaos/effects/effect_giveitem.sp"
 #include "chaos/effects/effect_grantorremoveallupgrades.sp"
