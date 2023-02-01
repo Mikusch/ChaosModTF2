@@ -514,4 +514,8 @@
 	{
 		"en"		"0.5x Effect Duration (Meta)"
 	}
+	"#Chaos_MetaEffect_ReinvokePreviousEffects"
+	{
+		"en"		"Reinvoke Previous Effects (Meta)"
+	}
 }

@@ -37,6 +37,7 @@ bool g_bNoChaos;
 // Meta effects
 #include "chaos/effects/meta/effect_effectduration.sp"
 #include "chaos/effects/meta/effect_nochaos.sp"
+#include "chaos/effects/meta/effect_reinvokeeffects.sp"
 #include "chaos/effects/meta/effect_timerspeed.sp"
 
 // Regular effects
@@ -609,8 +610,11 @@ void DisplayActiveEffects()
 		for (int i = 0; i < g_hEffects.Length; i++)
 		{
 			ChaosEffect effect;
-			if (g_hEffects.GetArray(i, effect) && effect.activate_time)
+			if (g_hEffects.GetArray(i, effect))
 			{
+				if (effect.activate_time == 0.0)
+					continue;
+				
 				char szName[64];
 				if (!effect.GetName(szName, sizeof(szName)) || !szName[0])
 					continue;
@@ -666,6 +670,9 @@ void ExpireAllActiveEffects(bool bForce = false)
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
+			if (effect.activate_time == 0.0)
+				continue;
+			
 			// Check if the effect actually expired
 			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
 				continue;
