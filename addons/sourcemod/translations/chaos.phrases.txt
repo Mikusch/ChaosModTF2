@@ -490,6 +490,14 @@
 	{
 		"en"		"Decompiled"
 	}
+	"#Chaos_Effect_NoHeads"
+	{
+		"en"		"Decapitated"
+	}
+	"Chaos_Effect_BackstabImmune"
+	{
+		"en"		"All Players Are Backstab Immune"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
