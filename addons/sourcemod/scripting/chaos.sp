@@ -57,6 +57,7 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_killrandomplayer.sp"
 #include "chaos/effects/effect_launchup.sp"
 #include "chaos/effects/effect_mannpower.sp"
+#include "chaos/effects/effect_modifypitch.sp"
 #include "chaos/effects/effect_noclip.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
@@ -108,6 +109,7 @@ public void OnPluginStart()
 	Data_Initialize();
 	
 	AddNormalSoundHook(NormalSHook_OnSoundPlayed);
+	AddAmbientSoundHook(AmbientSHook_OnSoundPlayed);
 	
 	GameData hGameData = new GameData("chaos");
 	if (hGameData)
@@ -809,7 +811,7 @@ static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.active)
 		{
-			Function fnCallback = effect.GetCallbackFunction("OnSoundPlayed");
+			Function fnCallback = effect.GetCallbackFunction("OnNormalSoundPlayed");
 			if (fnCallback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, fnCallback);
@@ -825,6 +827,44 @@ static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients
 				Call_PushCellRef(flags);
 				Call_PushStringEx(soundEntry, sizeof(soundEntry), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
 				Call_PushCellRef(seed);
+				
+				Action nResult;
+				if (Call_Finish(nResult) == SP_ERROR_NONE)
+				{
+					if (nResult > nReturn)
+					{
+						nReturn = nResult;
+					}
+				}
+			}
+		}
+	}
+	
+	return nReturn;
+}
+
+static Action AmbientSHook_OnSoundPlayed(char sample[PLATFORM_MAX_PATH], int& entity, float& volume, int& level, int& pitch, float pos[3], int& flags, float& delay)
+{
+	Action nReturn = Plugin_Continue;
+	
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && effect.active)
+		{
+			Function fnCallback = effect.GetCallbackFunction("OnAmbientSoundPlayed");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushStringEx(sample, sizeof(sample), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+				Call_PushCellRef(entity);
+				Call_PushCellRef(volume);
+				Call_PushCellRef(level);
+				Call_PushCellRef(pitch);
+				Call_PushArrayEx(pos, sizeof(pos), SM_PARAM_COPYBACK);
+				Call_PushCellRef(flags);
+				Call_PushFloatRef(delay);
 				
 				Action nResult;
 				if (Call_Finish(nResult) == SP_ERROR_NONE)

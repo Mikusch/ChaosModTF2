@@ -510,6 +510,14 @@
 	{
 		"en"		"Remove All Upgrades"
 	}
+	"#Chaos_Effect_LowPitch"
+	{
+		"en"		"Low Pitch"
+	}
+	"#Chaos_Effect_HighPitch"
+	{
+		"en"		"High Pitch"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
