@@ -450,10 +450,6 @@
 	{
 		"en"		"Memorial Day"
 	}
-	"#Chaos_Effect_ForceDraw"
-	{
-		"en"		"Self-Awareness"
-	}
 	"#Chaos_Effect_LargeSmokeExplosions"
 	{
 		"en"		"Directed By Michael Bay"
@@ -537,6 +533,10 @@
 	"#Chaos_Effect_SpawnBirds"
 	{
 		"en"		"Who Let The Birds Out?"
+	}
+	"#Chaos_Effect_EyeCamera"
+	{
+		"en"		"Out-Of-Body Experience"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
