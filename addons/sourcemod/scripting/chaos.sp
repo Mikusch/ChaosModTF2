@@ -42,6 +42,7 @@ bool g_bNoChaos;
 
 // Regular effects
 #include "chaos/effects/effect_addcond.sp"
+#include "chaos/effects/effect_birds.sp"
 #include "chaos/effects/effect_cattoguns.sp"
 #include "chaos/effects/effect_decompiled.sp"
 #include "chaos/effects/effect_disassemblemap.sp"

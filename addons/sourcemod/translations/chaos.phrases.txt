@@ -526,9 +526,17 @@
 	{
 		"en"		"Help My W Key Is Stuck"
 	}
-	"#Chaos_Effect_SpawnTanks"
+	"#Chaos_Effect_2xAnimationSpeed"
 	{
-		"en"		"Tanks A Lot"
+		"en"		"2x Animation Speed"
+	}
+	"#Chaos_Effect_0.5xAnimationSpeed"
+	{
+		"en"		"0.5x Animation Speed"
+	}
+	"#Chaos_Effect_SpawnBirds"
+	{
+		"en"		"Who Let The Birds Out?"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
