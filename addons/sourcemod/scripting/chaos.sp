@@ -279,13 +279,17 @@ public void OnGameFrame()
 			if (nIndex == -1)
 			{
 				LogError("Failed to force unknown effect with ID '%s'", szForceId);
-				return;
 			}
-			
-			ChaosEffect effect;
-			if (g_hEffects.GetArray(nIndex, effect))
+			else
 			{
-				ActivateEffect(effect, true);
+				ChaosEffect effect;
+				if (g_hEffects.GetArray(nIndex, effect))
+				{
+					if (!ActivateEffect(effect, true))
+					{
+						LogError("Failed to force effect '%T'", effect.name, LANG_SERVER);
+					}
+				}
 			}
 		}
 	}
@@ -505,7 +509,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false.", effect.name, LANG_SERVER);
+			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false", effect.name, LANG_SERVER);
 			return false;
 		}
 	}
@@ -563,7 +567,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
 	}
 	
-	LogMessage("Successfully activated effect '%T'.", effect.name, LANG_SERVER);
+	LogMessage("Successfully activated effect '%T'", effect.name, LANG_SERVER);
 	
 	return true;
 }
