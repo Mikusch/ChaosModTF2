@@ -41,13 +41,13 @@
 	{
 		"en"		"Eternal Screams"
 	}
-	"#Chaos_Effect_SetEveryoneTo1HP"
+	"#Chaos_Effect_1HP"
 	{
-		"en"		"Set Everyone's HP To 1"
+		"en"		"One Hit K.O."
 	}
-	"#Chaos_Effect_SetEveryoneTo1000HP"
+	"#Chaos_Effect_1000HP"
 	{
-		"en"		"Give Everyone 1000 HP"
+		"en"		"Big Boned"
 	}
 	"#Chaos_Effect_ShortMercs"
 	{
@@ -525,6 +525,10 @@
 	"#Chaos_Effect_ForceForward"
 	{
 		"en"		"Help My W Key Is Stuck"
+	}
+	"#Chaos_Effect_SpawnTanks"
+	{
+		"en"		"Tanks A Lot"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

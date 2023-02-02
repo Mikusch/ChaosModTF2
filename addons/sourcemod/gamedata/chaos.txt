@@ -22,6 +22,12 @@
 				"linux"		"@_ZNK9CTFPlayer30TeamFortress_CalculateMaxSpeedEb"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x83\x3D\x2A\x2A\x2A\x2A\x00\x56"
 			}
+			"CTFPlayer::GetMaxHealthForBuffing"
+			{
+				"library"	"server"
+				"linux"		"@_ZN9CTFPlayer22GetMaxHealthForBuffingEv"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x24\x53\x56\x57\x8B\xF9\xFF\xB7\x40\x22\x00\x00"
+			}
 		}
 		"Functions"
 		{
@@ -38,6 +44,13 @@
 						"type"	"bool"
 					}
 				}
+			}
+			"CTFPlayer::GetMaxHealthForBuffing"
+			{
+				"signature"	"CTFPlayer::GetMaxHealthForBuffing"
+				"callconv"	"thiscall"
+				"return"	"int"
+				"this"		"entity"
 			}
 		}
 	}

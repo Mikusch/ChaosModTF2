@@ -696,6 +696,8 @@ void ForceExpireEffect(ChaosEffect effect)
 		return;
 	}
 	
+	g_hEffects.Set(nIndex, false, ChaosEffect::active);
+	
 	Function fnCallback = effect.GetCallbackFunction("OnEnd");
 	if (fnCallback != INVALID_FUNCTION)
 	{
@@ -721,9 +723,6 @@ void ForceExpireEffect(ChaosEffect effect)
 	{
 		PlayStaticSound(effect.end_sound);
 	}
-	
-	effect.active = false;
-	g_hEffects.SetArray(nIndex, effect);
 }
 
 /**

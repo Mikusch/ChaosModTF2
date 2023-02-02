@@ -4,6 +4,7 @@
 void DHooks_Initialize(GameData hGameData)
 {
 	DHooks_CreateDynamicDetour(hGameData, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
+	DHooks_CreateDynamicDetour(hGameData, "CTFPlayer::GetMaxHealthForBuffing", _, DHookCallback_GetMaxHealthForBuffing_Post);
 }
 
 static void DHooks_CreateDynamicDetour(GameData hGameData, const char[] szName, DHookCallback fnCallbackPre = INVALID_FUNCTION, DHookCallback fnCallbackPost = INVALID_FUNCTION)
@@ -27,7 +28,7 @@ static void DHooks_CreateDynamicDetour(GameData hGameData, const char[] szName, 
 	}
 }
 
-static MRESReturn DHookCallback_CalculateMaxSpeed_Post(int player, DHookReturn hReturn)
+static MRESReturn DHookCallback_CalculateMaxSpeed_Post(int player, DHookReturn hReturn, DHookParam hParam)
 {
 	// Do not allow changing speed while the game wants to stop us
 	if (hReturn.Value == 1.0)
@@ -54,6 +55,42 @@ static MRESReturn DHookCallback_CalculateMaxSpeed_Post(int player, DHookReturn h
 				if (Call_Finish(nResult) == SP_ERROR_NONE)
 				{
 					hReturn.Value = flSpeed;
+					
+					if (nResult > nReturn)
+					{
+						nReturn = nResult;
+					}
+				}
+			}
+		}
+	}
+	
+	return nReturn;
+}
+
+static MRESReturn DHookCallback_GetMaxHealthForBuffing_Post(int player, DHookReturn hReturn)
+{
+	MRESReturn nReturn = MRES_Ignored;
+	
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && effect.active)
+		{
+			Function fnCallback = effect.GetCallbackFunction("GetMaxHealthForBuffing");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				int iHealth = hReturn.Value;
+				
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(player);
+				Call_PushCellRef(iHealth);
+				
+				MRESReturn nResult;
+				if (Call_Finish(nResult) == SP_ERROR_NONE)
+				{
+					hReturn.Value = iHealth;
 					
 					if (nResult > nReturn)
 					{
