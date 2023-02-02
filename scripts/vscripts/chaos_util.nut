@@ -13,11 +13,11 @@ const LIFE_ALIVE = 0
 function GetEnemyTeam(team)
 {
 	if (team == Constants.ETFTeam.TF_TEAM_RED)
-		return Constants.ETFTeam.TF_TEAM_BLUE;
+		return Constants.ETFTeam.TF_TEAM_BLUE
 
 	if (team == Constants.ETFTeam.TF_TEAM_BLUE)
-		return Constants.ETFTeam.TF_TEAM_RED;
+		return Constants.ETFTeam.TF_TEAM_RED
 
 	// no enemy team
-	return team;
+	return team
 }

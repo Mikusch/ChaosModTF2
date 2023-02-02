@@ -47,8 +47,18 @@ function CreateViewControl(player)
 	EntFireByHandle(viewcontrol, "SetParent", "!activator", 0, player, viewcontrol)
 	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", 0, null, null)
 	EntFireByHandle(viewcontrol, "Enable", "!activator", 0, player, viewcontrol)
-	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(activator, `m_takedamage`, 2)", 0, player, player)
+	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", 0, player, player)
+
 	return viewcontrol
+}
+
+function PostViewControlEnable()
+{
+	local weapon = activator.GetActiveWeapon()
+	if (weapon != null)
+		weapon.SetDrawEnabled(true)
+
+	NetProps.SetPropInt(activator, "m_takedamage", 2)
 }
 
 function RemoveViewControl(player, viewcontrol)
