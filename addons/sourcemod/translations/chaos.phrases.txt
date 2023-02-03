@@ -115,7 +115,7 @@
 	}
 	"#Chaos_Effect_EnableTeamCollisions"
 	{
-		"en"		"Enable Team Collisions"
+		"en"		"Solid Teammates"
 	}
 	"#Chaos_Effect_MidasTouch"
 	{
@@ -149,7 +149,7 @@
 	{
 		"en"		"T.F. Noire"
 	}
-	"#Chaos_Effect_VirtualReality"
+	"#Chaos_Effect_PipBoyOverlay"
 	{
 		"en"		"Virtual Reality"
 	}
