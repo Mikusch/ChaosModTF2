@@ -66,6 +66,7 @@ public void Decompiled_Initialize(ChaosEffect effect)
 	g_hEntityToSpriteMap.SetString("water_lod_control", "editor/waterlodcontrol.vmt");
 	
 	g_hEntityToModelMap = new StringMap();
+	g_hEntityToModelMap.SetString("beam", "models/editor/cone_helper.mdl");
 	g_hEntityToModelMap.SetString("bot_hint_engineer_nest", "models/bots/engineer/bot_engineer.mdl");
 	g_hEntityToModelMap.SetString("bot_hint_sentrygun", "models/buildables/sentry3.mdl");
 	g_hEntityToModelMap.SetString("bot_hint_sniper_spot", "models/player/sniper.mdl");
@@ -228,6 +229,15 @@ static void CreateVisualFromEntity(int entity, const char[] szClassname)
 	float vecOrigin[3], angRotation[3];
 	CBaseEntity(entity).GetAbsOrigin(vecOrigin);
 	CBaseEntity(entity).GetAbsAngles(angRotation);
+	
+	if (StrEqual(szClassname, "beam"))
+	{
+		// no angle info, need to recover it from end position
+		float vecEndPos[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecEndPos", vecEndPos);
+		SubtractVectors(vecEndPos, vecOrigin, vecEndPos);
+		GetVectorAngles(vecEndPos, angRotation);
+	}
 	
 	char szModel[PLATFORM_MAX_PATH];
 	
