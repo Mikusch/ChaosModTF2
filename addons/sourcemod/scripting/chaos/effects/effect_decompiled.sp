@@ -9,6 +9,12 @@ enum struct LightData
 	int color[4];
 }
 
+enum struct VisualData
+{
+	int visual;
+	int entity;
+}
+
 static ConVar showtriggers;
 static ArrayList g_hLightData;
 static ArrayList g_hCreatedVisuals;
@@ -20,7 +26,7 @@ public void Decompiled_Initialize(ChaosEffect effect)
 	showtriggers = FindConVar("showtriggers");
 	
 	g_hLightData = new ArrayList(sizeof(LightData));
-	g_hCreatedVisuals = new ArrayList();
+	g_hCreatedVisuals = new ArrayList(sizeof(VisualData));
 	
 	g_hEntityToSpriteMap = new StringMap();
 	g_hEntityToSpriteMap.SetString("ambient_generic", "editor/ambient_generic.vmt");
@@ -65,7 +71,7 @@ public void Decompiled_Initialize(ChaosEffect effect)
 	g_hEntityToSpriteMap.SetString("shadow_control", "editor/shadow_control.vmt");
 	g_hEntityToSpriteMap.SetString("water_lod_control", "editor/waterlodcontrol.vmt");
 	
-	// these entities have no unique visual representation
+	// these entities have no unique visual representation, so we use obsolete
 	g_hEntityToSpriteMap.SetString("env_screenoverlay", "editor/obsolete.vmt");
 	g_hEntityToSpriteMap.SetString("game_forcerespawn", "editor/obsolete.vmt");
 	g_hEntityToSpriteMap.SetString("point_template", "editor/obsolete.vmt");
@@ -158,13 +164,7 @@ public bool Decompiled_OnStart(ChaosEffect effect)
 	showtriggers.BoolValue = true;
 	ShowTriggers_Toggle();
 	
-	SpawnLightsFromData();
-	
-	int entity = -1;
-	while ((entity = FindEntityByClassname(entity, "*")) != -1)
-	{
-		OnEntitySpawned(entity);
-	}
+	Decompiled_OnRoundStart(effect);
 	
 	return true;
 }
@@ -174,6 +174,41 @@ public void Decompiled_OnEntityCreated(ChaosEffect effect, int entity, const cha
 	SDKHook(entity, SDKHook_SpawnPost, OnEntitySpawned);
 }
 
+public void Decompiled_OnEntityDestroyed(ChaosEffect effect, int entity)
+{
+	// if the visual is removed, remove our reference to it
+	int iIndex = g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::visual);
+	if (iIndex != -1)
+	{
+		g_hCreatedVisuals.Erase(iIndex);
+	}
+	
+	// if the associated entity is removed, also clear the visual
+	iIndex = g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::entity);
+	if (iIndex != -1)
+	{
+		int visual = g_hCreatedVisuals.Get(iIndex, VisualData::visual);
+		if (IsValidEntity(visual))
+		{
+			RemoveEntity(visual);
+		}
+	}
+}
+
+public void Decompiled_OnRoundStart(ChaosEffect effect)
+{
+	SpawnLightsFromData();
+	
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
+	{
+		if (g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::entity) == -1)
+		{
+			OnEntitySpawned(entity);
+		}
+	}
+}
+
 public void Decompiled_OnEnd(ChaosEffect effect)
 {
 	showtriggers.BoolValue = false;
@@ -181,7 +216,7 @@ public void Decompiled_OnEnd(ChaosEffect effect)
 	
 	for (int i = 0; i < g_hCreatedVisuals.Length; i++)
 	{
-		int visual = g_hCreatedVisuals.Get(i);
+		int visual = g_hCreatedVisuals.Get(i, VisualData::visual);
 		
 		if (!IsValidEntity(visual))
 			continue;
@@ -257,17 +292,43 @@ static void CreateVisualFromEntity(int entity, const char[] szClassname)
 	
 	char szModel[PLATFORM_MAX_PATH];
 	
+	int visual = -1;
+	
 	if (g_hEntityToSpriteMap.GetString(szClassname, szModel, sizeof(szModel)))
 	{
-		CreateSprite(szModel, vecOrigin, angRotation, entity);
+		visual = CreateSprite(szModel, vecOrigin, angRotation);
 	}
 	else if (g_hEntityToModelMap.GetString(szClassname, szModel, sizeof(szModel)))
 	{
-		CreateModel(szModel, vecOrigin, angRotation, entity);
+		visual = CreateModel(szModel, vecOrigin, angRotation);
+	}
+	
+	if (IsValidEntity(visual))
+	{
+		VisualData data;
+		
+		if (IsValidEntity(entity))
+		{
+			char szParent[64];
+			if (GetEntPropString(entity, Prop_Data, "m_iParent", szParent, sizeof(szParent)))
+			{
+				SetVariantString(szParent);
+				AcceptEntityInput(visual, "SetParent");
+			}
+			
+			data.entity = EntIndexToEntRef(EntRefToEntIndex(entity));
+		}
+		else
+		{
+			data.entity = INVALID_ENT_REFERENCE;
+		}
+		
+		data.visual = EntIndexToEntRef(EntRefToEntIndex(visual));
+		g_hCreatedVisuals.PushArray(data);
 	}
 }
 
-static int CreateSprite(const char[] szModel, const float vecOrigin[3], const float angRotation[3] = NULL_VECTOR, int entity = -1)
+static int CreateSprite(const char[] szModel, const float vecOrigin[3], const float angRotation[3] = NULL_VECTOR)
 {
 	int sprite = CreateEntityByName("env_sprite");
 	if (IsValidEntity(sprite))
@@ -276,25 +337,15 @@ static int CreateSprite(const char[] szModel, const float vecOrigin[3], const fl
 		DispatchKeyValueVector(sprite, "angles", angRotation);
 		DispatchKeyValue(sprite, "model", szModel);
 		DispatchKeyValue(sprite, "rendermode", "1");
+		DispatchSpawn(sprite);
 		
-		if (DispatchSpawn(sprite) && IsValidEntity(entity))
-		{
-			char szParent[64];
-			if (GetEntPropString(entity, Prop_Data, "m_iParent", szParent, sizeof(szParent)))
-			{
-				SetVariantString(szParent);
-				AcceptEntityInput(sprite, "SetParent");
-			}
-		}
-		
-		g_hCreatedVisuals.Push(EntIndexToEntRef(sprite));
 		return sprite;
 	}
 	
 	return -1;
 }
 
-static int CreateModel(const char[] szModel, const float vecOrigin[3], const float angRotation[3] = NULL_VECTOR, int entity = -1)
+static int CreateModel(const char[] szModel, const float vecOrigin[3], const float angRotation[3] = NULL_VECTOR)
 {
 	int prop = CreateEntityByName("prop_dynamic");
 	if (IsValidEntity(prop))
@@ -303,18 +354,8 @@ static int CreateModel(const char[] szModel, const float vecOrigin[3], const flo
 		DispatchKeyValueVector(prop, "angles", angRotation);
 		DispatchKeyValue(prop, "model", szModel);
 		DispatchKeyValue(prop, "disableshadows", "1");
+		DispatchSpawn(prop);
 		
-		if (DispatchSpawn(prop) && IsValidEntity(entity))
-		{
-			char szParent[64];
-			if (GetEntPropString(entity, Prop_Data, "m_iParent", szParent, sizeof(szParent)))
-			{
-				SetVariantString(szParent);
-				AcceptEntityInput(prop, "SetParent");
-			}
-		}
-		
-		g_hCreatedVisuals.Push(EntIndexToEntRef(prop));
 		return prop;
 	}
 	

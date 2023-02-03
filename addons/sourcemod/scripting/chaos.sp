@@ -327,6 +327,25 @@ public void OnEntityCreated(int entity, const char[] classname)
 	}
 }
 
+public void OnEntityDestroyed(int entity)
+{
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && effect.active)
+		{
+			Function fnCallback = effect.GetCallbackFunction("OnEntityDestroyed");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(entity);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	Action nReturn = Plugin_Continue;
