@@ -63,7 +63,7 @@ function PostViewControlEnable()
 
 function RemoveViewControl(player, viewcontrol)
 {
-    EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope();activator.GetScriptScope().__lifestate<-NetProps.GetPropInt(activator, `m_lifeState`);", 0, player, player)
+    EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope();activator.GetScriptScope().__lifestate<-NetProps.GetPropInt(activator, `m_lifeState`);NetProps.SetPropInt(activator, `m_lifeState`, 0)", 0, player, player)
     EntFireByHandle(viewcontrol, "Disable", null, 0, player, player)
     EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(activator, `m_lifeState`, activator.GetScriptScope().__lifestate)", 0, player, player)
     EntFireByHandle(viewcontrol, "Kill", null, 0, null, null)
