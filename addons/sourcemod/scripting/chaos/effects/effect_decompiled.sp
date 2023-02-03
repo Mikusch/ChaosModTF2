@@ -65,6 +65,22 @@ public void Decompiled_Initialize(ChaosEffect effect)
 	g_hEntityToSpriteMap.SetString("shadow_control", "editor/shadow_control.vmt");
 	g_hEntityToSpriteMap.SetString("water_lod_control", "editor/waterlodcontrol.vmt");
 	
+	// these entities have no unique visual representation
+	g_hEntityToSpriteMap.SetString("env_screenoverlay", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("game_forcerespawn", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("point_template", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("point_clientcommand", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("point_hurt", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("point_servercommand", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("sky_camera", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("team_control_point_master", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("team_control_point_round", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("team_round_timer", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("team_train_watcher", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("tf_logic_arena", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("tf_logic_mann_vs_machine", "editor/obsolete.vmt");
+	g_hEntityToSpriteMap.SetString("tf_gamerules", "editor/obsolete.vmt");
+	
 	g_hEntityToModelMap = new StringMap();
 	g_hEntityToModelMap.SetString("beam", "models/editor/cone_helper.mdl");
 	g_hEntityToModelMap.SetString("bot_hint_engineer_nest", "models/bots/engineer/bot_engineer.mdl");
