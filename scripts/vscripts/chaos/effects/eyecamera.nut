@@ -44,9 +44,10 @@ function ChaosEffect_OnEnd()
 function CreateViewControl(player)
 {
 	local viewcontrol = SpawnEntityFromTable("point_viewcontrol", 
-    {
-        origin = player.EyePosition()
-    })
+	{
+		origin = player.EyePosition(),
+		angles = player.EyeAngles()
+	})
 	EntFireByHandle(viewcontrol, "SetParent", "!activator", 0, player, viewcontrol)
 	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", 0, null, null)
 	EntFireByHandle(viewcontrol, "Enable", "!activator", 0, player, viewcontrol)
