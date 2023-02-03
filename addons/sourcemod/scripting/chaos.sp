@@ -60,6 +60,7 @@ bool g_bNoChaos;
 #include "chaos/effects/effect_launchup.sp"
 #include "chaos/effects/effect_mannpower.sp"
 #include "chaos/effects/effect_modifypitch.sp"
+#include "chaos/effects/effect_nothing.sp"
 #include "chaos/effects/effect_removehealthandammo.sp"
 #include "chaos/effects/effect_removerandomentity.sp"
 #include "chaos/effects/effect_screenoverlay.sp"

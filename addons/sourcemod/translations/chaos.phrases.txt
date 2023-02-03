@@ -47,7 +47,7 @@
 	}
 	"#Chaos_Effect_1000HP"
 	{
-		"en"		"Big Boned"
+		"en"		"Healthy Mercs"
 	}
 	"#Chaos_Effect_ShortMercs"
 	{
@@ -537,6 +537,10 @@
 	"#Chaos_Effect_EyeCamera"
 	{
 		"en"		"Out-Of-Body Experience"
+	}
+	"#Chaos_Effect_SpeedUp"
+	{
+		"en"		"Adrenaline Shot"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
