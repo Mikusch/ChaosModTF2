@@ -26,18 +26,9 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
-		if (!player.IsAlive())
-			continue
-
 		player.SetForceLocalDraw(false)
 
-		player.ValidateScriptScope()
-
-		local viewcontrol = player.GetScriptScope().viewcontrol
-		if (viewcontrol == null || !viewcontrol.IsValid())
-			continue
-
-		RemoveViewControl(player, viewcontrol)
+		RemoveViewControl(player)
 	}
 }
 
@@ -65,12 +56,20 @@ function PostViewControlEnable()
 	NetProps.SetPropInt(activator, "m_takedamage", 2)
 }
 
-function RemoveViewControl(player, viewcontrol)
+function RemoveViewControl(player)
 {
-    EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope();activator.GetScriptScope().__lifestate<-NetProps.GetPropInt(activator, `m_lifeState`);NetProps.SetPropInt(activator, `m_lifeState`, 0)", 0, player, player)
-    EntFireByHandle(viewcontrol, "Disable", null, 0, player, player)
-    EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(activator, `m_lifeState`, activator.GetScriptScope().__lifestate)", 0, player, player)
-    EntFireByHandle(viewcontrol, "Kill", null, 0, null, null)
+	player.ValidateScriptScope()
+	if ("viewcontrol" in player.GetScriptScope())
+	{
+		local viewcontrol = player.GetScriptScope().viewcontrol
+		if (viewcontrol != null && viewcontrol.IsValid())
+		{
+			EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope();activator.GetScriptScope().__lifestate<-NetProps.GetPropInt(activator, `m_lifeState`);NetProps.SetPropInt(activator, `m_lifeState`, 0)", 0, player, player)
+			EntFireByHandle(viewcontrol, "Disable", null, 0, player, player)
+			EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(activator, `m_lifeState`, activator.GetScriptScope().__lifestate)", 0, player, player)
+			EntFireByHandle(viewcontrol, "Kill", null, 0, null, null)
+		}
+	}
 }
 
 function Chaos_OnGameEvent_player_spawn(params)
@@ -79,14 +78,9 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
+	RemoveViewControl(player)
+
 	player.ValidateScriptScope()
-
-	local viewcontrol = player.GetScriptScope().viewcontrol
-	if (viewcontrol != null && viewcontrol.IsValid())
-	{
-		RemoveViewControl(player, viewcontrol)
-	}
-
 	player.GetScriptScope().viewcontrol <- CreateViewControl(player)
 }
 
@@ -96,13 +90,7 @@ function Chaos_OnGameEvent_player_death(params)
 	if (player == null)
 		return
 
-	player.ValidateScriptScope()
-
-	local viewcontrol = player.GetScriptScope().viewcontrol
-	if (viewcontrol == null || !viewcontrol.IsValid())
-		return
-
-	RemoveViewControl(player, viewcontrol)
+	RemoveViewControl(player)
 }
 
 function Chaos_OnGameEvent_player_initial_spawn(params)
