@@ -8,6 +8,8 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 
+		player.SetForceLocalDraw(true)
+
 		if (!player.IsAlive())
 			continue
 
