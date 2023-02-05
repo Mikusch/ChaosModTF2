@@ -1,4 +1,5 @@
 const LIFE_ALIVE = 0
+const TF_DEATHFLAG_DEADRINGER = 32
 
 ::CTFPlayer.IsAlive <- function()
 {

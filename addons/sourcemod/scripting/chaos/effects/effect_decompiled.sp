@@ -252,24 +252,29 @@ static void SpawnLightsFromData()
 		if (!ShouldSpawnVisual())
 			break;
 		
-		LightData data;
-		if (g_hLightData.GetArray(i, data))
+		LightData lightData;
+		if (g_hLightData.GetArray(i, lightData))
 		{
 			int visual = -1;
 			
 			char szModel[64];
-			if (g_hEntityToSpriteMap.GetString(data.classname, szModel, sizeof(szModel)))
+			if (g_hEntityToSpriteMap.GetString(lightData.classname, szModel, sizeof(szModel)))
 			{
-				visual = CreateSprite(szModel, data.origin, data.angles);
+				visual = CreateSprite(szModel, lightData.origin, lightData.angles);
 			}
-			else if (g_hEntityToModelMap.GetString(data.classname, szModel, sizeof(szModel)))
+			else if (g_hEntityToModelMap.GetString(lightData.classname, szModel, sizeof(szModel)))
 			{
-				visual = CreateModel(szModel, data.origin, data.angles);
+				visual = CreateModel(szModel, lightData.origin, lightData.angles);
 			}
 			
 			if (IsValidEntity(visual))
 			{
-				SetEntProp(visual, Prop_Send, "m_clrRender", Color32ToInt(data.color[0], data.color[1], data.color[2], 255));
+				SetEntProp(visual, Prop_Send, "m_clrRender", Color32ToInt(lightData.color[0], lightData.color[1], lightData.color[2], 255));
+				
+				VisualData visualData;
+				visualData.entity = -1;
+				visualData.visual = EntIndexToEntRef(EntRefToEntIndex(visual));
+				g_hCreatedVisuals.PushArray(visualData);
 			}
 		}
 	}
@@ -383,8 +388,16 @@ static bool ShouldSpawnVisual()
 
 static void ShowTriggers_Toggle()
 {
-	// Remove FCVAR_CHEAT to allow us to call it without cheats
-	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") & ~FCVAR_CHEAT);
-	ServerCommand("showtriggers_toggle");
-	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") | FCVAR_CHEAT);
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		// We can't use ServerCommand because it is delayed by a frame
+		SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") & ~FCVAR_CHEAT);
+		FakeClientCommand(client, "showtriggers_toggle");
+		SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") | FCVAR_CHEAT);
+		
+		break;
+	}
 }

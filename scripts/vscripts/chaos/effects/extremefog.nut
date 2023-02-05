@@ -60,9 +60,9 @@ function SetFogController(controller)
 	}
 }
 
-function Chaos_OnGameEvent_player_initial_spawn(params)
+function Chaos_OnGameEvent_player_spawn(params)
 {
-	local player = PlayerInstanceFromIndex(params.index)
+	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
 		return
 

@@ -41,6 +41,7 @@ function CreateViewControl(player)
 		origin = player.EyePosition(),
 		angles = player.EyeAngles()
 	})
+	
 	EntFireByHandle(viewcontrol, "SetParent", "!activator", 0, player, viewcontrol)
 	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", 0, null, null)
 	EntFireByHandle(viewcontrol, "Enable", "!activator", 0, player, viewcontrol)
@@ -90,6 +91,9 @@ function Chaos_OnGameEvent_player_death(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
+		return
+
+	if (params.death_flags & TF_DEATHFLAG_DEADRINGER)
 		return
 
 	RemoveViewControl(player)
