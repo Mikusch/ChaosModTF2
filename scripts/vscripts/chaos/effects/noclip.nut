@@ -44,7 +44,7 @@ function PostPlayerSpawn()
 	if (activator == null)
 		return
 
-    activator.SetMoveType(Constants.EMoveType.MOVETYPE_NOCLIP, Constants.EMoveCollide.MOVECOLLIDE_DEFAULT)
+	activator.SetMoveType(Constants.EMoveType.MOVETYPE_NOCLIP, Constants.EMoveCollide.MOVECOLLIDE_DEFAULT)
 }
 
 Chaos_CollectEventCallbacks(this)

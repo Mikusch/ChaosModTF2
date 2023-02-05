@@ -36,7 +36,7 @@ function PostPlayerSpawn()
 	if (activator == null)
 		return
 
-    activator.SetForcedTauntCam(1)
+	activator.SetForcedTauntCam(1)
 }
 
 Chaos_CollectEventCallbacks(this)

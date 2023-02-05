@@ -66,7 +66,7 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	NetProps.SetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl", controller)
+	NetProps.SetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl", customFogController)
 }
 
 function Chaos_OnGameEvent_teamplay_round_start(params)
