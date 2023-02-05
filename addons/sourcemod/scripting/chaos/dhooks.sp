@@ -1,26 +1,60 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-void DHooks_Initialize(GameData hGameData)
+static ArrayList g_hDynamicDetours;
+
+enum struct DetourData
 {
-	DHooks_CreateDynamicDetour(hGameData, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
-	DHooks_CreateDynamicDetour(hGameData, "CTFPlayer::GetMaxHealthForBuffing", _, DHookCallback_GetMaxHealthForBuffing_Post);
+	DynamicDetour hDetour;
+	DHookCallback fnCallbackPre;
+	DHookCallback fnCallbackPost;
 }
 
-static void DHooks_CreateDynamicDetour(GameData hGameData, const char[] szName, DHookCallback fnCallbackPre = INVALID_FUNCTION, DHookCallback fnCallbackPost = INVALID_FUNCTION)
+void DHooks_Initialize(GameData hGameData)
 {
-	DynamicDetour hDetour = DynamicDetour.FromConf(hGameData, szName);
+	g_hDynamicDetours = new ArrayList(sizeof(DetourData));
+	
+	DHooks_AddDynamicDetour(hGameData, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
+	DHooks_AddDynamicDetour(hGameData, "CTFPlayer::GetMaxHealthForBuffing", _, DHookCallback_GetMaxHealthForBuffing_Post);
+}
+
+void DHooks_Toggle(bool bEnable)
+{
+	for (int i = 0; i < g_hDynamicDetours.Length; i++)
+	{
+		DetourData data;
+		if (g_hDynamicDetours.GetArray(i, data) > 0)
+		{
+			if (data.fnCallbackPre != INVALID_FUNCTION)
+			{
+				if (bEnable)
+					data.hDetour.Enable(Hook_Pre, data.fnCallbackPre);
+				else
+					data.hDetour.Disable(Hook_Pre, data.fnCallbackPre);
+			}
+			
+			if (data.fnCallbackPost != INVALID_FUNCTION)
+			{
+				if (bEnable)
+					data.hDetour.Enable(Hook_Post, data.fnCallbackPost);
+				else
+					data.hDetour.Disable(Hook_Post, data.fnCallbackPost);
+			}
+		}
+	}
+}
+
+static void DHooks_AddDynamicDetour(GameData gamedata, const char[] szName, DHookCallback fnCallbackPre = INVALID_FUNCTION, DHookCallback fnCallbackPost = INVALID_FUNCTION)
+{
+	DynamicDetour hDetour = DynamicDetour.FromConf(gamedata, szName);
 	if (hDetour)
 	{
-		if (fnCallbackPre != INVALID_FUNCTION)
-		{
-			hDetour.Enable(Hook_Pre, fnCallbackPre);
-		}
+		DetourData data;
+		data.hDetour = hDetour;
+		data.fnCallbackPre = fnCallbackPre;
+		data.fnCallbackPost = fnCallbackPost;
 		
-		if (fnCallbackPost != INVALID_FUNCTION)
-		{
-			hDetour.Enable(Hook_Post, fnCallbackPost);
-		}
+		g_hDynamicDetours.PushArray(data);
 	}
 	else
 	{

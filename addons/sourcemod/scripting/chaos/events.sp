@@ -1,13 +1,61 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MAX_EVENT_NAME_LENGTH	32
+
+static ArrayList g_hEvents;
+
+enum struct EventData
+{
+	char szName[MAX_EVENT_NAME_LENGTH];
+	EventHook fnCallback;
+	EventHookMode nMode;
+}
+
 void Events_Initialize()
 {
-	HookEvent("player_spawn", EventHook_PlayerSpawn);
-	HookEvent("post_inventory_application", EventHook_PostInventoryApplication);
-	HookEvent("arena_round_start", EventHook_ArenaRoundStart);
-	HookEvent("teamplay_round_start", EventHook_TeamplayRoundStart);
-	HookEvent("teamplay_round_active", EventHook_TeamplayRoundActive);
+	g_hEvents = new ArrayList(sizeof(EventData));
+	
+	Events_AddEvent("player_spawn", EventHook_PlayerSpawn);
+	Events_AddEvent("post_inventory_application", EventHook_PostInventoryApplication);
+	Events_AddEvent("arena_round_start", EventHook_ArenaRoundStart);
+	Events_AddEvent("teamplay_round_start", EventHook_TeamplayRoundStart);
+	Events_AddEvent("teamplay_round_active", EventHook_TeamplayRoundActive);
+}
+
+void Events_Toggle(bool bEnable)
+{
+	for (int i = 0; i < g_hEvents.Length; i++)
+	{
+		EventData data;
+		if (g_hEvents.GetArray(i, data))
+		{
+			if (bEnable)
+				HookEvent(data.szName, data.fnCallback, data.nMode);
+			else
+				UnhookEvent(data.szName, data.fnCallback, data.nMode);
+		}
+	}
+}
+
+static void Events_AddEvent(const char[] szName, EventHook fnCallback, EventHookMode nMode = EventHookMode_Post)
+{
+	Event event = CreateEvent(szName, true);
+	if (event)
+	{
+		event.Cancel();
+		
+		EventData data;
+		strcopy(data.szName, sizeof(data.szName), szName);
+		data.fnCallback = fnCallback;
+		data.nMode = nMode;
+		
+		g_hEvents.PushArray(data);
+	}
+	else
+	{
+		LogError("Failed to create event: %s", szName);
+	}
 }
 
 static void EventHook_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
