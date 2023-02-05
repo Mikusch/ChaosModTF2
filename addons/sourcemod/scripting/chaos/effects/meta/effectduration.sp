@@ -13,8 +13,8 @@ public bool EffectDuration_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void EffectDuration_ModifyEffectDuration(ChaosEffect effect, float &flDuration)
+public void EffectDuration_ModifyEffectDuration(ChaosEffect effect, float &duration)
 {
 	float flMult = effect.data.GetFloat("multiplier");
-	flDuration *= flMult;
+	duration *= flMult;
 }

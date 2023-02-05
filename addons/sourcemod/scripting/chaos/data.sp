@@ -15,6 +15,7 @@ enum struct ChaosEffect
 	char script_file[PLATFORM_MAX_PATH];
 	char start_sound[PLATFORM_MAX_PATH];
 	char end_sound[PLATFORM_MAX_PATH];
+	ArrayList incompatible_with;
 	KeyValues data;
 	
 	// Runtime data
@@ -35,6 +36,20 @@ enum struct ChaosEffect
 			kv.GetString("script_file", this.script_file, sizeof(this.script_file));
 			kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 			kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
+			
+			char incompatible_with[512];
+			kv.GetString("incompatible_with", incompatible_with, sizeof(incompatible_with));
+			if (incompatible_with[0])
+			{
+				this.incompatible_with = new ArrayList(64);
+				
+				char buffers[8][64];
+				int num = ExplodeString(incompatible_with, ",", buffers, sizeof(buffers), sizeof(buffers[]));
+				for (int i = 0; i < num; i++)
+				{
+					this.incompatible_with.PushString(buffers[i]);
+				}
+			}
 			
 			if (kv.JumpToKey("data", false))
 			{
@@ -104,6 +119,29 @@ enum struct ChaosEffect
 		}
 		
 		return flDuration;
+	}
+	
+	bool IsCompatibleWithActiveEffects()
+	{
+		if (!this.incompatible_with)
+			return true;
+		
+		for (int i = 0; i < g_hEffects.Length; i++)
+		{
+			ChaosEffect effect;
+			if (g_hEffects.GetArray(i, effect) && effect.active)
+			{
+				if (StrEqual(effect.id, this.id))
+					continue;
+				
+				if (this.incompatible_with.FindString(effect.id) == -1)
+					continue;
+				
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }
 

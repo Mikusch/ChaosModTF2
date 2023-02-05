@@ -15,10 +15,6 @@ public bool FakeCrash_OnStart(ChaosEffect effect)
 	if (net_fakeloss.IntValue || g_hFakeCrashTimer)
 		return false;
 	
-	// Just to be absolutely sure
-	if (FindKeyValuePairInActiveEffects("SetConVar", "convar", "net_fakeloss"))
-		return false;
-	
 	// TODO: We can SDKCall_Engine to SetPausedForced to avoid server ticking away (needs SM 1.12)
 	net_fakeloss.IntValue = 100;
 	g_hFakeCrashTimer = CreateTimer(GetRandomFloat(6.0, 13.0), Timer_StopFakeCrash);

@@ -550,6 +550,9 @@ void SelectRandomEffect(bool bMeta = false)
 			if (effect.active || effect.cooldown_left > 0)
 				continue;
 			
+			if (!effect.IsCompatibleWithActiveEffects())
+				continue;
+			
 			if (ActivateEffect(effect))
 				return;
 		}

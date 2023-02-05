@@ -20,7 +20,7 @@ public bool Nothing_OnStart(ChaosEffect effect)
 	return g_hFakeNames.GetString(GetRandomInt(0, g_hFakeNames.Length - 1), g_szFakeName, sizeof(g_szFakeName)) != 0;
 }
 
-public bool Nothing_ModifyEffectName(ChaosEffect effect, char[] szName, int iMaxLength)
+public bool Nothing_ModifyEffectName(ChaosEffect effect, char[] name, int maxlength)
 {
 	if (!g_szFakeName[0])
 		return false;
@@ -28,7 +28,7 @@ public bool Nothing_ModifyEffectName(ChaosEffect effect, char[] szName, int iMax
 	if (effect.activate_time + 5.0 >= GetGameTime())
 	{
 		// Prank 'em!
-		return strcopy(szName, iMaxLength, g_szFakeName) != 0;
+		return strcopy(name, maxlength, g_szFakeName) != 0;
 	}
 	
 	return false;
