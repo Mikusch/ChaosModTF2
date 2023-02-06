@@ -2,11 +2,12 @@
 
 <img alt="Logo" src="https://user-images.githubusercontent.com/25514044/216839199-de0a68ae-27d4-44c6-b394-54c98c85d701.png" width="500"/>
 
-Welcome to the page of the TF2 Chaos Mod, heavily inspired by similar mods for other games such as [Chaos Mod V](https://github.com/gta-chaos-mod/ChaosModV) or [Entropy: Chaos Mod](https://www.curseforge.com/minecraft/mc-mods/entropy).
+**Welcome to the official home of the TF2 Chaos Mod!**
 
-It features a highly configurable and extensible framework to create new effects in **Squirrel (VScript)** or **SourcePawn**.
+Every few seconds a new random effect is activated to shake up the game.
 
-For more information on creating new effects, visit the [wiki](https://github.com/Mikusch/ChaosModTF2/wiki).
+You can easily add your own effects using Squirrel (VScript) or SourcePawn.
+See [here](https://github.com/Mikusch/ChaosModTF2/wiki) for more information.
 
 ## Requirements
 
