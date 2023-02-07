@@ -5,7 +5,7 @@
 
 #define PLUGIN_TAG	"[{darkorange}TF2 CHAOS{default}]"
 
-#define FLT_MAX	340282346600000000000000000000000000000.0
+#define FLT_MAX	view_as<float>(0x7f7fffff)
 
 #define MAX_USER_MSG_DATA	255
 
