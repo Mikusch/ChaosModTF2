@@ -162,7 +162,7 @@ void Data_Initialize()
 				
 				if (g_hEffects.FindString(effect.id) != -1)
 				{
-					LogError("Effect '%s' has duplicate ID '%s', skipping...", effect.name, LANG_SERVER, effect.id);
+					LogError("Effect '%T' has duplicate ID '%s', skipping...", effect.name, LANG_SERVER, effect.id);
 					continue;
 				}
 				

@@ -48,6 +48,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/cattoguns.sp"
 #include "chaos/effects/decompiled.sp"
 #include "chaos/effects/disassemblemap.sp"
+#include "chaos/effects/earthquake.sp"
 #include "chaos/effects/fakeclientcommand.sp"
 #include "chaos/effects/fakecrash.sp"
 #include "chaos/effects/fling.sp"

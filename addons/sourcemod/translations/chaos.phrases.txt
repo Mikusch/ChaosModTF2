@@ -542,6 +542,10 @@
 	{
 		"en"		"Adrenaline Shot"
 	}
+	"#Chaos_Effect_Earthquake"
+	{
+		"en"		"Earthquake"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
