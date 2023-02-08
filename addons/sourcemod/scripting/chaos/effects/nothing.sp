@@ -6,15 +6,37 @@ static char g_szFakeName[64];
 
 public void Nothing_Initialize(ChaosEffect effect)
 {
-	g_hFakeNames = new ArrayList(sizeof(g_szFakeName));
-	
-	PopulateNameList(effect.data);
+	if (effect.data)
+	{
+		KeyValues data = effect.data;
+		
+		if (data.JumpToKey("fake_names", false))
+		{
+			g_hFakeNames = new ArrayList(sizeof(g_szFakeName));
+			
+			if (data.GotoFirstSubKey(false))
+			{
+				do
+				{
+					char[] szName = new char[g_hFakeNames.BlockSize];
+					data.GetString(NULL_STRING, szName, g_hFakeNames.BlockSize);
+					g_hFakeNames.PushString(szName);
+				}
+				while (data.GotoNextKey(false));
+				data.GoBack();
+			}
+			data.GoBack();
+		}
+	}
 }
 
 public bool Nothing_OnStart(ChaosEffect effect)
 {
-	if (!g_hFakeNames.Length)
-		return false;
+	g_szFakeName[0] = EOS;
+	
+	// Allow an empty name list
+	if (!g_hFakeNames || g_hFakeNames.Length == 0)
+		return true;
 	
 	// Select a random fake name for later
 	return g_hFakeNames.GetString(GetRandomInt(0, g_hFakeNames.Length - 1), g_szFakeName, sizeof(g_szFakeName)) != 0;
@@ -25,30 +47,8 @@ public bool Nothing_ModifyEffectName(ChaosEffect effect, char[] name, int maxlen
 	if (!g_szFakeName[0])
 		return false;
 	
-	if (effect.activate_time + 5.0 >= GetGameTime())
-	{
-		// Prank 'em!
-		return strcopy(name, maxlength, g_szFakeName) != 0;
-	}
+	if (effect.activate_time + 5.0 < GetGameTime())
+		return false;
 	
-	return false;
-}
-
-static void PopulateNameList(KeyValues kv)
-{
-	if (kv.JumpToKey("fake_names", false))
-	{
-		if (kv.GotoFirstSubKey(false))
-		{
-			do
-			{
-				char[] szName = new char[g_hFakeNames.BlockSize];
-				kv.GetString(NULL_STRING, szName, g_hFakeNames.BlockSize);
-				g_hFakeNames.PushString(szName);
-			}
-			while (kv.GotoNextKey(false));
-			kv.GoBack();
-		}
-		kv.GoBack();
-	}
+	return strcopy(name, maxlength, g_szFakeName) != 0;
 }

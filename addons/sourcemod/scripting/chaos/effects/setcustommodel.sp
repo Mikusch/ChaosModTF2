@@ -13,7 +13,7 @@ public bool SetCustomModel_OnStart(ChaosEffect effect)
 	char szModel[PLATFORM_MAX_PATH];
 	effect.data.GetString("model", szModel, sizeof(szModel));
 	
-	if (!FileExists(szModel, true, "GAME"))
+	if (!FileExists(szModel, true, "GAME") && !FileExists(szModel, true, "MOD"))
 		return false;
 	
 	for (int client = 1; client <= MaxClients; client++)

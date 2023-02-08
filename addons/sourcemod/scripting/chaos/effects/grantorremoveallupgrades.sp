@@ -3,10 +3,10 @@
 
 public bool GrantOrRemoveAllUpgrades_OnStart(ChaosEffect effect)
 {
-	if (!GameRules_GetProp("m_nForceUpgrades") && !GameRules_GetProp("m_bPlayingMannVsMachine"))
+	if (!effect.data)
 		return false;
 	
-	if (!effect.data)
+	if (!GameRules_GetProp("m_nForceUpgrades") && !GameRules_GetProp("m_bPlayingMannVsMachine"))
 		return false;
 	
 	bool bRemove = effect.data.GetNum("remove") != 0;

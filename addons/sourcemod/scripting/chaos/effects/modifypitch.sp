@@ -3,10 +3,10 @@
 
 public bool ModifyPitch_OnStart(ChaosEffect effect)
 {
-	if (IsEffectOfClassActive(effect.effect_class))
+	if (!effect.data)
 		return false;
 	
-	if (!effect.data)
+	if (IsEffectOfClassActive(effect.effect_class))
 		return false;
 	
 	return true;
