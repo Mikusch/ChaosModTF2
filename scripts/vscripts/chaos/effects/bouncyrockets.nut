@@ -31,5 +31,5 @@ function ChaosEffect_Update()
 local rocket = null;
 while (rocket = Entities.FindByClassname(rocket, "tf_projectile_rocket"))
 {
-    AddThinkToEnt(rocket, "RocketThink");
+    AddThinkToEnt(rocket, "ChaosEffect_Update");
 }
