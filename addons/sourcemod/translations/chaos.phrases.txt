@@ -290,13 +290,13 @@
 	{
 		"en"		"Fast Building"
 	}
-	"#Chaos_Effect_NoOverhealLimit"
+	"#Chaos_Effect_10xOverhealLimit"
 	{
-		"en"		"No Overheal Limit"
+		"en"		"10x Overheal Limit"
 	}
 	"#Chaos_Effect_10xChargeSpeed"
 	{
-		"en"		"10x Shield Charge Speed"
+		"en"		"10x Demoman Shield Charge Speed"
 	}
 	"#Chaos_Effect_AlwaysLoser"
 	{
