@@ -19,7 +19,6 @@ function ChaosEffect_Update()
 
         if (trace.hit)
         {
-            printl(format("Hit surface %s", trace.surface_name, trace.plane_normal.x, trace.plane_normal.y, trace.plane_normal.z))
             local new_direction = direction - (trace.plane_normal * direction.Dot(trace.plane_normal) * 2.0)
             rocket.SetAbsVelocity(new_direction * speed)
             rocket.SetForwardVector(new_direction)
