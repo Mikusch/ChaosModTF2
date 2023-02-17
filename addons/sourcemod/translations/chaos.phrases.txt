@@ -546,6 +546,10 @@
 	{
 		"en"		"Earthquake"
 	}
+	"#Chaos_Effect_BouncyRockets"
+	{
+		"en"		"Bouncy Rockets"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
