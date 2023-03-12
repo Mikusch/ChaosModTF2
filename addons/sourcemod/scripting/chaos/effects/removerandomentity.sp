@@ -26,10 +26,18 @@ public bool RemoveRandomEntity_OnStart(ChaosEffect effect)
 	char szClassname[64];
 	if (GetEntityClassname(entity, szClassname, sizeof(szClassname)))
 	{
-		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_RemoveRandomEntity_Success", entity, szClassname);
+		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_RemoveRandomEntity_InProgress", entity, szClassname);
 	}
 	
-	RemoveEntity(entity);
+	RequestFrame(RequestFrame_RemoveEntity, entity);
 	
 	return true;
+}
+
+static void RequestFrame_RemoveEntity(int entity)
+{
+	if (IsValidEntity(entity))
+	{
+		RemoveEntity(entity);
+	}
 }

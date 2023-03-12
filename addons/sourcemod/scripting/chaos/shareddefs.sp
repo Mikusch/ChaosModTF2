@@ -11,6 +11,15 @@
 
 #define PI	3.14159265358979323846
 
+// Fade in/out
+#define FFADE_IN			0x0001		// Just here so we don't pass 0 into the function
+#define FFADE_OUT			0x0002		// Fade out (not in)
+#define FFADE_MODULATE		0x0004		// Modulate (don't blend)
+#define FFADE_STAYOUT		0x0008		// ignores the duration, stays faded out until new ScreenFade message received
+#define FFADE_PURGE			0x0010		// Purges all other fades, replacing them with this one
+
+#define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
+
 enum HudNotification_t
 {
 	HUD_NOTIFY_YOUR_FLAG_TAKEN,

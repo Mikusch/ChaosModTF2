@@ -26,20 +26,6 @@ public bool SetHealth_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void SetHealth_OnEnd(ChaosEffect effect)
-{
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-		
-		if (!IsPlayerAlive(client))
-			continue;
-		
-		SetEntProp(client, Prop_Data, "m_iHealth", TF2Util_GetEntityMaxHealth(client));
-	}
-}
-
 public MRESReturn SetHealth_GetMaxHealthForBuffing(ChaosEffect effect, int player, int &health)
 {
 	health = effect.data.GetNum("health");

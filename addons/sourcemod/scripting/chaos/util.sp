@@ -287,3 +287,33 @@ static bool ItemFilterCriteria_FilterByName(int iItemDefIndex, DataPack hDataPac
 	
 	return false;
 }
+
+int FixedUnsigned16(float value, int scale)
+{
+	int output;
+	
+	output = RoundToFloor(value * float(scale));
+	if (output < 0)
+		output = 0;
+	if (output > 0xFFFF)
+		output = 0xFFFF;
+	
+	return output;
+}
+
+void UTIL_ScreenFade(int player, const int color[4], float fadeTime, float fadeHold, int flags)
+{
+	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Fade", player, USERMSG_RELIABLE));
+	if (bf != null)
+	{
+		bf.WriteShort(FixedUnsigned16(fadeTime, 1 << SCREENFADE_FRACBITS));
+		bf.WriteShort(FixedUnsigned16(fadeHold, 1 << SCREENFADE_FRACBITS));
+		bf.WriteShort(flags);
+		bf.WriteByte(color[0]);
+		bf.WriteByte(color[1]);
+		bf.WriteByte(color[2]);
+		bf.WriteByte(color[3]);
+		
+		EndMessage();
+	}
+}

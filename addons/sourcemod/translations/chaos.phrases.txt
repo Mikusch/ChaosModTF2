@@ -209,6 +209,11 @@
 	{
 		"en"		"Remove Random Entity"
 	}
+	"#Chaos_Effect_RemoveRandomEntity_InProgress"
+	{
+		"#format"	"{1:d},{2:s}"
+		"en"		"Removing entity {lightgreen}{1} {default}({lightgreen}{2}{default})."
+	}
 	"#Chaos_Effect_LaunchUp"
 	{
 		"en"		"Launch Players Up"
@@ -216,11 +221,6 @@
 	"#Chaos_Effect_Fling"
 	{
 		"en"		"Fling Players"
-	}
-	"#Chaos_Effect_RemoveRandomEntity_Success"
-	{
-		"#format"	"{1:d},{2:s}"
-		"en"		"Successfully removed entity {lightgreen}{1} {default}({lightgreen}{2}{default})."
 	}
 	"#Chaos_Effect_RemoveHealthAndAmmo"
 	{
@@ -522,13 +522,13 @@
 	{
 		"en"		"Help My W Key Is Stuck"
 	}
-	"#Chaos_Effect_2xAnimationSpeed"
+	"#Chaos_Effect_2xGestureSpeed"
 	{
-		"en"		"2x Animation Speed"
+		"en"		"2x Gesture Speed"
 	}
-	"#Chaos_Effect_0.5xAnimationSpeed"
+	"#Chaos_Effect_0.5xGestureSpeed"
 	{
-		"en"		"0.5x Animation Speed"
+		"en"		"0.5x Gesture Speed"
 	}
 	"#Chaos_Effect_SpawnBirds"
 	{
@@ -549,6 +549,10 @@
 	"#Chaos_Effect_BouncyRockets"
 	{
 		"en"		"Bouncy Rockets"
+	}
+	"#Chaos_Effect_Flashbang"
+	{
+		"en"		"Flashbang"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
