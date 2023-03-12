@@ -15,6 +15,9 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
+	if (effect.data.GetNum("require_nav") && !TheNavMesh.IsLoaded())
+		return false;
+	
 	char szName[512];
 	effect.data.GetString("convar", szName, sizeof(szName));
 	

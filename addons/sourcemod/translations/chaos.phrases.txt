@@ -79,7 +79,7 @@
 	}
 	"#Chaos_Effect_Ubercharge"
 	{
-		"en"		"All Players Are Übercharged"
+		"en"		"Übercharged"
 	}
 	"#Chaos_Effect_BumperCars"
 	{
@@ -107,7 +107,7 @@
 	}
 	"#Chaos_Effect_SkeletonModels"
 	{
-		"en"		"Spooky Scary Skeletons"
+		"en"		"All Players Are Skeletons"
 	}
 	"#Chaos_Effect_Lag"
 	{
@@ -553,6 +553,10 @@
 	"#Chaos_Effect_Flashbang"
 	{
 		"en"		"Flashbang"
+	}
+	"#Chaos_Effect_EnableZombieMob"
+	{
+		"en"		"Spooky Scary Skeletons"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
