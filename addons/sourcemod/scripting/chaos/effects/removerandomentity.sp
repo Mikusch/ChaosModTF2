@@ -29,15 +29,15 @@ public bool RemoveRandomEntity_OnStart(ChaosEffect effect)
 		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_RemoveRandomEntity_InProgress", entity, szClassname);
 	}
 	
-	RequestFrame(RequestFrame_RemoveEntity, entity);
+	RequestFrame(RequestFrame_RemoveEntity, EntIndexToEntRef(entity));
 	
 	return true;
 }
 
-static void RequestFrame_RemoveEntity(int entity)
+static void RequestFrame_RemoveEntity(int ref)
 {
-	if (IsValidEntity(entity))
+	if (IsValidEntity(ref))
 	{
-		RemoveEntity(entity);
+		RemoveEntity(ref);
 	}
 }
