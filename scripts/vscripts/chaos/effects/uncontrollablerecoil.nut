@@ -54,5 +54,5 @@ function doOnKeyPress(player)
 
 function ChaosEffect_OnEnd()
 {
-    AddThinkToEnt((Entities.FindByClassname(null, "worldspawn")), null)
+
 }
