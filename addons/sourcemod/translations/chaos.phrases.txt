@@ -574,6 +574,10 @@
 	{
 		"en"		"Disable Random Direction"
 	}
+	"#Chaos_Effect_UncontrollableRecoil"
+	{
+		"en"		"Uncontrollable Recoil"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
