@@ -685,20 +685,17 @@ void DisplayTimerBar(float flInterval)
 	float flEndTime = g_flLastEffectActivateTime + flInterval;
 	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
 	
+	int iFilledBlocks = RoundToNearest(flRatio * TIMER_BAR_NUM_BLOCKS);
+	int iEmptyBlocks = TIMER_BAR_NUM_BLOCKS - iFilledBlocks;
+	
 	char szProgressBar[64];
-	for (int i = 0; i < 100; i += 5)
+	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		if (i == 0)
-			continue;
-		
-		if (flRatio * 100 >= i)
-		{
-			Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
-		}
-		else
-		{
-			Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
-		}
+		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_FILLED);
+	}
+	for (int i = 0; i < iEmptyBlocks; i++)
+	{
+		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_EMPTY);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -743,26 +740,23 @@ void DisplayActiveEffects()
 					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
+					int iEmptyBlocks = RoundToNearest(flRatio * EFFECT_BAR_NUM_BLOCKS);
+					int iFilledBlocks = EFFECT_BAR_NUM_BLOCKS - iEmptyBlocks;
+					
 					char szProgressBar[64];
-					for (int j = 10; j < 100; j += 10)
+					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						if (i == 0)
-							continue;
-						
-						if (flRatio * 100 >= j)
-						{
-							Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
-						}
-						else
-						{
-							Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
-						}
+						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_FILLED);
+					}
+					for (int j = 0; j < iEmptyBlocks; j++)
+					{
+						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_EMPTY);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
 				}
 				// One-shot effects stay on screen for 60 seconds
-				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= 60.0)
 				{
 					Format(szLine, sizeof(szLine), "%T", szName, client);
 				}

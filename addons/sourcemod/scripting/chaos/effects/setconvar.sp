@@ -41,7 +41,7 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	convar.SetString(szValue, true);
 	
 	// If this effect has no duration, we don't need the stuff below
-	if (effect.duration == 0.0)
+	if (!effect.duration)
 		return true;
 	
 	convar.AddChangeHook(OnConVarChanged);

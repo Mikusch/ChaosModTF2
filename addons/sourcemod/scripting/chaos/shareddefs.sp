@@ -11,10 +11,6 @@
 
 #define PI	3.14159265358979323846
 
-#define EFFECT_BAR_NUM_BLOCKS	10
-#define EFFECT_BAR_CHAR_FILLED	"▰"
-#define EFFECT_BAR_CHAR_EMPTY	"▱"
-
 // Fade in/out
 #define FFADE_IN			0x0001		// Just here so we don't pass 0 into the function
 #define FFADE_OUT			0x0002		// Fade out (not in)
@@ -23,6 +19,14 @@
 #define FFADE_PURGE			0x0010		// Purges all other fades, replacing them with this one
 
 #define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
+
+#define TIMER_BAR_NUM_BLOCKS	20
+#define TIMER_BAR_CHAR_FILLED	"▰"
+#define TIMER_BAR_CHAR_EMPTY	"▱"
+
+#define EFFECT_BAR_NUM_BLOCKS	10
+#define EFFECT_BAR_CHAR_FILLED	"█"
+#define EFFECT_BAR_CHAR_EMPTY	"▒"
 
 enum HudNotification_t
 {
