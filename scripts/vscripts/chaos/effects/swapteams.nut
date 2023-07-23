@@ -1,4 +1,4 @@
-IncludeScript("chaos_util.nut")
+IncludeScript("chaos_util")
 
 function ChaosEffect_OnStart()
 {
