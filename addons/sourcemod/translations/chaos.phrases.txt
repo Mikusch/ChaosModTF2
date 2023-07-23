@@ -566,6 +566,14 @@
 	{
 		"en"		"Hello, Gordon!"
 	}
+	"#Chaos_Effect_JumpJump"
+	{
+		"en"		"Jump Jump"
+	}
+	"#Chaos_Effect_DisableRandomDirection"
+	{
+		"en"		"Disable Random Direction"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
