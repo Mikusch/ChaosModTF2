@@ -21,7 +21,7 @@ public bool ReinvokeEffects_OnStart(ChaosEffect effect)
 			if (other.activate_time == 0.0)
 				continue;
 			
-			if (other.activate_time + other.GetDuration() + flReinvokeTime <= GetGameTime())
+			if (other.activate_time + other.current_duration + flReinvokeTime <= GetGameTime())
 				continue;
 			
 			if (!ActivateEffect(other))

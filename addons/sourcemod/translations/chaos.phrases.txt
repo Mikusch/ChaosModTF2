@@ -151,7 +151,7 @@
 	}
 	"#Chaos_Effect_PipBoyOverlay"
 	{
-		"en"		"Virtual Reality"
+		"en"		"Pip-Boy"
 	}
 	"#Chaos_Effect_NoJumpingAndCrouching"
 	{

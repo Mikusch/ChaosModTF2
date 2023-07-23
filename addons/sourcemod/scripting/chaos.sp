@@ -614,7 +614,28 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	}
 	
 	effect.cooldown_left = effect.cooldown;
+	effect.current_duration = effect.duration;
 	effect.activate_time = GetGameTime();
+	
+	// Check if any active effect wants to modify the duration
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect other;
+		if (g_hEffects.GetArray(i, other) && other.active)
+		{
+			if (StrEqual(other.id, effect.id))
+				continue;
+			
+			fnCallback = other.GetCallbackFunction("ModifyEffectDuration");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(other, sizeof(other));
+				Call_PushFloatRef(effect.current_duration);
+				Call_Finish();
+			}
+		}
+	}
 	
 	g_hEffects.SetArray(nIndex, effect);
 	
@@ -719,7 +740,7 @@ void DisplayActiveEffects()
 				// Expiring effects stay on screen while active
 				if (effect.active)
 				{
-					float flEndTime = effect.activate_time + effect.GetDuration();
+					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
 					char szProgressBar[64];
@@ -769,7 +790,7 @@ void ExpireAllActiveEffects(bool bForce = false)
 				continue;
 			
 			// Check if the effect actually expired
-			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
+			if (!bForce && effect.activate_time + effect.current_duration > GetGameTime())
 				continue;
 			
 			ForceExpireEffect(effect);
