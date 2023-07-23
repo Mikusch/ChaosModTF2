@@ -161,6 +161,10 @@
 	{
 		"en"		"Companion Heavy"
 	}
+	"#Chaos_Effect_Grill"
+	{
+		"en"		"I Just Wanna Grill for God's Sake"
+	}
 	"#Chaos_Effect_Ghosts"
 	{
 		"en"		"All Players Are Ghosts"
@@ -564,7 +568,7 @@
 	}
 	"#Chaos_Effect_HL2Player"
 	{
-		"en"		"Hello, Gordon!"
+		"en"		"Hello, Gordon"
 	}
 	"#Chaos_Effect_JumpJump"
 	{
@@ -573,6 +577,10 @@
 	"#Chaos_Effect_DisableRandomDirection"
 	{
 		"en"		"Disable Random Direction"
+	}
+	"#Chaos_Effect_Swimming"
+	{
+		"en"		"Swimming Curse"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
