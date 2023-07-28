@@ -446,9 +446,9 @@
 	{
 		"en"		"Regenerate All Players"
 	}
-	"#Chaos_Effect_ToggleTriggers"
+	"#Chaos_Effect_EnableTriggers"
 	{
-		"en"		"Toggle All Triggers"
+		"en"		"Enable All Triggers"
 	}
 	"#Chaos_Effect_MemorialDay"
 	{
