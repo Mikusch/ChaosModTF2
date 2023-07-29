@@ -47,6 +47,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/birds.sp"
 #include "chaos/effects/cattoguns.sp"
 #include "chaos/effects/decompiled.sp"
+#include "chaos/effects/disablerandomdirection.sp"
 #include "chaos/effects/disassemblemap.sp"
 #include "chaos/effects/earthquake.sp"
 #include "chaos/effects/fakeclientcommand.sp"
@@ -59,6 +60,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/giveitem.sp"
 #include "chaos/effects/grantorremoveallupgrades.sp"
 #include "chaos/effects/invertconvar.sp"
+#include "chaos/effects/jumpjump.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/launchup.sp"
 #include "chaos/effects/mannpower.sp"
@@ -614,7 +616,28 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	}
 	
 	effect.cooldown_left = effect.cooldown;
+	effect.current_duration = effect.duration;
 	effect.activate_time = GetGameTime();
+	
+	// Check if any active effect wants to modify the duration
+	for (int i = 0; i < g_hEffects.Length; i++)
+	{
+		ChaosEffect other;
+		if (g_hEffects.GetArray(i, other) && other.active)
+		{
+			if (StrEqual(other.id, effect.id))
+				continue;
+			
+			fnCallback = other.GetCallbackFunction("ModifyEffectDuration");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(other, sizeof(other));
+				Call_PushFloatRef(effect.current_duration);
+				Call_Finish();
+			}
+		}
+	}
 	
 	g_hEffects.SetArray(nIndex, effect);
 	
@@ -664,20 +687,17 @@ void DisplayTimerBar(float flInterval)
 	float flEndTime = g_flLastEffectActivateTime + flInterval;
 	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
 	
+	int iFilledBlocks = RoundToNearest(flRatio * TIMER_BAR_NUM_BLOCKS);
+	int iEmptyBlocks = TIMER_BAR_NUM_BLOCKS - iFilledBlocks;
+	
 	char szProgressBar[64];
-	for (int i = 0; i < 100; i += 5)
+	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		if (i == 0)
-			continue;
-		
-		if (flRatio * 100 >= i)
-		{
-			Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
-		}
-		else
-		{
-			Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
-		}
+		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_FILLED);
+	}
+	for (int i = 0; i < iEmptyBlocks; i++)
+	{
+		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_EMPTY);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -719,29 +739,26 @@ void DisplayActiveEffects()
 				// Expiring effects stay on screen while active
 				if (effect.active)
 				{
-					float flEndTime = effect.activate_time + effect.GetDuration();
+					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
+					int iEmptyBlocks = RoundToNearest(flRatio * EFFECT_BAR_NUM_BLOCKS);
+					int iFilledBlocks = EFFECT_BAR_NUM_BLOCKS - iEmptyBlocks;
+					
 					char szProgressBar[64];
-					for (int j = 10; j < 100; j += 10)
+					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						if (i == 0)
-							continue;
-						
-						if (flRatio * 100 >= j)
-						{
-							Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
-						}
-						else
-						{
-							Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
-						}
+						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_FILLED);
+					}
+					for (int j = 0; j < iEmptyBlocks; j++)
+					{
+						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_EMPTY);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
 				}
 				// One-shot effects stay on screen for 60 seconds
-				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= 60.0)
 				{
 					Format(szLine, sizeof(szLine), "%T", szName, client);
 				}
@@ -769,7 +786,7 @@ void ExpireAllActiveEffects(bool bForce = false)
 				continue;
 			
 			// Check if the effect actually expired
-			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
+			if (!bForce && effect.activate_time + effect.current_duration > GetGameTime())
 				continue;
 			
 			ForceExpireEffect(effect);

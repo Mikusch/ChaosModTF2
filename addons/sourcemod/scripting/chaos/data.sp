@@ -3,7 +3,7 @@
 
 enum struct ChaosEffect
 {
-	// Static data
+	// Static data (read-only)
 	char id[64];
 	char name[64];
 	bool enabled;
@@ -22,6 +22,7 @@ enum struct ChaosEffect
 	bool active;
 	float activate_time;
 	int cooldown_left;
+	float current_duration;
 	
 	void Parse(KeyValues kv)
 	{
@@ -91,34 +92,6 @@ enum struct ChaosEffect
 		}
 		
 		return strcopy(szName, iMaxLength, this.name) != 0;
-	}
-	
-	float GetDuration()
-	{
-		float flDuration = this.duration;
-		
-		// Check if any active effect wants to modify our duration
-		for (int i = 0; i < g_hEffects.Length; i++)
-		{
-			ChaosEffect effect;
-			if (g_hEffects.GetArray(i, effect) && effect.active)
-			{
-				// Don't modify our own duration
-				if (StrEqual(effect.id, this.id))
-					continue;
-				
-				Function fnCallback = effect.GetCallbackFunction("ModifyEffectDuration");
-				if (fnCallback != INVALID_FUNCTION)
-				{
-					Call_StartFunction(null, fnCallback);
-					Call_PushArray(effect, sizeof(effect));
-					Call_PushFloatRef(flDuration);
-					Call_Finish();
-				}
-			}
-		}
-		
-		return flDuration;
 	}
 	
 	bool IsCompatibleWithActiveEffects()
