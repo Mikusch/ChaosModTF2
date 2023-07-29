@@ -1,4 +1,3 @@
-@@ -0,0 +1,58 @@
 TF_WPN_TYPE_PRIMARY <- 0
 FT_STATE_IDLE <- 0
 
