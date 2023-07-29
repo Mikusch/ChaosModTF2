@@ -912,7 +912,10 @@ void SetChaosTimers(float flTime)
 
 static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	TogglePlugin(convar.BoolValue);
+	if (g_bEnabled != convar.BoolValue)
+	{
+		TogglePlugin(convar.BoolValue);
+	}
 }
 
 static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
