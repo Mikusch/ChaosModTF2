@@ -1,4 +1,4 @@
-const SF_FOG_MASTER = 0x0001
+SF_FOG_MASTER <- 0x0001
 
 local customFogController = null
 
