@@ -24,8 +24,8 @@ bool g_bEnabled;
 bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
-float g_flLastEffectActivateTime;
-float g_flLastMetaEffectActivateTime;
+float g_flTimeElapsed;
+float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 
@@ -254,7 +254,10 @@ public void OnGameFrame()
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
-	float flTimerSpeed = sm_chaos_effect_interval.FloatValue;
+	float flTimerSpeed = GetGameFrameTime();
+	
+	// Meta effects tick independently
+	g_flMetaTimeElapsed += flTimerSpeed;
 	
 	// Check if a meta effect wants to modify the interval
 	for (int i = 0; i < g_hEffects.Length; i++)
@@ -273,18 +276,20 @@ public void OnGameFrame()
 		}
 	}
 	
+	g_flTimeElapsed += flTimerSpeed;
+	
 	// Show interval progress bar
 	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= GetGameTime())
 	{
 		g_flTimerBarDisplayTime = GetGameTime();
 		
-		DisplayTimerBar(flTimerSpeed);
+		DisplayTimerBar();
 	}
 	
 	// Activate a new effect
-	if (g_flLastEffectActivateTime && g_flLastEffectActivateTime + flTimerSpeed <= GetGameTime())
+	if (g_flTimeElapsed >= sm_chaos_effect_interval.FloatValue)
 	{
-		g_flLastEffectActivateTime = GetGameTime();
+		g_flTimeElapsed = 0.0;
 		
 		char szForceId[64];
 		sm_chaos_force_effect.GetString(szForceId, sizeof(szForceId));
@@ -315,9 +320,9 @@ public void OnGameFrame()
 	}
 	
 	// Attempt to activate a new meta effect
-	if (g_flLastMetaEffectActivateTime && g_flLastMetaEffectActivateTime + sm_chaos_meta_effect_interval.FloatValue <= GetGameTime())
+	if (g_flMetaTimeElapsed >= sm_chaos_meta_effect_interval.FloatValue)
 	{
-		g_flLastMetaEffectActivateTime = GetGameTime();
+		g_flMetaTimeElapsed = 0.0;
 		
 		// Meta effects randomly activate
 		if (GetRandomFloat() <= sm_chaos_meta_effect_chance.FloatValue)
@@ -680,12 +685,11 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	return true;
 }
 
-void DisplayTimerBar(float flInterval)
+void DisplayTimerBar()
 {
 	SetHudTextParams(-1.0, 0.075, 0.1, 147, 32, 252, 255);
 	
-	float flEndTime = g_flLastEffectActivateTime + flInterval;
-	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
+	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
 	
 	int iFilledBlocks = RoundToNearest(flRatio * TIMER_BAR_NUM_BLOCKS);
 	int iEmptyBlocks = TIMER_BAR_NUM_BLOCKS - iFilledBlocks;
@@ -905,8 +909,8 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 
 void SetChaosTimers(float flTime)
 {
-	g_flLastEffectActivateTime = flTime;
-	g_flLastMetaEffectActivateTime = flTime;
+	g_flTimeElapsed = 0.0;
+	g_flMetaTimeElapsed = 0.0;
 	g_flTimerBarDisplayTime = flTime;
 }
 
