@@ -559,9 +559,6 @@ void SelectRandomEffect(bool bMeta = false)
 			if (effect.active || effect.cooldown_left > 0)
 				continue;
 			
-			if (!effect.IsCompatibleWithActiveEffects())
-				continue;
-			
 			if (ActivateEffect(effect))
 				return;
 		}
@@ -587,8 +584,15 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		}
 		else
 		{
-			ThrowError("Failed to activate effect '%T' because it is already active", effect.name, LANG_SERVER);
+			LogError("Failed to activate effect '%T'. Reason: Effect is already active", effect.name, LANG_SERVER);
+			return false;
 		}
+	}
+	
+	if (!effect.IsCompatibleWithActiveEffects())
+	{
+		LogMessage("Failed to activate effect '%T'. Reason: Incompatible with active effects", effect.name, LANG_SERVER);
+		return false;
 	}
 	
 	Function fnCallback = effect.GetCallbackFunction("OnStart");
@@ -601,7 +605,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false", effect.name, LANG_SERVER);
+			LogMessage("Failed to activate effect '%T'. Reason: 'OnStart' callback returned false", effect.name, LANG_SERVER);
 			return false;
 		}
 	}
