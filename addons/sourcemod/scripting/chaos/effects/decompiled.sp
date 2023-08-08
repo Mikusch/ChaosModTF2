@@ -383,7 +383,7 @@ static int GetCurrentEntities()
 static bool ShouldSpawnVisual()
 {
 	// Don't spawn more entities if we're already near the limit
-	return float(GetCurrentEntities()) / float(GetMaxEntities()) < 0.9;
+	return float(GetCurrentEntities()) / float(GetMaxEntities()) < 0.95;
 }
 
 static void ShowTriggers_Toggle()

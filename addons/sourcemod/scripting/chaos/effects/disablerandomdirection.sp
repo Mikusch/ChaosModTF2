@@ -13,7 +13,7 @@ static Direction g_nDirection;
 
 public bool DisableRandomDirection_OnStart(ChaosEffect effect)
 {
-	g_nDirection = view_as<Direction>(GetRandomInt(view_as<int>(Direction_Forward), view_as<int>(Direction_Right)));
+	g_nDirection = view_as<Direction>(GetRandomInt(view_as<int>(Direction_Forward), view_as<int>(Direction_Left)));
 	
 	return true;
 }
