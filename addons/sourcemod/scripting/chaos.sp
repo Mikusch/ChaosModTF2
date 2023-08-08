@@ -33,6 +33,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/dhooks.sp"
 #include "chaos/events.sp"
 #include "chaos/sdkcalls.sp"
+#include "chaos/sdkhooks.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
@@ -59,6 +60,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/fov.sp"
 #include "chaos/effects/giveitem.sp"
 #include "chaos/effects/grantorremoveallupgrades.sp"
+#include "chaos/effects/headshots.sp"
 #include "chaos/effects/invertconvar.sp"
 #include "chaos/effects/jumpjump.sp"
 #include "chaos/effects/killrandomplayer.sp"
@@ -119,12 +121,12 @@ public void OnPluginStart()
 	Events_Initialize();
 	Data_Initialize();
 	
-	GameData hGameData = new GameData("chaos");
-	if (hGameData)
+	GameData hGameConf = new GameData("chaos");
+	if (hGameConf)
 	{
-		DHooks_Initialize(hGameData);
-		SDKCalls_Initialize(hGameData);
-		delete hGameData;
+		DHooks_Initialize(hGameConf);
+		SDKCalls_Initialize(hGameConf);
+		delete hGameConf;
 	}
 	else
 	{
@@ -201,6 +203,8 @@ public void OnClientPutInServer(int client)
 	if (!g_bEnabled)
 		return;
 	
+	SDKHooks_OnClientPutInServer(client);
+	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -216,6 +220,14 @@ public void OnClientPutInServer(int client)
 			}
 		}
 	}
+}
+
+public void OnClientDisconnect(int client)
+{
+	if (!g_bEnabled)
+		return;
+	
+	SDKHooks_OnClientDisconnect(client);
 }
 
 public void OnGameFrame()
@@ -518,8 +530,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 
 void TogglePlugin(bool bEnable)
 {
-	g_bEnabled = bEnable;
-	
 	DHooks_Toggle(bEnable);
 	Events_Toggle(bEnable);
 	
@@ -529,6 +539,14 @@ void TogglePlugin(bool bEnable)
 		
 		AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 		AddAmbientSoundHook(AmbientSHook_OnSoundPlayed);
+		
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!IsClientInGame(client))
+				continue;
+			
+			SDKHooks_OnClientPutInServer(client);
+		}
 	}
 	else
 	{
@@ -537,7 +555,17 @@ void TogglePlugin(bool bEnable)
 		
 		RemoveNormalSoundHook(NormalSHook_OnSoundPlayed);
 		RemoveAmbientSoundHook(AmbientSHook_OnSoundPlayed);
+		
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!IsClientInGame(client))
+				continue;
+			
+			OnClientDisconnect(client);
+		}
 	}
+	
+	g_bEnabled = bEnable;
 }
 
 void SelectRandomEffect(bool bMeta = false)

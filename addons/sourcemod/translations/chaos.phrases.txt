@@ -450,9 +450,9 @@
 	{
 		"en"		"Enable All Triggers"
 	}
-	"#Chaos_Effect_MemorialDay"
+	"#Chaos_Effect_Headshots"
 	{
-		"en"		"Memorial Day"
+		"en"		"All Weapons Can Headshot"
 	}
 	"#Chaos_Effect_LargeSmokeExplosions"
 	{

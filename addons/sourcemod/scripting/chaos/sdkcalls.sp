@@ -5,17 +5,17 @@ static Handle g_hSDKCall_IsAllowedToTaunt;
 static Handle g_hSDKCall_PostInventoryApplication;
 static Handle g_hSDKCall_SpawnClientsideFlyingBird;
 
-void SDKCalls_Initialize(GameData hGameData)
+void SDKCalls_Initialize(GameData hGameConf)
 {
-	g_hSDKCall_IsAllowedToTaunt = PrepSDKCall_IsAllowedToTaunt(hGameData);
-	g_hSDKCall_PostInventoryApplication = PrepSDKCall_PostInventoryApplication(hGameData);
-	g_hSDKCall_SpawnClientsideFlyingBird = PrepSDKCall_SpawnClientsideFlyingBird(hGameData);
+	g_hSDKCall_IsAllowedToTaunt = PrepSDKCall_IsAllowedToTaunt(hGameConf);
+	g_hSDKCall_PostInventoryApplication = PrepSDKCall_PostInventoryApplication(hGameConf);
+	g_hSDKCall_SpawnClientsideFlyingBird = PrepSDKCall_SpawnClientsideFlyingBird(hGameConf);
 }
 
-static Handle PrepSDKCall_IsAllowedToTaunt(GameData hGameData)
+static Handle PrepSDKCall_IsAllowedToTaunt(GameData hGameConf)
 {
 	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "CTFPlayer::IsAllowedToTaunt");
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "CTFPlayer::IsAllowedToTaunt");
 	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
 	
 	Handle hCall = EndPrepSDKCall();
@@ -25,10 +25,10 @@ static Handle PrepSDKCall_IsAllowedToTaunt(GameData hGameData)
 	return hCall;
 }
 
-static Handle PrepSDKCall_PostInventoryApplication(GameData hGameData)
+static Handle PrepSDKCall_PostInventoryApplication(GameData hGameConf)
 {
 	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
 	
 	Handle call = EndPrepSDKCall();
 	if (!call)
@@ -37,10 +37,10 @@ static Handle PrepSDKCall_PostInventoryApplication(GameData hGameData)
 	return call;
 }
 
-static Handle PrepSDKCall_SpawnClientsideFlyingBird(GameData hGameData)
+static Handle PrepSDKCall_SpawnClientsideFlyingBird(GameData hGameConf)
 {
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(hGameData, SDKConf_Signature, "SpawnClientsideFlyingBird");
+	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature, "SpawnClientsideFlyingBird");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
 	
 	Handle call = EndPrepSDKCall();

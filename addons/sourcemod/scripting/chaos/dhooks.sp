@@ -10,12 +10,12 @@ enum struct DetourData
 	DHookCallback fnCallbackPost;
 }
 
-void DHooks_Initialize(GameData hGameData)
+void DHooks_Initialize(GameData hGameConf)
 {
 	g_hDynamicDetours = new ArrayList(sizeof(DetourData));
 	
-	DHooks_AddDynamicDetour(hGameData, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
-	DHooks_AddDynamicDetour(hGameData, "CTFPlayer::GetMaxHealthForBuffing", _, DHookCallback_GetMaxHealthForBuffing_Post);
+	DHooks_AddDynamicDetour(hGameConf, "CTFPlayer::TeamFortress_CalculateMaxSpeed", _, DHookCallback_CalculateMaxSpeed_Post);
+	DHooks_AddDynamicDetour(hGameConf, "CTFPlayer::GetMaxHealthForBuffing", _, DHookCallback_GetMaxHealthForBuffing_Post);
 }
 
 void DHooks_Toggle(bool bEnable)
