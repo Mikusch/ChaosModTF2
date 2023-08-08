@@ -1,6 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define EFFECT_MAX_TAG_LENGTH	64
+#define EFFECT_MAX_TAGS			8
+
 enum struct ChaosEffect
 {
 	// Static data (read-only)
@@ -15,7 +18,7 @@ enum struct ChaosEffect
 	char script_file[PLATFORM_MAX_PATH];
 	char start_sound[PLATFORM_MAX_PATH];
 	char end_sound[PLATFORM_MAX_PATH];
-	ArrayList incompatible_with;
+	ArrayList tags;
 	KeyValues data;
 	
 	// Runtime data
@@ -38,17 +41,17 @@ enum struct ChaosEffect
 			kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 			kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 			
-			char incompatible_with[512];
-			kv.GetString("incompatible_with", incompatible_with, sizeof(incompatible_with));
-			if (incompatible_with[0])
+			char tags[EFFECT_MAX_TAG_LENGTH * EFFECT_MAX_TAGS];
+			kv.GetString("tags", tags, sizeof(tags));
+			if (tags[0])
 			{
-				this.incompatible_with = new ArrayList(64);
+				this.tags = new ArrayList(ByteCountToCells(EFFECT_MAX_TAG_LENGTH));
 				
-				char buffers[8][64];
-				int num = ExplodeString(incompatible_with, ",", buffers, sizeof(buffers), sizeof(buffers[]));
+				char buffers[EFFECT_MAX_TAGS][EFFECT_MAX_TAG_LENGTH];
+				int num = ExplodeString(tags, ",", buffers, sizeof(buffers), sizeof(buffers[]));
 				for (int i = 0; i < num; i++)
 				{
-					this.incompatible_with.PushString(buffers[i]);
+					this.tags.PushString(buffers[i]);
 				}
 			}
 			
@@ -96,7 +99,7 @@ enum struct ChaosEffect
 	
 	bool IsCompatibleWithActiveEffects()
 	{
-		if (!this.incompatible_with)
+		if (!this.tags)
 			return true;
 		
 		for (int i = 0; i < g_hEffects.Length; i++)
@@ -107,8 +110,15 @@ enum struct ChaosEffect
 				if (StrEqual(effect.id, this.id))
 					continue;
 				
-				if (this.incompatible_with.FindString(effect.id) == -1)
-					continue;
+				for (int j = 0; j < effect.tags.Length; j++)
+				{
+					char tag[EFFECT_MAX_TAG_LENGTH];
+					if (effect.tags.GetString(j, tag, sizeof(tag)))
+					{
+						if (this.tags.FindString(tag) != -1)
+							return false;
+					}
+				}
 				
 				return false;
 			}
