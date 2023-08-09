@@ -114,6 +114,9 @@ enum struct ChaosEffect
 				if (StrEqual(effect.id, this.id))
 					continue;
 				
+				if (!effect.tags)
+					continue;
+				
 				for (int j = 0; j < effect.tags.Length; j++)
 				{
 					char tag[EFFECT_MAX_TAG_LENGTH];
