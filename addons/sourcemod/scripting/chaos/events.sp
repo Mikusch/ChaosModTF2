@@ -62,10 +62,14 @@ static void EventHook_PlayerSpawn(Event event, const char[] name, bool dontBroad
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnPlayerSpawn");
 			if (fnCallback != INVALID_FUNCTION)
@@ -83,10 +87,14 @@ static void EventHook_PostInventoryApplication(Event event, const char[] name, b
 {
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnPostInventoryApplication");
 			if (fnCallback != INVALID_FUNCTION)
@@ -109,10 +117,14 @@ static void EventHook_TeamplayRoundStart(Event event, const char[] name, bool do
 {
 	SetChaosTimers(0.0);
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnRoundStart");
 			if (fnCallback != INVALID_FUNCTION)
