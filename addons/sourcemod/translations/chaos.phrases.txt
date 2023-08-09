@@ -586,6 +586,10 @@
 	{
 		"en"		"Uncontrollable Recoil"
 	}
+	"#Chaos_Effect_Overtime"
+	{
+		"en"		"Overtime"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
