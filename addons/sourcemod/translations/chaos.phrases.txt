@@ -254,9 +254,9 @@
 	{
 		"en"		"All Players Are Idiots"
 	}
-	"#Chaos_Effect_DamageForceIncrease"
+	"#Chaos_Effect_DamageCausesAirblast"
 	{
-		"en"		"Extreme Damage Knockback"
+		"en"		"Damage Causes Airblast"
 	}
 	"#Chaos_Effect_StopAndStare"
 	{
