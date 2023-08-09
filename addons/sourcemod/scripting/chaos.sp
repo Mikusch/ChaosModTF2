@@ -33,7 +33,6 @@ float g_flTimerBarDisplayTime;
 #include "chaos/dhooks.sp"
 #include "chaos/events.sp"
 #include "chaos/sdkcalls.sp"
-#include "chaos/sdkhooks.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
@@ -203,8 +202,6 @@ public void OnClientPutInServer(int client)
 	if (!g_bEnabled)
 		return;
 	
-	SDKHooks_OnClientPutInServer(client);
-	
 	for (int i = 0; i < g_hEffects.Length; i++)
 	{
 		ChaosEffect effect;
@@ -220,14 +217,6 @@ public void OnClientPutInServer(int client)
 			}
 		}
 	}
-}
-
-public void OnClientDisconnect(int client)
-{
-	if (!g_bEnabled)
-		return;
-	
-	SDKHooks_OnClientDisconnect(client);
 }
 
 public void OnGameFrame()
@@ -539,14 +528,6 @@ void TogglePlugin(bool bEnable)
 		
 		AddNormalSoundHook(NormalSHook_OnSoundPlayed);
 		AddAmbientSoundHook(AmbientSHook_OnSoundPlayed);
-		
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (!IsClientInGame(client))
-				continue;
-			
-			SDKHooks_OnClientPutInServer(client);
-		}
 	}
 	else
 	{
@@ -555,14 +536,6 @@ void TogglePlugin(bool bEnable)
 		
 		RemoveNormalSoundHook(NormalSHook_OnSoundPlayed);
 		RemoveAmbientSoundHook(AmbientSHook_OnSoundPlayed);
-		
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (!IsClientInGame(client))
-				continue;
-			
-			OnClientDisconnect(client);
-		}
 	}
 	
 	g_bEnabled = bEnable;
