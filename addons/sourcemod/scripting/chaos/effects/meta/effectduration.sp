@@ -13,10 +13,14 @@ public bool EffectDuration_OnStart(ChaosEffect effect)
 	float flMult = effect.data.GetFloat("multiplier");
 	
 	// Modify durations of all currently active effects
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect other;
-		if (g_hEffects.GetArray(i, other) && other.active)
+		if (g_hEffects.GetArray(i, other))
 		{
 			if (StrEqual(other.id, effect.id))
 				continue;

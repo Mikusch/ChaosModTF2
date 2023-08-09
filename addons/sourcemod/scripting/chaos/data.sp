@@ -102,10 +102,14 @@ enum struct ChaosEffect
 		if (!this.tags)
 			return true;
 		
-		for (int i = 0; i < g_hEffects.Length; i++)
+		int nLength = g_hEffects.Length;
+		for (int i = 0; i < nLength; i++)
 		{
+			if (!g_hEffects.Get(i, ChaosEffect::active))
+				continue;
+			
 			ChaosEffect effect;
-			if (g_hEffects.GetArray(i, effect) && effect.active)
+			if (g_hEffects.GetArray(i, effect))
 			{
 				if (StrEqual(effect.id, this.id))
 					continue;
