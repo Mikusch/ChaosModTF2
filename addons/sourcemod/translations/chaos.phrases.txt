@@ -213,10 +213,10 @@
 	{
 		"en"		"Remove Random Entity"
 	}
-	"#Chaos_Effect_RemoveRandomEntity_InProgress"
+	"#Chaos_Effect_RemoveRandomEntity_Removing"
 	{
-		"#format"	"{1:d},{2:s}"
-		"en"		"Removing entity {lightgreen}{1} {default}({lightgreen}{2}{default})."
+		"#format"	"{1:s},{2:s}"
+		"en"		"Removed {lightgreen}{1} {default}({lightgreen}{2}{default})."
 	}
 	"#Chaos_Effect_LaunchUp"
 	{
