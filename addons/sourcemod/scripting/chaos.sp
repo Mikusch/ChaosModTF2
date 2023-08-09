@@ -525,17 +525,11 @@ void TogglePlugin(bool bEnable)
 	if (bEnable)
 	{
 		SetChaosTimers(GetGameTime());
-		
-		AddNormalSoundHook(NormalSHook_OnSoundPlayed);
-		AddAmbientSoundHook(AmbientSHook_OnSoundPlayed);
 	}
 	else
 	{
 		SetChaosTimers(0.0);
 		ExpireAllActiveEffects(true);
-		
-		RemoveNormalSoundHook(NormalSHook_OnSoundPlayed);
-		RemoveAmbientSoundHook(AmbientSHook_OnSoundPlayed);
 	}
 	
 	g_bEnabled = bEnable;
@@ -925,83 +919,4 @@ static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, cons
 	{
 		TogglePlugin(convar.BoolValue);
 	}
-}
-
-static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
-{
-	Action nReturn = Plugin_Continue;
-	
-	for (int i = 0; i < g_hEffects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
-		{
-			Function fnCallback = effect.GetCallbackFunction("OnNormalSoundPlayed");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushArrayEx(clients, sizeof(clients), SM_PARAM_COPYBACK);
-				Call_PushCellRef(numClients);
-				Call_PushStringEx(sample, sizeof(sample), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCellRef(entity);
-				Call_PushCellRef(channel);
-				Call_PushCellRef(volume);
-				Call_PushCellRef(level);
-				Call_PushCellRef(pitch);
-				Call_PushCellRef(flags);
-				Call_PushStringEx(soundEntry, sizeof(soundEntry), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCellRef(seed);
-				
-				Action nResult;
-				if (Call_Finish(nResult) == SP_ERROR_NONE)
-				{
-					if (nResult > nReturn)
-					{
-						nReturn = nResult;
-					}
-				}
-			}
-		}
-	}
-	
-	return nReturn;
-}
-
-static Action AmbientSHook_OnSoundPlayed(char sample[PLATFORM_MAX_PATH], int& entity, float& volume, int& level, int& pitch, float pos[3], int& flags, float& delay)
-{
-	Action nReturn = Plugin_Continue;
-	
-	for (int i = 0; i < g_hEffects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
-		{
-			Function fnCallback = effect.GetCallbackFunction("OnAmbientSoundPlayed");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushStringEx(sample, sizeof(sample), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCellRef(entity);
-				Call_PushCellRef(volume);
-				Call_PushCellRef(level);
-				Call_PushCellRef(pitch);
-				Call_PushArrayEx(pos, sizeof(pos), SM_PARAM_COPYBACK);
-				Call_PushCellRef(flags);
-				Call_PushFloatRef(delay);
-				
-				Action nResult;
-				if (Call_Finish(nResult) == SP_ERROR_NONE)
-				{
-					if (nResult > nReturn)
-					{
-						nReturn = nResult;
-					}
-				}
-			}
-		}
-	}
-	
-	return nReturn;
 }
