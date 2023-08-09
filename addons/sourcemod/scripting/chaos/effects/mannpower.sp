@@ -17,22 +17,21 @@ static TFCond g_aPowerupConds[] =
 	TFCond_SupernovaRune,
 };
 
-static ConVar tf_powerup_mode;
 static ConVar tf_grapplinghook_enable;
 
 public void Mannpower_Initialize(ChaosEffect effect)
 {
-	tf_powerup_mode = FindConVar("tf_powerup_mode");
 	tf_grapplinghook_enable = FindConVar("tf_grapplinghook_enable");
 }
 
 public bool Mannpower_OnStart(ChaosEffect effect)
 {
 	// Don't do this effect in powerup mode
-	if (tf_powerup_mode.BoolValue)
+	if (GameRules_GetProp("m_bPowerupMode"))
 		return false;
 	
 	tf_grapplinghook_enable.BoolValue = true;
+	GameRules_SetProp("m_bPowerupMode", true, 1);
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -47,6 +46,7 @@ public bool Mannpower_OnStart(ChaosEffect effect)
 
 public void Mannpower_OnEnd(ChaosEffect effect)
 {
+	GameRules_SetProp("m_bPowerupMode", false, 1);
 	tf_grapplinghook_enable.BoolValue = false;
 	
 	for (int client = 1; client <= MaxClients; client++)
