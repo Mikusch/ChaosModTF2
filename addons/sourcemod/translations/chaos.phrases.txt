@@ -590,6 +590,14 @@
 	{
 		"en"		"Overtime"
 	}
+	"#Chaos_Effect_ImmuneToPushback"
+	{
+		"en"		"All Players Are Pushback Immune"
+	}
+	"#Chaos_Effect_Callouts"
+	{
+		"en"		"Callouts"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
