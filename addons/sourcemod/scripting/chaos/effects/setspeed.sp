@@ -54,7 +54,7 @@ public void SetSpeed_OnEnd(ChaosEffect effect)
 
 static MRESReturn OnCalculateMaxSpeed(int player, DHookReturn hReturn, DHookParam hParam)
 {
-	if (hReturn.Value <= 1.0)
+	if (hReturn.Value == 1.0)
 		return MRES_Ignored;
 	
 	hReturn.Value = g_flMaxSpeed;
