@@ -48,3 +48,14 @@ public void SetFOV_OnPlayerSpawn(ChaosEffect effect, int client)
 	SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
 	SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
 }
+
+public void SetFOV_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
+{
+	if (condition == TFCond_Zoomed)
+	{
+		int iFOV = effect.data.GetNum("fov");
+		
+		SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
+		SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
+	}
+}
