@@ -708,10 +708,13 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		PlayStaticSound(effect.start_sound);
 	}
 	
-	char szName[64];
-	if (effect.GetName(szName, sizeof(szName)) && szName[0])
+	if (!effect.meta)
 	{
-		PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
+		char szName[64];
+		if (effect.GetName(szName, sizeof(szName)) && szName[0])
+		{
+			PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
+		}
 	}
 	
 	LogMessage("Successfully activated effect '%T'", effect.name, LANG_SERVER);
