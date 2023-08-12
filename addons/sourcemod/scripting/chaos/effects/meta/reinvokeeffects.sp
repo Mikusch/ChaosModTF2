@@ -10,10 +10,14 @@ public bool ReinvokeEffects_OnStart(ChaosEffect effect)
 	
 	bool bActivated = false;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect other;
-		if (g_hEffects.GetArray(i, other) && !other.active)
+		if (g_hEffects.GetArray(i, other))
 		{
 			if (other.meta)
 				continue;
@@ -21,7 +25,7 @@ public bool ReinvokeEffects_OnStart(ChaosEffect effect)
 			if (other.activate_time == 0.0)
 				continue;
 			
-			if (other.activate_time + other.GetDuration() + flReinvokeTime <= GetGameTime())
+			if (other.activate_time + other.current_duration + flReinvokeTime <= GetGameTime())
 				continue;
 			
 			if (!ActivateEffect(other))

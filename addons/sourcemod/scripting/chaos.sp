@@ -13,26 +13,24 @@
 #include <cbasenpc>
 #include <morecolors>
 
-ConVar sm_chaos_enable;
+ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
 ConVar sm_chaos_meta_effect_interval;
 ConVar sm_chaos_meta_effect_chance;
-ConVar sm_chaos_force_effect;
 
 bool g_bEnabled;
 bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
-float g_flLastEffectActivateTime;
-float g_flLastMetaEffectActivateTime;
+float g_flTimeElapsed;
+float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
+char g_szForceEffectId[64];
 
 #include "chaos/data.sp"
-#include "chaos/dhooks.sp"
 #include "chaos/events.sp"
-#include "chaos/sdkcalls.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
@@ -47,6 +45,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/birds.sp"
 #include "chaos/effects/cattoguns.sp"
 #include "chaos/effects/decompiled.sp"
+#include "chaos/effects/disablerandomdirection.sp"
 #include "chaos/effects/disassemblemap.sp"
 #include "chaos/effects/earthquake.sp"
 #include "chaos/effects/fakeclientcommand.sp"
@@ -55,12 +54,14 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/flipviewmodels.sp"
 #include "chaos/effects/floorislava.sp"
 #include "chaos/effects/forceforward.sp"
-#include "chaos/effects/fov.sp"
 #include "chaos/effects/giveitem.sp"
 #include "chaos/effects/grantorremoveallupgrades.sp"
+#include "chaos/effects/headshots.sp"
 #include "chaos/effects/invertconvar.sp"
+#include "chaos/effects/jumpjump.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/launchup.sp"
+#include "chaos/effects/loudness.sp"
 #include "chaos/effects/mannpower.sp"
 #include "chaos/effects/modifypitch.sp"
 #include "chaos/effects/nothing.sp"
@@ -72,6 +73,7 @@ float g_flTimerBarDisplayTime;
 #include "chaos/effects/setconvar.sp"
 #include "chaos/effects/setcurrency.sp"
 #include "chaos/effects/setcustommodel.sp"
+#include "chaos/effects/setfov.sp"
 #include "chaos/effects/sethealth.sp"
 #include "chaos/effects/setspeed.sp"
 #include "chaos/effects/showscoreboard.sp"
@@ -102,32 +104,28 @@ public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
 	
-	sm_chaos_enable = CreateConVar("sm_chaos_enable", "1", "Enable or disable the plugin.");
-	sm_chaos_enable.AddChangeHook(ConVarChanged_ChaosEnable);
+	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
+	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
 	
-	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "20", "Default cooldown between effects.");
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.025", "Chance for a meta effect to be activated every interval.");
-	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "", "ID of the effect to force.");
+	
+	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect to happen.");
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
 	Events_Initialize();
-	Data_Initialize();
 	
-	GameData hGameData = new GameData("chaos");
-	if (hGameData)
-	{
-		DHooks_Initialize(hGameData);
-		SDKCalls_Initialize(hGameData);
-		delete hGameData;
-	}
-	else
-	{
+	GameData hGameConf = new GameData("chaos");
+	if (!hGameConf)
 		LogError("Failed to find chaos gamedata");
-	}
+	
+	Data_Initialize(hGameConf);
+	
+	delete hGameConf;
 }
 
 public void OnPluginEnd()
@@ -137,7 +135,8 @@ public void OnPluginEnd()
 
 public void OnMapInit(const char[] mapName)
 {
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
@@ -162,7 +161,8 @@ public void OnMapStart()
 	SetVariantString("chaos");
 	AcceptEntityInput(0, "RunScriptFile");
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
@@ -188,9 +188,9 @@ public void OnMapEnd()
 
 public void OnConfigsExecuted()
 {
-	if (g_bEnabled != sm_chaos_enable.BoolValue)
+	if (g_bEnabled != sm_chaos_enabled.BoolValue)
 	{
-		TogglePlugin(sm_chaos_enable.BoolValue);
+		TogglePlugin(sm_chaos_enabled.BoolValue);
 	}
 }
 
@@ -199,10 +199,14 @@ public void OnClientPutInServer(int client)
 	if (!g_bEnabled)
 		return;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnClientPutInServer");
 			if (fnCallback != INVALID_FUNCTION)
@@ -231,10 +235,14 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("Update");
 			if (fnCallback != INVALID_FUNCTION)
@@ -252,13 +260,19 @@ public void OnGameFrame()
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
-	float flTimerSpeed = sm_chaos_effect_interval.FloatValue;
+	float flTimerSpeed = GetGameFrameTime();
+	
+	// Meta effects tick independently
+	g_flMetaTimeElapsed += flTimerSpeed;
 	
 	// Check if a meta effect wants to modify the interval
-	for (int i = 0; i < g_hEffects.Length; i++)
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("ModifyTimerSpeed");
 			if (fnCallback != INVALID_FUNCTION)
@@ -271,32 +285,31 @@ public void OnGameFrame()
 		}
 	}
 	
+	g_flTimeElapsed += flTimerSpeed;
+	
 	// Show interval progress bar
 	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= GetGameTime())
 	{
 		g_flTimerBarDisplayTime = GetGameTime();
 		
-		DisplayTimerBar(flTimerSpeed);
+		DisplayTimerBar();
 	}
 	
 	// Activate a new effect
-	if (g_flLastEffectActivateTime && g_flLastEffectActivateTime + flTimerSpeed <= GetGameTime())
+	if (g_flTimeElapsed >= sm_chaos_effect_interval.FloatValue)
 	{
-		g_flLastEffectActivateTime = GetGameTime();
+		g_flTimeElapsed = 0.0;
 		
-		char szForceId[64];
-		sm_chaos_force_effect.GetString(szForceId, sizeof(szForceId));
-		
-		if (!szForceId[0])
+		if (!g_szForceEffectId[0])
 		{
 			SelectRandomEffect();
 		}
 		else
 		{
-			int nIndex = g_hEffects.FindString(szForceId);
+			int nIndex = g_hEffects.FindString(g_szForceEffectId);
 			if (nIndex == -1)
 			{
-				LogError("Failed to force unknown effect with ID '%s'", szForceId);
+				LogError("Failed to force unknown effect with ID '%s'", g_szForceEffectId);
 			}
 			else
 			{
@@ -309,13 +322,16 @@ public void OnGameFrame()
 					}
 				}
 			}
+			
+			// Clear out forced effect
+			g_szForceEffectId[0] = EOS;
 		}
 	}
 	
 	// Attempt to activate a new meta effect
-	if (g_flLastMetaEffectActivateTime && g_flLastMetaEffectActivateTime + sm_chaos_meta_effect_interval.FloatValue <= GetGameTime())
+	if (g_flMetaTimeElapsed >= sm_chaos_meta_effect_interval.FloatValue)
 	{
-		g_flLastMetaEffectActivateTime = GetGameTime();
+		g_flMetaTimeElapsed = 0.0;
 		
 		// Meta effects randomly activate
 		if (GetRandomFloat() <= sm_chaos_meta_effect_chance.FloatValue)
@@ -330,10 +346,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if (!g_bEnabled)
 		return;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnEntityCreated");
 			if (fnCallback != INVALID_FUNCTION)
@@ -353,10 +373,14 @@ public void OnEntityDestroyed(int entity)
 	if (!g_bEnabled)
 		return;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnEntityDestroyed");
 			if (fnCallback != INVALID_FUNCTION)
@@ -377,10 +401,14 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	
 	Action nReturn = Plugin_Continue;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnPlayerRunCmd");
 			if (fnCallback != INVALID_FUNCTION)
@@ -419,10 +447,14 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	if (!g_bEnabled)
 		return;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnConditionAdded");
 			if (fnCallback != INVALID_FUNCTION)
@@ -442,10 +474,14 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	if (!g_bEnabled)
 		return;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnConditionRemoved");
 			if (fnCallback != INVALID_FUNCTION)
@@ -475,10 +511,14 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 	
 	Action nReturn = Plugin_Continue;
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnGiveNamedItem");
 			if (fnCallback != INVALID_FUNCTION)
@@ -511,26 +551,19 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 
 void TogglePlugin(bool bEnable)
 {
-	g_bEnabled = bEnable;
-	
-	DHooks_Toggle(bEnable);
 	Events_Toggle(bEnable);
 	
 	if (bEnable)
 	{
 		SetChaosTimers(GetGameTime());
-		
-		AddNormalSoundHook(NormalSHook_OnSoundPlayed);
-		AddAmbientSoundHook(AmbientSHook_OnSoundPlayed);
 	}
 	else
 	{
 		SetChaosTimers(0.0);
 		ExpireAllActiveEffects(true);
-		
-		RemoveNormalSoundHook(NormalSHook_OnSoundPlayed);
-		RemoveAmbientSoundHook(AmbientSHook_OnSoundPlayed);
 	}
+	
+	g_bEnabled = bEnable;
 }
 
 void SelectRandomEffect(bool bMeta = false)
@@ -539,7 +572,8 @@ void SelectRandomEffect(bool bMeta = false)
 	g_hEffects.SortCustom(SortFuncADTArray_SortChaosEffectsByCooldown);
 	
 	// Go through all effects until we find a valid one 
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect) && effect.enabled)
@@ -550,9 +584,6 @@ void SelectRandomEffect(bool bMeta = false)
 			
 			// Skip already activate effects or effects still on cooldown
 			if (effect.active || effect.cooldown_left > 0)
-				continue;
-			
-			if (!effect.IsCompatibleWithActiveEffects())
 				continue;
 			
 			if (ActivateEffect(effect))
@@ -580,8 +611,15 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		}
 		else
 		{
-			ThrowError("Failed to activate effect '%T' because it is already active", effect.name, LANG_SERVER);
+			LogError("Failed to activate effect '%T'. Reason: Effect is already active", effect.name, LANG_SERVER);
+			return false;
 		}
+	}
+	
+	if (!effect.IsCompatibleWithActiveEffects())
+	{
+		LogMessage("Failed to activate effect '%T'. Reason: Incompatible with active effects", effect.name, LANG_SERVER);
+		return false;
 	}
 	
 	Function fnCallback = effect.GetCallbackFunction("OnStart");
@@ -594,7 +632,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Skipped effect '%T' because 'OnStart' callback returned false", effect.name, LANG_SERVER);
+			LogMessage("Failed to activate effect '%T'. Reason: 'OnStart' callback returned false", effect.name, LANG_SERVER);
 			return false;
 		}
 	}
@@ -614,12 +652,37 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	}
 	
 	effect.cooldown_left = effect.cooldown;
+	effect.current_duration = effect.duration;
 	effect.activate_time = GetGameTime();
+	
+	// Check if any active effect wants to modify the duration
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
+	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
+		ChaosEffect other;
+		if (g_hEffects.GetArray(i, other))
+		{
+			if (StrEqual(other.id, effect.id))
+				continue;
+			
+			fnCallback = other.GetCallbackFunction("ModifyEffectDuration");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(other, sizeof(other));
+				Call_PushFloatRef(effect.current_duration);
+				Call_Finish();
+			}
+		}
+	}
 	
 	g_hEffects.SetArray(nIndex, effect);
 	
 	// Lower cooldown of all other effects
-	for (int i = 0; i < g_hEffects.Length; i++)
+	for (int i = 0; i < nLength; i++)
 	{
 		ChaosEffect other;
 		if (g_hEffects.GetArray(i, other))
@@ -646,10 +709,13 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		PlayStaticSound(effect.start_sound);
 	}
 	
-	char szName[64];
-	if (effect.GetName(szName, sizeof(szName)) && szName[0])
+	if (!effect.meta)
 	{
-		PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
+		char szName[64];
+		if (effect.GetName(szName, sizeof(szName)) && szName[0])
+		{
+			PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
+		}
 	}
 	
 	LogMessage("Successfully activated effect '%T'", effect.name, LANG_SERVER);
@@ -657,27 +723,23 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 	return true;
 }
 
-void DisplayTimerBar(float flInterval)
+void DisplayTimerBar()
 {
 	SetHudTextParams(-1.0, 0.075, 0.1, 147, 32, 252, 255);
 	
-	float flEndTime = g_flLastEffectActivateTime + flInterval;
-	float flRatio = (GetGameTime() - g_flLastEffectActivateTime) / (flEndTime - g_flLastEffectActivateTime);
+	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
+	
+	int iFilledBlocks = RoundToNearest(flRatio * TIMER_BAR_NUM_BLOCKS);
+	int iEmptyBlocks = TIMER_BAR_NUM_BLOCKS - iFilledBlocks;
 	
 	char szProgressBar[64];
-	for (int i = 0; i < 100; i += 5)
+	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		if (i == 0)
-			continue;
-		
-		if (flRatio * 100 >= i)
-		{
-			Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
-		}
-		else
-		{
-			Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
-		}
+		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_FILLED);
+	}
+	for (int i = 0; i < iEmptyBlocks; i++)
+	{
+		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_EMPTY);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -702,7 +764,8 @@ void DisplayActiveEffects()
 		char szMessage[MAX_USER_MSG_DATA - 1];
 		
 		// Go through all effects until we find a valid one 
-		for (int i = 0; i < g_hEffects.Length; i++)
+		int nLength = g_hEffects.Length;
+		for (int i = 0; i < nLength; i++)
 		{
 			ChaosEffect effect;
 			if (g_hEffects.GetArray(i, effect))
@@ -719,29 +782,26 @@ void DisplayActiveEffects()
 				// Expiring effects stay on screen while active
 				if (effect.active)
 				{
-					float flEndTime = effect.activate_time + effect.GetDuration();
+					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
+					int iEmptyBlocks = RoundToNearest(flRatio * EFFECT_BAR_NUM_BLOCKS);
+					int iFilledBlocks = EFFECT_BAR_NUM_BLOCKS - iEmptyBlocks;
+					
 					char szProgressBar[64];
-					for (int j = 10; j < 100; j += 10)
+					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						if (i == 0)
-							continue;
-						
-						if (flRatio * 100 >= j)
-						{
-							Format(szProgressBar, sizeof(szProgressBar), "%s▒", szProgressBar);
-						}
-						else
-						{
-							Format(szProgressBar, sizeof(szProgressBar), "█%s", szProgressBar);
-						}
+						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_FILLED);
+					}
+					for (int j = 0; j < iEmptyBlocks; j++)
+					{
+						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_EMPTY);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
 				}
 				// One-shot effects stay on screen for 60 seconds
-				else if (effect.duration == 0 && GetGameTime() - effect.activate_time <= 60.0)
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= 60.0)
 				{
 					Format(szLine, sizeof(szLine), "%T", szName, client);
 				}
@@ -760,16 +820,20 @@ void DisplayActiveEffects()
 
 void ExpireAllActiveEffects(bool bForce = false)
 {
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(i, effect))
 		{
 			if (effect.activate_time == 0.0)
 				continue;
 			
 			// Check if the effect actually expired
-			if (!bForce && effect.activate_time + effect.GetDuration() > GetGameTime())
+			if (!bForce && effect.activate_time + effect.current_duration > GetGameTime())
 				continue;
 			
 			ForceExpireEffect(effect);
@@ -820,10 +884,14 @@ void ForceExpireEffect(ChaosEffect effect)
  */
 bool IsEffectOfClassActive(const char[] szEffectClass)
 {
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && StrEqual(szEffectClass, effect.effect_class) && effect.active)
+		if (g_hEffects.GetArray(i, effect) && StrEqual(szEffectClass, effect.effect_class))
 		{
 			return true;
 		}
@@ -837,10 +905,17 @@ bool IsEffectOfClassActive(const char[] szEffectClass)
  */
 bool FindKeyInActiveEffects(const char[] szEffectClass, const char[] szKey)
 {
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
+		if (!g_hEffects.Get(i, ChaosEffect::data))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active && effect.data)
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass))
 		{
 			KeyValues kv = new KeyValues("data");
 			kv.Import(effect.data);
@@ -864,10 +939,17 @@ bool FindKeyInActiveEffects(const char[] szEffectClass, const char[] szKey)
  */
 bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] szKey, const char[] szValue)
 {
-	for (int i = 0; i < g_hEffects.Length; i++)
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
+		if (!g_hEffects.Get(i, ChaosEffect::data))
+			continue;
+		
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass) && effect.active && effect.data)
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass))
 		{
 			KeyValues kv = new KeyValues("data");
 			kv.Import(effect.data);
@@ -888,91 +970,42 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 
 void SetChaosTimers(float flTime)
 {
-	g_flLastEffectActivateTime = flTime;
-	g_flLastMetaEffectActivateTime = flTime;
+	g_flTimeElapsed = 0.0;
+	g_flMetaTimeElapsed = 0.0;
 	g_flTimerBarDisplayTime = flTime;
 }
 
 static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	TogglePlugin(convar.BoolValue);
+	if (g_bEnabled != convar.BoolValue)
+	{
+		TogglePlugin(convar.BoolValue);
+	}
 }
 
-static Action NormalSHook_OnSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
+static Action ConCmd_SetNextEffect(int client, int args)
 {
-	Action nReturn = Plugin_Continue;
+	if (args < 1)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_chaos_setnexteffect <id>");
+		return Plugin_Handled;
+	}
 	
-	for (int i = 0; i < g_hEffects.Length; i++)
+	GetCmdArg(1, g_szForceEffectId, sizeof(g_szForceEffectId));
+	
+	int nIndex = g_hEffects.FindString(g_szForceEffectId);
+	if (nIndex == -1)
+	{
+		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", g_szForceEffectId);
+	}
+	else
 	{
 		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
+		if (g_hEffects.GetArray(nIndex, effect))
 		{
-			Function fnCallback = effect.GetCallbackFunction("OnNormalSoundPlayed");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushArrayEx(clients, sizeof(clients), SM_PARAM_COPYBACK);
-				Call_PushCellRef(numClients);
-				Call_PushStringEx(sample, sizeof(sample), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCellRef(entity);
-				Call_PushCellRef(channel);
-				Call_PushCellRef(volume);
-				Call_PushCellRef(level);
-				Call_PushCellRef(pitch);
-				Call_PushCellRef(flags);
-				Call_PushStringEx(soundEntry, sizeof(soundEntry), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCellRef(seed);
-				
-				Action nResult;
-				if (Call_Finish(nResult) == SP_ERROR_NONE)
-				{
-					if (nResult > nReturn)
-					{
-						nReturn = nResult;
-					}
-				}
-			}
+			ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Done", effect.name);
 		}
 	}
 	
-	return nReturn;
-}
-
-static Action AmbientSHook_OnSoundPlayed(char sample[PLATFORM_MAX_PATH], int& entity, float& volume, int& level, int& pitch, float pos[3], int& flags, float& delay)
-{
-	Action nReturn = Plugin_Continue;
-	
-	for (int i = 0; i < g_hEffects.Length; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect) && effect.active)
-		{
-			Function fnCallback = effect.GetCallbackFunction("OnAmbientSoundPlayed");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushStringEx(sample, sizeof(sample), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCellRef(entity);
-				Call_PushCellRef(volume);
-				Call_PushCellRef(level);
-				Call_PushCellRef(pitch);
-				Call_PushArrayEx(pos, sizeof(pos), SM_PARAM_COPYBACK);
-				Call_PushCellRef(flags);
-				Call_PushFloatRef(delay);
-				
-				Action nResult;
-				if (Call_Finish(nResult) == SP_ERROR_NONE)
-				{
-					if (nResult > nReturn)
-					{
-						nReturn = nResult;
-					}
-				}
-			}
-		}
-	}
-	
-	return nReturn;
+	return Plugin_Handled;
 }

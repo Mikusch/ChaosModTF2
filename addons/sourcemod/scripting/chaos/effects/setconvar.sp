@@ -4,10 +4,12 @@
 static StringMap g_hOldConVarValues;
 static ConVar sv_cheats;
 
-public void SetConVar_Initialize(ChaosEffect effect)
+public bool SetConVar_Initialize(ChaosEffect effect, GameData gameconf)
 {
 	g_hOldConVarValues = new StringMap();
 	sv_cheats = FindConVar("sv_cheats");
+	
+	return true;
 }
 
 public bool SetConVar_OnStart(ChaosEffect effect)
@@ -41,7 +43,7 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	convar.SetString(szValue, true);
 	
 	// If this effect has no duration, we don't need the stuff below
-	if (effect.duration == 0.0)
+	if (!effect.duration)
 		return true;
 	
 	convar.AddChangeHook(OnConVarChanged);

@@ -1,9 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define EFFECT_MAX_TAG_LENGTH	64
+#define EFFECT_MAX_TAGS			8
+
 enum struct ChaosEffect
 {
-	// Static data
+	// Static data (read-only)
 	char id[64];
 	char name[64];
 	bool enabled;
@@ -15,13 +18,14 @@ enum struct ChaosEffect
 	char script_file[PLATFORM_MAX_PATH];
 	char start_sound[PLATFORM_MAX_PATH];
 	char end_sound[PLATFORM_MAX_PATH];
-	ArrayList incompatible_with;
+	ArrayList tags;
 	KeyValues data;
 	
 	// Runtime data
 	bool active;
 	float activate_time;
 	int cooldown_left;
+	float current_duration;
 	
 	void Parse(KeyValues kv)
 	{
@@ -37,17 +41,17 @@ enum struct ChaosEffect
 			kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 			kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 			
-			char incompatible_with[512];
-			kv.GetString("incompatible_with", incompatible_with, sizeof(incompatible_with));
-			if (incompatible_with[0])
+			char tags[EFFECT_MAX_TAG_LENGTH * EFFECT_MAX_TAGS];
+			kv.GetString("tags", tags, sizeof(tags));
+			if (tags[0])
 			{
-				this.incompatible_with = new ArrayList(64);
+				this.tags = new ArrayList(ByteCountToCells(EFFECT_MAX_TAG_LENGTH));
 				
-				char buffers[8][64];
-				int num = ExplodeString(incompatible_with, ",", buffers, sizeof(buffers), sizeof(buffers[]));
+				char buffers[EFFECT_MAX_TAGS][EFFECT_MAX_TAG_LENGTH];
+				int num = ExplodeString(tags, ",", buffers, sizeof(buffers), sizeof(buffers[]));
 				for (int i = 0; i < num; i++)
 				{
-					this.incompatible_with.PushString(buffers[i]);
+					this.tags.PushString(buffers[i]);
 				}
 			}
 			
@@ -93,49 +97,35 @@ enum struct ChaosEffect
 		return strcopy(szName, iMaxLength, this.name) != 0;
 	}
 	
-	float GetDuration()
-	{
-		float flDuration = this.duration;
-		
-		// Check if any active effect wants to modify our duration
-		for (int i = 0; i < g_hEffects.Length; i++)
-		{
-			ChaosEffect effect;
-			if (g_hEffects.GetArray(i, effect) && effect.active)
-			{
-				// Don't modify our own duration
-				if (StrEqual(effect.id, this.id))
-					continue;
-				
-				Function fnCallback = effect.GetCallbackFunction("ModifyEffectDuration");
-				if (fnCallback != INVALID_FUNCTION)
-				{
-					Call_StartFunction(null, fnCallback);
-					Call_PushArray(effect, sizeof(effect));
-					Call_PushFloatRef(flDuration);
-					Call_Finish();
-				}
-			}
-		}
-		
-		return flDuration;
-	}
-	
 	bool IsCompatibleWithActiveEffects()
 	{
-		if (!this.incompatible_with)
+		if (!this.tags)
 			return true;
 		
-		for (int i = 0; i < g_hEffects.Length; i++)
+		int nLength = g_hEffects.Length;
+		for (int i = 0; i < nLength; i++)
 		{
+			if (!g_hEffects.Get(i, ChaosEffect::active))
+				continue;
+			
 			ChaosEffect effect;
-			if (g_hEffects.GetArray(i, effect) && effect.active)
+			if (g_hEffects.GetArray(i, effect))
 			{
 				if (StrEqual(effect.id, this.id))
 					continue;
 				
-				if (this.incompatible_with.FindString(effect.id) == -1)
+				if (!effect.tags)
 					continue;
+				
+				for (int j = 0; j < effect.tags.Length; j++)
+				{
+					char tag[EFFECT_MAX_TAG_LENGTH];
+					if (effect.tags.GetString(j, tag, sizeof(tag)))
+					{
+						if (this.tags.FindString(tag) != -1)
+							return false;
+					}
+				}
 				
 				return false;
 			}
@@ -145,7 +135,7 @@ enum struct ChaosEffect
 	}
 }
 
-void Data_Initialize()
+void Data_Initialize(GameData hGameData)
 {
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
@@ -171,10 +161,13 @@ void Data_Initialize()
 				{
 					Call_StartFunction(null, fnCallback);
 					Call_PushArray(effect, sizeof(effect));
+					Call_PushCell(hGameData);
 					
-					// If Initialize throws, the effect is not added to our list
-					if (Call_Finish() != SP_ERROR_NONE)
+					// If Initialize throws or returns false, the effect is not added to our list
+					bool bReturn;
+					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 					{
+						LogMessage("Failed to add effect '%T' (%s) to effects list", effect.name, LANG_SERVER, effect.id);
 						continue;
 					}
 				}

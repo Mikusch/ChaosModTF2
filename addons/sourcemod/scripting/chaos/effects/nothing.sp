@@ -4,30 +4,32 @@
 static ArrayList g_hFakeNames;
 static char g_szFakeName[64];
 
-public void Nothing_Initialize(ChaosEffect effect)
+public bool Nothing_Initialize(ChaosEffect effect, GameData gameconf)
 {
-	if (effect.data)
+	if (!effect.data)
+		return true;
+	
+	KeyValues data = effect.data;
+	
+	if (data.JumpToKey("fake_names", false))
 	{
-		KeyValues data = effect.data;
+		g_hFakeNames = new ArrayList(sizeof(g_szFakeName));
 		
-		if (data.JumpToKey("fake_names", false))
+		if (data.GotoFirstSubKey(false))
 		{
-			g_hFakeNames = new ArrayList(sizeof(g_szFakeName));
-			
-			if (data.GotoFirstSubKey(false))
+			do
 			{
-				do
-				{
-					char[] szName = new char[g_hFakeNames.BlockSize];
-					data.GetString(NULL_STRING, szName, g_hFakeNames.BlockSize);
-					g_hFakeNames.PushString(szName);
-				}
-				while (data.GotoNextKey(false));
-				data.GoBack();
+				char[] szName = new char[g_hFakeNames.BlockSize];
+				data.GetString(NULL_STRING, szName, g_hFakeNames.BlockSize);
+				g_hFakeNames.PushString(szName);
 			}
+			while (data.GotoNextKey(false));
 			data.GoBack();
 		}
+		data.GoBack();
 	}
+	
+	return true;
 }
 
 public bool Nothing_OnStart(ChaosEffect effect)

@@ -7,10 +7,10 @@ function ChaosEffect_OnStart()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-
-		if (player.GetTeam() <= Constants.ETFTeam.TEAM_SPECTATOR || player.GetTeam() >= Constants.ETFTeam.TF_TEAM_COUNT)
+		
+		if (!player.IsAlive())
 			continue
 
-		player.ForceChangeTeam(GetEnemyTeam(player.GetTeam()), false)
+		player.SetAbsOrigin(Vector(0, 0, 0))
 	}
 }

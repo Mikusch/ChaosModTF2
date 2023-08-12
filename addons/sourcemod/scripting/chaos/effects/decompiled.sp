@@ -21,7 +21,7 @@ static ArrayList g_hCreatedVisuals;
 static StringMap g_hEntityToSpriteMap;
 static StringMap g_hEntityToModelMap;
 
-public void Decompiled_Initialize(ChaosEffect effect)
+public bool Decompiled_Initialize(ChaosEffect effect, GameData gameconf)
 {
 	showtriggers = FindConVar("showtriggers");
 	
@@ -106,6 +106,8 @@ public void Decompiled_Initialize(ChaosEffect effect)
 	g_hEntityToModelMap.SetString("phys_constraint", "models/editor/axis_helper.mdl");
 	g_hEntityToModelMap.SetString("point_devshot_camera", "models/editor/camera.mdl");
 	g_hEntityToModelMap.SetString("scripted_sequence", "models/editor/scriptedsequence.mdl");
+	
+	return true;
 }
 
 public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
@@ -383,7 +385,7 @@ static int GetCurrentEntities()
 static bool ShouldSpawnVisual()
 {
 	// Don't spawn more entities if we're already near the limit
-	return float(GetCurrentEntities()) / float(GetMaxEntities()) < 0.9;
+	return float(GetCurrentEntities()) / float(GetMaxEntities()) < 0.95;
 }
 
 static void ShowTriggers_Toggle()

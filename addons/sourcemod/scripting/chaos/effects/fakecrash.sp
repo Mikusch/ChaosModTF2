@@ -4,9 +4,11 @@
 static ConVar net_fakeloss;
 static Handle g_hFakeCrashTimer;
 
-public void FakeCrash_Initialize(ChaosEffect effect)
+public bool FakeCrash_Initialize(ChaosEffect effect, GameData gameconf)
 {
 	net_fakeloss = FindConVar("net_fakeloss");
+	
+	return true;
 }
 
 public bool FakeCrash_OnStart(ChaosEffect effect)

@@ -5,6 +5,16 @@
 		"#format"	"{1:t}"
 		"en"		"'{1}' has been activated!"
 	}
+	"#Chaos_Effect_SetNextEffect_Invalid"
+	{
+		"#format"	"{1:s}"
+		"en"		"No effect with ID '{1}' found."
+	}
+	"#Chaos_Effect_SetNextEffect_Done"
+	{
+		"#format"	"{1:t}"
+		"en"		"You have set the next effect to '{1}'."
+	}
 	"#Chaos_Effect_InvertAcceleration"
 	{
 		"en"		"Invert Acceleration"
@@ -113,7 +123,7 @@
 	{
 		"en"		"Ping From Pluto"
 	}
-	"#Chaos_Effect_EnableTeamCollisions"
+	"#Chaos_Effect_SolidTeammates"
 	{
 		"en"		"Solid Teammates"
 	}
@@ -151,7 +161,7 @@
 	}
 	"#Chaos_Effect_PipBoyOverlay"
 	{
-		"en"		"Virtual Reality"
+		"en"		"Pip-Boy"
 	}
 	"#Chaos_Effect_NoJumpingAndCrouching"
 	{
@@ -160,6 +170,10 @@
 	"#Chaos_Effect_CompanionHeavy"
 	{
 		"en"		"Companion Heavy"
+	}
+	"#Chaos_Effect_Grill"
+	{
+		"en"		"I Just Wanna Grill for God's Sake"
 	}
 	"#Chaos_Effect_Ghosts"
 	{
@@ -209,10 +223,10 @@
 	{
 		"en"		"Remove Random Entity"
 	}
-	"#Chaos_Effect_RemoveRandomEntity_InProgress"
+	"#Chaos_Effect_RemoveRandomEntity_Removing"
 	{
-		"#format"	"{1:d},{2:s}"
-		"en"		"Removing entity {lightgreen}{1} {default}({lightgreen}{2}{default})."
+		"#format"	"{1:s},{2:s}"
+		"en"		"Removed {lightgreen}{1} {default}({lightgreen}{2}{default})."
 	}
 	"#Chaos_Effect_LaunchUp"
 	{
@@ -250,9 +264,9 @@
 	{
 		"en"		"All Players Are Idiots"
 	}
-	"#Chaos_Effect_DamageForceIncrease"
+	"#Chaos_Effect_DamageCausesAirblast"
 	{
-		"en"		"Extreme Damage Knockback"
+		"en"		"Damage Causes Airblast"
 	}
 	"#Chaos_Effect_StopAndStare"
 	{
@@ -314,9 +328,9 @@
 	{
 		"en"		"Is This Thing On?"
 	}
-	"#Chaos_Effect_WeirdPitch"
+	"#Chaos_Effect_Loudness"
 	{
-		"en"		"Weird Pitch"
+		"en"		"Megaphone"
 	}
 	"#Chaos_Effect_SpawnOrangeBall"
 	{
@@ -442,13 +456,13 @@
 	{
 		"en"		"Regenerate All Players"
 	}
-	"#Chaos_Effect_ToggleTriggers"
+	"#Chaos_Effect_EnableTriggers"
 	{
-		"en"		"Toggle All Triggers"
+		"en"		"Enable All Triggers"
 	}
-	"#Chaos_Effect_MemorialDay"
+	"#Chaos_Effect_Headshots"
 	{
-		"en"		"Memorial Day"
+		"en"		"All Weapons Can Headshot"
 	}
 	"#Chaos_Effect_LargeSmokeExplosions"
 	{
@@ -557,6 +571,46 @@
 	"#Chaos_Effect_EnableZombieMob"
 	{
 		"en"		"Spooky Scary Skeletons"
+	}
+	"#Chaos_Effect_TeleportToZero"
+	{
+		"en"		"Teleport to (0, 0, 0)"
+	}
+	"#Chaos_Effect_HL2Player"
+	{
+		"en"		"Hello, Gordon"
+	}
+	"#Chaos_Effect_JumpJump"
+	{
+		"en"		"Jump Jump"
+	}
+	"#Chaos_Effect_DisableRandomDirection"
+	{
+		"en"		"Disable Random Direction"
+	}
+	"#Chaos_Effect_Swimming"
+	{
+		"en"		"Swimming Curse"
+	}
+	"#Chaos_Effect_UncontrollableRecoil"
+	{
+		"en"		"Uncontrollable Recoil"
+	}
+	"#Chaos_Effect_Overtime"
+	{
+		"en"		"Overtime"
+	}
+	"#Chaos_Effect_ImmuneToPushback"
+	{
+		"en"		"All Players Are Pushback Immune"
+	}
+	"#Chaos_Effect_Callouts"
+	{
+		"en"		"Callouts"
+	}
+	"#Chaos_Effect_InvertAirAcceleration"
+	{
+		"en"		"Invert Air Acceleration"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

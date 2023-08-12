@@ -6,7 +6,7 @@ public bool WhereDidEverythingGo_OnStart(ChaosEffect effect)
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		SDKHook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
+		SDKHook(entity, SDKHook_SetTransmit, OnEntitySetTransmit);
 	}
 	
 	return true;
@@ -17,16 +17,16 @@ public void WhereDidEverythingGo_OnEnd(ChaosEffect effect)
 	int entity = -1;
 	while ((entity = FindEntityByClassname(entity, "*")) != -1)
 	{
-		SDKUnhook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
+		SDKUnhook(entity, SDKHook_SetTransmit, OnEntitySetTransmit);
 	}
 }
 
 public void WhereDidEverythingGo_OnEntityCreated(ChaosEffect effect, int entity, const char[] classname)
 {
-	SDKHook(entity, SDKHook_SetTransmit, SDKHookCB_SetTransmit);
+	SDKHook(entity, SDKHook_SetTransmit, OnEntitySetTransmit);
 }
 
-static Action SDKHookCB_SetTransmit(int entity, int client)
+static Action OnEntitySetTransmit(int entity, int client)
 {
 	if (entity == client)
 		return Plugin_Continue;

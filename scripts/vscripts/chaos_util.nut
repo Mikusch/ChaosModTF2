@@ -1,5 +1,11 @@
-const LIFE_ALIVE = 0
-const TF_DEATHFLAG_DEADRINGER = 32
+// m_lifeState values
+::LIFE_ALIVE <- 0
+::LIFE_DYING <- 1
+::LIFE_DEAD <- 2
+::LIFE_RESPAWNABLE <- 3
+::LIFE_DISCARDBODY <- 4
+
+::TF_DEATHFLAG_DEADRINGER <- 32
 
 ::CTFPlayer.IsAlive <- function()
 {

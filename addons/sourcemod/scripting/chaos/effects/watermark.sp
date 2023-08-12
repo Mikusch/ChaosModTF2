@@ -5,10 +5,12 @@ static Handle g_hHudSync;
 static ConVar hostname;
 static float g_flNextDisplayTime;
 
-public void Watermark_Initialize(ChaosEffect effect)
+public bool Watermark_Initialize(ChaosEffect effect, GameData gameconf)
 {
 	g_hHudSync = CreateHudSynchronizer();
 	hostname = FindConVar("hostname");
+	
+	return true;
 }
 
 public bool Watermark_OnStart(ChaosEffect effect)
