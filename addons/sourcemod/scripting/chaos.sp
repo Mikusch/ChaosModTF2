@@ -61,6 +61,7 @@ char g_szForceEffectId[64];
 #include "chaos/effects/jumpjump.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/launchup.sp"
+#include "chaos/effects/loudness.sp"
 #include "chaos/effects/mannpower.sp"
 #include "chaos/effects/modifypitch.sp"
 #include "chaos/effects/nothing.sp"
@@ -106,7 +107,7 @@ public void OnPluginStart()
 	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
 	
-	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "20", "Default cooldown between effects.");
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.025", "Chance for a meta effect to be activated every interval.");

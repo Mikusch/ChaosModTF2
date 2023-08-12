@@ -123,7 +123,7 @@
 	{
 		"en"		"Ping From Pluto"
 	}
-	"#Chaos_Effect_EnableTeamCollisions"
+	"#Chaos_Effect_SolidTeammates"
 	{
 		"en"		"Solid Teammates"
 	}
@@ -328,9 +328,9 @@
 	{
 		"en"		"Is This Thing On?"
 	}
-	"#Chaos_Effect_WeirdPitch"
+	"#Chaos_Effect_Loudness"
 	{
-		"en"		"Weird Pitch"
+		"en"		"Megaphone"
 	}
 	"#Chaos_Effect_SpawnOrangeBall"
 	{
@@ -607,6 +607,10 @@
 	"#Chaos_Effect_Callouts"
 	{
 		"en"		"Callouts"
+	}
+	"#Chaos_Effect_InvertAirAcceleration"
+	{
+		"en"		"Invert Air Acceleration"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
