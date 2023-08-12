@@ -30,7 +30,6 @@ float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 
 #include "chaos/data.sp"
-#include "chaos/dhooks.sp"
 #include "chaos/events.sp"
 #include "chaos/sdkcalls.sp"
 #include "chaos/shareddefs.sp"
@@ -118,13 +117,13 @@ public void OnPluginStart()
 	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
 	Events_Initialize();
-	Data_Initialize();
 	
 	GameData hGameConf = new GameData("chaos");
 	if (hGameConf)
 	{
-		DHooks_Initialize(hGameConf);
+		Data_Initialize(hGameConf);
 		SDKCalls_Initialize(hGameConf);
+		
 		delete hGameConf;
 	}
 	else
@@ -556,7 +555,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDef
 
 void TogglePlugin(bool bEnable)
 {
-	DHooks_Toggle(bEnable);
 	Events_Toggle(bEnable);
 	
 	if (bEnable)

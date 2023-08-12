@@ -135,7 +135,7 @@ enum struct ChaosEffect
 	}
 }
 
-void Data_Initialize()
+void Data_Initialize(GameData hGameData)
 {
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
@@ -161,9 +161,11 @@ void Data_Initialize()
 				{
 					Call_StartFunction(null, fnCallback);
 					Call_PushArray(effect, sizeof(effect));
+					Call_PushCell(hGameData);
 					
-					// If Initialize throws, the effect is not added to our list
-					if (Call_Finish() != SP_ERROR_NONE)
+					// If Initialize throws or returns false, the effect is not added to our list
+					bool bReturn;
+					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 					{
 						continue;
 					}
