@@ -167,6 +167,7 @@ void Data_Initialize(GameData hGameData)
 					bool bReturn;
 					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 					{
+						LogMessage("Failed to add effect '%T' (%s) to effects list", effect.name, LANG_SERVER, effect.id);
 						continue;
 					}
 				}

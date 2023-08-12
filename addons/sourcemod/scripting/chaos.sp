@@ -31,7 +31,6 @@ float g_flTimerBarDisplayTime;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
-#include "chaos/sdkcalls.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
@@ -119,17 +118,12 @@ public void OnPluginStart()
 	Events_Initialize();
 	
 	GameData hGameConf = new GameData("chaos");
-	if (hGameConf)
-	{
-		Data_Initialize(hGameConf);
-		SDKCalls_Initialize(hGameConf);
-		
-		delete hGameConf;
-	}
-	else
-	{
+	if (!hGameConf)
 		LogError("Failed to find chaos gamedata");
-	}
+	
+	Data_Initialize(hGameConf);
+	
+	delete hGameConf;
 }
 
 public void OnPluginEnd()

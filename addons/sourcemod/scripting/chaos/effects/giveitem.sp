@@ -1,6 +1,20 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static Handle g_hSDKCallPostInventoryApplication;
+
+public bool GiveItem_Initialize(ChaosEffect effect, GameData gameconf)
+{
+	if (!gameconf)
+		return false;
+	
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
+	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
+	
+	return g_hSDKCallPostInventoryApplication != null;
+}
+
 public bool GiveItem_OnStart(ChaosEffect effect)
 {
 	if (!effect.data)
@@ -131,7 +145,7 @@ static int AddItem(int client, const char[] szItemName)
 		
 		SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
 		
-		SDKCall_PostInventoryApplication(client);
+		SDKCall(g_hSDKCallPostInventoryApplication, client);
 		
 		delete hItem;
 		return newItem;
