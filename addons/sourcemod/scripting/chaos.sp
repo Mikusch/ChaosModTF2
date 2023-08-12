@@ -13,12 +13,11 @@
 #include <cbasenpc>
 #include <morecolors>
 
-ConVar sm_chaos_enable;
+ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
 ConVar sm_chaos_meta_effect_interval;
 ConVar sm_chaos_meta_effect_chance;
-ConVar sm_chaos_force_effect;
 
 bool g_bEnabled;
 bool g_bNoChaos;
@@ -28,6 +27,7 @@ float g_flTimeElapsed;
 float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
+char g_szForceEffectId[64];
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
@@ -103,14 +103,15 @@ public void OnPluginStart()
 {
 	LoadTranslations("chaos.phrases");
 	
-	sm_chaos_enable = CreateConVar("sm_chaos_enable", "1", "Enable or disable the plugin.");
-	sm_chaos_enable.AddChangeHook(ConVarChanged_ChaosEnable);
+	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
+	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
 	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "20", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.025", "Chance for a meta effect to be activated every interval.");
-	sm_chaos_force_effect = CreateConVar("sm_chaos_force_effect", "", "ID of the effect to force.");
+	
+	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect to happen.");
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
@@ -186,9 +187,9 @@ public void OnMapEnd()
 
 public void OnConfigsExecuted()
 {
-	if (g_bEnabled != sm_chaos_enable.BoolValue)
+	if (g_bEnabled != sm_chaos_enabled.BoolValue)
 	{
-		TogglePlugin(sm_chaos_enable.BoolValue);
+		TogglePlugin(sm_chaos_enabled.BoolValue);
 	}
 }
 
@@ -298,19 +299,16 @@ public void OnGameFrame()
 	{
 		g_flTimeElapsed = 0.0;
 		
-		char szForceId[64];
-		sm_chaos_force_effect.GetString(szForceId, sizeof(szForceId));
-		
-		if (!szForceId[0])
+		if (!g_szForceEffectId[0])
 		{
 			SelectRandomEffect();
 		}
 		else
 		{
-			int nIndex = g_hEffects.FindString(szForceId);
+			int nIndex = g_hEffects.FindString(g_szForceEffectId);
 			if (nIndex == -1)
 			{
-				LogError("Failed to force unknown effect with ID '%s'", szForceId);
+				LogError("Failed to force unknown effect with ID '%s'", g_szForceEffectId);
 			}
 			else
 			{
@@ -323,6 +321,9 @@ public void OnGameFrame()
 					}
 				}
 			}
+			
+			// Clear out forced effect
+			g_szForceEffectId[0] = EOS;
 		}
 	}
 	
@@ -976,4 +977,31 @@ static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, cons
 	{
 		TogglePlugin(convar.BoolValue);
 	}
+}
+
+static Action ConCmd_SetNextEffect(int client, int args)
+{
+	if (args < 1)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_chaos_setnexteffect <id>");
+		return Plugin_Handled;
+	}
+	
+	GetCmdArg(1, g_szForceEffectId, sizeof(g_szForceEffectId));
+	
+	int nIndex = g_hEffects.FindString(g_szForceEffectId);
+	if (nIndex == -1)
+	{
+		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", g_szForceEffectId);
+	}
+	else
+	{
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(nIndex, effect))
+		{
+			ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Done", effect.name);
+		}
+	}
+	
+	return Plugin_Handled;
 }
