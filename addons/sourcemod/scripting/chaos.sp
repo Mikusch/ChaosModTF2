@@ -306,21 +306,9 @@ public void OnGameFrame()
 		}
 		else
 		{
-			int nIndex = g_hEffects.FindString(g_szForceEffectId);
-			if (nIndex == -1)
+			if (!ActivateEffectById(g_szForceEffectId, true))
 			{
-				LogError("Failed to force unknown effect with ID '%s'", g_szForceEffectId);
-			}
-			else
-			{
-				ChaosEffect effect;
-				if (g_hEffects.GetArray(nIndex, effect))
-				{
-					if (!ActivateEffect(effect, true))
-					{
-						LogError("Failed to force effect '%T'", effect.name, LANG_SERVER);
-					}
-				}
+				LogError("Failed to force effect id '%s'", g_szForceEffectId);
 			}
 			
 			// Clear out forced effect
@@ -566,7 +554,7 @@ void TogglePlugin(bool bEnable)
 	g_bEnabled = bEnable;
 }
 
-void SelectRandomEffect(bool bMeta = false)
+bool SelectRandomEffect(bool bMeta = false)
 {
 	// Sort effects based on their cooldown
 	g_hEffects.SortCustom(SortFuncADTArray_SortChaosEffectsByCooldown);
@@ -586,20 +574,27 @@ void SelectRandomEffect(bool bMeta = false)
 			if (effect.active || effect.cooldown_left > 0)
 				continue;
 			
-			if (ActivateEffect(effect))
-				return;
+			if (ActivateEffectById(effect.id))
+				return true;
 		}
 	}
 	
 	LogError("Failed to find valid effect to activate");
+	return false;
 }
 
-bool ActivateEffect(ChaosEffect effect, bool bForce = false)
+bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 {
-	int nIndex = g_hEffects.FindString(effect.id);
+	int nIndex = g_hEffects.FindString(szEffectId);
 	if (nIndex == -1)
 	{
-		LogError("Failed to activate unknown effect with id '%s'", effect.id);
+		LogError("Failed to find effect with ID '%s'", szEffectId);
+		return false;
+	}
+	
+	ChaosEffect effect;
+	if (!g_hEffects.GetArray(nIndex, effect))
+	{
 		return false;
 	}
 	
@@ -611,14 +606,14 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		}
 		else
 		{
-			LogError("Failed to activate effect '%T'. Reason: Effect is already active", effect.name, LANG_SERVER);
+			LogError("The effect '%T' (%s) is already active!", effect.name, LANG_SERVER, effect.id);
 			return false;
 		}
 	}
 	
 	if (!effect.IsCompatibleWithActiveEffects())
 	{
-		LogMessage("Failed to activate effect '%T'. Reason: Incompatible with active effects", effect.name, LANG_SERVER);
+		LogMessage("Skipped effect '%T' (%s) because it is incompatible with other active effects", effect.name, LANG_SERVER, effect.id);
 		return false;
 	}
 	
@@ -632,7 +627,7 @@ bool ActivateEffect(ChaosEffect effect, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Failed to activate effect '%T'. Reason: 'OnStart' callback returned false", effect.name, LANG_SERVER);
+			LogMessage("Skipped effect '%T' (%s) because its 'OnStart' callback returned false", effect.name, LANG_SERVER, effect.id);
 			return false;
 		}
 	}

@@ -11,7 +11,6 @@ enum struct ChaosEffect
 	char name[64];
 	bool enabled;
 	float duration;
-	float chance;
 	int cooldown;
 	bool meta;
 	char effect_class[64];

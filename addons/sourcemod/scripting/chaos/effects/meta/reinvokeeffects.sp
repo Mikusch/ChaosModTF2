@@ -6,7 +6,7 @@ public bool ReinvokeEffects_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
-	float flReinvokeTime = effect.data.GetFloat("time");
+	float reinvoke_time = effect.data.GetFloat("reinvoke_time");
 	
 	bool bActivated = false;
 	
@@ -25,10 +25,10 @@ public bool ReinvokeEffects_OnStart(ChaosEffect effect)
 			if (other.activate_time == 0.0)
 				continue;
 			
-			if (other.activate_time + other.current_duration + flReinvokeTime <= GetGameTime())
+			if (other.activate_time + other.current_duration + reinvoke_time <= GetGameTime())
 				continue;
 			
-			if (!ActivateEffect(other))
+			if (!ActivateEffectById(other.id))
 				continue;
 			
 			bActivated = true;
