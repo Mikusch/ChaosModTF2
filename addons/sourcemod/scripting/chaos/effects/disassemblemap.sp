@@ -34,7 +34,7 @@ public bool DisassembleMap_OnStart(ChaosEffect effect)
 		int entity = -1;
 		while ((entity = FindEntityByClassname(entity, g_aClassNames[i])) != -1)
 		{
-			if (CBaseEntity(entity).GetMoveType() == MOVETYPE_VPHYSICS)
+			if (view_as<MoveType>(GetEntProp(entity, Prop_Data, "m_MoveType")) == MOVETYPE_VPHYSICS)
 				continue;
 			
 			DispatchKeyValue(entity, "targetname", CONVERTER_TARGET);

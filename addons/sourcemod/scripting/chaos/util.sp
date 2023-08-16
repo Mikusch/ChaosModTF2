@@ -317,3 +317,15 @@ void UTIL_ScreenFade(int player, const int color[4], float fadeTime, float fadeH
 		EndMessage();
 	}
 }
+
+void WorldSpaceCenter(int entity, float vecCenter[3])
+{
+	float vecOrigin[3], vecMins[3], vecMaxs[3], vecOffset[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecOrigin);
+	GetEntPropVector(entity, Prop_Data, "m_vecMins", vecMins);
+	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vecMaxs);
+	
+	AddVectors(vecMins, vecMaxs, vecOffset);
+	ScaleVector(vecOffset, 0.5);
+	AddVectors(vecOrigin, vecOffset, vecCenter);
+}

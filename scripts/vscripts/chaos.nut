@@ -32,17 +32,18 @@ function Chaos_StartEffect(name, duration)
 	getroottable()[scopeName] <- {}
 	local scope = getroottable()[scopeName]
 
-	IncludeScript("chaos/effects/" + name.tolower() + ".nut", scope)
+	IncludeScript("chaos/effects/" + name.tolower(), scope)
 
 	scope.Chaos_EffectName <- CHAOS_NAMESPACE + name
 
+	local success = true
 	if ("ChaosEffect_OnStart" in scope)
-		scope.ChaosEffect_OnStart()
+		success = scope.ChaosEffect_OnStart()
 
-	if (duration > 0)
+	if (success && duration > 0)
 		ChaosEffectScopes[scopeName] <- scope
 
-	return true
+	return success
 }
 
 function Chaos_UpdateEffects()

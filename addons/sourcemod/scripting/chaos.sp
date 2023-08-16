@@ -10,7 +10,7 @@
 #include <tf2items>
 #include <tf2utils>
 #include <tf_econ_data>
-#include <cbasenpc>
+#include <vscript>
 #include <morecolors>
 
 ConVar sm_chaos_enabled;
@@ -48,6 +48,7 @@ char g_szForceEffectId[64];
 #include "chaos/effects/disablerandomdirection.sp"
 #include "chaos/effects/disassemblemap.sp"
 #include "chaos/effects/earthquake.sp"
+#include "chaos/effects/enableallholidays.sp"
 #include "chaos/effects/fakeclientcommand.sp"
 #include "chaos/effects/fakecrash.sp"
 #include "chaos/effects/flipviewmodels.sp"
@@ -156,8 +157,7 @@ public void OnMapStart()
 	g_flLastEffectDisplayTime = GetGameTime();
 	
 	// Initialize VScript system
-	SetVariantString("chaos");
-	AcceptEntityInput(0, "RunScriptFile");
+	ServerCommand("script_execute chaos");
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
@@ -252,8 +252,9 @@ public void OnGameFrame()
 		}
 	}
 	
-	SetVariantString("Chaos_UpdateEffects");
-	AcceptEntityInput(0, "CallScriptFunction");
+	VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffects"));
+	hExecute.Execute();
+	delete hExecute;
 	
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
@@ -632,10 +633,18 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	
 	if (effect.script_file[0])
 	{
-		char str[64];
-		Format(str, sizeof(str), "Chaos_StartEffect(\"%s\", %f)", effect.script_file, effect.duration);
-		SetVariantString(str);
-		AcceptEntityInput(0, "RunScriptCode");
+		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_StartEffect"));
+		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
+		hExecute.SetParam(2, FIELD_FLOAT, effect.duration);
+		hExecute.Execute();
+		bool bReturn = hExecute.ReturnValue;
+		delete hExecute;
+		
+		if (!bReturn)
+		{
+			LogMessage("Skipped script file '%s' because its 'OnStart' callback returned false", effect.script_file);
+			return false;
+		}
 	}
 	
 	// One-shot effects are never set to active state
@@ -855,10 +864,10 @@ void ForceExpireEffect(ChaosEffect effect)
 	
 	if (effect.script_file[0])
 	{
-		char str[64];
-		Format(str, sizeof(str), "Chaos_EndEffect(\"%s\")", effect.script_file);
-		SetVariantString(str);
-		AcceptEntityInput(0, "RunScriptCode");
+		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_EndEffect"));
+		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
+		hExecute.Execute();
+		delete hExecute;
 	}
 	
 	if (effect.start_sound[0])

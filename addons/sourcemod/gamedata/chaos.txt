@@ -34,6 +34,12 @@
 				"linux"		"@_Z25SpawnClientsideFlyingBirdR6Vector"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x38\xD9\x05\x2A\x2A\x2A\x2A"
 			}
+			"TF_IsHolidayActive"
+			{
+				"library"	"server"
+				"linux"		"@_Z18TF_IsHolidayActivei"
+				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x83\x78\x30\x00\x74\x2A\x32\xC0"
+			}
 		}
 		"Functions"
 		{
@@ -57,6 +63,20 @@
 				"callconv"	"thiscall"
 				"return"	"int"
 				"this"		"entity"
+			}
+			"TF_IsHolidayActive"
+			{
+				"signature"	"TF_IsHolidayActive"
+				"callconv"	"cdecl"
+				"return"	"bool"
+				"this"		"ignore"
+				"arguments"
+				{
+					"eHoliday"
+					{
+						"type"	"int"
+					}
+				}
 			}
 		}
 	}

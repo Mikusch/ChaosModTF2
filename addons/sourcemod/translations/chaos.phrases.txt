@@ -568,9 +568,9 @@
 	{
 		"en"		"Flashbang"
 	}
-	"#Chaos_Effect_EnableZombieMob"
+	"#Chaos_Effect_EnableAllHolidays"
 	{
-		"en"		"Spooky Scary Skeletons"
+		"en"		"Enable All Holidays"
 	}
 	"#Chaos_Effect_TeleportToZero"
 	{

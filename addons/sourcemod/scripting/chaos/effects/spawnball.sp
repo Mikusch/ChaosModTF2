@@ -14,7 +14,7 @@ public bool SpawnBall_OnStart(ChaosEffect effect)
 		return false;
 	
 	float vecCenter[3];
-	CBaseEntity(client).WorldSpaceCenter(vecCenter);
+	WorldSpaceCenter(client, vecCenter);
 	
 	float vecDropSpot[3];
 	if (CanFindBallSpawnLocation(vecCenter, vecDropSpot))

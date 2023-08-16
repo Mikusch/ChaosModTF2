@@ -43,7 +43,7 @@ public void SpawnBirds_Update(ChaosEffect effect)
 		g_flNextBirdSpawnTime[client] = GetGameTime() + GetRandomFloat(0.5, 1.0);
 		
 		float vecCenter[3];
-		CBaseEntity(client).WorldSpaceCenter(vecCenter);
+		WorldSpaceCenter(client, vecCenter);
 		SDKCall(g_hSDKCallSpawnClientsideFlyingBird, vecCenter);
 	}
 }

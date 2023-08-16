@@ -285,8 +285,8 @@ static void SpawnLightsFromData()
 static void CreateVisualFromEntity(int entity, const char[] szClassname)
 {
 	float vecOrigin[3], angRotation[3];
-	CBaseEntity(entity).GetAbsOrigin(vecOrigin);
-	CBaseEntity(entity).GetAbsAngles(angRotation);
+	GetEntPropVector(entity, Prop_Data, "m_angAbsRotation", vecOrigin);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", angRotation);
 	
 	if (StrEqual(szClassname, "beam"))
 	{

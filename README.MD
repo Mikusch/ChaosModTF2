@@ -11,13 +11,13 @@ See [here](https://github.com/Mikusch/ChaosModTF2/wiki) for more information.
 
 ## Requirements
 
-* SourceMod 1.11+
-* [TF2 Attributes](https://github.com/FlaminSarge/tf2attributes)
-* [TF2 Items](https://github.com/asherkin/TF2Items)
-* [TF2 Utils](https://github.com/nosoop/SM-TFUtils)
-* [TF2 Econ Data](https://github.com/nosoop/SM-TFEconData)
-* [CBaseNPC](https://github.com/TF2-DMB/CBaseNPC)
-* [More Colors](https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc) (compile
+* SourceMod 1.12+
+* [FlaminSarge/tf2attributes](https://github.com/FlaminSarge/tf2attributes)
+* [asherkin/TF2Items](https://github.com/asherkin/TF2Items)
+* [nosoop/SM-TFUtils](https://github.com/nosoop/SM-TFUtils)
+* [nosoop/SM-TFEconData](https://github.com/nosoop/SM-TFEconData)
+* [FortyTwoFortyTwo/VScript](https://github.com/FortyTwoFortyTwo/VScript)
+* [DoctorMcKay/MoreColors](https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc) (compile
   only)
 
 ## Special Thanks
