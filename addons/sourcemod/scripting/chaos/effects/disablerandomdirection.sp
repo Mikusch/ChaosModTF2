@@ -20,6 +20,9 @@ public bool DisableRandomDirection_OnStart(ChaosEffect effect)
 
 public Action DisableRandomDirection_OnPlayerRunCmd(ChaosEffect effect, int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
+	if (!IsPlayerAlive(client))
+		return Plugin_Continue;
+	
 	if (g_nDirection == Direction_Forward && vel[0] > 0.0 || g_nDirection == Direction_Back && vel[0] < 0.0)
 	{
 		vel[0] = 0.0;
