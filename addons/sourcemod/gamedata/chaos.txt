@@ -41,6 +41,15 @@
 				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x83\x78\x30\x00\x74\x2A\x32\xC0"
 			}
 		}
+		"Offsets"
+		{
+			"CTFPlayer::GiveNamedItem"
+			{
+				"library"	"server"
+				"linux"		"493"
+				"windows"	"486"
+			}
+		}
 		"Functions"
 		{
 			"CTFPlayer::TeamFortress_CalculateMaxSpeed"

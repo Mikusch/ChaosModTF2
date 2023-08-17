@@ -636,6 +636,10 @@
 	{
 		"en"		"Tall Legs"
 	}
+	"#Chaos_Effect_IdentityTheft"
+	{
+		"en"		"Identity Theft"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

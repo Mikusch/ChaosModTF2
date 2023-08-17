@@ -58,6 +58,7 @@ char g_szForceEffectId[64];
 #include "chaos/effects/giveitem.sp"
 #include "chaos/effects/grantorremoveallupgrades.sp"
 #include "chaos/effects/headshots.sp"
+#include "chaos/effects/identitytheft.sp"
 #include "chaos/effects/invertconvar.sp"
 #include "chaos/effects/jumpjump.sp"
 #include "chaos/effects/killrandomplayer.sp"

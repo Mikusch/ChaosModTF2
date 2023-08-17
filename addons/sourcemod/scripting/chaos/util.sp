@@ -329,3 +329,12 @@ void WorldSpaceCenter(int entity, float vecCenter[3])
 	ScaleVector(vecOffset, 0.5);
 	AddVectors(vecOrigin, vecOffset, vecCenter);
 }
+
+int FindItemOffset(int entity)
+{
+	char szNetClass[32];
+	if (!GetEntityNetClass(entity, szNetClass, sizeof(szNetClass)))
+		return -1;
+	
+	return FindSendPropInfo(szNetClass, "m_Item");
+}
