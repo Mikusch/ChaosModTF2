@@ -47,6 +47,7 @@ char g_szForceEffectId[64];
 #include "chaos/effects/decompiled.sp"
 #include "chaos/effects/disablerandomdirection.sp"
 #include "chaos/effects/disassemblemap.sp"
+#include "chaos/effects/drunk.sp"
 #include "chaos/effects/earthquake.sp"
 #include "chaos/effects/enableallholidays.sp"
 #include "chaos/effects/fakeclientcommand.sp"

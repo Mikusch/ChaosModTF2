@@ -640,6 +640,10 @@
 	{
 		"en"		"Identity Theft"
 	}
+	"#Chaos_Effect_Drunk"
+	{
+		"en"		"Drunk"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
