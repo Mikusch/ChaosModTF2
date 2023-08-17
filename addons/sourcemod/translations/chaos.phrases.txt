@@ -422,7 +422,7 @@
 	}
 	"#Chaos_Effect_IncreasedSpread"
 	{
-		"en"		"Accurately Weapons"
+		"en"		"Stormtrooper Aim"
 	}
 	"#Chaos_Effect_FakeCrash"
 	{
@@ -623,6 +623,14 @@
 	"#Chaos_Effect_MedievalMode"
 	{
 		"en"		"Ye Olde Combat"
+	}
+	"#Chaos_Effect_NoSpread"
+	{
+		"en"		"Pinpoint Accuracy"
+	}
+	"#Chaos_Effect_10xFallingDamage"
+	{
+		"en"		"All Players Take 10x Falling Damage"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
