@@ -143,9 +143,9 @@
 	{
 		"en"		"Third Person Camera"
 	}
-	"#Chaos_Effect_TeleporterMalfunction"
+	"#Chaos_Effect_SwapPositions"
 	{
-		"en"		"Teleporter Malfunction"
+		"en"		"All Players Swap Positions"
 	}
 	"#Chaos_Effect_RespawnAllDead"
 	{

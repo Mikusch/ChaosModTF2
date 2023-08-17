@@ -80,7 +80,7 @@ char g_szForceEffectId[64];
 #include "chaos/effects/slap.sp"
 #include "chaos/effects/spawnball.sp"
 #include "chaos/effects/stepsize.sp"
-#include "chaos/effects/teleportermalfunction.sp"
+#include "chaos/effects/swappositions.sp"
 #include "chaos/effects/thriller.sp"
 #include "chaos/effects/tiltedcamera.sp"
 #include "chaos/effects/truce.sp"
