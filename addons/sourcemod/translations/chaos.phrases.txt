@@ -612,6 +612,14 @@
 	{
 		"en"		"Invert Air Acceleration"
 	}
+	"#Chaos_Effect_WeaponsFireRockets"
+	{
+		"en"		"All Weapons Fire Rockets"
+	}
+	"#Chaos_Effect_WeaponsFireBombs"
+	{
+		"en"		"All Weapons Fire Bombs"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
