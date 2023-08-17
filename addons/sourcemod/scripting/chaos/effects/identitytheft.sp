@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static Handle g_SDKCallGiveNamedItem;
+static Handle g_hSDKCallPostInventoryApplication;
 
 public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
 {
@@ -14,7 +15,11 @@ public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
 	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
 	g_SDKCallGiveNamedItem = EndPrepSDKCall();
 	
-	return g_SDKCallGiveNamedItem != null;
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
+	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
+	
+	return g_SDKCallGiveNamedItem != null && g_hSDKCallPostInventoryApplication != null;
 }
 
 public bool IdentityTheft_OnStart(ChaosEffect effect)
@@ -111,5 +116,7 @@ static void EventHook_PlayerDeath(Event event, const char[] name, bool dontBroad
 			SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
 			TF2Util_EquipPlayerWearable(attacker, newItem);
 		}
+		
+		SDKCall(g_hSDKCallPostInventoryApplication, attacker);
 	}
 }
