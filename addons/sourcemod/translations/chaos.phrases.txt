@@ -620,6 +620,10 @@
 	{
 		"en"		"All Weapons Fire Bombs"
 	}
+	"#Chaos_Effect_MedievalMode"
+	{
+		"en"		"Ye Olde Combat"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
