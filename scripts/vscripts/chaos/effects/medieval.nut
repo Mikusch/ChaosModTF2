@@ -2,13 +2,13 @@ IncludeScript("chaos_util")
 
 function ChaosEffect_OnStart()
 {
+	if (IsInMedievalMode())
+		return false
+
 	local gamerules = Entities.FindByClassname(null, "tf_gamerules")
 	if (gamerules == null)
 		return false
-	
-	if (NetProps.GetPropBool(gamerules, "m_bPlayingMedieval"))
-		return false
-	
+
 	NetProps.SetPropBool(gamerules, "m_bPlayingMedieval", true)
 
 	for (local i = 1; i <= MaxClients(); i++)

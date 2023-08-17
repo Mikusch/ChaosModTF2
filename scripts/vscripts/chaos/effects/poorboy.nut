@@ -1,9 +1,5 @@
 function ChaosEffect_OnStart()
 {
-	local gamerules = Entities.FindByClassname(null, "tf_gamerules")
-	if (gamerules == null)
-		return false
-	
 	if (!GameModeUsesCurrency())
 		return false
 	
