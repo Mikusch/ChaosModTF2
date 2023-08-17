@@ -8,6 +8,10 @@ public bool FallDamage_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 	
+	// Only allow one active at a time
+	if (IsEffectOfClassActive(effect.effect_class))
+		return false;
+	
 	g_flMultiplier = effect.data.GetFloat("multiplier");
 	
 	for (int client = 1; client <= MaxClients; client++)

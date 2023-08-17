@@ -444,7 +444,7 @@
 	{
 		"en"		"Tilted Camera"
 	}
-	"#Chaos_Effect_StepSize"
+	"#Chaos_Effect_NoStepSize"
 	{
 		"en"		"Inclinity Problem"
 	}
@@ -631,6 +631,10 @@
 	"#Chaos_Effect_10xFallingDamage"
 	{
 		"en"		"All Players Take 10x Falling Damage"
+	}
+	"#Chaos_Effect_IncreasedStepSize"
+	{
+		"en"		"Tall Legs"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
