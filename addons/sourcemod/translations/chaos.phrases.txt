@@ -342,7 +342,7 @@
 	}
 	"#Chaos_Effect_AddCurrency"
 	{
-		"en"		"Give Everyone $30000"
+		"en"		"Rich Man"
 	}
 	"#Chaos_Effect_ExtraAirDashes"
 	{

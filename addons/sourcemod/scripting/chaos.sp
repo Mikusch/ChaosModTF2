@@ -70,7 +70,6 @@ char g_szForceEffectId[64];
 #include "chaos/effects/screenoverlay.sp"
 #include "chaos/effects/setattribute.sp"
 #include "chaos/effects/setconvar.sp"
-#include "chaos/effects/setcurrency.sp"
 #include "chaos/effects/setcustommodel.sp"
 #include "chaos/effects/setfov.sp"
 #include "chaos/effects/sethealth.sp"
