@@ -81,7 +81,12 @@ static void EventHook_PlayerDeath(Event event, const char[] name, bool dontBroad
 			
 			SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
 			EquipPlayerWeapon(attacker, newItem);
-			SetEntPropEnt(newItem, Prop_Send, "m_hOwner", attacker);
+			
+			// Switch to our victim's active weapon
+			if (GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon") == weapon)
+			{
+				TF2Util_SetPlayerActiveWeapon(attacker, newItem);
+			}
 		}
 		
 		// Copy victim's wearables
