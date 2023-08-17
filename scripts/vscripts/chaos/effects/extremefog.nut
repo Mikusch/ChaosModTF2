@@ -16,19 +16,24 @@ function ChaosEffect_OnStart()
 		farz			= 8400
 	})
 
-	SetFogController(customFogController)
+	SetFogForAllPlayers(customFogController)
+}
+
+function ChaosEffect_Update()
+{
+	SetFogForAllPlayers(customFogController)
 }
 
 function ChaosEffect_OnEnd()
 {
-	if (customFogController.IsValid())
+	if (customFogController != null && customFogController.IsValid())
 		customFogController.Destroy()
 	
 	local controller = FindFogController(true)
 	if (controller != null)
-		SetFogController(controller)
+		SetFogForAllPlayers(controller)
 	else
-		SetFogController(FindFogController())
+		SetFogForAllPlayers(FindFogController())
 }
 
 function FindFogController(master = false)
@@ -48,30 +53,22 @@ function FindFogController(master = false)
 	return null
 }
 
-function SetFogController(controller)
+function SetFogForAllPlayers(controller)
 {
+	if (controller == null || !controller.IsValid())
+		return
+
 	for (local i = 1; i <= MaxClients(); i++)
 	{
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
 
+		if (controller == NetProps.GetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl"))
+			continue
+
 		NetProps.SetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl", controller)
 	}
-}
-
-function Chaos_OnGameEvent_player_spawn(params)
-{
-	local player = GetPlayerFromUserID(params.userid)
-	if (player == null)
-		return
-
-	NetProps.SetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl", customFogController)
-}
-
-function Chaos_OnGameEvent_teamplay_round_start(params)
-{
-	SetFogController(customFogController)
 }
 
 Chaos_CollectEventCallbacks(this)

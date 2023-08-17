@@ -23,11 +23,11 @@ function Chaos_StartEffect(name, duration)
 	local scopeName = CHAOS_NAMESPACE + name
 	if (scopeName in ChaosEffectScopes)
 	{
-		printl(format(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...", name))
+		printf(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...\n", name)
 		Chaos_EndEffect(name)
 	}
 
-	printl(format(CHAOS_LOG_PREFIX + "Starting effect '%s'", name))
+	printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", name)
 
 	getroottable()[scopeName] <- {}
 	local scope = getroottable()[scopeName]
@@ -39,6 +39,9 @@ function Chaos_StartEffect(name, duration)
 	local success = true
 	if ("ChaosEffect_OnStart" in scope)
 		success = scope.ChaosEffect_OnStart()
+	
+	if (success == null)
+		success = true
 
 	if (success && duration > 0)
 		ChaosEffectScopes[scopeName] <- scope
@@ -53,25 +56,23 @@ function Chaos_UpdateEffects()
 		if ("ChaosEffect_Update" in scope)
 			scope.ChaosEffect_Update()
 	}
-
-	return true
 }
 
 function Chaos_EndEffect(name)
 {
-	printl(format(CHAOS_LOG_PREFIX + "Stopping effect '%s'", name))
+	printf(CHAOS_LOG_PREFIX + "Stopping effect '%s'\n", name)
 
 	local scopeName = CHAOS_NAMESPACE + name
 	if (!(scopeName in ChaosEffectScopes))
 	{
-		printl(format(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!", name))
+		printf(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!\n", name)
 		return false
 	}
 
 	local scope = ChaosEffectScopes[scopeName]
 	if (scope == null)
 	{
-		printl(format(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!", name))
+		printf(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!\n", name)
 		return false
 	}
 
