@@ -46,5 +46,5 @@ public void StepSize_OnEnd(ChaosEffect effect)
 
 public void StepSize_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	SetEntProp(client, Prop_Send, "m_flStepSize", g_flStepSize);
+	SetEntPropFloat(client, Prop_Send, "m_flStepSize", g_flStepSize);
 }
