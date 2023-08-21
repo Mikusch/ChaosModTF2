@@ -1,4 +1,4 @@
-playerClassNames <-
+local playerClassNames =
 [
 	"Undefined",
 	"Scout",
