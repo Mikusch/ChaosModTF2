@@ -13,8 +13,6 @@ function ChaosEffect_OnStart()
 		if (!player.IsAlive())
 			continue
 
-		player.SetForceLocalDraw(true)
-
 		player.ValidateScriptScope()
 		player.GetScriptScope().viewcontrol <- CreateViewControl(player)
 	}
@@ -81,6 +79,8 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
+	player.SetForceLocalDraw(true)
+
 	RemoveViewControl(player)
 
 	player.ValidateScriptScope()
@@ -97,15 +97,6 @@ function Chaos_OnGameEvent_player_death(params)
 		return
 
 	RemoveViewControl(player)
-}
-
-function Chaos_OnGameEvent_player_initial_spawn(params)
-{
-	local player = PlayerInstanceFromIndex(params.index)
-	if (player == null)
-		return
-
-	player.SetForceLocalDraw(true)
 }
 
 Chaos_CollectEventCallbacks(this)
