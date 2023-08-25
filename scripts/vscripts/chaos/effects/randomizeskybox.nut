@@ -31,7 +31,7 @@ function ChaosEffect_OnStart()
 	{
 		sky = skynames[RandomInt(0, skynames.len() - 1)]
 	}
-	while (sky != sv_skyname)
+	while (sky == sv_skyname)
 	
 	SetSkyboxTexture(sky)
 }
