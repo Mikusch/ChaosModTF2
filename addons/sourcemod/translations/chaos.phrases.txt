@@ -644,6 +644,10 @@
 	{
 		"en"		"Drunk"
 	}
+	"#Chaos_Effect_Binoculars"
+	{
+		"en"		"Binoculars"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
