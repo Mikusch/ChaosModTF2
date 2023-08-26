@@ -3,7 +3,7 @@
 	"#Chaos_Effect_Activated"
 	{
 		"#format"	"{1:t}"
-		"en"		"'{1}' has been activated!"
+		"en"		"{lightgreen}{1} {default}has been activated!"
 	}
 	"#Chaos_Effect_SetNextEffect_Invalid"
 	{

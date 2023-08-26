@@ -713,16 +713,13 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		PlayStaticSound(effect.start_sound);
 	}
 	
-	if (!effect.meta)
+	char szName[64];
+	if (effect.GetName(szName, sizeof(szName)) && szName[0])
 	{
-		char szName[64];
-		if (effect.GetName(szName, sizeof(szName)) && szName[0])
-		{
-			PrintCenterTextAll("%t", "#Chaos_Effect_Activated", szName);
-		}
+		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
 	}
 	
-	LogMessage("Successfully activated effect '%T'", effect.name, LANG_SERVER);
+	LogMessage("Activated effect '%T'", effect.name, LANG_SERVER);
 	
 	return true;
 }
