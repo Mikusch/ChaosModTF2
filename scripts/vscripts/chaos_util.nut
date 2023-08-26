@@ -7,6 +7,8 @@ const LIFE_DISCARDBODY = 4
 
 const TF_DEATHFLAG_DEADRINGER = 32
 
+const FLT_MAX = 0x7F7FFFFF
+
 ::CTFPlayer.IsAlive <- function()
 {
 	return NetProps.GetPropInt(this, "m_lifeState") == LIFE_ALIVE

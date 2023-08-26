@@ -84,7 +84,6 @@ char g_szForceEffectId[64];
 #include "chaos/effects/stepsize.sp"
 #include "chaos/effects/swappositions.sp"
 #include "chaos/effects/thriller.sp"
-#include "chaos/effects/tiltedcamera.sp"
 #include "chaos/effects/truce.sp"
 #include "chaos/effects/watermark.sp"
 #include "chaos/effects/wheredideverythinggo.sp"

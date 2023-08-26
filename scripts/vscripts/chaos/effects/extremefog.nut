@@ -70,5 +70,3 @@ function SetFogForAllPlayers(controller)
 		NetProps.SetPropEntity(player, "m_Local.m_PlayerFog.m_hCtrl", controller)
 	}
 }
-
-Chaos_CollectEventCallbacks(this)
