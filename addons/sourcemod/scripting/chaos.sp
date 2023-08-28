@@ -719,6 +719,15 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
 	}
 	
+	// For effects that need to access modified properties
+	fnCallback = effect.GetCallbackFunction("OnStartPost");
+	if (fnCallback != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, fnCallback);
+		Call_PushArray(effect, sizeof(effect));
+		Call_Finish();
+	}
+	
 	LogMessage("Activated effect '%T'", effect.name, LANG_SERVER);
 	
 	return true;
