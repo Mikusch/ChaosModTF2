@@ -15,12 +15,12 @@ const TF_DEATHFLAG_DEADRINGER = 32
 
 const FLT_MAX = 0x7F7FFFFF
 
-::CTFPlayer.IsAlive <- function()
+CTFPlayer.IsAlive <- function()
 {
 	return NetProps.GetPropInt(this, "m_lifeState") == LIFE_ALIVE
 }
 
-::CTFBot.IsAlive <- function()
+CTFBot.IsAlive <- function()
 {
 	return NetProps.GetPropInt(this, "m_lifeState") == LIFE_ALIVE
 }
