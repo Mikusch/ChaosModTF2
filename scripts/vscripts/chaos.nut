@@ -1,3 +1,5 @@
+IncludeScript("chaos_util")
+
 const CHAOS_NAMESPACE = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 

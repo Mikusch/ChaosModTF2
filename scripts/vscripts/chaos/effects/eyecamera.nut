@@ -1,5 +1,3 @@
-IncludeScript("chaos_util")
-
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)
@@ -54,7 +52,7 @@ function PostViewControlEnable()
 	if (weapon != null)
 		weapon.SetDrawEnabled(true)
 
-	NetProps.SetPropInt(activator, "m_takedamage", 2)
+	NetProps.SetPropInt(activator, "m_takedamage", DAMAGE_YES)
 }
 
 function RemoveViewControl(player)
@@ -65,7 +63,7 @@ function RemoveViewControl(player)
 		local viewcontrol = player.GetScriptScope().viewcontrol
 		if (viewcontrol != null && viewcontrol.IsValid())
 		{
-			EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope();activator.GetScriptScope().__lifestate<-NetProps.GetPropInt(activator, `m_lifeState`);NetProps.SetPropInt(activator, `m_lifeState`, 0)", 0, player, player)
+			EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope(); activator.GetScriptScope().__lifestate <- NetProps.GetPropInt(activator, `m_lifeState`); NetProps.SetPropInt(activator, `m_lifeState`, 0)", 0, player, player)
 			EntFireByHandle(viewcontrol, "Disable", null, 0, player, player)
 			EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(activator, `m_lifeState`, activator.GetScriptScope().__lifestate)", 0, player, player)
 			EntFireByHandle(viewcontrol, "Kill", null, 0, null, null)

@@ -1,5 +1,3 @@
-IncludeScript("chaos_util")
-
 function ChaosEffect_OnStart()
 {
 	if (IsInMedievalMode())

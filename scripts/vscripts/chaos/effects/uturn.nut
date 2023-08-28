@@ -1,5 +1,3 @@
-IncludeScript("chaos_util.nut")
-
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)

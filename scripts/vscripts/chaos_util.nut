@@ -5,6 +5,12 @@ const LIFE_DEAD = 2
 const LIFE_RESPAWNABLE = 3
 const LIFE_DISCARDBODY = 4
 
+// settings for m_takedamage
+const DAMAGE_NO = 0
+const DAMAGE_EVENTS_ONLY = 1
+const DAMAGE_YES = 2
+const DAMAGE_AIM = 3
+
 const TF_DEATHFLAG_DEADRINGER = 32
 
 const FLT_MAX = 0x7F7FFFFF
