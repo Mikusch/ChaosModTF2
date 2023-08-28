@@ -49,6 +49,12 @@
 				"linux"		"493"
 				"windows"	"486"
 			}
+			"CBaseCombatWeapon::WeaponSound"
+			{
+				"library"	"server"
+				"linux"		"308"
+				"windows"	"302"
+			}
 		}
 		"Functions"
 		{
@@ -84,6 +90,24 @@
 					"eHoliday"
 					{
 						"type"	"int"
+					}
+				}
+			}
+			"CBaseCombatWeapon::WeaponSound"
+			{
+				"offset"	"CBaseCombatWeapon::WeaponSound"
+				"hooktype"	"entity"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"sound_type"
+					{
+						"type"	"int"
+					}
+					"soundtime"
+					{
+						"type"	"float"
 					}
 				}
 			}
