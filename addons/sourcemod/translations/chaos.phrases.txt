@@ -446,7 +446,7 @@
 	}
 	"#Chaos_Effect_NoStepSize"
 	{
-		"en"		"Inclinity Problem"
+		"en"		"Incline Problem"
 	}
 	"#Chaos_Effect_DisassembleMap"
 	{
