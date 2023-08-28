@@ -93,7 +93,7 @@ public Plugin myinfo =
 	name = "[TF2] Chaos Mod",
 	author = "Mikusch",
 	description = "Chaos Mod for Team Fortress 2, heavily inspired by Chaos Mod V.",
-	version = "1.3.0",
+	version = "1.4.0",
 	url = "https://github.com/Mikusch/ChaosModTF2"
 }
 
