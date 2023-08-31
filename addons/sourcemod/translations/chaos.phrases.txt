@@ -89,7 +89,7 @@
 	}
 	"#Chaos_Effect_Ubercharge"
 	{
-		"en"		"Ãœbercharged"
+		"en"		"Übercharged"
 	}
 	"#Chaos_Effect_BumperCars"
 	{
