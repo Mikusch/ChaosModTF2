@@ -1,0 +1,683 @@
+"Phrases"
+{
+	"#Chaos_Effect_Activated"
+	{
+		"#format"	"{1:t}"
+		"en"		"{lightgreen}{1} {default}has been activated!"
+	}
+	"#Chaos_Effect_SetNextEffect_Invalid"
+	{
+		"#format"	"{1:s}"
+		"en"		"No effect with ID '{1}' found."
+	}
+	"#Chaos_Effect_SetNextEffect_Done"
+	{
+		"#format"	"{1:t}"
+		"en"		"You have set the next effect to '{1}'."
+	}
+	"#Chaos_Effect_InvertAcceleration"
+	{
+		"en"		"Invert Acceleration"
+	}
+	"#Chaos_Effect_LowFriction"
+	{
+		"en"		"Caution Wet Floor"
+	}
+	"#Chaos_Effect_SlowMotion"
+	{
+		"en"		"Bullet Time"
+	}
+	"#Chaos_Effect_KillRandomPlayer"
+	{
+		"en"		"Kill Random Player"
+	}
+	"#Chaos_Effect_FriendlyFire"
+	{
+		"en"		"Friendly Fire"
+	}
+	"#Chaos_Effect_InvertGravity"
+	{
+		"en"		"Invert Gravity"
+	}
+	"#Chaos_Effect_Truce"
+	{
+		"en"		"Truce"
+	}
+	"#Chaos_Effect_WhereDidEverythingGo"
+	{
+		"en"		"Where Did Everything Go?"
+	}
+	"#Chaos_Effect_EternalScreams"
+	{
+		"en"		"Eternal Screams"
+	}
+	"#Chaos_Effect_1HP"
+	{
+		"en"		"One Hit K.O."
+	}
+	"#Chaos_Effect_1000HP"
+	{
+		"en"		"Healthy Mercs"
+	}
+	"#Chaos_Effect_ShortMercs"
+	{
+		"en"		"Midget Mercs"
+	}
+	"#Chaos_Effect_Watermark"
+	{
+		"en"		"What Server Am I On Again?"
+	}
+	"#Chaos_Effect_Thriller"
+	{
+		"en"		"Thriller Night"
+	}
+	"#Chaos_Effect_ShowScoreboard"
+	{
+		"en"		"Open Scoreboard"
+	}
+	"#Chaos_Effect_HighFOV"
+	{
+		"en"		"Quake FOV"
+	}
+	"#Chaos_Effect_LowFOV"
+	{
+		"en"		"Zoomed FOV"
+	}
+	"#Chaos_Effect_Crits"
+	{
+		"en"		"Not-So-Random Crits"
+	}
+	"#Chaos_Effect_Ubercharge"
+	{
+		"en"		"Übercharged"
+	}
+	"#Chaos_Effect_BumperCars"
+	{
+		"en"		"Bumper Cars"
+	}
+	"#Chaos_Effect_ViewRoll"
+	{
+		"en"		"Immersive Gameplay"
+	}
+	"#Chaos_Effect_Silence"
+	{
+		"en"		"Silence Is Golden"
+	}
+	"#Chaos_Effect_RemoveWearables"
+	{
+		"en"		"Remove Everyone's Cosmetics"
+	}
+	"#Chaos_Effect_SquidFootsteps"
+	{
+		"en"		"Squid Game"
+	}
+	"#Chaos_Effect_JingleAllTheWay"
+	{
+		"en"		"Jingle All The Way"
+	}
+	"#Chaos_Effect_SkeletonModels"
+	{
+		"en"		"All Players Are Skeletons"
+	}
+	"#Chaos_Effect_Lag"
+	{
+		"en"		"Ping From Pluto"
+	}
+	"#Chaos_Effect_SolidTeammates"
+	{
+		"en"		"Solid Teammates"
+	}
+	"#Chaos_Effect_MidasTouch"
+	{
+		"en"		"Midas Touch"
+	}
+	"#Chaos_Effect_SpeedLimit"
+	{
+		"en"		"100 HU/s Speed Limit"
+	}
+	"#Chaos_Effect_MaxSpeed"
+	{
+		"en"		"No Speed Limit"
+	}
+	"#Chaos_Effect_ThirdPerson"
+	{
+		"en"		"Third Person Camera"
+	}
+	"#Chaos_Effect_SwapPositions"
+	{
+		"en"		"All Players Swap Positions"
+	}
+	"#Chaos_Effect_RespawnAllDead"
+	{
+		"en"		"Respawn Dead Players"
+	}
+	"#Chaos_Effect_Blindness"
+	{
+		"en"		"All Players Are Blind"
+	}
+	"#Chaos_Effect_Greyscale"
+	{
+		"en"		"T.F. Noire"
+	}
+	"#Chaos_Effect_PipBoyOverlay"
+	{
+		"en"		"Pip-Boy"
+	}
+	"#Chaos_Effect_NoJumpingAndCrouching"
+	{
+		"en"		"No Jumping Or Crouching"
+	}
+	"#Chaos_Effect_CompanionHeavy"
+	{
+		"en"		"Companion Heavy"
+	}
+	"#Chaos_Effect_Grill"
+	{
+		"en"		"I Just Wanna Grill for God's Sake"
+	}
+	"#Chaos_Effect_Ghosts"
+	{
+		"en"		"All Players Are Ghosts"
+	}
+	"#Chaos_Effect_Pacifist"
+	{
+		"en"		"Pacifist"
+	}
+	"#Chaos_Effect_ShuffleClasses"
+	{
+		"en"		"Randomize Everyone's Classes"
+	}
+	"#Chaos_Effect_BonusDucks"
+	{
+		"en"		"Bonus Ducks!"
+	}
+	"#Chaos_Effect_Bouncy"
+	{
+		"en"		"Bouncy Castle"
+	}
+	"#Chaos_Effect_FlyVoices"
+	{
+		"en"		"Brundle Bundle"
+	}
+	"#Chaos_Effect_Pyrovision"
+	{
+		"en"		"Visit Pyroland"
+	}
+	"#Chaos_Effect_Taunt"
+	{
+		"en"		"Taunt"
+	}
+	"#Chaos_Effect_RandomizeSkybox"
+	{
+		"en"		"Change Skybox Texture"
+	}
+	"#Chaos_Effect_Noclip"
+	{
+		"en"		"Noclip"
+	}
+	"#Chaos_Effect_HideHUD"
+	{
+		"en"		"No HUD"
+	}
+	"#Chaos_Effect_RemoveRandomEntity"
+	{
+		"en"		"Remove Random Entity"
+	}
+	"#Chaos_Effect_RemoveRandomEntity_Removing"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Removed {lightgreen}{1} {default}({lightgreen}{2}{default})."
+	}
+	"#Chaos_Effect_LaunchUp"
+	{
+		"en"		"Launch Players Up"
+	}
+	"#Chaos_Effect_Fling"
+	{
+		"en"		"Fling Players"
+	}
+	"#Chaos_Effect_RemoveHealthAndAmmo"
+	{
+		"en"		"Remove Health And Ammo Pickups"
+	}
+	"#Chaos_Effect_BulletImmune"
+	{
+		"en"		"All Players Have Bullet Immunity"
+	}
+	"#Chaos_Effect_BlastImmune"
+	{
+		"en"		"All Players Have Blast Immunity"
+	}
+	"#Chaos_Effect_FireImmune"
+	{
+		"en"		"All Players Have Fire Immunity"
+	}
+	"#Chaos_Effect_10xCaptureRate"
+	{
+		"en"		"10x Capture Rate"
+	}
+	"#Chaos_Effect_LaughOnKill"
+	{
+		"en"		"The Joy Of Killing"
+	}
+	"#Chaos_Effect_HitSelfOnMiss"
+	{
+		"en"		"All Players Are Idiots"
+	}
+	"#Chaos_Effect_DamageCausesAirblast"
+	{
+		"en"		"Damage Causes Airblast"
+	}
+	"#Chaos_Effect_StopAndStare"
+	{
+		"en"		"Stop And Stare"
+	}
+	"#Chaos_Effect_EnableRandomCrits"
+	{
+		"en"		"Enable Random Crits"
+	}
+	"#Chaos_Effect_DisableRandomCrits"
+	{
+		"en"		"Disable Random Crits"
+	}
+	"#Chaos_Effect_Mannpower"
+	{
+		"en"		"Mannpower At Home"
+	}
+	"#Chaos_Effect_Stealthed"
+	{
+		"en"		"All Players Are Invisible"
+	}
+	"#Chaos_Effect_BalloonHeads"
+	{
+		"en"		"Balloon Heads"
+	}
+	"#Chaos_Effect_ExtremeFog"
+	{
+		"en"		"Extreme Fog"
+	}
+	"#Chaos_Effect_CheapObjects"
+	{
+		"en"		"All Buildings Cost 0 Metal"
+	}
+	"#Chaos_Effect_FastBuild"
+	{
+		"en"		"Fast Building"
+	}
+	"#Chaos_Effect_10xOverhealLimit"
+	{
+		"en"		"10x Overheal Limit"
+	}
+	"#Chaos_Effect_10xChargeSpeed"
+	{
+		"en"		"10x Demoman Shield Charge Speed"
+	}
+	"#Chaos_Effect_AlwaysLoser"
+	{
+		"en"		"Cowardly Combat"
+	}
+	"#Chaos_Effect_LowGravity"
+	{
+		"en"		"Low Gravity"
+	}
+	"#Chaos_Effect_HighGravity"
+	{
+		"en"		"Extreme Gravity"
+	}
+	"#Chaos_Effect_LoudSpeaker"
+	{
+		"en"		"Is This Thing On?"
+	}
+	"#Chaos_Effect_Loudness"
+	{
+		"en"		"Megaphone"
+	}
+	"#Chaos_Effect_SpawnOrangeBall"
+	{
+		"en"		"Spawn Orange Ball"
+	}
+	"#Chaos_Effect_RemoveCurrency"
+	{
+		"en"		"Poor Boy"
+	}
+	"#Chaos_Effect_AddCurrency"
+	{
+		"en"		"Rich Man"
+	}
+	"#Chaos_Effect_ExtraAirDashes"
+	{
+		"en"		"Infinite Scout Jumps"
+	}
+	"#Chaos_Effect_TallMercs"
+	{
+		"en"		"Stretchy Mercs"
+	}
+	"#Chaos_Effect_SpawnSoccerBall"
+	{
+		"en"		"Spawn Soccer Ball"
+	}
+	"#Chaos_Effect_SpawnBeachBall"
+	{
+		"en"		"Spawn Beach Ball"
+	}
+	"#Chaos_Effect_PaintCosmetics"
+	{
+		"en"		"Apply Random Paint To Cosmetics"
+	}
+	"#Chaos_Effect_Nothing"
+	{
+		"en"		"Nothing"
+	}
+	"#Chaos_Effect_Nothing_SpawnAir"
+	{
+		"en"		"Spawn Air"
+	}
+	"#Chaos_Effect_Nothing_GiveEveryoneANose"
+	{
+		"en"		"Give Everyone A Nose"
+	}
+	"#Chaos_Effect_Nothing_TeleportEveryone1Millimeter"
+	{
+		"en"		"Teleport Everyone 1 Millimeter"
+	}
+	"#Chaos_Effect_Nothing_KillAllDeadPlayers"
+	{
+		"en"		"Kill All Dead Players"
+	}
+	"#Chaos_Effect_Nothing_RemoveTheObserver"
+	{
+		"en"		"Remove The Observer"
+	}
+	"#Chaos_Effect_Nothing_IncreasePingBy1"
+	{
+		"en"		"Increase Ping By 1"
+	}
+	"#Chaos_Effect_Nothing_AllPlayersArePlayers"
+	{
+		"en"		"All Players Are Players"
+	}
+	"#Chaos_Effect_Nothing_Blank"
+	{
+		"en"		" "
+	}
+	"#Chaos_Effect_Nothing_Error"
+	{
+		"en"		"ERROR_EFFECT_NOT_FOUND"
+	}
+	"#Chaos_Effect_Nothing_Mikusch"
+	{
+		"en"		"Make Mikusch Happy"
+	}
+	"#Chaos_Effect_Nothing_NoCrash"
+	{
+		"en"		"No Crash"
+	}
+	"#Chaos_Effect_PlayerGlow"
+	{
+		"en"		"All Players Are Glowing"
+	}
+	"#Chaos_Effect_DisableRespawnTimes"
+	{
+		"en"		"Disable Respawn Times"
+	}
+	"#Chaos_Effect_IncreasedSpread"
+	{
+		"en"		"Stormtrooper Aim"
+	}
+	"#Chaos_Effect_FakeCrash"
+	{
+		"en"		"Fake Crash"
+	}
+	"#Chaos_Effect_TracerRounds"
+	{
+		"en"		"Tracer Rounds"
+	}
+	"#Chaos_Effect_Slap"
+	{
+		"en"		"That's Some Slappin'"
+	}
+	"#Chaos_Effect_FloorIsLava"
+	{
+		"en"		"The Floor Is Lava"
+	}
+	"#Chaos_Effect_TiltedCamera"
+	{
+		"en"		"Tilted Camera"
+	}
+	"#Chaos_Effect_NoStepSize"
+	{
+		"en"		"Incline Problem"
+	}
+	"#Chaos_Effect_DisassembleMap"
+	{
+		"en"		"Disassemble Map"
+	}
+	"#Chaos_Effect_RegeneratePlayers"
+	{
+		"en"		"Regenerate All Players"
+	}
+	"#Chaos_Effect_EnableTriggers"
+	{
+		"en"		"Enable All Triggers"
+	}
+	"#Chaos_Effect_Headshots"
+	{
+		"en"		"All Weapons Can Headshot"
+	}
+	"#Chaos_Effect_LargeSmokeExplosions"
+	{
+		"en"		"Directed By Michael Bay"
+	}
+	"#Chaos_Effect_InfiniteMeleeRange"
+	{
+		"en"		"Infinite Melee Range"
+	}
+	"#Chaos_Effect_NoAirAcceleration"
+	{
+		"en"		"No Air Acceleration"
+	}
+	"#Chaos_Effect_CattoGuns"
+	{
+		"en"		"Catto Guns"
+	}
+	"#Chaos_Effect_GiveGibus"
+	{
+		"en"		"Give Everyone A Gibus"
+	}
+	"#Chaos_Effect_GiveTopNotch"
+	{
+		"en"		"I'm The Real Notch"
+	}
+	"#Chaos_Effect_FlipViewModels"
+	{
+		"en"		"Flip Viewmodels"
+	}
+	"#Chaos_Effect_GiveGoldPan"
+	{
+		"en"		"Econ Violation"
+	}
+	"#Chaos_Effect_Decompiled"
+	{
+		"en"		"Decompiled"
+	}
+	"#Chaos_Effect_NoHeads"
+	{
+		"en"		"Decapitated"
+	}
+	"#Chaos_Effect_BackstabImmune"
+	{
+		"en"		"All Players Are Backstab Immune"
+	}
+	"#Chaos_Effect_UTurn"
+	{
+		"en"		"U-Turn"
+	}
+	"#Chaos_Effect_GrantAllUpgrades"
+	{
+		"en"		"Grant All Upgrades"
+	}
+	"#Chaos_Effect_RemoveAllUpgrades"
+	{
+		"en"		"Remove All Upgrades"
+	}
+	"#Chaos_Effect_LowPitch"
+	{
+		"en"		"Low Pitch"
+	}
+	"#Chaos_Effect_HighPitch"
+	{
+		"en"		"High Pitch"
+	}
+	"#Chaos_Effect_SwapTeams"
+	{
+		"en"		"Swap Teams"
+	}
+	"#Chaos_Effect_ForceForward"
+	{
+		"en"		"Help My W Key Is Stuck"
+	}
+	"#Chaos_Effect_2xGestureSpeed"
+	{
+		"en"		"2x Gesture Speed"
+	}
+	"#Chaos_Effect_0.5xGestureSpeed"
+	{
+		"en"		"0.5x Gesture Speed"
+	}
+	"#Chaos_Effect_SpawnBirds"
+	{
+		"en"		"Who Let The Birds Out?"
+	}
+	"#Chaos_Effect_EyeCamera"
+	{
+		"en"		"Out-Of-Body Experience"
+	}
+	"#Chaos_Effect_SpeedUp"
+	{
+		"en"		"Adrenaline Shot"
+	}
+	"#Chaos_Effect_Earthquake"
+	{
+		"en"		"Earthquake"
+	}
+	"#Chaos_Effect_BouncyRockets"
+	{
+		"en"		"Bouncy Rockets"
+	}
+	"#Chaos_Effect_Flashbang"
+	{
+		"en"		"Flashbang"
+	}
+	"#Chaos_Effect_EnableAllHolidays"
+	{
+		"en"		"Enable All Holidays"
+	}
+	"#Chaos_Effect_TeleportToZero"
+	{
+		"en"		"Teleport to (0, 0, 0)"
+	}
+	"#Chaos_Effect_HL2Player"
+	{
+		"en"		"Hello, Gordon"
+	}
+	"#Chaos_Effect_JumpJump"
+	{
+		"en"		"Jump Jump"
+	}
+	"#Chaos_Effect_DisableRandomDirection"
+	{
+		"en"		"Disable Random Direction"
+	}
+	"#Chaos_Effect_Swimming"
+	{
+		"en"		"Swimming Curse"
+	}
+	"#Chaos_Effect_UncontrollableRecoil"
+	{
+		"en"		"Uncontrollable Recoil"
+	}
+	"#Chaos_Effect_Overtime"
+	{
+		"en"		"Overtime"
+	}
+	"#Chaos_Effect_ImmuneToPushback"
+	{
+		"en"		"All Players Are Pushback Immune"
+	}
+	"#Chaos_Effect_Callouts"
+	{
+		"en"		"Callouts"
+	}
+	"#Chaos_Effect_InvertAirAcceleration"
+	{
+		"en"		"Invert Air Acceleration"
+	}
+	"#Chaos_Effect_WeaponsFireRockets"
+	{
+		"en"		"All Weapons Fire Rockets"
+	}
+	"#Chaos_Effect_WeaponsFireBombs"
+	{
+		"en"		"All Weapons Fire Bombs"
+	}
+	"#Chaos_Effect_MedievalMode"
+	{
+		"en"		"Ye Olde Combat"
+	}
+	"#Chaos_Effect_NoSpread"
+	{
+		"en"		"Pinpoint Accuracy"
+	}
+	"#Chaos_Effect_10xFallingDamage"
+	{
+		"en"		"All Players Take 10x Falling Damage"
+	}
+	"#Chaos_Effect_IncreasedStepSize"
+	{
+		"en"		"Tall Legs"
+	}
+	"#Chaos_Effect_IdentityTheft"
+	{
+		"en"		"Identity Theft"
+	}
+	"#Chaos_Effect_Drunk"
+	{
+		"en"		"Drunk"
+	}
+	"#Chaos_Effect_Binoculars"
+	{
+		"en"		"Binoculars"
+	}
+	"#Chaos_Effect_HomingProjectiles"
+	{
+		"en"		"Homing Projectiles"
+	}
+	"#Chaos_MetaEffect_5xTimerSpeed"
+	{
+		"en"		"5x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_2xTimerSpeed"
+	{
+		"en"		"2x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_0.5xTimerSpeed"
+	{
+		"en"		"0.5x Timer Speed (Meta)"
+	}
+	"#Chaos_MetaEffect_NoChaos"
+	{
+		"en"		"No Chaos (Meta)"
+	}
+	"#Chaos_MetaEffect_2xEffectDuration"
+	{
+		"en"		"2x Effect Duration (Meta)"
+	}
+	"#Chaos_MetaEffect_0.5xEffectDuration"
+	{
+		"en"		"0.5x Effect Duration (Meta)"
+	}
+	"#Chaos_MetaEffect_ReinvokePreviousEffects"
+	{
+		"en"		"Reinvoke Previous Effects (Meta)"
+	}
+}
