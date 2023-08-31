@@ -27,6 +27,10 @@ function ChaosEffect_Update()
         if (!IsValidProjectile(projectile))
             continue
 
+        local projectile_name = projectile.GetName()
+        if (projectile_name == "homing_projectile_XYZ" || projectile_name == "homing_projectile_XYZ2")
+            continue
+
         local projectile_class = projectile.GetClassname()
         if (projectile_class == "tf_projectile_flare" || projectile_class == "tf_projectile_energy_ring")
             projectile.KeyValueFromString("targetname", "homing_projectile_XYZ2")
