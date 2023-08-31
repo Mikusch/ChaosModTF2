@@ -89,7 +89,7 @@
 	}
 	"#Chaos_Effect_Ubercharge"
 	{
-		"en"		"Übercharged"
+		"en"		"Ãœbercharged"
 	}
 	"#Chaos_Effect_BumperCars"
 	{
@@ -647,6 +647,10 @@
 	"#Chaos_Effect_Binoculars"
 	{
 		"en"		"Binoculars"
+	}
+	"#Chaos_Effect_HomingProjectiles"
+	{
+		"en"		"Homing Projectiles"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
