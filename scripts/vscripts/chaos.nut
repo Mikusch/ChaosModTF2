@@ -4,18 +4,28 @@ const CHAOS_NAMESPACE = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 
 ::Chaos_GameEventCallbacks <- {}
+::Chaos_ScriptHookCallbacks <- {}
 
 ::__RunGameEventCallbacks <- function(event, params)
 {
-    __RunEventCallbacks(event, params, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", false)
+	__RunEventCallbacks(event, params, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", false)
 
-    if ("GameEventCallbacks" in getroottable())
-        __RunEventCallbacks(event, params, "OnGameEvent_", "GameEventCallbacks", true)
+	if ("GameEventCallbacks" in getroottable())
+		__RunEventCallbacks(event, params, "OnGameEvent_", "GameEventCallbacks", true)
+}
+
+::__RunScriptHookCallbacks <- function(event, params)
+{
+	__RunEventCallbacks(event, params, "Chaos_OnScriptHook_", "Chaos_ScriptHookCallbacks", false)
+
+	if ("ScriptHookCallbacks" in getroottable())
+		__RunEventCallbacks(event, params, "OnScriptHook_", "ScriptHookCallbacks", true)
 }
 
 ::Chaos_CollectEventCallbacks <- function(scope)
 {
-    __CollectEventCallbacks(scope, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", ::RegisterScriptGameEventListener)
+	__CollectEventCallbacks(scope, "Chaos_OnGameEvent_", "Chaos_GameEventCallbacks", ::RegisterScriptGameEventListener)
+	__CollectEventCallbacks(scope, "Chaos_OnScriptHook_", "Chaos_ScriptHookCallbacks", ::RegisterScriptHookListener)
 }
 
 ChaosEffectScopes <- {}
