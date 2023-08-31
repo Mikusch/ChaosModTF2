@@ -29,9 +29,9 @@ function ChaosEffect_Update()
 
         local projectile_class = projectile.GetClassname()
         if (projectile_class == "tf_projectile_flare" || projectile_class == "tf_projectile_energy_ring")
-            projectile.KeyValueFromString("classname", "homing_projectile2")
+            projectile.KeyValueFromString("targetname", "homing_projectile_XYZ2")
         else
-            projectile.KeyValueFromString("classname", "homing_projectile")
+            projectile.KeyValueFromString("targetname", "homing_projectile_XYZ")
 
         AttachProjectileThinker(projectile)
     }
@@ -40,7 +40,12 @@ function ChaosEffect_Update()
 function ChaosEffect_OnEnd()
 {
     local homing_projectiles
-    while ((homing_projectiles = Entities.FindByClassname(homing_projectiles, "homing_projectile")) != null)
+    while ((homing_projectiles = Entities.FindByName(homing_projectiles, "homing_projectile_XYZ")) != null)
+    {
+        AddThinkToEnt(homing_projectiles, null)
+    }
+    local homing_projectiles
+    while ((homing_projectiles = Entities.FindByName(homing_projectiles, "homing_projectile_XYZ2")) != null)
     {
         AddThinkToEnt(homing_projectiles, null)
     }
@@ -94,7 +99,7 @@ function ChaosEffect_OnEnd()
 
         if (product > 0.6)
             return true
-
+            
     }
 
     return false
@@ -128,23 +133,16 @@ function AttachProjectileThinker(projectile)
 
 ::FaceToward <- function(new_target, projectile, projectile_speed)
 {
-    // Calculate the desired direction towards the target
     local desired_dir = new_target.EyePosition() - projectile.GetOrigin()
           desired_dir.Norm()
 
-    // Get the current direction of the projectile
     local current_dir = projectile.GetForwardVector()
-
-    // Calculate the new direction by interpolating between the current and desired directions
     local new_dir = current_dir + (desired_dir - current_dir) * turn_rate
           new_dir.Norm()
 
-    // Convert the new direction to angles
     local move_ang = VectorAngles(new_dir)
-
     local projectile_velocity = move_ang.Forward() * projectile_speed
 
-    // Set the new velocity and angles of the projectile
     projectile.SetAbsVelocity(projectile_velocity)
     projectile.SetLocalAngles(move_ang)
 }
@@ -152,7 +150,7 @@ function AttachProjectileThinker(projectile)
 // Only requiered for Detonator Flares and Bison as those persist even after hitting
 function Chaos_OnScriptHook_OnTakeDamage(params)
 {
-    if (params.inflictor.GetClassname() != "homing_projectile2")
+    if (params.inflictor.GetName() != "homing_projectile_XYZ2")
         return
 
     EntFireByHandle(params.inflictor, "Kill", "", 1, null, null)
