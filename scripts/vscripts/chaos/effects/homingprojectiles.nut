@@ -12,12 +12,9 @@ local validProjectiles              =
     tf_projectile_flare             = 0
 }
 
-local turn_rate = 0.75
+const turn_rate = 0.75
 
-function ChaosEffect_OnStart()
-{
-    return true
-}
+local worldspawn = Entities.FindByClassname(null, "worldspawn");
 
 function ChaosEffect_Update()
 {
@@ -27,15 +24,8 @@ function ChaosEffect_Update()
         if (!IsValidProjectile(projectile))
             continue
 
-        local projectile_name = projectile.GetName()
-        if (projectile_name == "homing_projectile_XYZ" || projectile_name == "homing_projectile_XYZ2")
+        if (NetProps.GetPropString(projectile, "m_iszScriptThinkFunction") == "ProjectileThink")
             continue
-
-        local projectile_class = projectile.GetClassname()
-        if (projectile_class == "tf_projectile_flare" || projectile_class == "tf_projectile_energy_ring")
-            projectile.KeyValueFromString("targetname", "homing_projectile_XYZ2")
-        else
-            projectile.KeyValueFromString("targetname", "homing_projectile_XYZ")
 
         AttachProjectileThinker(projectile)
     }
@@ -44,12 +34,7 @@ function ChaosEffect_Update()
 function ChaosEffect_OnEnd()
 {
     local homing_projectiles
-    while ((homing_projectiles = Entities.FindByName(homing_projectiles, "homing_projectile_XYZ")) != null)
-    {
-        AddThinkToEnt(homing_projectiles, null)
-    }
-    local homing_projectiles
-    while ((homing_projectiles = Entities.FindByName(homing_projectiles, "homing_projectile_XYZ2")) != null)
+    while ((homing_projectiles = Entities.FindByClassname(projectile, "tf_projectile_*")) != null)
     {
         AddThinkToEnt(homing_projectiles, null)
     }
@@ -61,13 +46,13 @@ function ChaosEffect_OnEnd()
     if (new_target != null && IsLookingAt(self, new_target))
         FaceToward(new_target, self, projectile_speed)
 
-    return 0.02
+    return -1
 }
 
 ::SelectVictim <- function(projectile)
 {
     local target
-    local min_distance = 32000.0
+    local min_distance = 32768.0
     for (local i = 1; i <= MaxClients(); i++)
     {
         local player = PlayerInstanceFromIndex(i)
@@ -95,7 +80,7 @@ function ChaosEffect_OnEnd()
     if (!projectile_owner.IsPlayer())
          projectile_owner_pos = projectile_owner.GetCenter()
 
-    if (TraceLine(projectile_owner_pos, target_origin, projectile_owner) == 1)
+    if (TraceLine(projectile_owner_pos, target_origin, projectile_owner))
     {
         local direction = (target_origin - projectile_owner.EyePosition())
               direction.Norm()
@@ -103,7 +88,7 @@ function ChaosEffect_OnEnd()
 
         if (product > 0.6)
             return true
-            
+
     }
 
     return false
@@ -151,17 +136,6 @@ function AttachProjectileThinker(projectile)
     projectile.SetLocalAngles(move_ang)
 }
 
-// Only requiered for Detonator Flares and Bison as those persist even after hitting
-function Chaos_OnScriptHook_OnTakeDamage(params)
-{
-    if (params.inflictor.GetName() != "homing_projectile_XYZ2")
-        return
-
-    EntFireByHandle(params.inflictor, "Kill", "", 1, null, null)
-}
-
-Chaos_CollectEventCallbacks(this)
-
 // Math Section for Angles
 ::NormalizeAngle <- function(target)
 {
@@ -208,3 +182,18 @@ Chaos_CollectEventCallbacks(this)
 
     return QAngle(pitch, yaw, 0.0)
 }
+
+// Only requiered for Detonator Flares and Bison as those persist even after hitting
+function Chaos_OnScriptHook_OnTakeDamage(params)
+{
+    if (params.const_entity == worldspawn)
+    return
+
+    local projectile_class = params.inflictor.GetClassname()
+    if (!(projectile_class == "tf_projectile_flare" || projectile_class == "tf_projectile_energy_ring"))
+        return
+
+    EntFireByHandle(params.inflictor, "Kill", null, 0.5, null, null)
+}
+
+Chaos_CollectEventCallbacks(this)
