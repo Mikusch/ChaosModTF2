@@ -34,7 +34,7 @@ function ChaosEffect_Update()
 function ChaosEffect_OnEnd()
 {
     local homing_projectiles
-    while ((homing_projectiles = Entities.FindByClassname(projectile, "tf_projectile_*")) != null)
+    while ((homing_projectiles = Entities.FindByClassname(homing_projectiles, "tf_projectile_*")) != null)
     {
         AddThinkToEnt(homing_projectiles, null)
     }
