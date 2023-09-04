@@ -24,7 +24,7 @@ function ChaosEffect_Update()
         if (!IsValidProjectile(projectile))
             continue
 
-        if (NetProps.GetPropString(projectile, "m_iszScriptThinkFunction") == "ProjectileThink")
+        if (projectile.GetScriptThinkFunc() == "ProjectileThink")
             continue
 
         AttachProjectileThinker(projectile)
