@@ -114,7 +114,7 @@ function AttachProjectileThinker(projectile)
 {
     if (distance > min_distance || victim.GetHealth() == 0 || victim.GetTeam() == projectile.GetTeam() || NetProps.GetPropInt(victim, "m_lifeState") > 0)
         return false
-    if (victim.IsPlayer() && (victim.IsInvulnerable() || victim.InCond(Constants.ETFCond.TF_COND_HALLOWEEN_GHOST_MODE) || victim.InCond(Constants.ETFCond.TF_COND_STEALTHED)))
+    if (victim.IsPlayer() && (victim.IsInvulnerable() || victim.InCond(Constants.ETFCond.TF_COND_HALLOWEEN_GHOST_MODE) || victim.IsStealthed() || victim.IsFullyInvisible() || victim.GetDisguiseTarget() != null))
         return false
 
     return true
