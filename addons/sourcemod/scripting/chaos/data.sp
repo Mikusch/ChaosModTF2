@@ -119,11 +119,8 @@ enum struct ChaosEffect
 				for (int j = 0; j < effect.tags.Length; j++)
 				{
 					char tag[EFFECT_MAX_TAG_LENGTH];
-					if (effect.tags.GetString(j, tag, sizeof(tag)))
-					{
-						if (this.tags.FindString(tag) != -1)
-							return false;
-					}
+					if (effect.tags.GetString(j, tag, sizeof(tag)) && this.tags.FindString(tag) != -1)
+						return false;
 				}
 				
 				return false;
