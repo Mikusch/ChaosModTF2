@@ -893,7 +893,7 @@ void ForceExpireEffect(ChaosEffect effect, bool bExpireAllTags = false)
 	}
 	
 	// Expire all other effects matching this tag
-	if (bExpireAllTags)
+	if (bExpireAllTags && effect.tags)
 	{
 		int nLength = g_hEffects.Length;
 		for (int i = 0; i < nLength; i++)
@@ -1066,7 +1066,7 @@ static Action ConCmd_ForceEffect(int client, int args)
 	int nIndex = g_hEffects.FindString(szEffectId);
 	if (nIndex == -1)
 	{
-		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", g_szForceEffectId);
+		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", szEffectId);
 	}
 	else
 	{
