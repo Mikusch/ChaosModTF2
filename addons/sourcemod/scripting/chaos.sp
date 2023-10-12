@@ -50,7 +50,6 @@ char g_szForceEffectId[64];
 #include "chaos/effects/drunk.sp"
 #include "chaos/effects/earthquake.sp"
 #include "chaos/effects/enableallholidays.sp"
-#include "chaos/effects/fakeclientcommand.sp"
 #include "chaos/effects/fakecrash.sp"
 #include "chaos/effects/falldamage.sp"
 #include "chaos/effects/flipviewmodels.sp"

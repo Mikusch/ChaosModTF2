@@ -173,7 +173,7 @@
 	}
 	"#Chaos_Effect_Grill"
 	{
-		"en"		"I Just Wanna Grill for God's Sake"
+		"en"		"Meat The Grill"
 	}
 	"#Chaos_Effect_Ghosts"
 	{

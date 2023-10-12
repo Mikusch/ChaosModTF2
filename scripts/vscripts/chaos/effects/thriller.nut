@@ -8,7 +8,7 @@ function ChaosEffect_Update()
 
 		player.AddCond(Constants.ETFCond.TF_COND_HALLOWEEN_THRILLER)
 
-		if (!player.InCond(Constants.ETFCond.TF_COND_TAUNTING) && player.IsAllowedToTaunt())
+		if (!player.IsTaunting() && player.IsAllowedToTaunt())
 		{
 			player.Taunt(Constants.FTaunts.TAUNT_BASE_WEAPON, 0)
 		}
