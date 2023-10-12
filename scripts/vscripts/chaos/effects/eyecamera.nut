@@ -38,10 +38,10 @@ function CreateViewControl(player)
 		angles = player.EyeAngles()
 	})
 	
-	EntFireByHandle(viewcontrol, "SetParent", "!activator", 0, player, viewcontrol)
-	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", 0, null, null)
-	EntFireByHandle(viewcontrol, "Enable", "!activator", 0, player, viewcontrol)
-	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", 0, player, player)
+	EntFireByHandle(viewcontrol, "SetParent", "!activator", -1, player, viewcontrol)
+	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", -1, null, null)
+	EntFireByHandle(viewcontrol, "Enable", "!activator", -1, player, viewcontrol)
+	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", -1, player, null)
 
 	return viewcontrol
 }
@@ -63,10 +63,10 @@ function RemoveViewControl(player)
 		local viewcontrol = player.GetScriptScope().viewcontrol
 		if (viewcontrol != null && viewcontrol.IsValid())
 		{
-			EntFireByHandle(player, "RunScriptCode", "activator.ValidateScriptScope(); activator.GetScriptScope().__lifestate <- NetProps.GetPropInt(activator, `m_lifeState`); NetProps.SetPropInt(activator, `m_lifeState`, 0)", 0, player, player)
-			EntFireByHandle(viewcontrol, "Disable", null, 0, player, player)
-			EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(activator, `m_lifeState`, activator.GetScriptScope().__lifestate)", 0, player, player)
-			EntFireByHandle(viewcontrol, "Kill", null, 0, null, null)
+			EntFireByHandle(player, "RunScriptCode", "self.ValidateScriptScope(); self.GetScriptScope().lifeState <- NetProps.GetPropInt(self, `m_lifeState`); NetProps.SetPropInt(self, `m_lifeState`, 0)", -1, null, null)
+			EntFireByHandle(viewcontrol, "Disable", null, -1, player, player)
+			EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, self.GetScriptScope().lifeState)", -1, null, null)
+			EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
 		}
 	}
 }
