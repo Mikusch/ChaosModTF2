@@ -10,7 +10,7 @@ function ChaosEffect_Update()
 
 		if (!player.InCond(Constants.ETFCond.TF_COND_TAUNTING) && player.IsAllowedToTaunt())
 		{
-			player.Taunt()
+			player.Taunt(Constants.FTaunts.TAUNT_BASE_WEAPON, 0)
 		}
 	}
 }
@@ -23,7 +23,8 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
-		player.RemoveCond(Constants.ETFCond.TF_COND_TAUNTING)
 		player.RemoveCond(Constants.ETFCond.TF_COND_HALLOWEEN_THRILLER)
+
+		player.StopTaunt(false)
 	}
 }
