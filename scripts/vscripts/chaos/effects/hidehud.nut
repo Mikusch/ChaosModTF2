@@ -6,7 +6,7 @@ function ChaosEffect_Update()
 		if (player == null)
 			continue
 		
-		NetProps.SetPropInt(player, "m_Local.m_iHideHUD", Constants.FHideHUD.HIDEHUD_HEALTH | Constants.FHideHUD.HIDEHUD_MISCSTATUS | Constants.FHideHUD.HIDEHUD_CROSSHAIR)
+		player.AddHudHideFlags(Constants.FHideHUD.HIDEHUD_HEALTH | Constants.FHideHUD.HIDEHUD_MISCSTATUS | Constants.FHideHUD.HIDEHUD_CROSSHAIR)
 	}
 }
 
@@ -18,6 +18,6 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
-		NetProps.SetPropInt(player, "m_Local.m_iHideHUD", 0)
+		player.RemoveHudHideFlags(Constants.FHideHUD.HIDEHUD_HEALTH | Constants.FHideHUD.HIDEHUD_MISCSTATUS | Constants.FHideHUD.HIDEHUD_CROSSHAIR)
 	}
 }
