@@ -110,7 +110,7 @@ public bool Decompiled_Initialize(ChaosEffect effect, GameData gameconf)
 	return true;
 }
 
-public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
+public void Decompiled_OnMapStart(ChaosEffect effect)
 {
 	g_hLightData.Clear();
 	
@@ -119,43 +119,43 @@ public void Decompiled_OnMapInit(ChaosEffect effect, const char[] mapName)
 	{
 		EntityLumpEntry entry = EntityLump.Get(i);
 		
-		int index = -1;
-		while ((index = entry.FindKey("classname", index)) != -1)
+		int index = entry.FindKey("classname");
+		if (index == 1)
+			continue;
+		
+		char classname[64];
+		entry.Get(index, _, _, classname, sizeof(classname));
+		
+		if (!StrEqual(classname, "light") && !StrEqual(classname, "light_spot") && !StrEqual(classname, "light_environment"))
+			continue;
+		
+		LightData data;
+		
+		strcopy(data.classname, sizeof(data.classname), classname);
+		
+		char value[64];
+		if (entry.GetNextKey("_light", value, sizeof(value)) != -1)
 		{
-			char classname[64];
-			entry.Get(index, _, _, classname, sizeof(classname));
-			
-			if (!StrEqual(classname, "light") && !StrEqual(classname, "light_spot") && !StrEqual(classname, "light_environment"))
-				continue;
-			
-			LightData data;
-			
-			strcopy(data.classname, sizeof(data.classname), classname);
-			
-			char value[64];
-			if (entry.GetNextKey("_light", value, sizeof(value)) != -1)
-			{
-				StringToColor(value, data.color);
-			}
-			
-			if (entry.GetNextKey("origin", value, sizeof(value)) != -1)
-			{
-				StringToVector(value, data.origin);
-			}
-			
-			if (entry.GetNextKey("angles", value, sizeof(value)) != -1)
-			{
-				StringToVector(value, data.angles);
-				
-				if (entry.GetNextKey("pitch", value, sizeof(value)) != -1)
-				{
-					float angle = StringToFloat(value);
-					data.angles[0] = -angle;
-				}
-			}
-			
-			g_hLightData.PushArray(data);
+			StringToColor(value, data.color);
 		}
+		
+		if (entry.GetNextKey("origin", value, sizeof(value)) != -1)
+		{
+			StringToVector(value, data.origin);
+		}
+		
+		if (entry.GetNextKey("angles", value, sizeof(value)) != -1)
+		{
+			StringToVector(value, data.angles);
+			
+			if (entry.GetNextKey("pitch", value, sizeof(value)) != -1)
+			{
+				float angle = StringToFloat(value);
+				data.angles[0] = -angle;
+			}
+		}
+		
+		g_hLightData.PushArray(data);
 		
 		delete entry;
 	}
@@ -285,8 +285,8 @@ static void SpawnLightsFromData()
 static void CreateVisualFromEntity(int entity, const char[] szClassname)
 {
 	float vecOrigin[3], angRotation[3];
-	GetEntPropVector(entity, Prop_Data, "m_angAbsRotation", vecOrigin);
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", angRotation);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecOrigin);
+	GetEntPropVector(entity, Prop_Data, "m_angAbsRotation", angRotation);
 	
 	if (StrEqual(szClassname, "beam"))
 	{

@@ -133,26 +133,6 @@ public void OnPluginEnd()
 	ExpireAllActiveEffects(true);
 }
 
-public void OnMapInit(const char[] mapName)
-{
-	int nLength = g_hEffects.Length;
-	for (int i = 0; i < nLength; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect))
-		{
-			Function fnCallback = effect.GetCallbackFunction("OnMapInit");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushString(mapName);
-				Call_Finish();
-			}
-		}
-	}
-}
-
 public void OnMapStart()
 {
 	g_flLastEffectDisplayTime = GetGameTime();
