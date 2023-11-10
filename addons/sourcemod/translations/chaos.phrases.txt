@@ -360,9 +360,9 @@
 	{
 		"en"		"Spawn Beach Ball"
 	}
-	"#Chaos_Effect_PaintCosmetics"
+	"#Chaos_Effect_PaintItems"
 	{
-		"en"		"Apply Random Paint To Cosmetics"
+		"en"		"Apply Random Paint To Items"
 	}
 	"#Chaos_Effect_Nothing"
 	{
