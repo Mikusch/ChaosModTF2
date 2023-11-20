@@ -12,8 +12,10 @@ const DAMAGE_YES = 2
 const DAMAGE_AIM = 3
 
 const TF_DEATHFLAG_DEADRINGER = 32
-
 const FLT_MAX = 0x7F7FFFFF
+
+::worldspawn <- Entities.FindByClassname(null, "worldspawn")
+::gamerules <- Entities.FindByClassname(null, "tf_gamerules")
 
 CTFPlayer.IsAlive <- function()
 {
@@ -25,7 +27,7 @@ CTFBot.IsAlive <- function()
 	return NetProps.GetPropInt(this, "m_lifeState") == LIFE_ALIVE
 }
 
-function GetEnemyTeam(team)
+::GetEnemyTeam <- function(team)
 {
 	if (team == Constants.ETFTeam.TF_TEAM_RED)
 		return Constants.ETFTeam.TF_TEAM_BLUE
@@ -35,4 +37,53 @@ function GetEnemyTeam(team)
 
 	// no enemy team
 	return team
+}
+
+::NormalizeAngle <- function(target)
+{
+	target %= 360.0
+	if (target > 180.0)
+		target -= 360.0
+	else if (target < -180.0)
+		target += 360.0
+	
+	return target
+}
+
+::ApproachAngle <- function(target, value, speed)
+{
+	target = NormalizeAngle(target)
+	value = NormalizeAngle(value)
+
+	local delta = NormalizeAngle(target - value)
+	if (delta > speed)
+		return value + speed
+	else if (delta < -speed)
+		return value - speed
+	
+	return value
+}
+
+::VectorAngles <- function(forward)
+{
+	local yaw, pitch
+	if (forward.y == 0.0 && forward.x == 0.0)
+	{
+		yaw = 0.0
+		if (forward.z > 0.0)
+			pitch = 270.0
+		else
+			pitch = 90.0
+	}
+	else
+	{
+		yaw = (atan2(forward.y, forward.x) * 180.0 / Constants.Math.Pi)
+		if (yaw < 0.0)
+			yaw += 360.0
+		pitch = (atan2(-forward.z, forward.Length2D()) * 180.0 / Constants.Math.Pi)
+		if (pitch < 0.0)
+			pitch += 360.0
+	}
+
+	return QAngle(pitch, yaw, 0.0)
 }
