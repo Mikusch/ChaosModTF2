@@ -36,9 +36,9 @@ public bool Headshots_OnStart(ChaosEffect effect)
 			if (weapon == -1)
 				continue;
 			
-			int hookid = g_hDHookOnWeaponSound.HookEntity(Hook_Pre, weapon, OnWeaponSound, OnWeaponSoundHookRemoved);
-			if (hookid != INVALID_HOOK_ID)
-				g_hDynamicHookIds.Push(hookid);
+			int iHookId = g_hDHookOnWeaponSound.HookEntity(Hook_Pre, weapon, OnWeaponSound, OnWeaponSoundHookRemoved);
+			if (iHookId != INVALID_HOOK_ID)
+				g_hDynamicHookIds.Push(iHookId);
 		}
 	}
 	
@@ -77,9 +77,9 @@ static Action OnPlayerTraceAttack(int victim, int &attacker, int &inflictor, flo
 
 static void OnWeaponEquipPost(int client, int weapon)
 {
-	int hookid = g_hDHookOnWeaponSound.HookEntity(Hook_Pre, weapon, OnWeaponSound, OnWeaponSoundHookRemoved);
-	if (hookid != INVALID_HOOK_ID)
-		g_hDynamicHookIds.Push(hookid);
+	int iHookId = g_hDHookOnWeaponSound.HookEntity(Hook_Pre, weapon, OnWeaponSound, OnWeaponSoundHookRemoved);
+	if (iHookId != INVALID_HOOK_ID)
+		g_hDynamicHookIds.Push(iHookId);
 }
 
 static MRESReturn OnWeaponSound(int weapon, DHookParam hParams)
@@ -89,9 +89,9 @@ static MRESReturn OnWeaponSound(int weapon, DHookParam hParams)
 	return weaponID == TF_WEAPON_MINIGUN || weaponID == TF_WEAPON_FLAMETHROWER ? MRES_Supercede : MRES_Ignored;
 }
 
-static void OnWeaponSoundHookRemoved(int hookid)
+static void OnWeaponSoundHookRemoved(int iHookId)
 {
-	int iIndex = g_hDynamicHookIds.FindValue(hookid);
+	int iIndex = g_hDynamicHookIds.FindValue(iHookId);
 	if (iIndex != -1)
 		g_hDynamicHookIds.Erase(iIndex);
 }
