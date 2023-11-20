@@ -648,6 +648,10 @@
 	{
 		"en"		"Binoculars"
 	}
+	"#Chaos_Effect_HomingProjectiles"
+	{
+		"en"		"Homing Projectiles"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
