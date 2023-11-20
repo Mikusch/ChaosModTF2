@@ -254,17 +254,18 @@ public void OnGameFrame()
 				{
 					VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffect"));
 					hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-					hExecute.Execute();
-					
-					float flUpdateInterval;
-					if (hExecute.ReturnType == FIELD_VOID)
-						flUpdateInterval = flDefaultUpdateInterval;
-					else
-						flUpdateInterval = float(hExecute.ReturnValue);
-					
-					delete hExecute;
-					
-					g_hEffects.Set(i, GetGameTime() + flUpdateInterval, ChaosEffect::next_script_update_time);
+					if (hExecute.Execute() != SCRIPT_ERROR)
+					{
+						float flUpdateInterval;
+						if (hExecute.ReturnType == FIELD_VOID)
+							flUpdateInterval = flDefaultUpdateInterval;
+						else
+							flUpdateInterval = float(hExecute.ReturnValue);
+						
+						delete hExecute;
+						
+						g_hEffects.Set(i, GetGameTime() + flUpdateInterval, ChaosEffect::next_script_update_time);
+					}
 				}
 			}
 		}
