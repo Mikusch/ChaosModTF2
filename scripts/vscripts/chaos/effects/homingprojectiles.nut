@@ -1,11 +1,13 @@
+// Contributed by Kamuixmod
+
 const TURN_RATE = 0.75
 
 local validProjectiles =
 {
 	tf_projectile_arrow				= 0
-	tf_projectile_energy_ball		= 0 // Cow mangler
+	tf_projectile_energy_ball		= 0 // Cow Mangler
 	tf_projectile_healing_bolt		= 0 // Crusader's Crossbow, Rescue Ranger
-	tf_projectile_lightningorb		= 0 // Spell Variant from Short Circuit
+	tf_projectile_lightningorb		= 0 // Lightning Orb Spell
 	tf_projectile_mechanicalarmorb	= 0 // Short Circuit
 	tf_projectile_rocket			= 0
 	tf_projectile_sentryrocket		= 0
@@ -44,7 +46,7 @@ function ChaosEffect_OnEnd()
 {
 	local new_target = SelectVictim(self)
 	if (new_target != null && IsLookingAt(self, new_target))
-		FaceToward(new_target, self, projectile_speed)
+		FaceTowards(new_target, self, projectile_speed)
 
 	return -1
 }
@@ -121,7 +123,7 @@ function ChaosEffect_OnEnd()
 	return true
 }
 
-::FaceToward <- function(new_target, projectile, projectile_speed)
+::FaceTowards <- function(new_target, projectile, projectile_speed)
 {
 	local desired_dir = new_target.EyePosition() - projectile.GetOrigin()
 		desired_dir.Norm()

@@ -70,9 +70,11 @@ function Chaos_UpdateEffect(name)
 	local scope = ChaosEffectScopes[scopeName]
 	if (scope == null)
 		return
-	
-	if ("ChaosEffect_Update" in scope)
-		return scope.ChaosEffect_Update()
+
+	if (!("ChaosEffect_Update" in scope))
+		return
+
+	return scope.ChaosEffect_Update()
 }
 
 function Chaos_EndEffect(name)
