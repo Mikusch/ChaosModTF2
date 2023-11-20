@@ -144,7 +144,8 @@ function Chaos_OnScriptHook_OnTakeDamage(params)
 	if (params.const_entity == worldspawn)
 		return
 
-	if (params.inflictor.GetClassname() != "tf_projectile_energy_ring")
+	local classname = params.inflictor.GetClassname()
+	if (classname != "tf_projectile_flare" && classname != "tf_projectile_energy_ring")
 		return
 
 	EntFireByHandle(params.inflictor, "Kill", null, 0.5, null, null)
