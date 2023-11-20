@@ -27,6 +27,8 @@ function ChaosEffect_Update()
 
 		AttachProjectileThinker(projectile)
 	}
+
+	return -1
 }
 
 function ChaosEffect_OnEnd()
