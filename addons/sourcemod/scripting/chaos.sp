@@ -18,6 +18,7 @@ ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
 ConVar sm_chaos_meta_effect_interval;
 ConVar sm_chaos_meta_effect_chance;
+ConVar sm_chaos_effect_update_interval;
 
 bool g_bEnabled;
 bool g_bNoChaos;
@@ -109,7 +110,8 @@ public void OnPluginStart()
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
-	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.025", "Chance for a meta effect to be activated every interval.");
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval.");
+	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called.");
 	
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect to happen.");
 	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to run.");
@@ -214,6 +216,8 @@ public void OnGameFrame()
 	
 	ExpireAllActiveEffects();
 	
+	float flDefaultUpdateInterval = sm_chaos_effect_update_interval.FloatValue;
+	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
 	{
@@ -223,19 +227,48 @@ public void OnGameFrame()
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{
-			Function fnCallback = effect.GetCallbackFunction("Update");
-			if (fnCallback != INVALID_FUNCTION)
+			// Update SourcePawn effect
+			if (effect.next_update_time <= GetGameTime())
 			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_Finish();
+				Function fnCallback = effect.GetCallbackFunction("Update");
+				if (fnCallback != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, fnCallback);
+					Call_PushArray(effect, sizeof(effect));
+					
+					float flUpdateInterval;
+					if (Call_Finish(flUpdateInterval) == SP_ERROR_NONE)
+					{
+						if (flUpdateInterval == 0.0)
+							flUpdateInterval = flDefaultUpdateInterval;
+						
+						g_hEffects.Set(i, GetGameTime() + flUpdateInterval, ChaosEffect::next_update_time);
+					}
+				}
+			}
+			
+			// Update VScript effect
+			if (effect.next_script_update_time <= GetGameTime())
+			{
+				if (effect.script_file[0])
+				{
+					VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffect"));
+					hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
+					hExecute.Execute();
+					
+					float flUpdateInterval;
+					if (hExecute.ReturnType == FIELD_VOID)
+						flUpdateInterval = flDefaultUpdateInterval;
+					else
+						flUpdateInterval = float(hExecute.ReturnValue);
+					
+					delete hExecute;
+					
+					g_hEffects.Set(i, GetGameTime() + flUpdateInterval, ChaosEffect::next_script_update_time);
+				}
 			}
 		}
 	}
-	
-	VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffects"));
-	hExecute.Execute();
-	delete hExecute;
 	
 	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
@@ -635,6 +668,8 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	effect.cooldown_left = effect.cooldown;
 	effect.current_duration = effect.duration;
 	effect.activate_time = GetGameTime();
+	effect.next_update_time = GetGameTime();
+	effect.next_script_update_time = GetGameTime();
 	
 	// Check if any active effect wants to modify the duration
 	int nLength = g_hEffects.Length;

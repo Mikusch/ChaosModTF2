@@ -25,6 +25,8 @@ enum struct ChaosEffect
 	float activate_time;
 	int cooldown_left;
 	float current_duration;
+	float next_update_time;
+	float next_script_update_time;
 	
 	void Parse(KeyValues kv)
 	{
