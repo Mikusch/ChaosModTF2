@@ -140,6 +140,7 @@ static int AddItem(int client, const char[] szItemName)
 			else if (TF2Util_IsEntityWeapon(newItem))
 			{
 				EquipPlayerWeapon(client, newItem);
+				TF2Util_SetPlayerActiveWeapon(client, newItem);
 			}
 		}
 		

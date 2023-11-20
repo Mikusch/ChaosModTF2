@@ -50,7 +50,6 @@ char g_szForceEffectId[64];
 #include "chaos/effects/drunk.sp"
 #include "chaos/effects/earthquake.sp"
 #include "chaos/effects/enableallholidays.sp"
-#include "chaos/effects/fakeclientcommand.sp"
 #include "chaos/effects/fakecrash.sp"
 #include "chaos/effects/falldamage.sp"
 #include "chaos/effects/flipviewmodels.sp"
@@ -83,7 +82,6 @@ char g_szForceEffectId[64];
 #include "chaos/effects/spawnball.sp"
 #include "chaos/effects/stepsize.sp"
 #include "chaos/effects/swappositions.sp"
-#include "chaos/effects/thriller.sp"
 #include "chaos/effects/truce.sp"
 #include "chaos/effects/watermark.sp"
 #include "chaos/effects/wheredideverythinggo.sp"
@@ -114,6 +112,7 @@ public void OnPluginStart()
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.025", "Chance for a meta effect to be activated every interval.");
 	
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect to happen.");
+	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to run.");
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
@@ -132,26 +131,6 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
 	ExpireAllActiveEffects(true);
-}
-
-public void OnMapInit(const char[] mapName)
-{
-	int nLength = g_hEffects.Length;
-	for (int i = 0; i < nLength; i++)
-	{
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect))
-		{
-			Function fnCallback = effect.GetCallbackFunction("OnMapInit");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushString(mapName);
-				Call_Finish();
-			}
-		}
-	}
 }
 
 public void OnMapStart()
@@ -599,17 +578,15 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		return false;
 	}
 	
+	if (bForce)
+	{
+		ForceExpireEffect(effect, true);
+	}
+	
 	if (effect.active)
 	{
-		if (bForce)
-		{
-			ForceExpireEffect(effect);
-		}
-		else
-		{
-			LogError("The effect '%T' (%s) is already active!", effect.name, LANG_SERVER, effect.id);
-			return false;
-		}
+		LogError("The effect '%T' (%s) is already active!", effect.name, LANG_SERVER, effect.id);
+		return false;
 	}
 	
 	if (!effect.IsCompatibleWithActiveEffects())
@@ -851,7 +828,7 @@ void ExpireAllActiveEffects(bool bForce = false)
 	}
 }
 
-void ForceExpireEffect(ChaosEffect effect)
+void ForceExpireEffect(ChaosEffect effect, bool bExpireAllTags = false)
 {
 	int nIndex = g_hEffects.FindString(effect.id);
 	if (nIndex == -1)
@@ -860,32 +837,65 @@ void ForceExpireEffect(ChaosEffect effect)
 		return;
 	}
 	
-	g_hEffects.Set(nIndex, false, ChaosEffect::active);
-	
-	Function fnCallback = effect.GetCallbackFunction("OnEnd");
-	if (fnCallback != INVALID_FUNCTION)
+	// Expire the current effect
+	if (effect.active)
 	{
-		Call_StartFunction(null, fnCallback);
-		Call_PushArray(effect, sizeof(effect));
-		Call_Finish();
+		effect.active = false;
+		g_hEffects.SetArray(nIndex, effect);
+		
+		Function fnCallback = effect.GetCallbackFunction("OnEnd");
+		if (fnCallback != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, fnCallback);
+			Call_PushArray(effect, sizeof(effect));
+			Call_Finish();
+		}
+		
+		if (effect.script_file[0])
+		{
+			VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_EndEffect"));
+			hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
+			hExecute.Execute();
+			delete hExecute;
+		}
+		
+		if (effect.start_sound[0])
+		{
+			StopStaticSound(effect.start_sound);
+		}
+		
+		if (effect.end_sound[0])
+		{
+			PlayStaticSound(effect.end_sound);
+		}
 	}
 	
-	if (effect.script_file[0])
+	// Expire all other effects matching this tag
+	if (bExpireAllTags && effect.tags)
 	{
-		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_EndEffect"));
-		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-		hExecute.Execute();
-		delete hExecute;
-	}
-	
-	if (effect.start_sound[0])
-	{
-		StopStaticSound(effect.start_sound);
-	}
-	
-	if (effect.end_sound[0])
-	{
-		PlayStaticSound(effect.end_sound);
+		int nLength = g_hEffects.Length;
+		for (int i = 0; i < nLength; i++)
+		{
+			if (!g_hEffects.Get(i, ChaosEffect::active))
+				continue;
+			
+			ChaosEffect other;
+			if (g_hEffects.GetArray(i, other))
+			{
+				if (StrEqual(other.id, effect.id))
+					continue;
+				
+				if (!other.tags)
+					continue;
+				
+				for (int j = 0; j < effect.tags.Length; j++)
+				{
+					char tag[EFFECT_MAX_TAG_LENGTH];
+					if (effect.tags.GetString(j, tag, sizeof(tag)) && other.tags.FindString(tag) != -1)
+						ForceExpireEffect(other);
+				}
+			}
+		}
 	}
 }
 
@@ -1015,6 +1025,30 @@ static Action ConCmd_SetNextEffect(int client, int args)
 		{
 			ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Done", effect.name);
 		}
+	}
+	
+	return Plugin_Handled;
+}
+
+static Action ConCmd_ForceEffect(int client, int args)
+{
+	if (args < 1)
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_chaos_forceeffect <id>");
+		return Plugin_Handled;
+	}
+	
+	char szEffectId[64];
+	GetCmdArg(1, szEffectId, sizeof(szEffectId));
+	
+	int nIndex = g_hEffects.FindString(szEffectId);
+	if (nIndex == -1)
+	{
+		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", szEffectId);
+	}
+	else
+	{
+		ActivateEffectById(szEffectId, true);
 	}
 	
 	return Plugin_Handled;

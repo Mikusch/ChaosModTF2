@@ -36,10 +36,10 @@ function Chaos_OnGameEvent_player_spawn(params)
 		if (other.GetTeam() == player.GetTeam())
 			continue
 		
-		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", 0, null, null)
-		EntFireByHandle(other, "AddContext", "randomnum:100", 0, null, null)
-		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_SNIPER_CALLOUT", 0, null, null)
-		EntFireByHandle(other, "ClearContext", null, 0, null, null)
+		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", -1, null, null)
+		EntFireByHandle(other, "AddContext", "randomnum:100", -1, null, null)
+		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_SNIPER_CALLOUT", -1, null, null)
+		EntFireByHandle(other, "ClearContext", null, -1, null, null)
 	}
 }
 
@@ -61,11 +61,11 @@ function Chaos_OnGameEvent_player_death(params)
 		if (other.GetTeam() != player.GetTeam())
 			continue
 
-		EntFireByHandle(other, "AddContext", format("victimclass:%s", playerClassNames[player.GetPlayerClass()]), 0, null, null)
-		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", 0, null, null)
-		EntFireByHandle(other, "AddContext", "randomnum:100", 0, null, null)
-		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_DEFENDER_DIED", 0, null, null)
-		EntFireByHandle(other, "ClearContext", null, 0, null, null)
+		EntFireByHandle(other, "AddContext", format("victimclass:%s", playerClassNames[player.GetPlayerClass()]), -1, null, null)
+		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", -1, null, null)
+		EntFireByHandle(other, "AddContext", "randomnum:100", -1, null, null)
+		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_DEFENDER_DIED", -1, null, null)
+		EntFireByHandle(other, "ClearContext", null, -1, null, null)
 	}
 }
 

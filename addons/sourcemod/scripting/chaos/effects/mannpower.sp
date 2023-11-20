@@ -33,7 +33,7 @@ public bool Mannpower_OnStart(ChaosEffect effect)
 		return false;
 	
 	tf_grapplinghook_enable.BoolValue = true;
-	GameRules_SetProp("m_bPowerupMode", true, 1);
+	GameRules_SetProp("m_bPowerupMode", true);
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -48,7 +48,7 @@ public bool Mannpower_OnStart(ChaosEffect effect)
 
 public void Mannpower_OnEnd(ChaosEffect effect)
 {
-	GameRules_SetProp("m_bPowerupMode", false, 1);
+	GameRules_SetProp("m_bPowerupMode", false);
 	tf_grapplinghook_enable.BoolValue = false;
 	
 	for (int client = 1; client <= MaxClients; client++)

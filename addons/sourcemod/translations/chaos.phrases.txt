@@ -173,7 +173,7 @@
 	}
 	"#Chaos_Effect_Grill"
 	{
-		"en"		"I Just Wanna Grill for God's Sake"
+		"en"		"Meat The Grill"
 	}
 	"#Chaos_Effect_Ghosts"
 	{
@@ -360,9 +360,9 @@
 	{
 		"en"		"Spawn Beach Ball"
 	}
-	"#Chaos_Effect_PaintCosmetics"
+	"#Chaos_Effect_PaintItems"
 	{
-		"en"		"Apply Random Paint To Cosmetics"
+		"en"		"Apply Random Paint To Items"
 	}
 	"#Chaos_Effect_Nothing"
 	{
