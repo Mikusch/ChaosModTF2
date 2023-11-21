@@ -560,9 +560,9 @@
 	{
 		"en"		"Earthquake"
 	}
-	"#Chaos_Effect_BouncyRockets"
+	"#Chaos_Effect_BouncyProjectiles"
 	{
-		"en"		"Bouncy Rockets"
+		"en"		"Bouncy Projectiles"
 	}
 	"#Chaos_Effect_Flashbang"
 	{
