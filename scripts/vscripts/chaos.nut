@@ -61,13 +61,20 @@ function Chaos_StartEffect(name, duration)
 	return success
 }
 
-function Chaos_UpdateEffects()
+function Chaos_UpdateEffect(name)
 {
-	foreach (scopeName, scope in ChaosEffectScopes)
-	{
-		if ("ChaosEffect_Update" in scope)
-			scope.ChaosEffect_Update()
-	}
+	local scopeName = CHAOS_NAMESPACE + name
+	if (!(scopeName in ChaosEffectScopes))
+		return
+
+	local scope = ChaosEffectScopes[scopeName]
+	if (scope == null)
+		return
+
+	if (!("ChaosEffect_Update" in scope))
+		return
+
+	return scope.ChaosEffect_Update()
 }
 
 function Chaos_EndEffect(name)

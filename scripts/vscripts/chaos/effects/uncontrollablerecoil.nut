@@ -42,6 +42,8 @@ function ChaosEffect_Update()
 			player.ViewPunch(QAngle(-1, RandomInt(-1.5, 1.5), 0))
 		}
 	}
+
+	return -1
 }
 
 function Chaos_OnGameEvent_player_spawn(params)

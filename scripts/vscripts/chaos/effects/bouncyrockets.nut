@@ -1,38 +1,29 @@
+// Contributed by Dencube
+
 function ChaosEffect_Update()
 {
-    local rocket = null
-    while (rocket = Entities.FindByClassname(rocket, "tf_projectile_rocket"))
-    {
-        ProcessRocket(rocket)
-    }
+	local projectile
+	while (projectile = Entities.FindByClassname(projectile, "tf_projectile_*"))
+	{
+		local velocity = projectile.GetAbsVelocity()
+		local direction = velocity
+		local speed = direction.Norm()
 
-    local rocket = null
-    while (rocket = Entities.FindByClassname(rocket, "tf_projectile_energy_ball"))
-    {
-        ProcessRocket(rocket)
-    }
-}
+		local trace =
+		{
+			start = projectile.GetOrigin(),
+			end = projectile.GetOrigin() + (direction * 12.0),
+			mask = (Constants.FContents.CONTENTS_SOLID | Constants.FContents.CONTENTS_WINDOW | Constants.FContents.CONTENTS_GRATE | Constants.FContents.CONTENTS_MOVEABLE),
+			ignore = projectile
+		}
 
-function ProcessRocket(rocket)
-{
-    local velocity = rocket.GetAbsVelocity()
-    local direction = velocity
-    local speed = direction.Norm()
+		if (TraceLineEx(trace) && trace.hit)
+		{
+			local new_direction = direction - (trace.plane_normal * direction.Dot(trace.plane_normal) * 2.0)
+			projectile.SetAbsVelocity(new_direction * speed)
+			projectile.SetForwardVector(new_direction)
+		}
+	}
 
-    local trace =
-    {
-        start = rocket.GetOrigin(),
-        end = rocket.GetOrigin() + (direction * 12.0),
-        mask = (Constants.FContents.CONTENTS_SOLID | Constants.FContents.CONTENTS_WINDOW | Constants.FContents.CONTENTS_GRATE | Constants.FContents.CONTENTS_MOVEABLE),
-        ignore = rocket
-    }
-
-    TraceLineEx(trace)
-
-    if (trace.hit)
-    {
-        local new_direction = direction - (trace.plane_normal * direction.Dot(trace.plane_normal) * 2.0)
-        rocket.SetAbsVelocity(new_direction * speed)
-        rocket.SetForwardVector(new_direction)
-    }
+	return -1
 }
