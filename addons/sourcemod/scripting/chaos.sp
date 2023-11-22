@@ -140,7 +140,7 @@ public void OnMapStart()
 	g_flLastEffectDisplayTime = GetGameTime();
 	
 	// Initialize VScript system
-	ServerCommand("script_execute chaos");
+	ServerCommand("script_execute %s", "chaos");
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
@@ -206,17 +206,18 @@ public void OnGameFrame()
 	if (!g_bEnabled)
 		return;
 	
+	float flCurTime = GetGameTime();
+	float flDefaultUpdateInterval = sm_chaos_effect_update_interval.FloatValue;
+	
 	// Show all active effects in HUD
-	if (g_flLastEffectDisplayTime && g_flLastEffectDisplayTime + 0.1 <= GetGameTime())
+	if (g_flLastEffectDisplayTime && g_flLastEffectDisplayTime + 0.1 <= flCurTime)
 	{
-		g_flLastEffectDisplayTime = GetGameTime();
+		g_flLastEffectDisplayTime = flCurTime;
 		
 		DisplayActiveEffects();
 	}
 	
 	ExpireAllActiveEffects();
-	
-	float flDefaultUpdateInterval = sm_chaos_effect_update_interval.FloatValue;
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
@@ -228,7 +229,7 @@ public void OnGameFrame()
 		if (g_hEffects.GetArray(i, effect))
 		{
 			// Update SourcePawn effect
-			if (effect.next_update_time <= GetGameTime())
+			if (effect.next_update_time <= flCurTime)
 			{
 				Function fnCallback = effect.GetCallbackFunction("Update");
 				if (fnCallback != INVALID_FUNCTION)
@@ -242,13 +243,13 @@ public void OnGameFrame()
 						if (flUpdateInterval == 0.0)
 							flUpdateInterval = flDefaultUpdateInterval;
 						
-						g_hEffects.Set(i, GetGameTime() + flUpdateInterval, ChaosEffect::next_update_time);
+						g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_update_time);
 					}
 				}
 			}
 			
 			// Update VScript effect
-			if (effect.next_script_update_time <= GetGameTime())
+			if (effect.next_script_update_time <= flCurTime)
 			{
 				if (effect.script_file[0])
 				{
@@ -264,14 +265,15 @@ public void OnGameFrame()
 						
 						delete hExecute;
 						
-						g_hEffects.Set(i, GetGameTime() + flUpdateInterval, ChaosEffect::next_script_update_time);
+						g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_script_update_time);
 					}
 				}
 			}
 		}
 	}
 	
-	if (g_bNoChaos || GameRules_GetRoundState() < RoundState_RoundRunning || GameRules_GetRoundState() > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
+	RoundState nRoundState = GameRules_GetRoundState();
+	if (g_bNoChaos || nRoundState < RoundState_RoundRunning || nRoundState > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
 	float flTimerSpeed = GetGameFrameTime();
@@ -302,9 +304,9 @@ public void OnGameFrame()
 	g_flTimeElapsed += flTimerSpeed;
 	
 	// Show interval progress bar
-	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= GetGameTime())
+	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= flCurTime)
 	{
-		g_flTimerBarDisplayTime = GetGameTime();
+		g_flTimerBarDisplayTime = flCurTime;
 		
 		DisplayTimerBar();
 	}
