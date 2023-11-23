@@ -536,13 +536,13 @@
 	{
 		"en"		"Help My W Key Is Stuck"
 	}
-	"#Chaos_Effect_2xGestureSpeed"
+	"#Chaos_Effect_IncreasedGestureSpeed"
 	{
-		"en"		"2x Gesture Speed"
+		"en"		"2x Taunt Speed"
 	}
-	"#Chaos_Effect_0.5xGestureSpeed"
+	"#Chaos_Effect_DecreasedGestureSpeed"
 	{
-		"en"		"0.5x Gesture Speed"
+		"en"		"0.5x Taunt Speed"
 	}
 	"#Chaos_Effect_SpawnBirds"
 	{
@@ -662,7 +662,7 @@
 	}
 	"#Chaos_Effect_IncreasedJumpHeight"
 	{
-		"en"		"3x Jump Height"
+		"en"		"2x Jump Height"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
