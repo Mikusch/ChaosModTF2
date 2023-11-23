@@ -3,6 +3,7 @@
 
 static Handle g_SDKCallGiveNamedItem;
 static Handle g_hSDKCallPostInventoryApplication;
+static Handle g_hSDKCallGetSubType;
 
 public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
 {
@@ -19,7 +20,11 @@ public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
 	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
 	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
 	
-	return g_SDKCallGiveNamedItem != null && g_hSDKCallPostInventoryApplication != null;
+	VScriptFunction hScriptGetSubType = VScript_GetClassFunction("CBaseCombatWeapon", "GetSubType");
+	if (hScriptGetSubType)
+		g_hSDKCallGetSubType = hScriptGetSubType.CreateSDKCall();
+	
+	return g_SDKCallGiveNamedItem && g_hSDKCallPostInventoryApplication && g_hSDKCallGetSubType;
 }
 
 public bool IdentityTheft_OnStart(ChaosEffect effect)
@@ -80,7 +85,7 @@ static void EventHook_PlayerDeath(Event event, const char[] name, bool dontBroad
 			if (!GetEntityClassname(weapon, szClassname, sizeof(szClassname)))
 				continue;
 			
-			int newItem = SDKCall(g_SDKCallGiveNamedItem, attacker, szClassname, 0, pItem, true);
+			int newItem = SDKCall(g_SDKCallGiveNamedItem, attacker, szClassname, SDKCall(g_hSDKCallGetSubType, weapon), pItem, true);
 			if (newItem == -1)
 				continue;
 			
