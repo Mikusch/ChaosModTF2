@@ -51,7 +51,7 @@ public void Jukebox_OnMapStart(ChaosEffect effect)
 
 public bool Jukebox_OnStart(ChaosEffect effect)
 {
-	int client = GetRandomPlayer();
+	int client = FindRadioRecipient();
 	if (client == -1)
 		return false;
 	
@@ -70,7 +70,6 @@ public bool Jukebox_OnStart(ChaosEffect effect)
 		if (DispatchSpawn(flag))
 		{
 			SetEntityModel(flag, JUKEBOX_MODEL);
-			EmitSoundToAll(g_aSongs[GetRandomInt(0, sizeof(g_aSongs) - 1)], flag, SNDCHAN_STATIC, SNDLEVEL_SCREAMING);
 			SDKCall(g_hSDKCallPickUp, flag, client, true);
 			return true;
 		}
@@ -94,8 +93,64 @@ static void OnFlagStatusUpdate(Event event, const char[] name, bool dontBroadcas
 {
 	int flag = event.GetInt("entindex");
 	
-	if (IsEntityRadio(flag) && GetEntProp(flag, Prop_Send, "m_nFlagStatus") == TF_FLAGINFO_HOME)
-		RemoveEntity(flag);
+	if (!IsEntityRadio(flag))
+		return;
+	
+	int nFlagStatus = GetEntProp(flag, Prop_Send, "m_nFlagStatus");
+	switch (nFlagStatus)
+	{
+		case TF_FLAGINFO_HOME:
+		{
+			RemoveEntity(flag);
+		}
+		case TF_FLAGINFO_STOLEN:
+		{
+			EmitSoundToAll(g_aSongs[GetRandomInt(0, sizeof(g_aSongs) - 1)], flag, SNDCHAN_STATIC, SNDLEVEL_SCREAMING);
+		}
+		case TF_FLAGINFO_DROPPED:
+		{
+			for (int i = 0; i < sizeof(g_aSongs); i++)
+			{
+				EmitSoundToAll(g_aSongs[i], flag, SNDCHAN_STATIC, SNDLEVEL_SCREAMING, SND_STOP);
+			}
+		}
+	}
+}
+
+static int FindRadioRecipient()
+{
+	ArrayList hPlayers = new ArrayList();
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+		
+		if (!IsPlayerAlive(client))
+			continue;
+		
+		float vecOrigin[3];
+		GetClientAbsOrigin(client, vecOrigin);
+		
+		if (TF2Util_IsPointInRespawnRoom(vecOrigin, client))
+			continue;
+		
+		if (GetEntPropEnt(client, Prop_Send, "m_hItem") != -1)
+			continue;
+		
+		hPlayers.Push(client);
+	}
+	
+	if (!hPlayers.Length)
+	{
+		delete hPlayers;
+		return -1;
+	}
+	
+	int client = hPlayers.Get(GetRandomInt(0, hPlayers.Length - 1));
+	delete hPlayers;
+	
+	return client;
 }
 
 static bool IsEntityRadio(int entity)

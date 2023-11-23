@@ -141,7 +141,7 @@ int GetRandomPlayer(bool bIsAlive = true)
 	if (!hPlayers.Length)
 	{
 		delete hPlayers;
-		return false;
+		return -1;
 	}
 	
 	int client = hPlayers.Get(GetRandomInt(0, hPlayers.Length - 1));
