@@ -346,7 +346,7 @@
 	}
 	"#Chaos_Effect_ExtraAirDashes"
 	{
-		"en"		"Infinite Scout Jumps"
+		"en"		"Extra Scout Jumps"
 	}
 	"#Chaos_Effect_TallMercs"
 	{
