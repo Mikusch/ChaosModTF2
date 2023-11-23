@@ -660,6 +660,10 @@
 	{
 		"en"		"Spawn Jukebox"
 	}
+	"#Chaos_Effect_IncreasedJumpHeight"
+	{
+		"en"		"3x Jump Height"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
