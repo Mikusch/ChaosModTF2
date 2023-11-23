@@ -30,6 +30,9 @@ float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
 
+ProgressBar g_aEffectBarConfig;
+ProgressBar g_aTimerBarConfig;
+
 #include "chaos/data.sp"
 #include "chaos/events.sp"
 #include "chaos/shareddefs.sp"
@@ -750,21 +753,22 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 
 void DisplayTimerBar()
 {
-	SetHudTextParams(-1.0, 0.075, 0.1, 147, 32, 252, 255);
+	SetHudTextParams(-1.0, 0.075, 0.1, g_aTimerBarConfig.color[0], g_aTimerBarConfig.color[1], g_aTimerBarConfig.color[2], g_aTimerBarConfig.color[3]);
 	
 	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
 	
-	int iFilledBlocks = RoundToNearest(flRatio * TIMER_BAR_NUM_BLOCKS);
-	int iEmptyBlocks = TIMER_BAR_NUM_BLOCKS - iFilledBlocks;
+	int iNumBlocks = g_aTimerBarConfig.num_blocks;
+	int iFilledBlocks = RoundToNearest(flRatio * iNumBlocks);
+	int iEmptyBlocks = iNumBlocks - iFilledBlocks;
 	
 	char szProgressBar[64];
 	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_FILLED);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.filled);
 	}
 	for (int i = 0; i < iEmptyBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_EMPTY);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.empty);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -810,17 +814,18 @@ void DisplayActiveEffects()
 					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
-					int iEmptyBlocks = RoundToNearest(flRatio * EFFECT_BAR_NUM_BLOCKS);
-					int iFilledBlocks = EFFECT_BAR_NUM_BLOCKS - iEmptyBlocks;
+					int iNumBlocks = g_aEffectBarConfig.num_blocks;
+					int iEmptyBlocks = RoundToNearest(flRatio * iNumBlocks);
+					int iFilledBlocks = iNumBlocks - iEmptyBlocks;
 					
 					char szProgressBar[64];
 					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_FILLED);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.filled);
 					}
 					for (int j = 0; j < iEmptyBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_EMPTY);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.empty);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
