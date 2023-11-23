@@ -43,6 +43,12 @@
 				"linux"		"493"
 				"windows"	"486"
 			}
+			"CBaseCombatWeapon::CanDeploy"
+			{
+				"library"	"server"
+				"linux"		"266"
+				"windows"	"260"
+			}
 			"CBaseCombatWeapon::WeaponSound"
 			{
 				"library"	"server"

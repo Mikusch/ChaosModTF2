@@ -652,6 +652,10 @@
 	{
 		"en"		"Homing Projectiles"
 	}
+	"#Chaos_Effect_RandomizeWeaponOrder"
+	{
+		"en"		"Randomize Weapon Order"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"

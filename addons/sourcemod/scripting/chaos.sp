@@ -70,6 +70,7 @@ ProgressBar g_aTimerBarConfig;
 #include "chaos/effects/mannpower.sp"
 #include "chaos/effects/modifypitch.sp"
 #include "chaos/effects/nothing.sp"
+#include "chaos/effects/randomizeweaponorder.sp"
 #include "chaos/effects/removehealthandammo.sp"
 #include "chaos/effects/removerandomentity.sp"
 #include "chaos/effects/screenfade.sp"
