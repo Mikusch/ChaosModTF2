@@ -65,6 +65,7 @@ ProgressBar g_aTimerBarConfig;
 #include "chaos/effects/identitytheft.sp"
 #include "chaos/effects/invertconvar.sp"
 #include "chaos/effects/jumpjump.sp"
+#include "chaos/effects/jukebox.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/loudness.sp"
 #include "chaos/effects/mannpower.sp"
@@ -384,9 +385,6 @@ public void OnEntityDestroyed(int entity)
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
 	{
-		if (!g_hEffects.Get(i, ChaosEffect::active))
-			continue;
-		
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{

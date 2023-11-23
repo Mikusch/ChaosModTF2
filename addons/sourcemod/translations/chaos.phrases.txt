@@ -598,7 +598,7 @@
 	}
 	"#Chaos_Effect_Overtime"
 	{
-		"en"		"Overtime"
+		"en"		"OVERTIME?!"
 	}
 	"#Chaos_Effect_ImmuneToPushback"
 	{
@@ -655,6 +655,10 @@
 	"#Chaos_Effect_RandomizeWeaponOrder"
 	{
 		"en"		"Randomize Weapon Order"
+	}
+	"#Chaos_Effect_Jukebox"
+	{
+		"en"		"Spawn Jukebox"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
