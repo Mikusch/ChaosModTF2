@@ -418,7 +418,7 @@
 	}
 	"#Chaos_Effect_DisableRespawnTimes"
 	{
-		"en"		"Disable Respawn Times"
+		"en"		"No Respawn Times"
 	}
 	"#Chaos_Effect_IncreasedSpread"
 	{
