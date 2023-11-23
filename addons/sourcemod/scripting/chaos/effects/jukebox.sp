@@ -15,12 +15,28 @@ static char g_aSongs[][] =
 	")*music/conga_sketch_167bpm_01-04.wav"
 };
 
+static Handle g_hSDKCallPickUp;
+
 public bool Jukebox_Initialize(ChaosEffect effect, GameData gameconf)
 {
-	// This hook can remain throughout the entire plugin lifetime
-	HookEvent("flagstatus_update", OnFlagStatusUpdate);
+	if (!gameconf)
+		return false;
 	
-	return true;
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "CTFItem::PickUp");
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_ByValue);
+	g_hSDKCallPickUp = EndPrepSDKCall();
+	
+	if (g_hSDKCallPickUp != null)
+	{
+		HookEvent("flagstatus_update", OnFlagStatusUpdate);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 public void Jukebox_OnMapStart(ChaosEffect effect)
@@ -55,6 +71,7 @@ public bool Jukebox_OnStart(ChaosEffect effect)
 		{
 			SetEntityModel(flag, JUKEBOX_MODEL);
 			EmitSoundToAll(g_aSongs[GetRandomInt(0, sizeof(g_aSongs) - 1)], flag, SNDCHAN_STATIC, SNDLEVEL_SCREAMING);
+			SDKCall(g_hSDKCallPickUp, flag, client, true);
 			return true;
 		}
 	}

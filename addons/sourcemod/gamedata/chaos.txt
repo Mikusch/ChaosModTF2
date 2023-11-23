@@ -55,6 +55,11 @@
 				"linux"		"308"
 				"windows"	"302"
 			}
+			"CTFItem::PickUp"
+			{
+				"linux"		"269"
+				"windows"	"231"
+			}
 		}
 		"Functions"
 		{
