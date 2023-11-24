@@ -692,6 +692,14 @@
 	{
 		"en"		"Fast Projectiles"
 	}
+	"#Chaos_Effect_IncreasedSentryRange"
+	{
+		"en"		"Global Sentry Range"
+	}
+	"#Chaos_Effect_IncreasedDispenserRange"
+	{
+		"en"		"Global Dispenser Range"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
