@@ -115,7 +115,7 @@ static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char
 			return Plugin_Changed;
 		}
 	}
-	else if (!strncmp(sample, "player/footsteps/", 17))
+	else if (!strncmp(sample, "player/footsteps/", 17) && !GetEntProp(entity, Prop_Send, "m_bIsMiniBoss") && !TF2_IsPlayerInCondition(entity, TFCond_Disguised))
 	{
 		if (nClass != TFClass_Medic)
 		{
