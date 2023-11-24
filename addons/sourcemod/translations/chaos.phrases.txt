@@ -672,6 +672,14 @@
 	{
 		"en"		"Spawn Gargoyle"
 	}
+	"#Chaos_Effect_AlwaysGib"
+	{
+		"en"		"Players Always Gib"
+	}
+	"#Chaos_Effect_Honorbound"
+	{
+		"en"		"All Weapons Are Honorbound"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
