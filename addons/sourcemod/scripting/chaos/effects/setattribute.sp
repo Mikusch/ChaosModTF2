@@ -119,4 +119,6 @@ static void ApplyAttributes(ChaosEffect effect, int client, bool bRemove = false
 		}
 		kv.GoBack();
 	}
+	
+	TF2Util_UpdatePlayerSpeed(client);
 }

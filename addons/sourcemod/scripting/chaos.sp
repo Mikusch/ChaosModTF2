@@ -82,7 +82,6 @@ ProgressBar g_aTimerBarConfig;
 #include "chaos/effects/setcustommodel.sp"
 #include "chaos/effects/setfov.sp"
 #include "chaos/effects/sethealth.sp"
-#include "chaos/effects/setspeed.sp"
 #include "chaos/effects/showscoreboard.sp"
 #include "chaos/effects/silence.sp"
 #include "chaos/effects/slap.sp"
