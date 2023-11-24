@@ -68,6 +68,7 @@ ProgressBar g_aTimerBarConfig;
 #include "chaos/effects/jukebox.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/loudness.sp"
+#include "chaos/effects/manninthemachine.sp"
 #include "chaos/effects/mannpower.sp"
 #include "chaos/effects/modifypitch.sp"
 #include "chaos/effects/nothing.sp"

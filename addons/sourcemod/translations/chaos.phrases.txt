@@ -456,9 +456,9 @@
 	{
 		"en"		"Regenerate All Players"
 	}
-	"#Chaos_Effect_EnableTriggers"
+	"#Chaos_Effect_MannInTheMachine"
 	{
-		"en"		"Enable All Triggers"
+		"en"		"Mann In The Machine"
 	}
 	"#Chaos_Effect_Headshots"
 	{

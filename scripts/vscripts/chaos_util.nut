@@ -1,3 +1,14 @@
+::ROOT <- getroottable();
+if (!("ConstantNamingConvention" in ROOT))
+{
+	foreach (a, b in Constants)
+		foreach (k, v in b)
+			if (v == null)
+				ROOT[k] <- 0
+			else
+				ROOT[k] <- v
+}
+
 // m_lifeState values
 const LIFE_ALIVE = 0
 const LIFE_DYING = 1
