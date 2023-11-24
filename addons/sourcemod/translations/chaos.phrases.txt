@@ -133,11 +133,11 @@
 	}
 	"#Chaos_Effect_SpeedLimit"
 	{
-		"en"		"100 HU/s Speed Limit"
+		"en"		"Speed Limit"
 	}
-	"#Chaos_Effect_MaxSpeed"
+	"#Chaos_Effect_SuperSpeed"
 	{
-		"en"		"No Speed Limit"
+		"en"		"Super Speed"
 	}
 	"#Chaos_Effect_ThirdPerson"
 	{
@@ -288,9 +288,9 @@
 	{
 		"en"		"All Players Are Invisible"
 	}
-	"#Chaos_Effect_BalloonHeads"
+	"#Chaos_Effect_BigHeads"
 	{
-		"en"		"Balloon Heads"
+		"en"		"Big Heads"
 	}
 	"#Chaos_Effect_ExtremeFog"
 	{
@@ -662,7 +662,11 @@
 	}
 	"#Chaos_Effect_IncreasedJumpHeight"
 	{
-		"en"		"2x Jump Height"
+		"en"		"Super Jumping"
+	}
+	"#Chaos_Effect_TinyHeads"
+	{
+		"en"		"Tiny Heads"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
