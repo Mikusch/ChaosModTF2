@@ -98,3 +98,15 @@ CTFBot.IsAlive <- function()
 
 	return QAngle(pitch, yaw, 0.0)
 }
+
+::ShuffleArray <- function(arr)
+{
+	local i = arr.len()
+	while (i > 0)
+	{
+		local j = RandomInt(0, --i)
+		local temp = arr[i]
+		arr[i] = arr[j]
+		arr[j] = temp
+	}
+}

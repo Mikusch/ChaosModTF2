@@ -15,7 +15,7 @@ public bool SetAttribute_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		ApplyAttributes(effect, client);
+		ApplyAttributesToPlayer(effect, client);
 	}
 	
 	return true;
@@ -28,13 +28,13 @@ public void SetAttribute_OnEnd(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		ApplyAttributes(effect, client, true);
+		ApplyAttributesToPlayer(effect, client, true);
 	}
 }
 
 public void SetAttribute_OnPostInventoryApplication(ChaosEffect effect, int client)
 {
-	ApplyAttributes(effect, client);
+	ApplyAttributesToPlayer(effect, client);
 }
 
 static bool IsAlreadyActive(ChaosEffect effect)
@@ -66,7 +66,7 @@ static bool IsAlreadyActive(ChaosEffect effect)
 	return bFoundKey;
 }
 
-static void ApplyAttributes(ChaosEffect effect, int client, bool bRemove = false)
+static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove = false)
 {
 	KeyValues kv = effect.data;
 	
