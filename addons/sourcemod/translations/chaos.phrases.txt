@@ -105,7 +105,7 @@
 	}
 	"#Chaos_Effect_RemoveWearables"
 	{
-		"en"		"Remove Everyone's Cosmetics"
+		"en"		"No Cosmetics"
 	}
 	"#Chaos_Effect_SquidFootsteps"
 	{

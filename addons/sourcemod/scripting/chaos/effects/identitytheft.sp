@@ -29,17 +29,17 @@ public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
 
 public bool IdentityTheft_OnStart(ChaosEffect effect)
 {
-	HookEvent("player_death", EventHook_PlayerDeath);
+	HookEvent("player_death", OnPlayerDeath);
 	
 	return true;
 }
 
 public void IdentityTheft_OnEnd(ChaosEffect effect)
 {
-	UnhookEvent("player_death", EventHook_PlayerDeath);
+	UnhookEvent("player_death", OnPlayerDeath);
 }
 
-static void EventHook_PlayerDeath(Event event, const char[] name, bool dontBroadcast)
+static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));

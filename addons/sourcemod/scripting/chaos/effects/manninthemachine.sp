@@ -46,6 +46,14 @@ char g_szBotClassNames[][] =
 	"engineer"
 };
 
+public void MannInTheMachine_OnMapStart(ChaosEffect effect)
+{
+	PrecacheScriptSound("MVM.BotStep");
+	PrecacheScriptSound("MVM.FallDamageBots");
+	PrecacheScriptSound("MVM.GiantHeavyExplodes");
+	PrecacheScriptSound("MVM.GiantCommonExplodes");
+}
+
 public bool MannInTheMachine_OnStart(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -57,6 +65,7 @@ public bool MannInTheMachine_OnStart(ChaosEffect effect)
 	}
 	
 	AddNormalSoundHook(OnNormalSoundPlayed);
+	HookEvent("player_death", OnPlayerDeath);
 	
 	return true;
 }
@@ -81,6 +90,7 @@ public void MannInTheMachine_OnEnd(ChaosEffect effect)
 	}
 	
 	RemoveNormalSoundHook(OnNormalSoundPlayed);
+	UnhookEvent("player_death", OnPlayerDeath);
 }
 
 static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
@@ -143,4 +153,32 @@ static void SetRobotModel(int client)
 	TFClassType nClass = TF2_GetPlayerClass(client);
 	SetVariantString(GetEntProp(client, Prop_Send, "m_bIsMiniBoss") ? g_szBotBossModels[nClass] : g_szBotModels[nClass]);
 	AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+}
+
+static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
+{
+	int victim = GetClientOfUserId(event.GetInt("userid"));
+	int death_flags = GetClientOfUserId(event.GetInt("death_flags"));
+	
+	if (!IsValidRobotPlayer(victim))
+		return;
+	
+	if (death_flags & TF_DEATHFLAG_DEADRINGER)
+		return;
+	
+	if (GetEntProp(victim, Prop_Send, "m_bIsMiniBoss"))
+	{
+		TFClassType nClass = TF2_GetPlayerClass(victim);
+		switch (nClass)
+		{
+			case TFClass_Heavy:
+			{
+				EmitGameSoundToAll("MVM.GiantHeavyExplodes");
+			}
+			default:
+			{
+				EmitGameSoundToAll("MVM.GiantCommonExplodes");
+			}
+		}
+	}
 }
