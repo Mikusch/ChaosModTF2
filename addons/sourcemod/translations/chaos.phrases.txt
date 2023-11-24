@@ -668,6 +668,10 @@
 	{
 		"en"		"Tiny Heads"
 	}
+	"#Chaos_Effect_SpawnGargoyle"
+	{
+		"en"		"Spawn Gargoyle"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
