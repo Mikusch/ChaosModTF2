@@ -680,6 +680,18 @@
 	{
 		"en"		"All Weapons Are Honorbound"
 	}
+	"#Chaos_Effect_NoSelfBlastDamage"
+	{
+		"en"		"No Damage From Blast Jumping"
+	}
+	"#Chaos_Effect_NoOverhealDecay"
+	{
+		"en"		"No Overheal Decay"
+	}
+	"#Chaos_Effect_FastProjectiles"
+	{
+		"en"		"Fast Projectiles"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
