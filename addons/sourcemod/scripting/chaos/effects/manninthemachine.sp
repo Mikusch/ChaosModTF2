@@ -3,7 +3,7 @@
 
 static char g_szBotModels[][] =
 {
-	"",  //TF_CLASS_UNDEFINED
+	"", //TF_CLASS_UNDEFINED
 	
 	"models/bots/scout/bot_scout.mdl",
 	"models/bots/sniper/bot_sniper.mdl",
@@ -33,7 +33,8 @@ char g_szBotBossModels[][] =
 
 char g_szBotClassNames[][] =
 {
-	"",
+	"", //TF_CLASS_UNDEFINED
+	
 	"scout",
 	"sniper",
 	"soldier",
