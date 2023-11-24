@@ -694,11 +694,11 @@
 	}
 	"#Chaos_Effect_IncreasedSentryRange"
 	{
-		"en"		"Global Sentry Range"
+		"en"		"Infinite Sentry Gun Range"
 	}
 	"#Chaos_Effect_IncreasedDispenserRange"
 	{
-		"en"		"Global Dispenser Range"
+		"en"		"Infinite Dispenser Range"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
