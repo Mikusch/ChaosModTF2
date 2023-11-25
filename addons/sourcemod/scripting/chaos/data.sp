@@ -139,6 +139,8 @@ enum struct ProgressBar
 	char filled[64];
 	char empty[64];
 	int color[4];
+	float x;
+	float y;
 	
 	void Parse(KeyValues kv)
 	{
@@ -146,6 +148,8 @@ enum struct ProgressBar
 		kv.GetString("empty", this.empty, sizeof(this.empty));
 		kv.GetString("filled", this.filled, sizeof(this.filled));
 		kv.GetColor4("color", this.color);
+		this.x = kv.GetFloat("x", -1.0);
+		this.y = kv.GetFloat("y", -1.0);
 	}
 }
 

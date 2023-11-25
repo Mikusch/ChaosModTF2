@@ -384,6 +384,9 @@ public void OnEntityDestroyed(int entity)
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
 	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+		
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{
@@ -751,7 +754,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 
 void DisplayTimerBar()
 {
-	SetHudTextParams(-1.0, 0.075, 0.1, g_aTimerBarConfig.color[0], g_aTimerBarConfig.color[1], g_aTimerBarConfig.color[2], g_aTimerBarConfig.color[3]);
+	SetHudTextParams(g_aTimerBarConfig.x, g_aTimerBarConfig.y, 0.1, g_aTimerBarConfig.color[0], g_aTimerBarConfig.color[1], g_aTimerBarConfig.color[2], g_aTimerBarConfig.color[3]);
 	
 	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
 	

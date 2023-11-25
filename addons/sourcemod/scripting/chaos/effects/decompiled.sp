@@ -71,7 +71,7 @@ public bool Decompiled_Initialize(ChaosEffect effect, GameData gameconf)
 	g_hEntityToSpriteMap.SetString("shadow_control", "editor/shadow_control.vmt");
 	g_hEntityToSpriteMap.SetString("water_lod_control", "editor/waterlodcontrol.vmt");
 	
-	// these entities have no unique visual representation, so we use obsolete
+	// These entities have no unique visual representation, so we use obsolete
 	g_hEntityToSpriteMap.SetString("env_screenoverlay", "editor/obsolete.vmt");
 	g_hEntityToSpriteMap.SetString("game_forcerespawn", "editor/obsolete.vmt");
 	g_hEntityToSpriteMap.SetString("point_template", "editor/obsolete.vmt");
@@ -178,14 +178,14 @@ public void Decompiled_OnEntityCreated(ChaosEffect effect, int entity, const cha
 
 public void Decompiled_OnEntityDestroyed(ChaosEffect effect, int entity)
 {
-	// if the visual is removed, remove our reference to it
+	// If the visual is removed, remove our reference to it
 	int iIndex = g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::visual);
 	if (iIndex != -1)
 	{
 		g_hCreatedVisuals.Erase(iIndex);
 	}
 	
-	// if the associated entity is removed, also clear the visual
+	// If the associated entity is removed, also clear the visual
 	iIndex = g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::entity);
 	if (iIndex != -1)
 	{
@@ -290,7 +290,7 @@ static void CreateVisualFromEntity(int entity, const char[] szClassname)
 	
 	if (StrEqual(szClassname, "beam"))
 	{
-		// no angle info, need to recover it from end position
+		// No angle info, need to recover it from end position
 		float vecEndPos[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecEndPos", vecEndPos);
 		SubtractVectors(vecEndPos, vecOrigin, vecEndPos);

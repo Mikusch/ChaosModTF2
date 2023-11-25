@@ -28,15 +28,7 @@ public bool Jukebox_Initialize(ChaosEffect effect, GameData gameconf)
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_ByValue);
 	g_hSDKCallPickUp = EndPrepSDKCall();
 	
-	if (g_hSDKCallPickUp != null)
-	{
-		HookEvent("flagstatus_update", OnFlagStatusUpdate);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return g_hSDKCallPickUp != null;
 }
 
 public void Jukebox_OnMapStart(ChaosEffect effect)
@@ -70,6 +62,11 @@ public bool Jukebox_OnStart(ChaosEffect effect)
 		if (DispatchSpawn(flag))
 		{
 			SetEntityModel(flag, JUKEBOX_MODEL);
+			
+			HookSingleEntityOutput(flag, "OnReturn", OnFlagReturn);
+			HookSingleEntityOutput(flag, "OnPickUp", OnFlagPickUp);
+			HookSingleEntityOutput(flag, "OnDrop", OnFlagDrop);
+			
 			SDKCall(g_hSDKCallPickUp, flag, client, true);
 			return true;
 		}
@@ -80,7 +77,7 @@ public bool Jukebox_OnStart(ChaosEffect effect)
 
 public void Jukebox_OnEntityDestroyed(ChaosEffect effect, int entity)
 {
-	if (!IsEntityRadio(entity))
+	if (!IsJukeboxEntity(entity))
 		return;
 	
 	for (int i = 0; i < sizeof(g_aSongs); i++)
@@ -89,31 +86,21 @@ public void Jukebox_OnEntityDestroyed(ChaosEffect effect, int entity)
 	}
 }
 
-static void OnFlagStatusUpdate(Event event, const char[] name, bool dontBroadcast)
+static void OnFlagReturn(const char[] output, int caller, int activator, float delay)
 {
-	int flag = event.GetInt("entindex");
-	
-	if (!IsEntityRadio(flag))
-		return;
-	
-	int nFlagStatus = GetEntProp(flag, Prop_Send, "m_nFlagStatus");
-	switch (nFlagStatus)
+	RemoveEntity(caller);
+}
+
+static void OnFlagPickUp(const char[] output, int caller, int activator, float delay)
+{
+	EmitSoundToAll(g_aSongs[GetRandomInt(0, sizeof(g_aSongs) - 1)], caller, SNDCHAN_STATIC, SNDLEVEL_SCREAMING);
+}
+
+static void OnFlagDrop(const char[] output, int caller, int activator, float delay)
+{
+	for (int i = 0; i < sizeof(g_aSongs); i++)
 	{
-		case TF_FLAGINFO_HOME:
-		{
-			RemoveEntity(flag);
-		}
-		case TF_FLAGINFO_STOLEN:
-		{
-			EmitSoundToAll(g_aSongs[GetRandomInt(0, sizeof(g_aSongs) - 1)], flag, SNDCHAN_STATIC, SNDLEVEL_SCREAMING);
-		}
-		case TF_FLAGINFO_DROPPED:
-		{
-			for (int i = 0; i < sizeof(g_aSongs); i++)
-			{
-				EmitSoundToAll(g_aSongs[i], flag, SNDCHAN_STATIC, SNDLEVEL_SCREAMING, SND_STOP);
-			}
-		}
+		EmitSoundToAll(g_aSongs[i], caller, SNDCHAN_STATIC, SNDLEVEL_SCREAMING, SND_STOP);
 	}
 }
 
@@ -153,7 +140,7 @@ static int FindRadioRecipient()
 	return client;
 }
 
-static bool IsEntityRadio(int entity)
+static bool IsJukeboxEntity(int entity)
 {
 	char szClassname[64];
 	if (!GetEntityClassname(entity, szClassname, sizeof(szClassname)) || !StrEqual(szClassname, "item_teamflag"))
