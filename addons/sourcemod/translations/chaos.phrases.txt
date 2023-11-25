@@ -700,6 +700,10 @@
 	{
 		"en"		"Infinite Dispenser Range"
 	}
+	"#Chaos_Effect_ChipDamage"
+	{
+		"en"		"Chip Damage"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
