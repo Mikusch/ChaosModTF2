@@ -1,6 +1,6 @@
 IncludeScript("chaos_util")
 
-const CHAOS_NAMESPACE = "CHAOS_"
+const CHAOS_SCOPE_PREFIX = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 
 ::Chaos_GameEventCallbacks <- {}
@@ -32,8 +32,8 @@ ChaosEffectScopes <- {}
 
 function Chaos_StartEffect(name, duration)
 {
-	local scopeName = CHAOS_NAMESPACE + name
-	if (scopeName in ChaosEffectScopes)
+	local scope_name = CHAOS_SCOPE_PREFIX + name
+	if (scope_name in ChaosEffectScopes)
 	{
 		printf(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...\n", name)
 		Chaos_EndEffect(name)
@@ -41,12 +41,12 @@ function Chaos_StartEffect(name, duration)
 
 	printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", name)
 
-	getroottable()[scopeName] <- {}
-	local scope = getroottable()[scopeName]
+	getroottable()[scope_name] <- {}
+	local scope = getroottable()[scope_name]
 
 	IncludeScript("chaos/effects/" + name.tolower(), scope)
 
-	scope.Chaos_EffectName <- CHAOS_NAMESPACE + name
+	scope.Chaos_EffectName <- CHAOS_SCOPE_PREFIX + name
 
 	local success = true
 	if ("ChaosEffect_OnStart" in scope)
@@ -56,18 +56,18 @@ function Chaos_StartEffect(name, duration)
 		success = true
 
 	if (success && duration > 0)
-		ChaosEffectScopes[scopeName] <- scope
+		ChaosEffectScopes[scope_name] <- scope
 
 	return success
 }
 
 function Chaos_UpdateEffect(name)
 {
-	local scopeName = CHAOS_NAMESPACE + name
-	if (!(scopeName in ChaosEffectScopes))
+	local scope_name = CHAOS_SCOPE_PREFIX + name
+	if (!(scope_name in ChaosEffectScopes))
 		return
 
-	local scope = ChaosEffectScopes[scopeName]
+	local scope = ChaosEffectScopes[scope_name]
 	if (scope == null)
 		return
 
@@ -81,14 +81,14 @@ function Chaos_EndEffect(name)
 {
 	printf(CHAOS_LOG_PREFIX + "Stopping effect '%s'\n", name)
 
-	local scopeName = CHAOS_NAMESPACE + name
-	if (!(scopeName in ChaosEffectScopes))
+	local scope_name = CHAOS_SCOPE_PREFIX + name
+	if (!(scope_name in ChaosEffectScopes))
 	{
 		printf(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!\n", name)
 		return false
 	}
 
-	local scope = ChaosEffectScopes[scopeName]
+	local scope = ChaosEffectScopes[scope_name]
 	if (scope == null)
 	{
 		printf(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!\n", name)
@@ -98,18 +98,21 @@ function Chaos_EndEffect(name)
 	if ("ChaosEffect_OnEnd" in scope)
 		scope.ChaosEffect_OnEnd()
 
-	if ("Chaos_GameEventCallbacks" in getroottable())
+	foreach (event, scopes in Chaos_GameEventCallbacks)
 	{
-		local gameEvents = getroottable()["Chaos_GameEventCallbacks"]
-		foreach (eventName, scopeList in gameEvents)
-		{
-			local scopeIndex = scopeList.find(scope)
-			if (scopeIndex != null)
-				scopeList.remove(scopeIndex)
-		}
+		local index = scopes.find(scope)
+		if (index != null)
+			scopes.remove(index)
 	}
 
-	delete ChaosEffectScopes[scopeName]
+	foreach (hook, scopes in Chaos_ScriptHookCallbacks)
+	{
+		local index = scopes.find(scope)
+		if (index != null)
+			scopes.remove(index)
+	}
+
+	delete ChaosEffectScopes[scope_name]
 
 	return true
 }
