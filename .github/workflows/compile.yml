@@ -1,0 +1,33 @@
+name: Compile
+
+on:
+  push:
+    branches:
+      - big-update
+  pull_request:
+    branches:
+      - big-update
+
+jobs:
+  compile:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sourcemod-version: [ '1.12' ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract plugin version
+        id: version
+        run: |
+          VERSION=$(grep -oP '#define PLUGIN_VERSION\s+"\K[^"]+' addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp)
+          echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Compile plugin
+        run: |
+          chmod +x sourcemod_dist/addons/sourcemod/scripting/spcomp
+          mkdir -p addons/sourcemod/plugins
+          ./sourcemod_dist/addons/sourcemod/scripting/spcomp -i $GITHUB_WORKSPACE/scripting/include -E addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp -o addons/sourcemod/plugins/${{ env.PLUGIN_NAME }}.smx

@@ -1,7 +1,4 @@
-name: Compile and Package
-
-env:
-  PLUGIN_NAME: chaos
+name: Setup
 
 on:
   push:
@@ -12,7 +9,7 @@ on:
       - big-update
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,27 +52,3 @@ jobs:
           curl -o scripting/include/tf_econ_data.inc https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc
           curl -o scripting/include/vscript.inc https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/main/scripting/include/vscript.inc
           curl -o scripting/include/morecolors.inc https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc
-
-      - name: Extract plugin version
-        id: version
-        run: |
-          VERSION=$(grep -oP '#define PLUGIN_VERSION\s+"\K[^"]+' addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp)
-          echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Compile plugin
-        run: |
-          chmod +x sourcemod_dist/addons/sourcemod/scripting/spcomp
-          mkdir -p addons/sourcemod/plugins
-          ./sourcemod_dist/addons/sourcemod/scripting/spcomp -i $GITHUB_WORKSPACE/scripting/include -E addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp -o addons/sourcemod/plugins/${{ env.PLUGIN_NAME }}.smx
-
-      - name: Create release archive
-        run: |
-          zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip addons/ scripts/ -x "addons/sourcemod/scripting/include/*"
-
-      - name: Create GitHub release
-        run: |
-          gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
-          gh config set git_protocol ssh
-          if ! gh release view ${{ env.PLUGIN_VERSION }} --repo ${{ github.repository }} > /dev/null 2>&1; then
-            gh release create ${{ env.PLUGIN_VERSION }} ./${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip -t "${{ env.PLUGIN_VERSION }}" --repo ${{ github.repository }} --draft
-          fi
