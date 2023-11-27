@@ -42,7 +42,11 @@ jobs:
         run: |
           mkdir -p scripting/include
           curl -o scripting/include/tf2attributes.inc https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc
-  
+
+      - name: List include files
+        run: |
+          ls -l scripting/include  
+
       - name: Extract plugin version
         id: version
         run: |
