@@ -40,9 +40,9 @@ jobs:
 
       - name: Download include files
         run: |
-          mkdir -p addons/sourcemod/scripting/include
-          curl -o addons/sourcemod/scripting/include/tf2attributes.inc https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc
-
+          mkdir -p scripting/include
+          curl -o scripting/include/tf2attributes.inc https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc
+  
       - name: Extract plugin version
         id: version
         run: |
