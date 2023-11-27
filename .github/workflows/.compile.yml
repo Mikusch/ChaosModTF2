@@ -42,7 +42,7 @@ jobs:
         run: |
           mkdir -p scripting/include
           curl -o scripting/include/tf2attributes.inc https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc
-          curl -o scripting/include/tf2items.inc https://github.com/asherkin/TF2Items/blob/master/pawn/tf2items.inc
+          curl -o scripting/include/tf2items.inc https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc
           curl -o scripting/include/tf2utils.inc https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc
           curl -o scripting/include/tf_econ_data.inc https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc
           curl -o scripting/include/vscript.inc https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/main/scripting/include/vscript.inc
