@@ -47,10 +47,6 @@ jobs:
           curl -o scripting/include/tf_econ_data.inc https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc
           curl -o scripting/include/vscript.inc https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/main/scripting/include/vscript.inc
           curl -o scripting/include/morecolors.inc https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc
- 
-      - name: List include files
-        run: |
-          ls -l scripting/include  
 
       - name: Extract plugin version
         id: version
@@ -67,10 +63,6 @@ jobs:
       - name: Create release archive
         run: |
           zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip addons/ scripts/ -x "addons/sourcemod/scripting/include/*"
-
-      - name: Print contents of the zip file
-        run: |
-          unzip -l ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
 
       - name: Create GitHub release
         run: |
