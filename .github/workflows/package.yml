@@ -1,16 +1,13 @@
 name: Package
 
 on:
-  push:
-    branches:
-      - big-update
-  pull_request:
-    branches:
-      - big-update
+  workflow_run:
+    workflows: [ "Compile" ]
+    types:
+      - completed
 
 jobs:
   package:
-    needs: compile
     runs-on: ubuntu-latest
     strategy:
       matrix:

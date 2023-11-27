@@ -1,16 +1,13 @@
 name: Compile
 
 on:
-  push:
-    branches:
-      - big-update
-  pull_request:
-    branches:
-      - big-update
+  workflow_run:
+    workflows: [ "Setup" ]
+    types:
+      - completed
 
 jobs:
   compile:
-    needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
