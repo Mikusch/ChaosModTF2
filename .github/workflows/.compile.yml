@@ -72,10 +72,10 @@ jobs:
         run: |
           unzip -l ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip
 
-      # - name: Create GitHub release
-      #   run: |
-      #     gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
-      #     gh config set git_protocol ssh
-      #     if ! gh release view ${{ env.PLUGIN_VERSION }} --repo ${{ github.repository }} > /dev/null 2>&1; then
-      #       gh release create ${{ env.PLUGIN_VERSION }} ./${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip -t "${{ env.PLUGIN_VERSION }}" --repo ${{ github.repository }}
-      #     fi
+      - name: Create GitHub release
+        run: |
+          gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+          gh config set git_protocol ssh
+          if ! gh release view ${{ env.PLUGIN_VERSION }} --repo ${{ github.repository }} > /dev/null 2>&1; then
+            gh release create ${{ env.PLUGIN_VERSION }} ./${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip -t "${{ env.PLUGIN_VERSION }}" --repo ${{ github.repository }} --draft
+          fi
