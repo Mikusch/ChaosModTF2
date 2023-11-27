@@ -66,7 +66,7 @@ jobs:
   
       - name: Create release archive
         run: |
-          zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip addons/ -x "addons/sourcemod/scripting/include/*"
+          zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip addons/ scripts/ -x "addons/sourcemod/scripting/include/*"
 
       - name: Print contents of the zip file
         run: |
