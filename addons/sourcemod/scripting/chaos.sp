@@ -13,6 +13,8 @@
 #include <vscript>
 #include <morecolors>
 
+#define PLUGIN_VERSION	"1.5.0"
+
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
@@ -96,7 +98,7 @@ public Plugin myinfo =
 	name = "[TF2] Chaos Mod",
 	author = "Mikusch",
 	description = "Chaos Mod for Team Fortress 2, heavily inspired by Chaos Mod V.",
-	version = "1.5.0",
+	version = PLUGIN_VERSION,
 	url = "https://github.com/Mikusch/ChaosModTF2"
 }
 
@@ -111,6 +113,7 @@ public void OnPluginStart()
 	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
 	
+	CreateConVar("sm_chaos_version", PLUGIN_VERSION, "Plugin version.", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.");
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
