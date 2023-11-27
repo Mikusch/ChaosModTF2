@@ -57,8 +57,8 @@ jobs:
         run: |
           chmod +x sourcemod_dist/addons/sourcemod/scripting/spcomp
           mkdir -p addons/sourcemod/plugins
-          ./sourcemod_dist/addons/sourcemod/scripting/spcomp -E addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp -o addons/sourcemod/plugins/${{ env.PLUGIN_NAME }}.smx
-
+          ./sourcemod_dist/addons/sourcemod/scripting/spcomp -i $GITHUB_WORKSPACE/scripting/include -E addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp -o addons/sourcemod/plugins/${{ env.PLUGIN_NAME }}.smx
+  
       - name: Create release archive
         run: |
           zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip addons/ -x "addons/sourcemod/scripting/include/*"
