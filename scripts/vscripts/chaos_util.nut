@@ -25,6 +25,9 @@ const DAMAGE_AIM = 3
 const TF_DEATHFLAG_DEADRINGER = 32
 const FLT_MAX = 0x7F7FFFFF
 
+::MASK_SOLID <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_MONSTER | CONTENTS_GRATE)
+::MASK_PLAYERSOLID <- (MASK_SOLID | CONTENTS_PLAYERCLIP)
+
 ::worldspawn <- Entities.FindByClassname(null, "worldspawn")
 ::gamerules <- Entities.FindByClassname(null, "tf_gamerules")
 
@@ -46,7 +49,6 @@ CTFBot.IsAlive <- function()
 	if (team == TF_TEAM_BLUE)
 		return TF_TEAM_RED
 
-	// no enemy team
 	return team
 }
 
@@ -109,4 +111,43 @@ CTFBot.IsAlive <- function()
 		arr[i] = arr[j]
 		arr[j] = temp
 	}
+}
+
+::DebugDrawCross3D <- function(position, mins, maxs, r, g, b, no_depth_test, duration)
+{
+	local start = mins + position
+	local end = maxs + position
+	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
+
+	start.x += (maxs.x - mins.x)
+	end.x -= (maxs.x - mins.x)
+	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
+
+	start.y += (maxs.y - mins.y)
+	end.y -= (maxs.y - mins.y)
+	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
+
+	start.x -= (maxs.x - mins.x)
+	end.x += (maxs.x - mins.x)
+	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
+}
+
+::IsSpaceToSpawnHere <- function(where, hullmin, hullmax)
+{
+	local trace =
+	{
+		start = where,
+		end = where,
+		hullmin = hullmin,
+		hullmax = hullmax,
+		mask = MASK_PLAYERSOLID
+	}
+	TraceHull(trace)
+
+	if (Convars.GetBool("tf_debug_placement_failure") && trace.fraction < 1.0)
+	{
+		DebugDrawCross3D(where, 5.0, 255, 100, 0, true, 99999.9)
+	}
+
+	return trace.fraction >= 1.0
 }

@@ -31,21 +31,13 @@ function ChaosEffect_OnStart()
 		while (!spawned)
 		{
 			local area = areas[RandomInt(0, areas.len() - 1)]
-			local origin = area.FindRandomSpot()
+			local where = area.FindRandomSpot()
 
-			local trace =
-			{
-				start = origin,
-				end = origin,
-				hullmin = hullmin,
-				hullmax = hullmax
-			}
-
-			if (TraceHull(trace) && !trace.hit)
+			if (IsSpaceToSpawnHere(where, hullmin, hullmax))
 			{
 				local gargoyle = Entities.CreateByClassname("tf_halloween_gift_pickup")
 				NetProps.SetPropEntity(gargoyle, "m_hTargetPlayer", player)
-				gargoyle.KeyValueFromVector("origin", origin)
+				gargoyle.KeyValueFromVector("origin", where)
 				gargoyle.DispatchSpawn()
 
 				spawned = true
