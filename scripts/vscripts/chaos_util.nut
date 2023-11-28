@@ -113,23 +113,11 @@ CTFBot.IsAlive <- function()
 	}
 }
 
-::DebugDrawCross3D <- function(position, mins, maxs, r, g, b, no_depth_test, duration)
+::DebugDrawCross3D <- function(position, size, r, g, b, no_depth_test, duration)
 {
-	local start = mins + position
-	local end = maxs + position
-	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
-
-	start.x += (maxs.x - mins.x)
-	end.x -= (maxs.x - mins.x)
-	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
-
-	start.y += (maxs.y - mins.y)
-	end.y -= (maxs.y - mins.y)
-	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
-
-	start.x -= (maxs.x - mins.x)
-	end.x += (maxs.x - mins.x)
-	DebugDrawLine(start,end, r, g, b, no_depth_test, duration)
+	DebugDrawLine(position + Vector(size, 0, 0), position - Vector(size, 0, 0), r, g, b, no_depth_test, duration)
+	DebugDrawLine(position + Vector(0, size, 0), position - Vector(0, size, 0), r, g, b, no_depth_test, duration)
+	DebugDrawLine(position + Vector(0, 0, size), position - Vector(0, 0, size), r, g, b, no_depth_test, duration)
 }
 
 ::IsSpaceToSpawnHere <- function(where, hullmin, hullmax)

@@ -11,10 +11,7 @@ function ChaosEffect_OnStart()
 	NavMesh.GetAllAreas(areas)
 
 	areas = areas.values()
-	areas = areas.filter(function(index, area)
-	{
-		return area.IsValidForWanderingPopulation() && area.IsReachableByTeam(TF_TEAM_RED) && area.IsReachableByTeam(TF_TEAM_BLUE)
-	})
+	areas = areas.filter(function(index, area) { return area.IsValidForWanderingPopulation() })
 
 	local prop = SpawnEntityFromTable("prop_dynamic", { model = TF_GIFT_MODEL })
 	local hullmin = prop.GetBoundingMins()
