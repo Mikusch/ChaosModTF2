@@ -1,4 +1,4 @@
-::ROOT <- getroottable();
+::ROOT <- getroottable()
 if (!("ConstantNamingConvention" in ROOT))
 {
 	foreach (a, b in Constants)
