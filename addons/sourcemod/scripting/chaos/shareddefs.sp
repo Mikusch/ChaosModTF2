@@ -18,10 +18,6 @@
 
 #define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
 
-#define TF_FLAGINFO_HOME		0
-#define TF_FLAGINFO_STOLEN		(1<<0)
-#define TF_FLAGINFO_DROPPED		(1<<1)
-
 enum HudNotification_t
 {
 	HUD_NOTIFY_YOUR_FLAG_TAKEN,
