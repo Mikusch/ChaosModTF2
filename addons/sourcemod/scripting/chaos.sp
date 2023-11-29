@@ -67,7 +67,6 @@ ProgressBar g_aTimerBarConfig;
 #include "chaos/effects/identitytheft.sp"
 #include "chaos/effects/invertconvar.sp"
 #include "chaos/effects/jumpjump.sp"
-#include "chaos/effects/jukebox.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/loudness.sp"
 #include "chaos/effects/manninthemachine.sp"

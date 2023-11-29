@@ -656,9 +656,9 @@
 	{
 		"en"		"Randomize Weapon Order"
 	}
-	"#Chaos_Effect_Jukebox"
+	"#Chaos_Effect_PlayDevCommentary"
 	{
-		"en"		"Spawn Jukebox"
+		"en"		"Play Random Developer Commentary"
 	}
 	"#Chaos_Effect_IncreasedJumpHeight"
 	{
