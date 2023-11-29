@@ -25,8 +25,26 @@ const DAMAGE_AIM = 3
 const TF_DEATHFLAG_DEADRINGER = 32
 const FLT_MAX = 0x7F7FFFFF
 
+::PLAYER_CLASS_NAMES <-
+[
+	"Undefined",
+	"Scout",
+	"Sniper",
+	"Soldier",
+	"Demoman",
+	"Medic",
+	"Heavy",
+	"Pyro",
+	"Spy",
+	"Engineer",
+	"Civilian",
+	"",
+	"Random"
+]
+
 ::MASK_SOLID <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_MONSTER | CONTENTS_GRATE)
 ::MASK_PLAYERSOLID <- (MASK_SOLID | CONTENTS_PLAYERCLIP)
+::MASK_SOLID_BRUSHONLY <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_GRATE)
 
 ::worldspawn <- Entities.FindByClassname(null, "worldspawn")
 ::gamerules <- Entities.FindByClassname(null, "tf_gamerules")

@@ -6,6 +6,6 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 		
-		player.Taunt(Constants.FTaunts.TAUNT_BASE_WEAPON, 0)
+		player.Taunt(TAUNT_BASE_WEAPON, 0)
 	}
 }

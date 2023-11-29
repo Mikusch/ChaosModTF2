@@ -6,13 +6,13 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 		
-		if (player.GetPlayerClass() == Constants.ETFClass.TF_CLASS_UNDEFINED)
+		if (player.GetPlayerClass() == TF_CLASS_UNDEFINED)
 			continue
 		
 		local newClass = null
 		do
 		{
-			newClass = RandomInt(Constants.ETFClass.TF_CLASS_SCOUT, Constants.ETFClass.TF_CLASS_ENGINEER)
+			newClass = RandomInt(TF_CLASS_SCOUT, TF_CLASS_ENGINEER)
 		}
 		while (player.GetPlayerClass() == newClass)
 		

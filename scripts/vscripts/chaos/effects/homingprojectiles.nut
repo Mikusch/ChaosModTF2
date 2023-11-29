@@ -124,7 +124,7 @@ function ChaosEffect_OnEnd()
 {
 	if (distance > min_distance || victim.GetTeam() == projectile.GetTeam() || !victim.IsAlive())
 		return false
-	if (victim.IsPlayer() && (victim.IsInvulnerable() || victim.InCond(Constants.ETFCond.TF_COND_HALLOWEEN_GHOST_MODE) || victim.IsStealthed() || victim.IsFullyInvisible() || victim.GetDisguiseTarget() != null))
+	if (victim.IsPlayer() && (victim.IsInvulnerable() || victim.InCond(TF_COND_HALLOWEEN_GHOST_MODE) || victim.IsStealthed() || victim.IsFullyInvisible() || victim.GetDisguiseTarget() != null))
 		return false
 
 	return true

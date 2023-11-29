@@ -37,7 +37,7 @@ function ChaosEffect_Update()
 			player.GetScriptScope().prevLastFireTime <- lastFireTime
 		}
 
-		if (player.GetPlayerClass() == Constants.ETFClass.TF_CLASS_PYRO && weapon != null && weapon.GetSlot() == TF_WPN_TYPE_PRIMARY && NetProps.GetPropInt(weapon, "m_iWeaponState") != FT_STATE_IDLE)
+		if (player.GetPlayerClass() == TF_CLASS_PYRO && weapon != null && weapon.GetSlot() == TF_WPN_TYPE_PRIMARY && NetProps.GetPropInt(weapon, "m_iWeaponState") != FT_STATE_IDLE)
 		{
 			player.ViewPunch(QAngle(-1, RandomInt(-1.5, 1.5), 0))
 		}
