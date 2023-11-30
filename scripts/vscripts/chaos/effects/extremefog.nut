@@ -13,7 +13,7 @@ function ChaosEffect_OnStart()
 		foglerptime = 1.5,
 		fogcolor = Vector(200, 200, 200),
 		fogblend = 0,
-		farz = 8400
+		farz = 8192
 	})
 
 	SetFogForAllPlayers(custom_fog_controller)
