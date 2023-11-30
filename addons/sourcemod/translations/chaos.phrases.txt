@@ -280,9 +280,9 @@
 	{
 		"en"		"Disable Random Crits"
 	}
-	"#Chaos_Effect_Mannpower"
+	"#Chaos_Effect_GrapplingHooks"
 	{
-		"en"		"Mannpower At Home"
+		"en"		"Enable Grappling Hooks"
 	}
 	"#Chaos_Effect_Stealthed"
 	{
