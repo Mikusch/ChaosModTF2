@@ -486,7 +486,7 @@
 	}
 	"#Chaos_Effect_GiveTopNotch"
 	{
-		"en"		"I'm The Real Notch"
+		"en"		"Give Everyone A Top Notch"
 	}
 	"#Chaos_Effect_FlipViewModels"
 	{
@@ -598,7 +598,7 @@
 	}
 	"#Chaos_Effect_Overtime"
 	{
-		"en"		"OVERTIME?!"
+		"en"		"Overtime"
 	}
 	"#Chaos_Effect_ImmuneToPushback"
 	{
@@ -670,7 +670,7 @@
 	}
 	"#Chaos_Effect_SpawnGargoyle"
 	{
-		"en"		"Spawn Gargoyle"
+		"en"		"Spawn Soul Gargoyle"
 	}
 	"#Chaos_Effect_AlwaysGib"
 	{
@@ -690,7 +690,7 @@
 	}
 	"#Chaos_Effect_FastProjectiles"
 	{
-		"en"		"Fast Projectiles"
+		"en"		"Speedy Projectiles"
 	}
 	"#Chaos_Effect_IncreasedSentryRange"
 	{
