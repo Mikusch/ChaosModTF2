@@ -262,7 +262,7 @@
 	}
 	"#Chaos_Effect_HitSelfOnMiss"
 	{
-		"en"		"All Players Are Idiots"
+		"en"		"On Miss: Hit yourself. Idiot."
 	}
 	"#Chaos_Effect_DamageCausesAirblast"
 	{

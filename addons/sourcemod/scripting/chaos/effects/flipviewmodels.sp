@@ -11,10 +11,10 @@ public bool FlipViewModels_OnStart(ChaosEffect effect)
 		for (int i = 0; i < GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons"); i++)
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-			if (weapon != -1)
-			{
-				SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", true);
-			}
+			if (weapon == -1)
+				continue;
+			
+			SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", true);
 		}
 		
 		SDKHook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
@@ -38,10 +38,10 @@ public void FlipViewModels_OnEnd(ChaosEffect effect)
 		for (int i = 0; i < GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons"); i++)
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-			if (weapon != -1)
-			{
-				SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", false);
-			}
+			if (weapon == -1)
+				continue;
+			
+			SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", false);
 		}
 		
 		SDKUnhook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);

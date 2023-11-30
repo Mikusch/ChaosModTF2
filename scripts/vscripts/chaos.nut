@@ -39,8 +39,6 @@ function Chaos_StartEffect(name, duration)
 		Chaos_EndEffect(name)
 	}
 
-	printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", name)
-
 	getroottable()[scope_name] <- {}
 	local scope = getroottable()[scope_name]
 
@@ -55,8 +53,17 @@ function Chaos_StartEffect(name, duration)
 	if (success == null)
 		success = true
 
-	if (success && duration > 0)
-		ChaosEffectScopes[scope_name] <- scope
+	if (success)
+	{
+		printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", name)
+
+		if (duration > 0)
+			ChaosEffectScopes[scope_name] <- scope
+	}
+	else
+	{
+		printf(CHAOS_LOG_PREFIX + "Failed to start effect '%s'\n", name)
+	}
 
 	return success
 }
