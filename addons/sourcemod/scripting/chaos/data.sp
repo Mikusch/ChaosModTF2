@@ -124,8 +124,6 @@ enum struct ChaosEffect
 					if (effect.tags.GetString(j, tag, sizeof(tag)) && this.tags.FindString(tag) != -1)
 						return false;
 				}
-				
-				return false;
 			}
 		}
 		
