@@ -115,13 +115,13 @@ public void OnPluginStart()
 	
 	CreateConVar("sm_chaos_version", PLUGIN_VERSION, "Plugin version.", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.");
-	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
-	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
-	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval.");
-	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called.");
+	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation, in seconds.");
+	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation, in seconds.");
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval, in percent.");
+	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called, in seconds.");
 	
-	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect to happen.");
-	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to run.");
+	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
+	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to start.");
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
@@ -786,7 +786,7 @@ void DisplayTimerBar()
 
 void DisplayActiveEffects()
 {
-	// Sort effects based on their cooldown
+	// Sort effects by activation time
 	g_hEffects.SortCustom(SortFuncADTArray_SortChaosEffectsByActivationTime);
 	
 	for (int client = 1; client <= MaxClients; client++)
