@@ -5,7 +5,7 @@ function ChaosEffect_Update()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
+
 		NetProps.SetPropBool(player, "m_bGlowEnabled", true)
 	}
 }
@@ -17,7 +17,7 @@ function ChaosEffect_OnEnd()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
+
 		NetProps.SetPropBool(player, "m_bGlowEnabled", false)
 	}
 }

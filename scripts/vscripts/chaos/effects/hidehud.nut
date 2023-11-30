@@ -5,7 +5,7 @@ function ChaosEffect_Update()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
+
 		player.AddHudHideFlags(HIDEHUD_HEALTH | HIDEHUD_MISCSTATUS | HIDEHUD_CROSSHAIR)
 	}
 }

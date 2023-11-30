@@ -38,7 +38,7 @@ function ChaosEffect_OnStart()
 			{
 				NetProps.SetPropEntity(gargoyle, "m_hTargetPlayer", player)
 				gargoyle.SetAbsOrigin(where)
-				break;
+				break
 			}
 
 			attempts++

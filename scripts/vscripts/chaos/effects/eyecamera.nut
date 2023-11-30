@@ -6,11 +6,10 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 
-		player.SetForceLocalDraw(true)
-
 		if (!player.IsAlive())
 			continue
 
+		player.SetForceLocalDraw(true)
 		player.ValidateScriptScope()
 		player.GetScriptScope().viewcontrol <- CreateViewControl(player)
 	}
@@ -25,24 +24,17 @@ function ChaosEffect_OnEnd()
 			continue
 
 		player.SetForceLocalDraw(false)
-
 		RemoveViewControl(player)
 	}
 }
 
 function CreateViewControl(player)
 {
-	local viewcontrol = SpawnEntityFromTable("point_viewcontrol", 
-	{
-		origin = player.EyePosition(),
-		angles = player.EyeAngles()
-	})
-	
+	local viewcontrol = SpawnEntityFromTable("point_viewcontrol", { origin = player.EyePosition(), angles = player.EyeAngles() })
 	EntFireByHandle(viewcontrol, "SetParent", "!activator", -1, player, viewcontrol)
 	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", -1, null, null)
 	EntFireByHandle(viewcontrol, "Enable", "!activator", -1, player, viewcontrol)
 	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", -1, player, null)
-
 	return viewcontrol
 }
 
@@ -57,18 +49,18 @@ function PostViewControlEnable()
 
 function RemoveViewControl(player)
 {
-	player.ValidateScriptScope()
-	if ("viewcontrol" in player.GetScriptScope())
-	{
-		local viewcontrol = player.GetScriptScope().viewcontrol
-		if (viewcontrol != null && viewcontrol.IsValid())
-		{
-			EntFireByHandle(player, "RunScriptCode", "self.ValidateScriptScope(); self.GetScriptScope().lifeState <- NetProps.GetPropInt(self, `m_lifeState`); NetProps.SetPropInt(self, `m_lifeState`, 0)", -1, null, null)
-			EntFireByHandle(viewcontrol, "Disable", null, -1, player, player)
-			EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, self.GetScriptScope().lifeState)", -1, null, null)
-			EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
-		}
-	}
+	if (!("viewcontrol" in player.GetScriptScope()))
+		return
+
+	local viewcontrol = player.GetScriptScope().viewcontrol
+	if (viewcontrol == null || !viewcontrol.IsValid())
+		return
+
+	EntFireByHandle(player, "RunScriptCode", "self.GetScriptScope().lifeState <- NetProps.GetPropInt(self, `m_lifeState`)", -1, null, null)
+	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, 0)", -1, null, null)
+	EntFireByHandle(viewcontrol, "Disable", null, -1, player, player)
+	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, self.GetScriptScope().lifeState)", -1, null, null)
+	EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
 }
 
 function Chaos_OnGameEvent_player_spawn(params)
@@ -77,11 +69,14 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
+	if (params.team == TEAM_UNASSIGNED)
+	{
+		player.ValidateScriptScope()
+		return
+	}
+
 	player.SetForceLocalDraw(true)
-
 	RemoveViewControl(player)
-
-	player.ValidateScriptScope()
 	player.GetScriptScope().viewcontrol <- CreateViewControl(player)
 }
 

@@ -1,33 +1,33 @@
 const SF_FOG_MASTER = 0x0001
 
-local customFogController = null
+local custom_fog_controller = null
 
 function ChaosEffect_OnStart()
 {
-	customFogController = SpawnEntityFromTable("env_fog_controller",
+	custom_fog_controller = SpawnEntityFromTable("env_fog_controller",
 	{
-		fogenable		= 1
-		fogstart		= 5
-		fogend			= 200
-		fogmaxdensity	= 1
-		foglerptime		= 1.5
-		fogcolor		= Vector(200, 200, 200)
-		fogblend		= 0
-		farz			= 8400
+		fogenable = 1,
+		fogstart = 5,
+		fogend = 200,
+		fogmaxdensity = 1,
+		foglerptime = 1.5,
+		fogcolor = Vector(200, 200, 200),
+		fogblend = 0,
+		farz = 8400
 	})
 
-	SetFogForAllPlayers(customFogController)
+	SetFogForAllPlayers(custom_fog_controller)
 }
 
 function ChaosEffect_Update()
 {
-	SetFogForAllPlayers(customFogController)
+	SetFogForAllPlayers(custom_fog_controller)
 }
 
 function ChaosEffect_OnEnd()
 {
-	if (customFogController != null && customFogController.IsValid())
-		customFogController.Destroy()
+	if (custom_fog_controller != null && custom_fog_controller.IsValid())
+		custom_fog_controller.Destroy()
 	
 	local controller = FindFogController(true)
 	if (controller != null)
@@ -41,7 +41,7 @@ function FindFogController(master = false)
 	local controller = null
 	while (controller = Entities.FindByClassname(controller, "env_fog_controller"))
 	{
-		if (controller == customFogController)
+		if (controller == custom_fog_controller)
 			continue
 
 		if (!master && NetProps.GetPropInt(controller, "m_spawnflags") & SF_FOG_MASTER)

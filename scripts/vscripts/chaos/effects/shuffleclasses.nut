@@ -5,18 +5,18 @@ function ChaosEffect_OnStart()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
+
 		if (player.GetPlayerClass() == TF_CLASS_UNDEFINED)
 			continue
-		
-		local newClass = null
+
+		local new_class = null
 		do
 		{
-			newClass = RandomInt(TF_CLASS_SCOUT, TF_CLASS_ENGINEER)
+			new_class = RandomInt(TF_CLASS_SCOUT, TF_CLASS_ENGINEER)
 		}
-		while (player.GetPlayerClass() == newClass)
-		
-		player.SetPlayerClass(newClass)
+		while (player.GetPlayerClass() == new_class)
+
+		player.SetPlayerClass(new_class)
 		player.Regenerate(true)
 	}
 }
