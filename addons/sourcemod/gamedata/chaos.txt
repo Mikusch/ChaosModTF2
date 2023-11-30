@@ -10,12 +10,6 @@
 				"linux"		"@_ZN9CTFPlayer24PostInventoryApplicationEv"
 				"windows"	"\x55\x8B\xEC\x51\x53\x8B\xD9\x56\x57\x8D\x8B\xE0\x1A\x00\x00"
 			}
-			"CTFPlayer::TeamFortress_CalculateMaxSpeed"
-			{
-				"library"	"server"
-				"linux"		"@_ZNK9CTFPlayer30TeamFortress_CalculateMaxSpeedEb"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x83\x3D\x2A\x2A\x2A\x2A\x00\x56"
-			}
 			"CTFPlayer::GetMaxHealthForBuffing"
 			{
 				"library"	"server"
@@ -43,6 +37,12 @@
 				"linux"		"493"
 				"windows"	"486"
 			}
+			"CBaseCombatWeapon::CanDeploy"
+			{
+				"library"	"server"
+				"linux"		"266"
+				"windows"	"260"
+			}
 			"CBaseCombatWeapon::WeaponSound"
 			{
 				"library"	"server"
@@ -52,20 +52,6 @@
 		}
 		"Functions"
 		{
-			"CTFPlayer::TeamFortress_CalculateMaxSpeed"
-			{
-				"signature"	"CTFPlayer::TeamFortress_CalculateMaxSpeed"
-				"callconv"	"thiscall"
-				"return"	"float"
-				"this"		"entity"
-				"arguments"
-				{
-					"bIgnoreSpecialAbility"
-					{
-						"type"	"bool"
-					}
-				}
-			}
 			"CTFPlayer::GetMaxHealthForBuffing"
 			{
 				"signature"	"CTFPlayer::GetMaxHealthForBuffing"

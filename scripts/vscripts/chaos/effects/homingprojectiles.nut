@@ -76,6 +76,13 @@ function ChaosEffect_OnEnd()
 
 ::IsLookingAt <- function(projectile, new_target)
 {
+	local launcher = NetProps.GetPropEntity(projectile, "m_hOriginalLauncher")
+	if (launcher == null)
+		return false
+
+	if (launcher.GetClassname() == "tf_point_weapon_mimic")
+		return true
+
 	local target_origin = new_target.GetOrigin()
 	local projectile_owner = projectile.GetOwner()
 	local projectile_owner_pos = projectile_owner.EyePosition()
@@ -117,7 +124,7 @@ function ChaosEffect_OnEnd()
 {
 	if (distance > min_distance || victim.GetTeam() == projectile.GetTeam() || !victim.IsAlive())
 		return false
-	if (victim.IsPlayer() && (victim.IsInvulnerable() || victim.InCond(Constants.ETFCond.TF_COND_HALLOWEEN_GHOST_MODE) || victim.IsStealthed() || victim.IsFullyInvisible() || victim.GetDisguiseTarget() != null))
+	if (victim.IsPlayer() && (victim.IsInvulnerable() || victim.InCond(TF_COND_HALLOWEEN_GHOST_MODE) || victim.IsStealthed() || victim.IsFullyInvisible() || victim.GetDisguiseTarget() != null))
 		return false
 
 	return true

@@ -1,3 +1,14 @@
+::ROOT <- getroottable()
+if (!("ConstantNamingConvention" in ROOT))
+{
+	foreach (a, b in Constants)
+		foreach (k, v in b)
+			if (v == null)
+				ROOT[k] <- 0
+			else
+				ROOT[k] <- v
+}
+
 // m_lifeState values
 const LIFE_ALIVE = 0
 const LIFE_DYING = 1
@@ -12,7 +23,29 @@ const DAMAGE_YES = 2
 const DAMAGE_AIM = 3
 
 const TF_DEATHFLAG_DEADRINGER = 32
+const CHAN_STATIC = 6
 const FLT_MAX = 0x7F7FFFFF
+
+::PLAYER_CLASS_NAMES <-
+[
+	"Undefined",
+	"Scout",
+	"Sniper",
+	"Soldier",
+	"Demoman",
+	"Medic",
+	"Heavy",
+	"Pyro",
+	"Spy",
+	"Engineer",
+	"Civilian",
+	"",
+	"Random"
+]
+
+::MASK_SOLID <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_MONSTER | CONTENTS_GRATE)
+::MASK_PLAYERSOLID <- (MASK_SOLID | CONTENTS_PLAYERCLIP)
+::MASK_SOLID_BRUSHONLY <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_GRATE)
 
 ::worldspawn <- Entities.FindByClassname(null, "worldspawn")
 ::gamerules <- Entities.FindByClassname(null, "tf_gamerules")
@@ -29,13 +62,12 @@ CTFBot.IsAlive <- function()
 
 ::GetEnemyTeam <- function(team)
 {
-	if (team == Constants.ETFTeam.TF_TEAM_RED)
-		return Constants.ETFTeam.TF_TEAM_BLUE
+	if (team == TF_TEAM_RED)
+		return TF_TEAM_BLUE
 
-	if (team == Constants.ETFTeam.TF_TEAM_BLUE)
-		return Constants.ETFTeam.TF_TEAM_RED
+	if (team == TF_TEAM_BLUE)
+		return TF_TEAM_RED
 
-	// no enemy team
 	return team
 }
 
@@ -86,4 +118,43 @@ CTFBot.IsAlive <- function()
 	}
 
 	return QAngle(pitch, yaw, 0.0)
+}
+
+::ShuffleArray <- function(arr)
+{
+	local i = arr.len()
+	while (i > 0)
+	{
+		local j = RandomInt(0, --i)
+		local temp = arr[i]
+		arr[i] = arr[j]
+		arr[j] = temp
+	}
+}
+
+::DebugDrawCross3D <- function(position, size, r, g, b, no_depth_test, duration)
+{
+	DebugDrawLine(position + Vector(size, 0, 0), position - Vector(size, 0, 0), r, g, b, no_depth_test, duration)
+	DebugDrawLine(position + Vector(0, size, 0), position - Vector(0, size, 0), r, g, b, no_depth_test, duration)
+	DebugDrawLine(position + Vector(0, 0, size), position - Vector(0, 0, size), r, g, b, no_depth_test, duration)
+}
+
+::IsSpaceToSpawnHere <- function(where, hullmin, hullmax)
+{
+	local trace =
+	{
+		start = where,
+		end = where,
+		hullmin = hullmin,
+		hullmax = hullmax,
+		mask = MASK_PLAYERSOLID
+	}
+	TraceHull(trace)
+
+	if (Convars.GetBool("tf_debug_placement_failure") && trace.fraction < 1.0)
+	{
+		DebugDrawCross3D(where, 5.0, 255, 100, 0, true, 99999.9)
+	}
+
+	return trace.fraction >= 1.0
 }

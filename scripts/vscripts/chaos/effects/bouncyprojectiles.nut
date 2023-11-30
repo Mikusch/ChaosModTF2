@@ -13,7 +13,7 @@ function ChaosEffect_Update()
 		{
 			start = projectile.GetOrigin(),
 			end = projectile.GetOrigin() + (direction * 12.0),
-			mask = (Constants.FContents.CONTENTS_SOLID | Constants.FContents.CONTENTS_WINDOW | Constants.FContents.CONTENTS_GRATE | Constants.FContents.CONTENTS_MOVEABLE),
+			mask = MASK_SOLID_BRUSHONLY,
 			ignore = projectile
 		}
 

@@ -105,7 +105,7 @@
 	}
 	"#Chaos_Effect_RemoveWearables"
 	{
-		"en"		"Remove Everyone's Cosmetics"
+		"en"		"No Cosmetics"
 	}
 	"#Chaos_Effect_SquidFootsteps"
 	{
@@ -133,11 +133,11 @@
 	}
 	"#Chaos_Effect_SpeedLimit"
 	{
-		"en"		"100 HU/s Speed Limit"
+		"en"		"Speed Limit"
 	}
-	"#Chaos_Effect_MaxSpeed"
+	"#Chaos_Effect_SuperSpeed"
 	{
-		"en"		"No Speed Limit"
+		"en"		"Super Speed"
 	}
 	"#Chaos_Effect_ThirdPerson"
 	{
@@ -262,7 +262,7 @@
 	}
 	"#Chaos_Effect_HitSelfOnMiss"
 	{
-		"en"		"All Players Are Idiots"
+		"en"		"On Miss: Hit yourself. Idiot."
 	}
 	"#Chaos_Effect_DamageCausesAirblast"
 	{
@@ -280,17 +280,17 @@
 	{
 		"en"		"Disable Random Crits"
 	}
-	"#Chaos_Effect_Mannpower"
+	"#Chaos_Effect_GrapplingHooks"
 	{
-		"en"		"Mannpower At Home"
+		"en"		"Enable Grappling Hooks"
 	}
 	"#Chaos_Effect_Stealthed"
 	{
 		"en"		"All Players Are Invisible"
 	}
-	"#Chaos_Effect_BalloonHeads"
+	"#Chaos_Effect_BigHeads"
 	{
-		"en"		"Balloon Heads"
+		"en"		"Big Heads"
 	}
 	"#Chaos_Effect_ExtremeFog"
 	{
@@ -346,7 +346,7 @@
 	}
 	"#Chaos_Effect_ExtraAirDashes"
 	{
-		"en"		"Infinite Scout Jumps"
+		"en"		"Extra Scout Jumps"
 	}
 	"#Chaos_Effect_TallMercs"
 	{
@@ -418,7 +418,7 @@
 	}
 	"#Chaos_Effect_DisableRespawnTimes"
 	{
-		"en"		"Disable Respawn Times"
+		"en"		"No Respawn Times"
 	}
 	"#Chaos_Effect_IncreasedSpread"
 	{
@@ -456,9 +456,9 @@
 	{
 		"en"		"Regenerate All Players"
 	}
-	"#Chaos_Effect_EnableTriggers"
+	"#Chaos_Effect_MannInTheMachine"
 	{
-		"en"		"Enable All Triggers"
+		"en"		"Mann In The Machine"
 	}
 	"#Chaos_Effect_Headshots"
 	{
@@ -486,7 +486,7 @@
 	}
 	"#Chaos_Effect_GiveTopNotch"
 	{
-		"en"		"I'm The Real Notch"
+		"en"		"Give Everyone A Top Notch"
 	}
 	"#Chaos_Effect_FlipViewModels"
 	{
@@ -536,13 +536,13 @@
 	{
 		"en"		"Help My W Key Is Stuck"
 	}
-	"#Chaos_Effect_2xGestureSpeed"
+	"#Chaos_Effect_IncreasedGestureSpeed"
 	{
-		"en"		"2x Gesture Speed"
+		"en"		"2x Taunt Speed"
 	}
-	"#Chaos_Effect_0.5xGestureSpeed"
+	"#Chaos_Effect_DecreasedGestureSpeed"
 	{
-		"en"		"0.5x Gesture Speed"
+		"en"		"0.5x Taunt Speed"
 	}
 	"#Chaos_Effect_SpawnBirds"
 	{
@@ -651,6 +651,58 @@
 	"#Chaos_Effect_HomingProjectiles"
 	{
 		"en"		"Homing Projectiles"
+	}
+	"#Chaos_Effect_RandomizeWeaponOrder"
+	{
+		"en"		"Randomize Weapon Order"
+	}
+	"#Chaos_Effect_PlayDevCommentary"
+	{
+		"en"		"Play Random Developer Commentary"
+	}
+	"#Chaos_Effect_IncreasedJumpHeight"
+	{
+		"en"		"Super Jumping"
+	}
+	"#Chaos_Effect_TinyHeads"
+	{
+		"en"		"Tiny Heads"
+	}
+	"#Chaos_Effect_SpawnGargoyle"
+	{
+		"en"		"Spawn Soul Gargoyle"
+	}
+	"#Chaos_Effect_AlwaysGib"
+	{
+		"en"		"Players Always Gib"
+	}
+	"#Chaos_Effect_Honorbound"
+	{
+		"en"		"All Weapons Are Honorbound"
+	}
+	"#Chaos_Effect_NoSelfBlastDamage"
+	{
+		"en"		"No Damage From Blast Jumping"
+	}
+	"#Chaos_Effect_NoOverhealDecay"
+	{
+		"en"		"No Overheal Decay"
+	}
+	"#Chaos_Effect_FastProjectiles"
+	{
+		"en"		"Speedy Projectiles"
+	}
+	"#Chaos_Effect_IncreasedSentryRange"
+	{
+		"en"		"Infinite Sentry Gun Range"
+	}
+	"#Chaos_Effect_IncreasedDispenserRange"
+	{
+		"en"		"Infinite Dispenser Range"
+	}
+	"#Chaos_Effect_ChipDamage"
+	{
+		"en"		"Chip Damage"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{

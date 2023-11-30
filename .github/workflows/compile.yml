@@ -1,0 +1,81 @@
+name: Compile and Package
+
+env:
+  PLUGIN_NAME: chaos
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sourcemod-version: [ '1.12' ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache SourceMod distribution
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: sourcemod_dist
+          key: sourcemod-${{ matrix.sourcemod-version }}
+
+      - name: Download SourceMod
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir sourcemod_dist
+          cd sourcemod_dist
+          filename=$(curl -s https://sm.alliedmods.net/smdrop/${{ matrix.sourcemod-version }}/sourcemod-latest-linux)
+          curl -O https://sm.alliedmods.net/smdrop/${{ matrix.sourcemod-version }}/$filename
+          tar -xzf $filename
+
+      - name: Cache include files
+        id: cache-includes
+        uses: actions/cache@v3
+        with:
+          path: scripting/include
+          key: includes-${{ hashFiles('scripting/include/*.inc') }}
+
+      - name: Download include files
+        if: steps.cache-includes.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p scripting/include
+          curl -o scripting/include/tf2attributes.inc https://raw.githubusercontent.com/FlaminSarge/tf2attributes/master/scripting/include/tf2attributes.inc
+          curl -o scripting/include/tf2items.inc https://raw.githubusercontent.com/asherkin/TF2Items/master/pawn/tf2items.inc
+          curl -o scripting/include/tf2utils.inc https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc
+          curl -o scripting/include/tf_econ_data.inc https://raw.githubusercontent.com/nosoop/SM-TFEconData/master/scripting/include/tf_econ_data.inc
+          curl -o scripting/include/vscript.inc https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/main/scripting/include/vscript.inc
+          curl -o scripting/include/morecolors.inc https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc
+
+      - name: Extract plugin version
+        id: version
+        run: |
+          VERSION=$(grep -oP '#define PLUGIN_VERSION\s+"\K[^"]+' addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp)
+          echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Compile plugin
+        run: |
+          chmod +x sourcemod_dist/addons/sourcemod/scripting/spcomp
+          mkdir -p addons/sourcemod/plugins
+          ./sourcemod_dist/addons/sourcemod/scripting/spcomp -i $GITHUB_WORKSPACE/scripting/include -E addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp -o addons/sourcemod/plugins/${{ env.PLUGIN_NAME }}.smx
+
+      - name: Create release archive
+        run: |
+          zip -r ${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip addons/ scripts/ -x "addons/sourcemod/scripting/include/*"
+
+      - name: Create GitHub release
+        run: |
+          gh auth login --with-token <<< ${{ secrets.GITHUB_TOKEN }}
+          gh config set git_protocol ssh
+          if ! gh release view ${{ env.PLUGIN_VERSION }} --repo ${{ github.repository }} > /dev/null 2>&1; then
+            gh release create ${{ env.PLUGIN_VERSION }} ./${{ env.PLUGIN_NAME }}-${{ env.PLUGIN_VERSION }}.zip -t "${{ env.PLUGIN_VERSION }}" --repo ${{ github.repository }} --draft
+          fi

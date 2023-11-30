@@ -1,20 +1,3 @@
-local playerClassNames =
-[
-	"Undefined",
-	"Scout",
-	"Sniper",
-	"Soldier",
-	"Demoman",
-	"Medic",
-	"Heavy",
-	"Pyro",
-	"Spy",
-	"Engineer",
-	"Civilian",
-	"",
-	"Random"
-]
-
 function Chaos_OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
@@ -61,7 +44,7 @@ function Chaos_OnGameEvent_player_death(params)
 		if (other.GetTeam() != player.GetTeam())
 			continue
 
-		EntFireByHandle(other, "AddContext", format("victimclass:%s", playerClassNames[player.GetPlayerClass()]), -1, null, null)
+		EntFireByHandle(other, "AddContext", format("victimclass:%s", PLAYER_CLASS_NAMES[player.GetPlayerClass()]), -1, null, null)
 		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", -1, null, null)
 		EntFireByHandle(other, "AddContext", "randomnum:100", -1, null, null)
 		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_DEFENDER_DIED", -1, null, null)

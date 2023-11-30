@@ -5,8 +5,8 @@ function ChaosEffect_Update()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
-		player.AddHudHideFlags(Constants.FHideHUD.HIDEHUD_HEALTH | Constants.FHideHUD.HIDEHUD_MISCSTATUS | Constants.FHideHUD.HIDEHUD_CROSSHAIR)
+
+		player.AddHudHideFlags(HIDEHUD_HEALTH | HIDEHUD_MISCSTATUS | HIDEHUD_CROSSHAIR)
 	}
 }
 
@@ -18,6 +18,6 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
-		player.RemoveHudHideFlags(Constants.FHideHUD.HIDEHUD_HEALTH | Constants.FHideHUD.HIDEHUD_MISCSTATUS | Constants.FHideHUD.HIDEHUD_CROSSHAIR)
+		player.RemoveHudHideFlags(HIDEHUD_HEALTH | HIDEHUD_MISCSTATUS | HIDEHUD_CROSSHAIR)
 	}
 }

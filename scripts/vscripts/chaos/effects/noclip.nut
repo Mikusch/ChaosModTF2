@@ -9,7 +9,7 @@ function ChaosEffect_OnStart()
 		if (!player.IsAlive())
 			continue
 
-		player.SetMoveType(Constants.EMoveType.MOVETYPE_NOCLIP, Constants.EMoveCollide.MOVECOLLIDE_DEFAULT)
+		player.SetMoveType(MOVETYPE_NOCLIP, MOVECOLLIDE_DEFAULT)
 	}
 }
 
@@ -24,7 +24,7 @@ function ChaosEffect_OnEnd()
 		if (!player.IsAlive())
 			continue
 
-		player.SetMoveType(Constants.EMoveType.MOVETYPE_WALK, Constants.EMoveCollide.MOVECOLLIDE_DEFAULT)
+		player.SetMoveType(MOVETYPE_WALK, MOVECOLLIDE_DEFAULT)
 	}
 }
 
@@ -34,7 +34,7 @@ function Chaos_OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	EntFireByHandle(player, "RunScriptCode", "self.SetMoveType(Constants.EMoveType.MOVETYPE_NOCLIP, Constants.EMoveCollide.MOVECOLLIDE_DEFAULT)", -1, null, null)
+	EntFireByHandle(player, "RunScriptCode", "self.SetMoveType(MOVETYPE_NOCLIP, MOVECOLLIDE_DEFAULT)", -1, null, null)
 }
 
 Chaos_CollectEventCallbacks(this)

@@ -18,14 +18,6 @@
 
 #define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
 
-#define TIMER_BAR_NUM_BLOCKS	20
-#define TIMER_BAR_CHAR_FILLED	"▰"
-#define TIMER_BAR_CHAR_EMPTY	"▱"
-
-#define EFFECT_BAR_NUM_BLOCKS	10
-#define EFFECT_BAR_CHAR_FILLED	"█"
-#define EFFECT_BAR_CHAR_EMPTY	"▒"
-
 enum HudNotification_t
 {
 	HUD_NOTIFY_YOUR_FLAG_TAKEN,

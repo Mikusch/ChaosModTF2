@@ -124,8 +124,6 @@ enum struct ChaosEffect
 					if (effect.tags.GetString(j, tag, sizeof(tag)) && this.tags.FindString(tag) != -1)
 						return false;
 				}
-				
-				return false;
 			}
 		}
 		
@@ -133,8 +131,29 @@ enum struct ChaosEffect
 	}
 }
 
+enum struct ProgressBar
+{
+	int num_blocks;
+	char filled[64];
+	char empty[64];
+	int color[4];
+	float x;
+	float y;
+	
+	void Parse(KeyValues kv)
+	{
+		this.num_blocks = kv.GetNum("num_blocks");
+		kv.GetString("empty", this.empty, sizeof(this.empty));
+		kv.GetString("filled", this.filled, sizeof(this.filled));
+		kv.GetColor4("color", this.color);
+		this.x = kv.GetFloat("x", -1.0);
+		this.y = kv.GetFloat("y", -1.0);
+	}
+}
+
 void Data_Initialize(GameData hGameData)
 {
+	// Parse effects
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
 	
@@ -184,4 +203,29 @@ void Data_Initialize(GameData hGameData)
 	delete kv;
 	
 	LogMessage("Registered %d effects", g_hEffects.Length);
+	
+	// Parse visuals
+	szFilePath[0] = EOS;
+	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/visuals.cfg");
+	
+	kv = new KeyValues("visuals");
+	if (kv.ImportFromFile(szFilePath))
+	{
+		if (kv.JumpToKey("timer_bar"))
+		{
+			g_aTimerBarConfig.Parse(kv);
+		}
+		kv.GoBack();
+		
+		if (kv.JumpToKey("effect_bar"))
+		{
+			g_aEffectBarConfig.Parse(kv);
+		}
+		kv.GoBack();
+	}
+	else
+	{
+		LogError("Could not read from file '%s'", szFilePath);
+	}
+	delete kv;
 }

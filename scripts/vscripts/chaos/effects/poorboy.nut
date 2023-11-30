@@ -11,6 +11,4 @@ function ChaosEffect_OnStart()
 		
 		player.RemoveCurrency(player.GetCurrency())
 	}
-	
-	return true
 }

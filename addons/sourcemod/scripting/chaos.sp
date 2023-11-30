@@ -13,6 +13,8 @@
 #include <vscript>
 #include <morecolors>
 
+#define PLUGIN_VERSION	"1.5.0"
+
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
@@ -29,6 +31,9 @@ float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
+
+ProgressBar g_aEffectBarConfig;
+ProgressBar g_aTimerBarConfig;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
@@ -64,9 +69,10 @@ char g_szForceEffectId[64];
 #include "chaos/effects/jumpjump.sp"
 #include "chaos/effects/killrandomplayer.sp"
 #include "chaos/effects/loudness.sp"
-#include "chaos/effects/mannpower.sp"
+#include "chaos/effects/manninthemachine.sp"
 #include "chaos/effects/modifypitch.sp"
 #include "chaos/effects/nothing.sp"
+#include "chaos/effects/randomizeweaponorder.sp"
 #include "chaos/effects/removehealthandammo.sp"
 #include "chaos/effects/removerandomentity.sp"
 #include "chaos/effects/screenfade.sp"
@@ -76,13 +82,11 @@ char g_szForceEffectId[64];
 #include "chaos/effects/setcustommodel.sp"
 #include "chaos/effects/setfov.sp"
 #include "chaos/effects/sethealth.sp"
-#include "chaos/effects/setspeed.sp"
 #include "chaos/effects/showscoreboard.sp"
 #include "chaos/effects/silence.sp"
 #include "chaos/effects/slap.sp"
 #include "chaos/effects/spawnball.sp"
 #include "chaos/effects/stepsize.sp"
-#include "chaos/effects/swappositions.sp"
 #include "chaos/effects/truce.sp"
 #include "chaos/effects/watermark.sp"
 #include "chaos/effects/wheredideverythinggo.sp"
@@ -92,7 +96,7 @@ public Plugin myinfo =
 	name = "[TF2] Chaos Mod",
 	author = "Mikusch",
 	description = "Chaos Mod for Team Fortress 2, heavily inspired by Chaos Mod V.",
-	version = "1.5.0",
+	version = PLUGIN_VERSION,
 	url = "https://github.com/Mikusch/ChaosModTF2"
 }
 
@@ -102,19 +106,20 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
+	LoadTranslations("common.phrases");
 	LoadTranslations("chaos.phrases");
 	
+	CreateConVar("sm_chaos_version", PLUGIN_VERSION, "Plugin version.", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
-	
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.");
-	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation.");
-	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation.");
-	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval.");
-	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called.");
+	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "45", "Interval between each effect activation, in seconds.");
+	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation, in seconds.");
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval, in percent.");
+	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called, in seconds.");
 	
-	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect to happen.");
-	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to run.");
+	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
+	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to start.");
 	
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
@@ -750,21 +755,22 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 
 void DisplayTimerBar()
 {
-	SetHudTextParams(-1.0, 0.075, 0.1, 147, 32, 252, 255);
+	SetHudTextParams(g_aTimerBarConfig.x, g_aTimerBarConfig.y, 0.1, g_aTimerBarConfig.color[0], g_aTimerBarConfig.color[1], g_aTimerBarConfig.color[2], g_aTimerBarConfig.color[3]);
 	
 	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
 	
-	int iFilledBlocks = RoundToNearest(flRatio * TIMER_BAR_NUM_BLOCKS);
-	int iEmptyBlocks = TIMER_BAR_NUM_BLOCKS - iFilledBlocks;
+	int iNumBlocks = g_aTimerBarConfig.num_blocks;
+	int iFilledBlocks = RoundToNearest(flRatio * iNumBlocks);
+	int iEmptyBlocks = iNumBlocks - iFilledBlocks;
 	
 	char szProgressBar[64];
 	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_FILLED);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.filled);
 	}
 	for (int i = 0; i < iEmptyBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), TIMER_BAR_CHAR_EMPTY);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.empty);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -778,7 +784,7 @@ void DisplayTimerBar()
 
 void DisplayActiveEffects()
 {
-	// Sort effects based on their cooldown
+	// Sort effects by activation time
 	g_hEffects.SortCustom(SortFuncADTArray_SortChaosEffectsByActivationTime);
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -810,17 +816,18 @@ void DisplayActiveEffects()
 					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
-					int iEmptyBlocks = RoundToNearest(flRatio * EFFECT_BAR_NUM_BLOCKS);
-					int iFilledBlocks = EFFECT_BAR_NUM_BLOCKS - iEmptyBlocks;
+					int iNumBlocks = g_aEffectBarConfig.num_blocks;
+					int iEmptyBlocks = RoundToNearest(flRatio * iNumBlocks);
+					int iFilledBlocks = iNumBlocks - iEmptyBlocks;
 					
 					char szProgressBar[64];
 					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_FILLED);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.filled);
 					}
 					for (int j = 0; j < iEmptyBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), EFFECT_BAR_CHAR_EMPTY);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.empty);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
