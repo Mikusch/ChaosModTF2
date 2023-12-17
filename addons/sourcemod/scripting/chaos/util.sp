@@ -338,3 +338,12 @@ int FindItemOffset(int entity)
 	
 	return FindSendPropInfo(szNetClass, "m_Item");
 }
+
+void SendHudNotificationCustom(int client, const char[] szText, const char[] szIcon, TFTeam nTeam = TFTeam_Unassigned)
+{
+	BfWrite bf = UserMessageToBfWrite(StartMessageOne("HudNotifyCustom", client));
+	bf.WriteString(szText);
+	bf.WriteString(szIcon);
+	bf.WriteByte(view_as<int>(nTeam));
+	EndMessage();
+}

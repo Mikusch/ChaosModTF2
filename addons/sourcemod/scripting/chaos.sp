@@ -736,7 +736,15 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	char szName[64];
 	if (effect.GetName(szName, sizeof(szName)) && szName[0])
 	{
-		CPrintToChatAll("%s %t", PLUGIN_TAG, "#Chaos_Effect_Activated", szName);
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!IsClientInGame(client))
+				continue;
+			
+			char szMessage[256];
+			Format(szMessage, sizeof(szMessage), "%t", "#Chaos_Effect_Activated", szName, client);
+			SendHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
+		}
 	}
 	
 	// For effects that need to access modified properties
