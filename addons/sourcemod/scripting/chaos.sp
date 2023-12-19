@@ -13,7 +13,7 @@
 #include <vscript>
 #include <morecolors>
 
-#define PLUGIN_VERSION	"1.5.0"
+#define PLUGIN_VERSION	"1.5.1"
 
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
@@ -125,14 +125,6 @@ public void OnPluginStart()
 	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
 	Events_Initialize();
-	
-	GameData hGameConf = new GameData("chaos");
-	if (!hGameConf)
-		LogError("Failed to find chaos gamedata");
-	
-	Data_Initialize(hGameConf);
-	
-	delete hGameConf;
 }
 
 public void OnPluginEnd()
@@ -146,6 +138,18 @@ public void OnMapStart()
 	
 	// Initialize VScript system
 	ServerCommand("script_execute %s", "chaos");
+	
+	// Initialize all effects
+	GameData hGameConf = new GameData("chaos");
+	if (hGameConf)
+	{
+		Data_Initialize(hGameConf);
+		delete hGameConf;
+	}
+	else
+	{
+		LogError("Failed to find chaos gamedata");
+	}
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
@@ -743,7 +747,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 			
 			char szMessage[256];
 			Format(szMessage, sizeof(szMessage), "%t", "#Chaos_Effect_Activated", szName, client);
-			SendHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
+			SendCustomHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
 		}
 	}
 	
@@ -1058,6 +1062,9 @@ static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, cons
 
 static Action ConCmd_SetNextEffect(int client, int args)
 {
+	if (!g_bEnabled)
+		return Plugin_Continue;
+	
 	if (args < 1)
 	{
 		ReplyToCommand(client, "[SM] Usage: sm_chaos_setnexteffect <id>");
@@ -1085,6 +1092,9 @@ static Action ConCmd_SetNextEffect(int client, int args)
 
 static Action ConCmd_ForceEffect(int client, int args)
 {
+	if (!g_bEnabled)
+		return Plugin_Continue;
+	
 	if (args < 1)
 	{
 		ReplyToCommand(client, "[SM] Usage: sm_chaos_forceeffect <id>");
