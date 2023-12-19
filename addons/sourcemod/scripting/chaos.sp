@@ -743,7 +743,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 			
 			char szMessage[256];
 			Format(szMessage, sizeof(szMessage), "%t", "#Chaos_Effect_Activated", szName, client);
-			SendHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
+			SendCustomHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
 		}
 	}
 	
@@ -1058,6 +1058,9 @@ static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, cons
 
 static Action ConCmd_SetNextEffect(int client, int args)
 {
+	if (!g_bEnabled)
+		return Plugin_Continue;
+	
 	if (args < 1)
 	{
 		ReplyToCommand(client, "[SM] Usage: sm_chaos_setnexteffect <id>");
@@ -1085,6 +1088,9 @@ static Action ConCmd_SetNextEffect(int client, int args)
 
 static Action ConCmd_ForceEffect(int client, int args)
 {
+	if (!g_bEnabled)
+		return Plugin_Continue;
+	
 	if (args < 1)
 	{
 		ReplyToCommand(client, "[SM] Usage: sm_chaos_forceeffect <id>");
