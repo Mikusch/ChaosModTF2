@@ -125,14 +125,6 @@ public void OnPluginStart()
 	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
 	Events_Initialize();
-	
-	GameData hGameConf = new GameData("chaos");
-	if (!hGameConf)
-		LogError("Failed to find chaos gamedata");
-	
-	Data_Initialize(hGameConf);
-	
-	delete hGameConf;
 }
 
 public void OnPluginEnd()
@@ -146,6 +138,18 @@ public void OnMapStart()
 	
 	// Initialize VScript system
 	ServerCommand("script_execute %s", "chaos");
+	
+	// Initialize all effects
+	GameData hGameConf = new GameData("chaos");
+	if (hGameConf)
+	{
+		Data_Initialize(hGameConf);
+		delete hGameConf;
+	}
+	else
+	{
+		LogError("Failed to find chaos gamedata");
+	}
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
