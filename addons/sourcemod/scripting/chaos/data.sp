@@ -151,9 +151,8 @@ enum struct ProgressBar
 	}
 }
 
-void Data_Initialize(GameData hGameData)
+void Data_OnVScriptServerInit(GameData hGameData)
 {
-	// Parse effects
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
 	
@@ -195,20 +194,23 @@ void Data_Initialize(GameData hGameData)
 			kv.GoBack();
 		}
 		kv.GoBack();
+		
+		g_bInitialized = true;
+		LogMessage("Registered %d effects", g_hEffects.Length);
 	}
 	else
 	{
 		LogError("Could not read from file '%s'", szFilePath);
 	}
 	delete kv;
-	
-	LogMessage("Registered %d effects", g_hEffects.Length);
-	
-	// Parse visuals
-	szFilePath[0] = EOS;
+}
+
+void Data_Initialize()
+{
+	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/visuals.cfg");
 	
-	kv = new KeyValues("visuals");
+	KeyValues kv = new KeyValues("visuals");
 	if (kv.ImportFromFile(szFilePath))
 	{
 		if (kv.JumpToKey("timer_bar"))

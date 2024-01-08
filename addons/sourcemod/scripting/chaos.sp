@@ -13,7 +13,7 @@
 #include <vscript>
 #include <morecolors>
 
-#define PLUGIN_VERSION	"1.5.2"
+#define PLUGIN_VERSION	"1.5.3"
 
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
@@ -23,6 +23,7 @@ ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_effect_update_interval;
 
 bool g_bEnabled;
+bool g_bInitialized;
 bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
@@ -124,6 +125,7 @@ public void OnPluginStart()
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
+	Data_Initialize();
 	Events_Initialize();
 }
 
@@ -139,16 +141,19 @@ public void OnMapStart()
 	// Initialize VScript system
 	ServerCommand("script_execute %s", "chaos");
 	
-	// Initialize all effects
-	GameData hGameConf = new GameData("chaos");
-	if (hGameConf)
+	// Initialize all effects in OnMapStart to guarantee it being called after VScriptServerInit
+	if (!g_bInitialized)
 	{
-		Data_Initialize(hGameConf);
-		delete hGameConf;
-	}
-	else
-	{
-		LogError("Failed to find chaos gamedata");
+		GameData hGameConf = new GameData("chaos");
+		if (hGameConf)
+		{
+			Data_OnVScriptServerInit(hGameConf);
+			delete hGameConf;
+		}
+		else
+		{
+			LogError("Failed to find chaos gamedata");
+		}
 	}
 	
 	int nLength = g_hEffects.Length;
