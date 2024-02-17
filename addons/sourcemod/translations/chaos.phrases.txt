@@ -3,17 +3,17 @@
 	"#Chaos_Effect_Activated"
 	{
 		"#format"	"{1:t}"
-		"en"		"'{1}' has been activated!"
+		"en"		"Effect activated: \"{1}\"!"
 	}
 	"#Chaos_Effect_SetNextEffect_Invalid"
 	{
 		"#format"	"{1:s}"
-		"en"		"No effect with ID '{1}' found."
+		"en"		"No effect with ID \"{1}\" found."
 	}
 	"#Chaos_Effect_SetNextEffect_Done"
 	{
 		"#format"	"{1:t}"
-		"en"		"You have set the next effect to '{1}'."
+		"en"		"Next effect set to \"{1}\"."
 	}
 	"#Chaos_Effect_InvertAcceleration"
 	{
@@ -21,7 +21,7 @@
 	}
 	"#Chaos_Effect_LowFriction"
 	{
-		"en"		"Caution Wet Floor"
+		"en"		"Caution, Wet Floor!"
 	}
 	"#Chaos_Effect_SlowMotion"
 	{
@@ -57,11 +57,11 @@
 	}
 	"#Chaos_Effect_1000HP"
 	{
-		"en"		"Healthy Mercs"
+		"en"		"Healthy Mercenaries"
 	}
 	"#Chaos_Effect_ShortMercs"
 	{
-		"en"		"Midget Mercs"
+		"en"		"Midget Mercenaries"
 	}
 	"#Chaos_Effect_Watermark"
 	{
@@ -89,7 +89,7 @@
 	}
 	"#Chaos_Effect_Ubercharge"
 	{
-		"en"		"Übercharged"
+		"en"		"ÜberCharged"
 	}
 	"#Chaos_Effect_BumperCars"
 	{
@@ -117,7 +117,7 @@
 	}
 	"#Chaos_Effect_SkeletonModels"
 	{
-		"en"		"All Players Are Skeletons"
+		"en"		"Skeletal Party"
 	}
 	"#Chaos_Effect_Lag"
 	{
@@ -153,7 +153,7 @@
 	}
 	"#Chaos_Effect_Blindness"
 	{
-		"en"		"All Players Are Blind"
+		"en"		"Shared Blindness"
 	}
 	"#Chaos_Effect_Greyscale"
 	{
@@ -177,7 +177,7 @@
 	}
 	"#Chaos_Effect_Ghosts"
 	{
-		"en"		"All Players Are Ghosts"
+		"en"		"Ghost Union"
 	}
 	"#Chaos_Effect_Pacifist"
 	{
@@ -185,7 +185,7 @@
 	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"Randomize Everyone's Classes"
+		"en"		"General Class Randomization"
 	}
 	"#Chaos_Effect_BonusDucks"
 	{
@@ -201,7 +201,7 @@
 	}
 	"#Chaos_Effect_Pyrovision"
 	{
-		"en"		"Visit Pyroland"
+		"en"		"A Visit To Pyroland"
 	}
 	"#Chaos_Effect_Taunt"
 	{
@@ -226,7 +226,7 @@
 	"#Chaos_Effect_RemoveRandomEntity_Removing"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"Removed {lightgreen}{1} {default}({lightgreen}{2}{default})."
+		"en"		"Removed entity: {lightgreen}{1} {default}({lightgreen}{2}{default})."
 	}
 	"#Chaos_Effect_LaunchUp"
 	{
@@ -242,15 +242,15 @@
 	}
 	"#Chaos_Effect_BulletImmune"
 	{
-		"en"		"All Players Have Bullet Immunity"
+		"en"		"Impervious Bullets"
 	}
 	"#Chaos_Effect_BlastImmune"
 	{
-		"en"		"All Players Have Blast Immunity"
+		"en"		"The Explosions Won't Stop Me"
 	}
 	"#Chaos_Effect_FireImmune"
 	{
-		"en"		"All Players Have Fire Immunity"
+		"en"		"Natural Firefighters"
 	}
 	"#Chaos_Effect_10xCaptureRate"
 	{
@@ -286,7 +286,7 @@
 	}
 	"#Chaos_Effect_Stealthed"
 	{
-		"en"		"All Players Are Invisible"
+		"en"		"People's Republic of Invisibility"
 	}
 	"#Chaos_Effect_BigHeads"
 	{
@@ -298,7 +298,7 @@
 	}
 	"#Chaos_Effect_CheapObjects"
 	{
-		"en"		"All Buildings Cost 0 Metal"
+		"en"		"Free Buildings"
 	}
 	"#Chaos_Effect_FastBuild"
 	{
@@ -310,7 +310,7 @@
 	}
 	"#Chaos_Effect_10xChargeSpeed"
 	{
-		"en"		"10x Demoman Shield Charge Speed"
+		"en"		"10x Shield Charge Speed"
 	}
 	"#Chaos_Effect_AlwaysLoser"
 	{
@@ -334,7 +334,7 @@
 	}
 	"#Chaos_Effect_SpawnOrangeBall"
 	{
-		"en"		"Spawn Orange Ball"
+		"en"		"Spawn Halloween Ball"
 	}
 	"#Chaos_Effect_RemoveCurrency"
 	{
@@ -350,7 +350,7 @@
 	}
 	"#Chaos_Effect_TallMercs"
 	{
-		"en"		"Stretchy Mercs"
+		"en"		"Stretchy Mercenaries"
 	}
 	"#Chaos_Effect_SpawnSoccerBall"
 	{
@@ -378,7 +378,7 @@
 	}
 	"#Chaos_Effect_Nothing_TeleportEveryone1Millimeter"
 	{
-		"en"		"Teleport Everyone 1 Millimeter"
+		"en"		"Teleport Everyone By 1 Millimeter"
 	}
 	"#Chaos_Effect_Nothing_KillAllDeadPlayers"
 	{
@@ -466,7 +466,7 @@
 	}
 	"#Chaos_Effect_LargeSmokeExplosions"
 	{
-		"en"		"Directed By Michael Bay"
+		"en"		"Directed by Michael Bay"
 	}
 	"#Chaos_Effect_InfiniteMeleeRange"
 	{
@@ -494,7 +494,7 @@
 	}
 	"#Chaos_Effect_GiveGoldPan"
 	{
-		"en"		"Econ Violation"
+		"en"		"Economic Violation"
 	}
 	"#Chaos_Effect_Decompiled"
 	{
@@ -502,11 +502,11 @@
 	}
 	"#Chaos_Effect_NoHeads"
 	{
-		"en"		"Decapitated"
+		"en"		"Decapitated Mercenaries"
 	}
 	"#Chaos_Effect_BackstabImmune"
 	{
-		"en"		"All Players Are Backstab Immune"
+		"en"		"The Razorback Movement"
 	}
 	"#Chaos_Effect_UTurn"
 	{
@@ -534,7 +534,7 @@
 	}
 	"#Chaos_Effect_ForceForward"
 	{
-		"en"		"Help My W Key Is Stuck"
+		"en"		"Don't Stop Me Now"
 	}
 	"#Chaos_Effect_IncreasedGestureSpeed"
 	{
@@ -578,7 +578,7 @@
 	}
 	"#Chaos_Effect_HL2Player"
 	{
-		"en"		"Hello, Gordon"
+		"en"		"Hello, Gordon!"
 	}
 	"#Chaos_Effect_JumpJump"
 	{
@@ -590,7 +590,7 @@
 	}
 	"#Chaos_Effect_Swimming"
 	{
-		"en"		"Swimming Curse"
+		"en"		"The Swimming Curse"
 	}
 	"#Chaos_Effect_UncontrollableRecoil"
 	{
@@ -602,7 +602,7 @@
 	}
 	"#Chaos_Effect_ImmuneToPushback"
 	{
-		"en"		"All Players Are Pushback Immune"
+		"en"		"Knockbacks? More Like Here-I-Am-Back"
 	}
 	"#Chaos_Effect_Callouts"
 	{
@@ -614,11 +614,11 @@
 	}
 	"#Chaos_Effect_WeaponsFireRockets"
 	{
-		"en"		"All Weapons Fire Rockets"
+		"en"		"Rocket Manifestation"
 	}
 	"#Chaos_Effect_WeaponsFireBombs"
 	{
-		"en"		"All Weapons Fire Bombs"
+		"en"		"Bomb Manifestation"
 	}
 	"#Chaos_Effect_MedievalMode"
 	{
