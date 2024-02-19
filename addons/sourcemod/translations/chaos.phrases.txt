@@ -1,9 +1,10 @@
 "Phrases"
 {
+	// HUD center message with the effect name
 	"#Chaos_Effect_Activated"
 	{
 		"#format"	"{1:t}"
-		"en"		"Effect activated: \"{1}\"!"
+		"en"		"{1}"
 	}
 	"#Chaos_Effect_SetNextEffect_Invalid"
 	{
