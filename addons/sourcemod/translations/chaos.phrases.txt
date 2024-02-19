@@ -379,7 +379,7 @@
 	}
 	"#Chaos_Effect_Nothing_TeleportEveryone1Millimeter"
 	{
-		"en"		"Teleport Everyone By 1 Millimeter"
+		"en"		"Teleport Everyone by 1 Millimeter"
 	}
 	"#Chaos_Effect_Nothing_KillAllDeadPlayers"
 	{
@@ -391,7 +391,7 @@
 	}
 	"#Chaos_Effect_Nothing_IncreasePingBy1"
 	{
-		"en"		"Increase Ping By 1"
+		"en"		"Increase Ping by 1"
 	}
 	"#Chaos_Effect_Nothing_AllPlayersArePlayers"
 	{
