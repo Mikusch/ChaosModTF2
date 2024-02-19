@@ -32,7 +32,7 @@ public bool RemoveRandomEntity_OnStart(ChaosEffect effect)
 			strcopy(szName, sizeof(szName), szClassname);
 		}
 		
-		CPrintToChatAll("%s %t", g_stChatConfig.tag, "#Chaos_Effect_RemoveRandomEntity_Removing", szClassname, szName);
+		CPrintToChatAll("%s%t", g_stChatConfig.tag, "#Chaos_Effect_RemoveRandomEntity_Removing", szClassname, szName);
 	}
 	
 	RequestFrame(RequestFrame_RemoveEntity, EntIndexToEntRef(entity));
