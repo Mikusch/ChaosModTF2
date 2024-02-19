@@ -33,8 +33,9 @@ float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
 
-ProgressBar g_aEffectBarConfig;
-ProgressBar g_aTimerBarConfig;
+ProgressBarConfig g_aEffectBarConfig;
+ProgressBarConfig g_aTimerBarConfig;
+ChatConfig g_aChatConfig;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
