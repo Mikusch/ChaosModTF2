@@ -225,19 +225,19 @@ void Data_Initialize()
 	{
 		if (kv.JumpToKey("chat"))
 		{
-			g_aChatConfig.Parse(kv);
+			g_stChatConfig.Parse(kv);
 		}
 		kv.GoBack();
 		
 		if (kv.JumpToKey("timer_bar"))
 		{
-			g_aTimerBarConfig.Parse(kv);
+			g_stTimerBarConfig.Parse(kv);
 		}
 		kv.GoBack();
 		
 		if (kv.JumpToKey("effect_bar"))
 		{
-			g_aEffectBarConfig.Parse(kv);
+			g_stEffectBarConfig.Parse(kv);
 		}
 		kv.GoBack();
 	}
