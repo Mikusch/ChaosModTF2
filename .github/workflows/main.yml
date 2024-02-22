@@ -12,11 +12,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      matrix:
+        sm-version: [ '1.12.x' ]
     permissions:
       contents: write
-    matrix:
-      SM_VERSION: [ '1.12.x' ]
 
     steps:
       - uses: actions/checkout@v4
@@ -33,11 +32,11 @@ jobs:
           wget -P ${{ env.SCRIPTS_PATH }}/addons/sourcemod/scripting/include https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/main/scripting/include/vscript.inc
           wget -P ${{ env.SCRIPTS_PATH }}/addons/sourcemod/scripting/include https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc
 
-      - name: Setup SourcePawn Compiler ${{ matrix.SM_VERSION }}
+      - name: Setup SourcePawn Compiler ${{ matrix.sm-version }}
         id: setup_sp
         uses: rumblefrog/setup-sp@master
         with:
-          version: ${{ matrix.SM_VERSION }}
+          version: ${{ matrix.sm-version }}
           version-file: ./addons/sourcemod/scripting/${{ env.PLUGIN_NAME }}.sp
           define-name: "PLUGIN_VERSION"
 
@@ -76,3 +75,6 @@ jobs:
           tag: ${{ steps.setup_sp.outputs.plugin-version }}
           artifacts: "addons/sourcemod/${{ github.event.repository.name }}.zip"
           draft: true
+          allowUpdates: true
+          updateOnlyUnreleased: true
+          skipIfReleaseExists: true
