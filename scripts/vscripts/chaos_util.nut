@@ -9,13 +9,6 @@ if (!("ConstantNamingConvention" in ROOT))
 				ROOT[k] <- v
 }
 
-// m_lifeState values
-const LIFE_ALIVE = 0
-const LIFE_DYING = 1
-const LIFE_DEAD = 2
-const LIFE_RESPAWNABLE = 3
-const LIFE_DISCARDBODY = 4
-
 // settings for m_takedamage
 const DAMAGE_NO = 0
 const DAMAGE_EVENTS_ONLY = 1
@@ -49,16 +42,6 @@ const FLT_MAX = 0x7F7FFFFF
 
 ::worldspawn <- Entities.FindByClassname(null, "worldspawn")
 ::gamerules <- Entities.FindByClassname(null, "tf_gamerules")
-
-CTFPlayer.IsAlive <- function()
-{
-	return NetProps.GetPropInt(this, "m_lifeState") == LIFE_ALIVE
-}
-
-CTFBot.IsAlive <- function()
-{
-	return NetProps.GetPropInt(this, "m_lifeState") == LIFE_ALIVE
-}
 
 ::GetEnemyTeam <- function(team)
 {

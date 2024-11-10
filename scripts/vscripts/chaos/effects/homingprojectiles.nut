@@ -146,7 +146,7 @@ function ChaosEffect_OnEnd()
 	projectile.SetLocalAngles(move_ang)
 }
 
-function Chaos_OnScriptHook_OnTakeDamage(params)
+function OnScriptHook_OnTakeDamage(params)
 {
 	if (params.const_entity == worldspawn)
 		return
@@ -157,5 +157,3 @@ function Chaos_OnScriptHook_OnTakeDamage(params)
 
 	EntFireByHandle(params.inflictor, "Kill", null, 0.5, null, null)
 }
-
-Chaos_CollectEventCallbacks(this)

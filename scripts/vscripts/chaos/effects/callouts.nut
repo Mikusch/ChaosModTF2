@@ -1,4 +1,4 @@
-function Chaos_OnGameEvent_player_spawn(params)
+function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -26,7 +26,7 @@ function Chaos_OnGameEvent_player_spawn(params)
 	}
 }
 
-function Chaos_OnGameEvent_player_death(params)
+function OnGameEvent_player_death(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -51,5 +51,3 @@ function Chaos_OnGameEvent_player_death(params)
 		EntFireByHandle(other, "ClearContext", null, -1, null, null)
 	}
 }
-
-Chaos_CollectEventCallbacks(this)
