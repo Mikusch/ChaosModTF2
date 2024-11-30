@@ -1,4 +1,5 @@
-IncludeScript("chaos_util")
+IncludeScript("chaos/const")
+IncludeScript("chaos/util")
 
 const CHAOS_SCOPE_PREFIX = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "

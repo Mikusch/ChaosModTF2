@@ -1,45 +1,3 @@
-::ROOT <- getroottable()
-if (!("ConstantNamingConvention" in ROOT))
-{
-	foreach (a, b in Constants)
-		foreach (k, v in b)
-			if (v == null)
-				ROOT[k] <- 0
-			else
-				ROOT[k] <- v
-}
-
-// settings for m_takedamage
-const DAMAGE_NO = 0
-const DAMAGE_EVENTS_ONLY = 1
-const DAMAGE_YES = 2
-const DAMAGE_AIM = 3
-
-const TF_DEATHFLAG_DEADRINGER = 32
-const CHAN_STATIC = 6
-const FLT_MAX = 0x7F7FFFFF
-
-::PLAYER_CLASS_NAMES <-
-[
-	"Undefined",
-	"Scout",
-	"Sniper",
-	"Soldier",
-	"Demoman",
-	"Medic",
-	"Heavy",
-	"Pyro",
-	"Spy",
-	"Engineer",
-	"Civilian",
-	"",
-	"Random"
-]
-
-::MASK_SOLID <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_MONSTER | CONTENTS_GRATE)
-::MASK_PLAYERSOLID <- (MASK_SOLID | CONTENTS_PLAYERCLIP)
-::MASK_SOLID_BRUSHONLY <- (CONTENTS_SOLID | CONTENTS_MOVEABLE | CONTENTS_WINDOW | CONTENTS_GRATE)
-
 ::worldspawn <- Entities.FindByClassname(null, "worldspawn")
 ::gamerules <- Entities.FindByClassname(null, "tf_gamerules")
 
@@ -140,4 +98,24 @@ const FLT_MAX = 0x7F7FFFFF
 	}
 
 	return trace.fraction >= 1.0
+}
+
+::IsPlayerStuck <- function(player)
+{
+	local trace =
+	{
+		start = player.GetOrigin(),
+		end = player.GetOrigin(),
+		hullmin = player.GetBoundingMins(),
+		hullmax = player.GetBoundingMaxs(),
+		mask = MASK_SOLID_BRUSHONLY,
+		ignore = player
+	}
+		
+	return TraceHull(trace) && trace.hit
+}
+
+::ForcePlayerSuicide <- function(player)
+{
+	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
 }

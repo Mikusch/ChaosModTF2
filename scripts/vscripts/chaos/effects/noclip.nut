@@ -25,6 +25,11 @@ function ChaosEffect_OnEnd()
 			continue
 
 		player.SetMoveType(MOVETYPE_WALK, MOVECOLLIDE_DEFAULT)
+
+		if (IsPlayerStuck(player))
+		{
+			ForcePlayerSuicide(player)
+		}
 	}
 }
 
