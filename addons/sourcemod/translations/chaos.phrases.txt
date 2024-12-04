@@ -17,11 +17,11 @@
 	}
 	"#Chaos_Effect_InvertAcceleration"
 	{
-		"en"		"Invert Acceleration"
+		"en"		"Invert Controls"
 	}
 	"#Chaos_Effect_LowFriction"
 	{
-		"en"		"Caution Wet Floor"
+		"en"		"Caution: Wet Floor"
 	}
 	"#Chaos_Effect_SlowMotion"
 	{
@@ -67,7 +67,7 @@
 	{
 		"en"		"What Server Am I On Again?"
 	}
-	"#Chaos_Effect_Thriller"
+	"#Chaos_Effect_ThrillerDance"
 	{
 		"en"		"Thriller Night"
 	}
@@ -179,17 +179,9 @@
 	{
 		"en"		"All Players Are Ghosts"
 	}
-	"#Chaos_Effect_Pacifist"
-	{
-		"en"		"Pacifist"
-	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
 		"en"		"Randomize Everyone's Classes"
-	}
-	"#Chaos_Effect_BonusDucks"
-	{
-		"en"		"Bonus Ducks!"
 	}
 	"#Chaos_Effect_Bouncy"
 	{
@@ -288,7 +280,7 @@
 	{
 		"en"		"All Players Are Invisible"
 	}
-	"#Chaos_Effect_BigHeads"
+	"#Chaos_Effect_BigHead"
 	{
 		"en"		"Big Heads"
 	}
@@ -352,14 +344,6 @@
 	{
 		"en"		"Stretchy Mercs"
 	}
-	"#Chaos_Effect_SpawnSoccerBall"
-	{
-		"en"		"Spawn Soccer Ball"
-	}
-	"#Chaos_Effect_SpawnBeachBall"
-	{
-		"en"		"Spawn Beach Ball"
-	}
 	"#Chaos_Effect_PaintItems"
 	{
 		"en"		"Apply Random Paint To Items"
@@ -418,7 +402,7 @@
 	}
 	"#Chaos_Effect_DisableRespawnTimes"
 	{
-		"en"		"No Respawn Times"
+		"en"		"Instant Respawn"
 	}
 	"#Chaos_Effect_IncreasedSpread"
 	{
@@ -576,10 +560,6 @@
 	{
 		"en"		"Teleport to (0, 0, 0)"
 	}
-	"#Chaos_Effect_HL2Player"
-	{
-		"en"		"Hello, Gordon"
-	}
 	"#Chaos_Effect_JumpJump"
 	{
 		"en"		"Jump Jump"
@@ -602,7 +582,7 @@
 	}
 	"#Chaos_Effect_ImmuneToPushback"
 	{
-		"en"		"All Players Are Pushback Immune"
+		"en"		"All Players Are Knockback Immune"
 	}
 	"#Chaos_Effect_Callouts"
 	{
@@ -615,10 +595,6 @@
 	"#Chaos_Effect_WeaponsFireRockets"
 	{
 		"en"		"All Weapons Fire Rockets"
-	}
-	"#Chaos_Effect_WeaponsFireBombs"
-	{
-		"en"		"All Weapons Fire Bombs"
 	}
 	"#Chaos_Effect_MedievalMode"
 	{
@@ -660,13 +636,13 @@
 	{
 		"en"		"Play Random Developer Commentary"
 	}
-	"#Chaos_Effect_IncreasedJumpHeight"
+	"#Chaos_Effect_SuperJump"
 	{
 		"en"		"Super Jumping"
 	}
-	"#Chaos_Effect_TinyHeads"
+	"#Chaos_Effect_SmallHead"
 	{
-		"en"		"Tiny Heads"
+		"en"		"Small Heads"
 	}
 	"#Chaos_Effect_SpawnGargoyle"
 	{

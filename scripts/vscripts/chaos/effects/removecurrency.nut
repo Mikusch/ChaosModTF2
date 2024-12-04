@@ -8,7 +8,7 @@ function ChaosEffect_OnStart()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
+
 		player.RemoveCurrency(player.GetCurrency())
 	}
 }
