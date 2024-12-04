@@ -179,9 +179,13 @@
 	{
 		"en"		"All Players Are Ghosts"
 	}
+	"#Chaos_Effect_Bleed"
+	{
+		"en"		"Paper Cut"
+	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"Randomize Everyone's Classes"
+		"en"		"Randomize Classes"
 	}
 	"#Chaos_Effect_Bouncy"
 	{
