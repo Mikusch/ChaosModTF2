@@ -4,14 +4,11 @@ const GRACE_PERIOD = 25.0
 const BLINK_PERIOD = 5.0
 const BLINK_DURATION = 0.25
 const ROT_SPEED = 2
-const REWARD_DURATION_MIN = 10.0
+const REWARD_DURATION_MIN = 7.5
 const REWARD_DURATION_MAX = 20.0
-const PARTICLE_DURATION = 1.5
+const PARTICLE_DURATION = 3
 
-
-::originOffset <- Vector(0,0,12)
 ::itemIndex <- PrecacheModel("models/items/gift_festive.mdl")
-
 
 // Use 'null' for default effect. Specify 'effect' as either red or blue variant, it auto-adjusts to player's team. Set 'effectpos'to target's attachment, or leave null for origin-based positioning.
 local giftRewards = [
@@ -39,19 +36,44 @@ function ChaosEffect_OnStart()
         PrecacheScriptSound(reward.sound)
 }
 
+::ReplaceString <- function(original, search, replace)
+{
+    local result = ""
+    local startIdx = 0
+    local foundIdx = original.find(search, startIdx)
+
+    while (foundIdx != null) {
+        // Append part of the original string before the found substring
+        result += original.slice(startIdx, foundIdx)
+        // Append the replacement string
+        result += replace
+
+        // Update the start index to continue searching
+        startIdx = foundIdx + search.len()
+        foundIdx = original.find(search, startIdx)
+    }
+
+    // Append any remaining part of the original string
+    result += original.slice(startIdx)
+
+    return result
+}
+
 ::DisplayParticleEffect <- function(ent, effect, effect_pos)
 {
     if (effect == null)
         return
 
-    if (endswith(effect, "_"))
-    {
-        local teamColor = (ent.GetTeam() == TF_TEAM_RED) ? "red" : "blue"
-        effect += teamColor
-    }
+    // Check if the effect name contains 'red' or 'blue'
+    local ent_team = ent.GetTeam()
+    if (ent_team == TF_TEAM_RED && effect.find("blue") != null)
+        effect = ReplaceString(effect, "blue", "red")
+    else if (ent_team == TF_TEAM_BLUE && effect.find("red") != null)
+        effect = ReplaceString(effect, "red", "blue")
 
     CreateParticleEffect(ent, effect, effect_pos)
 }
+
 
 ::CreateParticleEffect <- function(ent, effect, effect_pos)
 {
@@ -71,31 +93,31 @@ function ChaosEffect_OnStart()
     EntFireByHandle(particle, "Kill", null, PARTICLE_DURATION, null, null)
 }
 
+
 ::PickGiftReward <- function()
 {
     local reward_index = RandomInt(0, giftRewards.len() - 1)
-    local selectedReward = giftRewards[reward_index]
+    local reward = giftRewards[reward_index]
     local reward_duration = RandomFloat(REWARD_DURATION_MIN, REWARD_DURATION_MAX)
 
-    self.AddCondEx(selectedReward.cond, reward_duration, null)
+    ApplyReward(self, reward, reward_duration)
+}
+
+::ApplyReward <- function(player, reward, duration)
+{
+    player.AddCondEx(reward.cond, duration, null)
 
     // Apply the Vaccinator Über effect for Player Hud
-    switch (selectedReward.cond) {
-        case TF_COND_BULLET_IMMUNE:
-            self.AddCondEx(TF_COND_MEDIGUN_UBER_BULLET_RESIST, 5.0, null)
-            break
-        case TF_COND_BLAST_IMMUNE:
-            self.AddCondEx(TF_COND_MEDIGUN_UBER_BLAST_RESIST, 5.0, null)
-            break
-        case TF_COND_FIRE_IMMUNE:
-            self.AddCondEx(TF_COND_MEDIGUN_UBER_FIRE_RESIST, 5.0, null)
-            break
+    switch (reward.cond)
+    {
+        case TF_COND_BULLET_IMMUNE: player.AddCondEx(TF_COND_MEDIGUN_UBER_BULLET_RESIST, duration, null); break;
+        case TF_COND_BLAST_IMMUNE:  player.AddCondEx(TF_COND_MEDIGUN_UBER_BLAST_RESIST, duration, null); break;
+        case TF_COND_FIRE_IMMUNE:   player.AddCondEx(TF_COND_MEDIGUN_UBER_FIRE_RESIST, duration, null); break;
     }
 
-    ClientPrint(self, HUD_PRINTCENTER, selectedReward.text)
-    EmitSoundOnClient(selectedReward.sound, self)
-
-    DisplayParticleEffect(self, selectedReward.effect, selectedReward.effectpos)
+    ClientPrint(player, HUD_PRINTCENTER, reward.text)
+    EmitSoundOnClient(reward.sound, player)
+    DisplayParticleEffect(player, reward.effect, reward.effectpos)
 }
 
 ::PreLandingThink <- function()
@@ -104,7 +126,7 @@ function ChaosEffect_OnStart()
         return
 
     // Clean up in case it gets stuck in GEO
-    if (Time() - pre_landing_timer > 10.0)
+    if (Time() - Pre_Landing_Timer > 10.0)
         EntFireByHandle(self, "Kill", null, -1, null, null)
 
 
@@ -133,7 +155,7 @@ function ChaosEffect_OnStart()
 {
     Rotate()
 
-    if (Time() - blink_timer >= GRACE_PERIOD)
+    if (Time() - Blink_Timer >= GRACE_PERIOD)
         AddThinkToEnt(self, "BlinkThink")
 
     return -1
@@ -145,16 +167,15 @@ function ChaosEffect_OnStart()
 
     local cur_time = Time()
 
-    if (cur_time - blink_timer >= BLINK_DURATION)
+    if (cur_time - Blink_Timer >= BLINK_DURATION)
     {
         Blink()
-        blink_timer = cur_time + BLINK_DURATION
+        Blink_Timer = cur_time + BLINK_DURATION
     }
 
-    if (blink_time_left <= 0)
+    if (Blink_Time_Left <= 0)
     {
-        local angles = self.GetAbsAngles()
-        DispatchParticleEffect("mvm_cash_explosion", self.GetOrigin(), Vector(angles.x, angles.y, angles.z))
+        DispatchParticleEffect("mvm_cash_explosion", self.GetOrigin(), Vector())
         EntFireByHandle(self, "Kill", null, -1, null, null)
     }
     return -1
@@ -165,7 +186,7 @@ function ChaosEffect_OnStart()
     EntFireByHandle(self, "RunScriptCode", "self.KeyValueFromInt(`renderamt`, 25)", -1, null, null)
     EntFireByHandle(self, "RunScriptCode", "self.KeyValueFromInt(`renderamt`, 255)", BLINK_DURATION, null, null)
 
-    blink_time_left -= RandomFloat(0.0, BLINK_DURATION)
+    Blink_Time_Left -= RandomFloat(0.0, BLINK_DURATION)
 }
 
 ::Rotate <- function()
@@ -210,20 +231,17 @@ function ChaosEffect_OnStart()
 
     pickup.ValidateScriptScope()
     local pickup_scope = pickup.GetScriptScope()
-    pickup_scope.blink_time_left    <- BLINK_PERIOD
-    pickup_scope.blink_timer        <- cur_time
-    pickup_scope.pre_landing_timer  <- cur_time
+    pickup_scope.Blink_Time_Left    <- BLINK_PERIOD
+    pickup_scope.Blink_Timer        <- cur_time
+    pickup_scope.Pre_Landing_Timer  <- cur_time
     AddThinkToEnt(pickup, "PreLandingThink")
 }
 
-function Chaos_OnGameEvent_player_death(params)
+function OnGameEvent_player_death(params)
 {
     local victim = GetPlayerFromUserID(params.userid)
-    if (victim == null)
+    if (victim == null || params.death_flags & TF_DEATHFLAG_DEADRINGER)
         return
-
-    if (params.death_flags & TF_DEATHFLAG_DEADRINGER)
-		return
 
     local attacker = GetPlayerFromUserID(params.attacker)
     if (victim == attacker)
@@ -231,5 +249,3 @@ function Chaos_OnGameEvent_player_death(params)
 
     EntFireByHandle(victim, "CallScriptFunction", "DropGift", -1, victim, null)
 }
-
-Chaos_CollectEventCallbacks(this)
