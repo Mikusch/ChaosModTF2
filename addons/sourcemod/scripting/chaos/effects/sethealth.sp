@@ -9,7 +9,8 @@ public bool SetHealth_Initialize(ChaosEffect effect, GameData gameconf)
 	if (!gameconf)
 		return false;
 	
-	g_hDetourGetMaxHealthForBuffing = DynamicDetour.FromConf(gameconf, "CTFPlayer::GetMaxHealthForBuffing");
+	if (!g_hDetourGetMaxHealthForBuffing)
+		g_hDetourGetMaxHealthForBuffing = DynamicDetour.FromConf(gameconf, "CTFPlayer::GetMaxHealthForBuffing");
 	
 	return g_hDetourGetMaxHealthForBuffing != null;
 }

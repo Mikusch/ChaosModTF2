@@ -70,7 +70,7 @@ static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove
 {
 	KeyValues kv = effect.data;
 	
-	bool bApplyToWeapons = kv.GetNum("weapons") != 0;
+	bool bApplyToWeapons = kv.GetNum("apply_to_weapons") != 0;
 	
 	if (kv.JumpToKey("attributes", false))
 	{

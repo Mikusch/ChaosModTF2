@@ -3,8 +3,6 @@
 
 #define INVALID_EFFECT_ID	-1
 
-#define PLUGIN_TAG	"[{darkorange}TF2 CHAOS{default}]"
-
 #define MAX_USER_MSG_DATA	255
 
 #define PI	3.14159265358979323846

@@ -13,7 +13,7 @@
 #include <vscript>
 #include <morecolors>
 
-#define PLUGIN_VERSION	"1.5.2"
+#define PLUGIN_VERSION	"1.6.0"
 
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
@@ -23,6 +23,7 @@ ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_effect_update_interval;
 
 bool g_bEnabled;
+bool g_bInitialized;
 bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
@@ -32,8 +33,9 @@ float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
 
-ProgressBar g_aEffectBarConfig;
-ProgressBar g_aTimerBarConfig;
+ProgressBarConfig g_stEffectBarConfig;
+ProgressBarConfig g_stTimerBarConfig;
+ChatConfig g_stChatConfig;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
@@ -124,6 +126,7 @@ public void OnPluginStart()
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
 	g_hTimerBarHudSync = CreateHudSynchronizer();
 	
+	Data_Initialize();
 	Events_Initialize();
 }
 
@@ -139,16 +142,19 @@ public void OnMapStart()
 	// Initialize VScript system
 	ServerCommand("script_execute %s", "chaos");
 	
-	// Initialize all effects
-	GameData hGameConf = new GameData("chaos");
-	if (hGameConf)
+	// Initialize all effects in OnMapStart to guarantee it being called after VScriptServerInit
+	if (!g_bInitialized)
 	{
-		Data_Initialize(hGameConf);
-		delete hGameConf;
-	}
-	else
-	{
-		LogError("Failed to find chaos gamedata");
+		GameData hGameConf = new GameData("chaos");
+		if (hGameConf)
+		{
+			Data_OnVScriptServerInit(hGameConf);
+			delete hGameConf;
+		}
+		else
+		{
+			LogError("Failed to find chaos gamedata");
+		}
 	}
 	
 	int nLength = g_hEffects.Length;
@@ -282,7 +288,7 @@ public void OnGameFrame()
 	}
 	
 	RoundState nRoundState = GameRules_GetRoundState();
-	if (g_bNoChaos || nRoundState < RoundState_RoundRunning || nRoundState > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
+	if (g_bNoChaos || (nRoundState != RoundState_RoundRunning && nRoundState != RoundState_Stalemate) || GameRules_GetProp("m_bInWaitingForPlayers"))
 		return;
 	
 	float flTimerSpeed = GetGameFrameTime();
@@ -767,22 +773,22 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 
 void DisplayTimerBar()
 {
-	SetHudTextParams(g_aTimerBarConfig.x, g_aTimerBarConfig.y, 0.1, g_aTimerBarConfig.color[0], g_aTimerBarConfig.color[1], g_aTimerBarConfig.color[2], g_aTimerBarConfig.color[3]);
+	SetHudTextParams(g_stTimerBarConfig.x, g_stTimerBarConfig.y, 0.1, g_stTimerBarConfig.color[0], g_stTimerBarConfig.color[1], g_stTimerBarConfig.color[2], g_stTimerBarConfig.color[3]);
 	
 	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
 	
-	int iNumBlocks = g_aTimerBarConfig.num_blocks;
+	int iNumBlocks = g_stTimerBarConfig.num_blocks;
 	int iFilledBlocks = RoundToNearest(flRatio * iNumBlocks);
 	int iEmptyBlocks = iNumBlocks - iFilledBlocks;
 	
 	char szProgressBar[64];
 	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.filled);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_stTimerBarConfig.filled);
 	}
 	for (int i = 0; i < iEmptyBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.empty);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_stTimerBarConfig.empty);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -828,18 +834,18 @@ void DisplayActiveEffects()
 					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
-					int iNumBlocks = g_aEffectBarConfig.num_blocks;
+					int iNumBlocks = g_stEffectBarConfig.num_blocks;
 					int iEmptyBlocks = RoundToNearest(flRatio * iNumBlocks);
 					int iFilledBlocks = iNumBlocks - iEmptyBlocks;
 					
 					char szProgressBar[64];
 					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.filled);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_stEffectBarConfig.filled);
 					}
 					for (int j = 0; j < iEmptyBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.empty);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_stEffectBarConfig.empty);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);

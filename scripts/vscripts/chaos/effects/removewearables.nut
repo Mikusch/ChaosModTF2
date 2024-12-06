@@ -30,7 +30,7 @@ function RemoveAllWearables(player)
 	}
 }
 
-function Chaos_OnGameEvent_post_inventory_application(params)
+function OnGameEvent_post_inventory_application(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -38,5 +38,3 @@ function Chaos_OnGameEvent_post_inventory_application(params)
 
 	RemoveAllWearables(player)
 }
-
-Chaos_CollectEventCallbacks(this)

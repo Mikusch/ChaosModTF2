@@ -25,10 +25,15 @@ function ChaosEffect_OnEnd()
 			continue
 
 		player.SetMoveType(MOVETYPE_WALK, MOVECOLLIDE_DEFAULT)
+
+		if (IsPlayerStuck(player))
+		{
+			ForcePlayerSuicide(player)
+		}
 	}
 }
 
-function Chaos_OnGameEvent_player_spawn(params)
+function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -36,5 +41,3 @@ function Chaos_OnGameEvent_player_spawn(params)
 
 	EntFireByHandle(player, "RunScriptCode", "self.SetMoveType(MOVETYPE_NOCLIP, MOVECOLLIDE_DEFAULT)", -1, null, null)
 }
-
-Chaos_CollectEventCallbacks(this)

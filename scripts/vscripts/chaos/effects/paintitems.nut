@@ -27,7 +27,7 @@ function GetRandomColor()
 	return RandomInt(0, 0x1000000)
 }
 
-function Chaos_OnGameEvent_post_inventory_application(params)
+function OnGameEvent_post_inventory_application(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -35,5 +35,3 @@ function Chaos_OnGameEvent_post_inventory_application(params)
 
 	ApplyRandomPaintToItems(player)
 }
-
-Chaos_CollectEventCallbacks(this)

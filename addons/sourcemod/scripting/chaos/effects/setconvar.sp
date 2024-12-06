@@ -6,7 +6,9 @@ static ConVar sv_cheats;
 
 public bool SetConVar_Initialize(ChaosEffect effect, GameData gameconf)
 {
-	g_hOldConVarValues = new StringMap();
+	if (!g_hOldConVarValues)
+		g_hOldConVarValues = new StringMap();
+	
 	sv_cheats = FindConVar("sv_cheats");
 	
 	return true;
