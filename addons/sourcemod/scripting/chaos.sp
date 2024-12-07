@@ -327,7 +327,8 @@ public void OnGameFrame()
 	}
 	
 	// Activate a new effect
-	if (g_flTimeElapsed >= sm_chaos_effect_interval.FloatValue)
+	float flEffectInterval = sm_chaos_effect_interval.FloatValue;
+	if (flEffectInterval && g_flTimeElapsed >= flEffectInterval)
 	{
 		g_flTimeElapsed = 0.0;
 		
@@ -348,7 +349,8 @@ public void OnGameFrame()
 	}
 	
 	// Attempt to activate a new meta effect
-	if (g_flMetaTimeElapsed >= sm_chaos_meta_effect_interval.FloatValue)
+	float flMetaEffectInterval = sm_chaos_meta_effect_interval.FloatValue;
+	if (flMetaEffectInterval && g_flMetaTimeElapsed >= flMetaEffectInterval)
 	{
 		g_flMetaTimeElapsed = 0.0;
 		
@@ -857,7 +859,7 @@ void DisplayActiveEffects()
 				}
 				
 				// -2 to include null terminators
-				if (szLine[0] && strlen(szMessage) + strlen(szLine) < MAX_USER_MSG_DATA - 2)
+				if (szLine[0] && strlen(szMessage) + strlen(szLine) < sizeof(szMessage) - 1)
 				{
 					Format(szMessage, sizeof(szMessage), "%s\n%s", szMessage, szLine);
 				}
