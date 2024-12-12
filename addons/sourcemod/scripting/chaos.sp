@@ -288,7 +288,7 @@ public void OnGameFrame()
 	}
 	
 	RoundState nRoundState = GameRules_GetRoundState();
-	if (g_bNoChaos || (nRoundState != RoundState_RoundRunning && nRoundState != RoundState_Stalemate) || GameRules_GetProp("m_bInWaitingForPlayers"))
+	if (g_bNoChaos || (nRoundState != RoundState_RoundRunning && nRoundState != RoundState_Stalemate) || GameRules_GetProp("m_bInWaitingForPlayers") || GameRules_GetProp("m_bInSetup"))
 		return;
 	
 	float flTimerSpeed = GetGameFrameTime();
