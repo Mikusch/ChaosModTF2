@@ -118,7 +118,7 @@
 	}
 	"#Chaos_Effect_SkeletonModels"
 	{
-		"en"		"Skeletal Party"
+		"en"		"Skeleton Party"
 	}
 	"#Chaos_Effect_Lag"
 	{
@@ -186,7 +186,7 @@
 	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"General Class Randomization"
+		"en"		"Randomize Everyone's Classes"
 	}
 	"#Chaos_Effect_BonusDucks"
 	{
@@ -243,7 +243,7 @@
 	}
 	"#Chaos_Effect_BulletImmune"
 	{
-		"en"		"Impervious Bullets"
+		"en"		"Bullet Time"
 	}
 	"#Chaos_Effect_BlastImmune"
 	{
@@ -415,7 +415,7 @@
 	}
 	"#Chaos_Effect_PlayerGlow"
 	{
-		"en"		"All Players Are Glowing"
+		"en"		"Look At Me, Look At Me!"
 	}
 	"#Chaos_Effect_DisableRespawnTimes"
 	{
@@ -535,7 +535,7 @@
 	}
 	"#Chaos_Effect_ForceForward"
 	{
-		"en"		"Don't Stop Me Now"
+		"en"		"Help Me, My W Key Is Stuck"
 	}
 	"#Chaos_Effect_IncreasedGestureSpeed"
 	{
@@ -603,7 +603,7 @@
 	}
 	"#Chaos_Effect_ImmuneToPushback"
 	{
-		"en"		"Knockbacks? More Like Here-I-Am-Back"
+		"en"		"Feet of Steel"
 	}
 	"#Chaos_Effect_Callouts"
 	{
