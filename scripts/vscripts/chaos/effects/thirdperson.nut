@@ -22,7 +22,7 @@ function ChaosEffect_OnEnd()
 	}
 }
 
-function Chaos_OnGameEvent_player_spawn(params)
+function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -30,5 +30,3 @@ function Chaos_OnGameEvent_player_spawn(params)
 
 	EntFireByHandle(player, "RunScriptCode", "self.SetForcedTauntCam(1)", -1, null, null)
 }
-
-Chaos_CollectEventCallbacks(this)

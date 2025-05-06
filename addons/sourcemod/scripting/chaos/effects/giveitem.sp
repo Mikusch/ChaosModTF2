@@ -8,9 +8,12 @@ public bool GiveItem_Initialize(ChaosEffect effect, GameData gameconf)
 	if (!gameconf)
 		return false;
 	
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
-	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
+	if (!g_hSDKCallPostInventoryApplication)
+	{
+		StartPrepSDKCall(SDKCall_Player);
+		PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
+		g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
+	}
 	
 	return g_hSDKCallPostInventoryApplication != null;
 }

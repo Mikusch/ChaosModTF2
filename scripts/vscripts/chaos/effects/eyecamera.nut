@@ -63,7 +63,7 @@ function RemoveViewControl(player)
 	EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
 }
 
-function Chaos_OnGameEvent_player_spawn(params)
+function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -80,7 +80,7 @@ function Chaos_OnGameEvent_player_spawn(params)
 	player.GetScriptScope().viewcontrol <- CreateViewControl(player)
 }
 
-function Chaos_OnGameEvent_player_death(params)
+function OnGameEvent_player_death(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -91,5 +91,3 @@ function Chaos_OnGameEvent_player_death(params)
 
 	RemoveViewControl(player)
 }
-
-Chaos_CollectEventCallbacks(this)

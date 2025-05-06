@@ -46,7 +46,7 @@ function ChaosEffect_Update()
 	return -1
 }
 
-function Chaos_OnGameEvent_player_spawn(params)
+function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -59,5 +59,3 @@ function Chaos_OnGameEvent_player_spawn(params)
 	player.ValidateScriptScope()
 	player.GetScriptScope().prevLastFireTime <- NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
 }
-
-Chaos_CollectEventCallbacks(this)

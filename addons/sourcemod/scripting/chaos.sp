@@ -13,7 +13,7 @@
 #include <vscript>
 #include <morecolors>
 
-#define PLUGIN_VERSION	"1.5.3"
+#define PLUGIN_VERSION	"1.6.0"
 
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
@@ -33,8 +33,9 @@ float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
 
-ProgressBar g_aEffectBarConfig;
-ProgressBar g_aTimerBarConfig;
+ProgressBarConfig g_stEffectBarConfig;
+ProgressBarConfig g_stTimerBarConfig;
+ChatConfig g_stChatConfig;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
@@ -287,7 +288,7 @@ public void OnGameFrame()
 	}
 	
 	RoundState nRoundState = GameRules_GetRoundState();
-	if (g_bNoChaos || nRoundState < RoundState_RoundRunning || nRoundState > RoundState_Stalemate || GameRules_GetProp("m_bInWaitingForPlayers"))
+	if (g_bNoChaos || (nRoundState != RoundState_RoundRunning && nRoundState != RoundState_Stalemate) || GameRules_GetProp("m_bInWaitingForPlayers") || GameRules_GetProp("m_bInSetup"))
 		return;
 	
 	float flTimerSpeed = GetGameFrameTime();
@@ -326,7 +327,8 @@ public void OnGameFrame()
 	}
 	
 	// Activate a new effect
-	if (g_flTimeElapsed >= sm_chaos_effect_interval.FloatValue)
+	float flEffectInterval = sm_chaos_effect_interval.FloatValue;
+	if (flEffectInterval && g_flTimeElapsed >= flEffectInterval)
 	{
 		g_flTimeElapsed = 0.0;
 		
@@ -347,7 +349,8 @@ public void OnGameFrame()
 	}
 	
 	// Attempt to activate a new meta effect
-	if (g_flMetaTimeElapsed >= sm_chaos_meta_effect_interval.FloatValue)
+	float flMetaEffectInterval = sm_chaos_meta_effect_interval.FloatValue;
+	if (flMetaEffectInterval && g_flMetaTimeElapsed >= flMetaEffectInterval)
 	{
 		g_flMetaTimeElapsed = 0.0;
 		
@@ -772,22 +775,22 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 
 void DisplayTimerBar()
 {
-	SetHudTextParams(g_aTimerBarConfig.x, g_aTimerBarConfig.y, 0.1, g_aTimerBarConfig.color[0], g_aTimerBarConfig.color[1], g_aTimerBarConfig.color[2], g_aTimerBarConfig.color[3]);
+	SetHudTextParams(g_stTimerBarConfig.x, g_stTimerBarConfig.y, 0.1, g_stTimerBarConfig.color[0], g_stTimerBarConfig.color[1], g_stTimerBarConfig.color[2], g_stTimerBarConfig.color[3]);
 	
 	float flRatio = g_flTimeElapsed / sm_chaos_effect_interval.FloatValue;
 	
-	int iNumBlocks = g_aTimerBarConfig.num_blocks;
+	int iNumBlocks = g_stTimerBarConfig.num_blocks;
 	int iFilledBlocks = RoundToNearest(flRatio * iNumBlocks);
 	int iEmptyBlocks = iNumBlocks - iFilledBlocks;
 	
 	char szProgressBar[64];
 	for (int i = 0; i < iFilledBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.filled);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_stTimerBarConfig.filled);
 	}
 	for (int i = 0; i < iEmptyBlocks; i++)
 	{
-		StrCat(szProgressBar, sizeof(szProgressBar), g_aTimerBarConfig.empty);
+		StrCat(szProgressBar, sizeof(szProgressBar), g_stTimerBarConfig.empty);
 	}
 	
 	for (int client = 1; client <= MaxClients; client++)
@@ -833,18 +836,18 @@ void DisplayActiveEffects()
 					float flEndTime = effect.activate_time + effect.current_duration;
 					float flRatio = (GetGameTime() - effect.activate_time) / (flEndTime - effect.activate_time);
 					
-					int iNumBlocks = g_aEffectBarConfig.num_blocks;
+					int iNumBlocks = g_stEffectBarConfig.num_blocks;
 					int iEmptyBlocks = RoundToNearest(flRatio * iNumBlocks);
 					int iFilledBlocks = iNumBlocks - iEmptyBlocks;
 					
 					char szProgressBar[64];
 					for (int j = 0; j < iFilledBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.filled);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_stEffectBarConfig.filled);
 					}
 					for (int j = 0; j < iEmptyBlocks; j++)
 					{
-						StrCat(szProgressBar, sizeof(szProgressBar), g_aEffectBarConfig.empty);
+						StrCat(szProgressBar, sizeof(szProgressBar), g_stEffectBarConfig.empty);
 					}
 					
 					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
@@ -856,7 +859,7 @@ void DisplayActiveEffects()
 				}
 				
 				// -2 to include null terminators
-				if (szLine[0] && strlen(szMessage) + strlen(szLine) < MAX_USER_MSG_DATA - 2)
+				if (szLine[0] && strlen(szMessage) + strlen(szLine) < sizeof(szMessage) - 1)
 				{
 					Format(szMessage, sizeof(szMessage), "%s\n%s", szMessage, szLine);
 				}

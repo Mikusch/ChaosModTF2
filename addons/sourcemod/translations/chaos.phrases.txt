@@ -18,11 +18,11 @@
 	}
 	"#Chaos_Effect_InvertAcceleration"
 	{
-		"en"		"Invert Acceleration"
+		"en"		"Invert Controls"
 	}
 	"#Chaos_Effect_LowFriction"
 	{
-		"en"		"Caution, Wet Floor!"
+		"en"		"Caution: Wet Floor!"
 	}
 	"#Chaos_Effect_SlowMotion"
 	{
@@ -68,7 +68,7 @@
 	{
 		"en"		"What Server Am I On Again?"
 	}
-	"#Chaos_Effect_Thriller"
+	"#Chaos_Effect_ThrillerDance"
 	{
 		"en"		"Thriller Night"
 	}
@@ -180,17 +180,13 @@
 	{
 		"en"		"Ghost Union"
 	}
-	"#Chaos_Effect_Pacifist"
+	"#Chaos_Effect_Bleed"
 	{
-		"en"		"Pacifist"
+		"en"		"Paper Cut"
 	}
 	"#Chaos_Effect_ShuffleClasses"
 	{
-		"en"		"Randomize Everyone's Classes"
-	}
-	"#Chaos_Effect_BonusDucks"
-	{
-		"en"		"Bonus Ducks!"
+		"en"		"Randomize Classes"
 	}
 	"#Chaos_Effect_Bouncy"
 	{
@@ -289,7 +285,7 @@
 	{
 		"en"		"People's Republic of Invisibility"
 	}
-	"#Chaos_Effect_BigHeads"
+	"#Chaos_Effect_BigHead"
 	{
 		"en"		"Big Heads"
 	}
@@ -353,14 +349,6 @@
 	{
 		"en"		"Stretchy Mercenaries"
 	}
-	"#Chaos_Effect_SpawnSoccerBall"
-	{
-		"en"		"Spawn Soccer Ball"
-	}
-	"#Chaos_Effect_SpawnBeachBall"
-	{
-		"en"		"Spawn Beach Ball"
-	}
 	"#Chaos_Effect_PaintItems"
 	{
 		"en"		"Apply Random Paint To Items"
@@ -419,7 +407,7 @@
 	}
 	"#Chaos_Effect_DisableRespawnTimes"
 	{
-		"en"		"No Respawn Times"
+		"en"		"Instant Respawn"
 	}
 	"#Chaos_Effect_IncreasedSpread"
 	{
@@ -661,13 +649,13 @@
 	{
 		"en"		"Play Random Developer Commentary"
 	}
-	"#Chaos_Effect_IncreasedJumpHeight"
+	"#Chaos_Effect_SuperJump"
 	{
 		"en"		"Super Jumping"
 	}
-	"#Chaos_Effect_TinyHeads"
+	"#Chaos_Effect_SmallHead"
 	{
-		"en"		"Tiny Heads"
+		"en"		"Small Heads"
 	}
 	"#Chaos_Effect_SpawnGargoyle"
 	{

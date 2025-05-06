@@ -22,7 +22,7 @@ function ChaosEffect_OnEnd()
 	}
 }
 
-function Chaos_OnGameEvent_player_spawn(params)
+function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -31,7 +31,7 @@ function Chaos_OnGameEvent_player_spawn(params)
 	SetEyeAngles(player, 90)
 }
 
-function Chaos_OnGameEvent_player_teleported(params)
+function OnGameEvent_player_teleported(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
 	if (player == null)
@@ -46,5 +46,3 @@ function SetEyeAngles(player, z)
 	angles.z = z
 	player.SnapEyeAngles(angles)
 }
-
-Chaos_CollectEventCallbacks(this)
