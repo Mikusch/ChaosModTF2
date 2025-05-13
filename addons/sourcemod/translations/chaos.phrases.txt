@@ -239,15 +239,15 @@
 	}
 	"#Chaos_Effect_BulletImmune"
 	{
-		"en"		"Bullet Time"
+		"en"		"Bullet Immunity"
 	}
 	"#Chaos_Effect_BlastImmune"
 	{
-		"en"		"The Explosions Won't Stop Me"
+		"en"		"Blast Immunity"
 	}
 	"#Chaos_Effect_FireImmune"
 	{
-		"en"		"Natural Firefighters"
+		"en"		"Fire Immunity"
 	}
 	"#Chaos_Effect_10xCaptureRate"
 	{
@@ -283,7 +283,7 @@
 	}
 	"#Chaos_Effect_Stealthed"
 	{
-		"en"		"People's Republic of Invisibility"
+		"en"		"Vanishing Act"
 	}
 	"#Chaos_Effect_BigHead"
 	{
@@ -523,7 +523,7 @@
 	}
 	"#Chaos_Effect_ForceForward"
 	{
-		"en"		"Help Me, My W Key Is Stuck"
+		"en"		"Help, My W Key Is Stuck"
 	}
 	"#Chaos_Effect_IncreasedGestureSpeed"
 	{
@@ -579,7 +579,7 @@
 	}
 	"#Chaos_Effect_Swimming"
 	{
-		"en"		"The Swimming Curse"
+		"en"		"Swimming Curse"
 	}
 	"#Chaos_Effect_UncontrollableRecoil"
 	{
@@ -591,7 +591,7 @@
 	}
 	"#Chaos_Effect_ImmuneToPushback"
 	{
-		"en"		"Feet of Steel"
+		"en"		"Knockback Immune"
 	}
 	"#Chaos_Effect_Callouts"
 	{
@@ -603,11 +603,11 @@
 	}
 	"#Chaos_Effect_WeaponsFireRockets"
 	{
-		"en"		"Rocket Manifestation"
+		"en"		"All Weapons Fire Rockets"
 	}
 	"#Chaos_Effect_WeaponsFireBombs"
 	{
-		"en"		"Bomb Manifestation"
+		"en"		"All Weapons Fire Bombs"
 	}
 	"#Chaos_Effect_MedievalMode"
 	{
