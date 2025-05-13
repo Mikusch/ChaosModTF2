@@ -693,6 +693,10 @@
 	{
 		"en"		"Chip Damage"
 	}
+	"#Chaos_Effect_ChristmasPresents"
+	{
+		"en"		"Christmas Presents"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
