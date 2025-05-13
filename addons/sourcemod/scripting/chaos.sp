@@ -13,7 +13,7 @@
 #include <vscript>
 #include <morecolors>
 
-#define PLUGIN_VERSION	"1.6.1"
+#define PLUGIN_VERSION	"1.7.0"
 
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
