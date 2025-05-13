@@ -118,6 +118,8 @@ public void OnPluginStart()
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation, in seconds.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation, in seconds.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval, in percent.");
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.", _, true, 0.0);
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval, in percent.", _, true, 0.0, true, 100.0);
 	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called, in seconds.");
 	
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
