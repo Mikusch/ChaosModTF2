@@ -34,20 +34,20 @@
 			"CTFPlayer::GiveNamedItem"
 			{
 				"library"	"server"
-				"linux"		"493"
-				"windows"	"486"
+				"linux"		"494"
+				"windows"	"487"
 			}
 			"CBaseCombatWeapon::CanDeploy"
 			{
 				"library"	"server"
-				"linux"		"266"
-				"windows"	"260"
+				"linux"		"267"
+				"windows"	"261"
 			}
 			"CBaseCombatWeapon::WeaponSound"
 			{
 				"library"	"server"
-				"linux"		"308"
-				"windows"	"302"
+				"linux"		"309"
+				"windows"	"303"
 			}
 		}
 		"Functions"
