@@ -65,7 +65,7 @@ jobs:
 
       - name: Zip output
         run: |
-          zip -qq -r ${{ github.event.repository.name }}.zip addons/sourcemod
+          zip -qq -r ${{ github.event.repository.name }}.zip addons/sourcemod scripts
 
       - name: List build outputs
         run: |
