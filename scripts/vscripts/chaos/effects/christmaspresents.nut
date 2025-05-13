@@ -43,7 +43,8 @@ function ChaosEffect_OnStart()
 	local startIdx = 0
 	local foundIdx = original.find(search, startIdx)
 
-	while (foundIdx != null) {
+	while (foundIdx != null)
+	{
 		// Append part of the original string before the found substring
 		result += original.slice(startIdx, foundIdx)
 		// Append the replacement string
