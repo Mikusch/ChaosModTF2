@@ -23,7 +23,6 @@ ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_effect_update_interval;
 
 bool g_bEnabled;
-bool g_bInitialized;
 bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
@@ -135,6 +134,25 @@ public void OnPluginEnd()
 	ExpireAllActiveEffects(true);
 }
 
+public void VScript_OnScriptVMInitialized()
+{
+	static bool bInitialized = false;
+	
+	if (bInitialized)
+		return;
+	
+	GameData hGameConf = new GameData("chaos");
+	if (hGameConf)
+	{
+		bInitialized = Data_InitializeEffects(hGameConf);
+		delete hGameConf;
+	}
+	else
+	{
+		LogError("Failed to find chaos gamedata");
+	}
+}
+
 public void OnMapStart()
 {
 	g_flLastEffectDisplayTime = GetGameTime();
@@ -142,20 +160,8 @@ public void OnMapStart()
 	// Initialize VScript system
 	ServerCommand("script_execute %s", "chaos");
 	
-	// Initialize all effects in OnMapStart to guarantee it being called after VScriptServerInit
-	if (!g_bInitialized)
-	{
-		GameData hGameConf = new GameData("chaos");
-		if (hGameConf)
-		{
-			Data_OnVScriptServerInit(hGameConf);
-			delete hGameConf;
-		}
-		else
-		{
-			LogError("Failed to find chaos gamedata");
-		}
-	}
+	if (VScript_IsScriptVMInitialized())
+		VScript_OnScriptVMInitialized();
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)

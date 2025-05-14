@@ -161,11 +161,13 @@ enum struct ProgressBarConfig
 	}
 }
 
-void Data_OnVScriptServerInit(GameData hGameData)
+bool Data_InitializeEffects(GameData hGameData)
 {
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
 	
+	bool bSuccess = true;
+
 	KeyValues kv = new KeyValues("effects");
 	if (kv.ImportFromFile(szFilePath))
 	{
@@ -205,14 +207,15 @@ void Data_OnVScriptServerInit(GameData hGameData)
 		}
 		kv.GoBack();
 		
-		g_bInitialized = true;
 		LogMessage("Registered %d effects", g_hEffects.Length);
 	}
 	else
 	{
 		LogError("Could not read from file '%s'", szFilePath);
+		bSuccess = false;
 	}
-	delete kv;
+	
+	return bSuccess;
 }
 
 void Data_Initialize()
