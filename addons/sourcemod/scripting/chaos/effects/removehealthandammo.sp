@@ -13,7 +13,7 @@ public bool RemoveHealthAndAmmo_OnStart(ChaosEffect effect)
 	}
 	
 	int ammopack = -1;
-	while ((healthkit = FindEntityByClassname(ammopack, "item_ammopack_*")) != -1)
+	while ((ammopack = FindEntityByClassname(ammopack, "item_ammopack_*")) != -1)
 	{
 		RemoveEntity(ammopack);
 		bRemovedAmmo = true;
