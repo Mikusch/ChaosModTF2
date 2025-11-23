@@ -321,6 +321,10 @@
 	{
 		"en"		"Extreme Gravity"
 	}
+	"#Chaos_Effect_RandomGravity"
+	{
+		"en"		"Random Gravity"
+	}
 	"#Chaos_Effect_LoudSpeaker"
 	{
 		"en"		"Is This Thing On?"
