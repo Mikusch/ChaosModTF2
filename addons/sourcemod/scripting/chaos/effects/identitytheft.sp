@@ -5,8 +5,12 @@ static Handle g_SDKCallGiveNamedItem;
 static Handle g_hSDKCallPostInventoryApplication;
 static Handle g_hSDKCallGetSubType;
 
-public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
+public bool IdentityTheft_Initialize(ChaosEffect effect)
 {
+	GameData gameconf = new GameData("chaos/identitytheft");
+	if (!gameconf)
+		return false;
+
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "CTFPlayer::GiveNamedItem");
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
@@ -15,15 +19,17 @@ public bool IdentityTheft_Initialize(ChaosEffect effect, GameData gameconf)
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_ByValue);
 	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
 	g_SDKCallGiveNamedItem = EndPrepSDKCall();
-	
+
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
 	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
-	
+
+	delete gameconf;
+
 	VScriptFunction hScriptGetSubType = VScript_GetClassFunction("CBaseCombatWeapon", "GetSubType");
 	if (hScriptGetSubType)
 		g_hSDKCallGetSubType = hScriptGetSubType.CreateSDKCall();
-	
+
 	return g_SDKCallGiveNamedItem && g_hSDKCallPostInventoryApplication && g_hSDKCallGetSubType;
 }
 

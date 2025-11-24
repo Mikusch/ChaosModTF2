@@ -1,0 +1,24 @@
+"Games"
+{
+	"tf"
+	{
+		"Signatures"
+		{
+			"CTFPlayer::PostInventoryApplication"
+			{
+				"library"	"server"
+				"linux"		"@_ZN9CTFPlayer24PostInventoryApplicationEv"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x3C\x53\x8B\xD9\x56\x57"
+			}
+		}
+		"Offsets"
+		{
+			"CTFPlayer::GiveNamedItem"
+			{
+				"library"	"server"
+				"linux"		"494"
+				"windows"	"487"
+			}
+		}
+	}
+}

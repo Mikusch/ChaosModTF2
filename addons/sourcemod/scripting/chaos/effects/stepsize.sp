@@ -4,7 +4,7 @@
 static ConVar sv_stepsize;
 static float g_flStepSize;
 
-public bool StepSize_Initialize(ChaosEffect effect, GameData gameconf)
+public bool StepSize_Initialize(ChaosEffect effect)
 {
 	sv_stepsize = FindConVar("sv_stepsize");
 	

@@ -21,7 +21,7 @@ static ArrayList g_hCreatedVisuals;
 static StringMap g_hEntityToSpriteMap;
 static StringMap g_hEntityToModelMap;
 
-public bool Decompiled_Initialize(ChaosEffect effect, GameData gameconf)
+public bool Decompiled_Initialize(ChaosEffect effect)
 {
 	showtriggers = FindConVar("showtriggers");
 	

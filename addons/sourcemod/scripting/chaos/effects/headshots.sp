@@ -4,18 +4,21 @@
 static DynamicHook g_hDHookOnWeaponSound;
 static ArrayList g_hDynamicHookIds;
 
-public bool Headshots_Initialize(ChaosEffect effect, GameData gameconf)
+public bool Headshots_Initialize(ChaosEffect effect)
 {
+	GameData gameconf = new GameData("chaos/headshots");
 	if (!gameconf)
 		return false;
-	
+
 	g_hDHookOnWeaponSound = DynamicHook.FromConf(gameconf, "CBaseCombatWeapon::WeaponSound");
-	
+
+	delete gameconf;
+
 	if (!g_hDHookOnWeaponSound)
 		return false;
-	
+
 	g_hDynamicHookIds = new ArrayList();
-	
+
 	return true;
 }
 

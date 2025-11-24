@@ -5,24 +5,27 @@ static Handle g_hSDKCallCanDeploy;
 static Handle g_hSDKCallCanBeSelected;
 static Handle g_hSDKCallGetSubType;
 
-public bool RandomizeWeaponOrder_Initialize(ChaosEffect effect, GameData gameconf)
+public bool RandomizeWeaponOrder_Initialize(ChaosEffect effect)
 {
+	GameData gameconf = new GameData("chaos/randomizeweaponorder");
 	if (!gameconf)
 		return false;
-	
+
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "CBaseCombatWeapon::CanDeploy");
 	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
 	g_hSDKCallCanDeploy = EndPrepSDKCall();
-	
+
+	delete gameconf;
+
 	VScriptFunction hScriptGetSubType = VScript_GetClassFunction("CBaseCombatWeapon", "GetSubType");
 	if (hScriptGetSubType)
 		g_hSDKCallGetSubType = hScriptGetSubType.CreateSDKCall();
-	
+
 	VScriptFunction hScriptCanBeSelected = VScript_GetClassFunction("CBaseCombatWeapon", "CanBeSelected");
 	if (hScriptCanBeSelected)
 		g_hSDKCallCanBeSelected = hScriptCanBeSelected.CreateSDKCall();
-	
+
 	return g_hSDKCallCanDeploy && g_hSDKCallGetSubType && g_hSDKCallCanBeSelected;
 }
 

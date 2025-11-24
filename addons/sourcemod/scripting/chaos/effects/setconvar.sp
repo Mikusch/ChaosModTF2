@@ -4,7 +4,7 @@
 static StringMap g_hOldConVarValues;
 static ConVar sv_cheats;
 
-public bool SetConVar_Initialize(ChaosEffect effect, GameData gameconf)
+public bool SetConVar_Initialize(ChaosEffect effect)
 {
 	if (!g_hOldConVarValues)
 		g_hOldConVarValues = new StringMap();

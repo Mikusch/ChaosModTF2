@@ -4,16 +4,18 @@
 static Handle g_hSDKCallSpawnClientsideFlyingBird;
 static float g_flNextBirdSpawnTime[MAXPLAYERS + 1];
 
-public bool SpawnBirds_Initialize(ChaosEffect effect, GameData gameconf)
+public bool SpawnBirds_Initialize(ChaosEffect effect)
 {
+	GameData gameconf = new GameData("chaos/birds");
 	if (!gameconf)
 		return false;
-	
+
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "SpawnClientsideFlyingBird");
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
 	g_hSDKCallSpawnClientsideFlyingBird = EndPrepSDKCall();
-	
+
+	delete gameconf;
 	return g_hSDKCallSpawnClientsideFlyingBird != null;
 }
 

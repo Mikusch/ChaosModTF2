@@ -137,20 +137,11 @@ public void OnPluginEnd()
 public void VScript_OnScriptVMInitialized()
 {
 	static bool bInitialized = false;
-	
+
 	if (bInitialized)
 		return;
-	
-	GameData hGameConf = new GameData("chaos");
-	if (hGameConf)
-	{
-		bInitialized = Data_InitializeEffects(hGameConf);
-		delete hGameConf;
-	}
-	else
-	{
-		LogError("Failed to find chaos gamedata");
-	}
+
+	bInitialized = Data_InitializeEffects();
 }
 
 public void OnMapStart()
