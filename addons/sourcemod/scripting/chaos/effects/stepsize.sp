@@ -27,7 +27,7 @@ public bool StepSize_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		SetEntPropFloat(client, Prop_Data, "m_flStepSize", g_flStepSize);
+		SetEntPropFloat(client, Prop_Send, "m_flStepSize", g_flStepSize);
 	}
 	
 	return true;
@@ -40,7 +40,7 @@ public void StepSize_OnEnd(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		SetEntPropFloat(client, Prop_Data, "m_flStepSize", sv_stepsize.FloatValue);
+		SetEntPropFloat(client, Prop_Send, "m_flStepSize", sv_stepsize.FloatValue);
 	}
 }
 

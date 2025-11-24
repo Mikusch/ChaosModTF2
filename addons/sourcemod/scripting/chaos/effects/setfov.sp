@@ -61,7 +61,7 @@ public void SetFOV_OnConditionRemoved(ChaosEffect effect, int client, TFCond con
 	}
 }
 
-static void SetFOV(int client)
+static void SetFOV(int client, int iFOV)
 {
 	SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
 	SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
