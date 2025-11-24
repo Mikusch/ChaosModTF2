@@ -1,3 +1,4 @@
+// by pokemonpasta
 
 function ChaosEffect_OnStart()
 {
@@ -21,5 +22,15 @@ function ChaosEffect_OnEnd()
 			continue
 		
 		player.SetGravity(1.0)
+	}
+}
+
+// Extra set for late players
+function OnGameEvent_player_spawn(params)
+{
+	local player = GetPlayerFromUserID(params.userid)
+	if(player != null && player.GetGravity() == 1.0) // unlikely for a player OnStart to have gravity be set to 1
+	{
+		player.SetGravity(RandomFloat(0.000001, 2.0))
 	}
 }
