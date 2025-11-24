@@ -88,6 +88,7 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/slap.sp"
 #include "chaos/effects/spawnball.sp"
 #include "chaos/effects/stepsize.sp"
+#include "chaos/effects/timescale.sp"
 #include "chaos/effects/truce.sp"
 #include "chaos/effects/watermark.sp"
 #include "chaos/effects/wheredideverythinggo.sp"

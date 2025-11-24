@@ -2,15 +2,12 @@
 #pragma newdecls required
 
 static StringMap g_hOldConVarValues;
-static ConVar sv_cheats;
 
 public bool SetConVar_Initialize(ChaosEffect effect)
 {
 	if (!g_hOldConVarValues)
 		g_hOldConVarValues = new StringMap();
-	
-	sv_cheats = FindConVar("sv_cheats");
-	
+
 	return true;
 }
 
@@ -40,32 +37,13 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 	
 	g_hOldConVarValues.SetString(szName, szOldValue);
 	convar.SetString(szValue, true);
-	
+
 	// If this effect has no duration, we don't need the stuff below
 	if (!effect.duration)
 		return true;
-	
+
 	convar.AddChangeHook(OnConVarChanged);
-	
-	if (effect.data.GetNum("replicate_cheats"))
-	{
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (!IsClientInGame(client))
-				continue;
-			
-			if (IsFakeClient(client))
-			{
-				SetFakeClientConVar(client, "sv_cheats", "1");
-			}
-			else
-			{
-				sv_cheats.ReplicateToClient(client, "1");
-			}
-			
-		}
-	}
-	
+
 	return true;
 }
 
@@ -74,30 +52,12 @@ public void SetConVar_OnEnd(ChaosEffect effect)
 	char szName[512], szValue[512];
 	effect.data.GetString("convar", szName, sizeof(szName));
 	g_hOldConVarValues.GetString(szName, szValue, sizeof(szValue));
-	
+
 	ConVar convar = FindConVar(szName);
-	
+
 	convar.RemoveChangeHook(OnConVarChanged);
 	convar.SetString(szValue, true);
 	g_hOldConVarValues.Remove(szName);
-	
-	if (effect.data.GetNum("replicate_cheats"))
-	{
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (IsClientInGame(client))
-			{
-				if (IsFakeClient(client))
-				{
-					SetFakeClientConVar(client, "sv_cheats", "0");
-				}
-				else
-				{
-					sv_cheats.ReplicateToClient(client, "0");
-				}
-			}
-		}
-	}
 }
 
 static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
