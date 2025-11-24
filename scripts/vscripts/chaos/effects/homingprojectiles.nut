@@ -54,7 +54,7 @@ function ChaosEffect_OnEnd()
 ::SelectVictim <- function(projectile)
 {
 	local target
-	local min_distance = 32768.0
+	local min_distance = FLT_MAX
 	for (local i = 1; i <= MaxClients(); i++)
 	{
 		local player = PlayerInstanceFromIndex(i)
