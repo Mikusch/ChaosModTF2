@@ -7,6 +7,7 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 		
+		// SetGravity(0.0) doesn't do anything, so we use a really small min value instead for effectively no gravity.
 		player.SetGravity(RandomFloat(0.000001, 2.0))
 	}
 }
