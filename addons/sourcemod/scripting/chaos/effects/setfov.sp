@@ -17,8 +17,10 @@ public bool SetFOV_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
-		SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
+		if (TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+			continue;
+		
+		SetFOV(iFOV);
 	}
 	
 	return true;
@@ -31,31 +33,45 @@ public void SetFOV_OnEnd(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		char szFOV[64];
-		if (GetClientInfo(client, "fov_desired", szFOV, sizeof(szFOV)))
-		{
-			int iFOV = StringToInt(szFOV);
-			SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
-			SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
-		}
+		if (TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+			continue;
+		
+		SetDefaultFOV(client);
 	}
 }
 
 public void SetFOV_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	int iFOV = effect.data.GetNum("fov");
-	
-	SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
-	SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
+	SetFOV(effect.data.GetNum("fov"));
+}
+
+public void SetFOV_OnConditionAdded(ChaosEffect effect, int client, TFCond condition)
+{
+	if (condition == TFCond_Zoomed)
+	{
+		SetDefaultFOV(client);
+	}
 }
 
 public void SetFOV_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
 {
 	if (condition == TFCond_Zoomed)
 	{
-		int iFOV = effect.data.GetNum("fov");
-		
-		SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
-		SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
+		SetFOV(effect.data.GetNum("fov"));
+	}
+}
+
+static void SetFOV(int client)
+{
+	SetEntProp(client, Prop_Send, "m_iFOV", iFOV);
+	SetEntProp(client, Prop_Send, "m_iDefaultFOV", iFOV);
+}
+
+static void SetDefaultFOV(int client)
+{
+	char szFOV[32];
+	if (GetClientInfo(client, "fov_desired", szFOV, sizeof(szFOV)))
+	{
+		SetFOV(StringToInt(szFOV));
 	}
 }

@@ -10,6 +10,11 @@ public bool ScreenOverlay_OnStart(ChaosEffect effect)
 	if (IsEffectOfClassActive(effect.effect_class))
 		return false;
 	
+	return true;
+}
+
+public void ScreenOverlay_Update(ChaosEffect effect)
+{
 	char szScreenOverlay[PLATFORM_MAX_PATH];
 	effect.data.GetString("material", szScreenOverlay, sizeof(szScreenOverlay));
 	
@@ -20,8 +25,6 @@ public bool ScreenOverlay_OnStart(ChaosEffect effect)
 		
 		SetEntPropString(client, Prop_Send, "m_szScriptOverlayMaterial", szScreenOverlay);
 	}
-	
-	return true;
 }
 
 public void ScreenOverlay_OnEnd(ChaosEffect effect)
