@@ -24,6 +24,17 @@ const DAMAGE_AIM = 3
 const TF_DEATHFLAG_DEADRINGER = 32
 const TF_BLEEDING_DMG = 4
 
+const TF_AMMO_DUMMY = 0
+const TF_AMMO_PRIMARY = 1
+const TF_AMMO_SECONDARY = 2
+const TF_AMMO_METAL = 3
+const TF_AMMO_GRENADES1 = 4
+const TF_AMMO_GRENADES2 = 5
+const TF_AMMO_GRENADES3 = 6
+const TF_AMMO_COUNT = 7 
+
+const MAX_WEAPONS = 48
+
 // Sound channels
 const CHAN_STATIC = 6
 

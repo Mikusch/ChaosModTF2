@@ -465,9 +465,9 @@
 	{
 		"en"		"No Air Acceleration"
 	}
-	"#Chaos_Effect_CattoGuns"
+	"#Chaos_Effect_NoAmmo"
 	{
-		"en"		"Catto Guns"
+		"en"		"No Ammo"
 	}
 	"#Chaos_Effect_GiveGibus"
 	{
@@ -696,6 +696,10 @@
 	"#Chaos_Effect_ChristmasPresents"
 	{
 		"en"		"Christmas Presents"
+	}
+	"#Chaos_Effect_SpawnSkull"
+	{
+		"en"		"Spawn The Skull"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
