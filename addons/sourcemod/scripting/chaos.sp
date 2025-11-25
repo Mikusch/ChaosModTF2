@@ -50,6 +50,7 @@ ChatConfig g_stChatConfig;
 // Regular effects
 #include "chaos/effects/addcond.sp"
 #include "chaos/effects/birds.sp"
+#include "chaos/effects/burnplayer.sp"
 #include "chaos/effects/cattoguns.sp"
 #include "chaos/effects/decompiled.sp"
 #include "chaos/effects/disablerandomdirection.sp"
@@ -60,7 +61,6 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/fakecrash.sp"
 #include "chaos/effects/falldamage.sp"
 #include "chaos/effects/flipviewmodels.sp"
-#include "chaos/effects/floorislava.sp"
 #include "chaos/effects/forceforward.sp"
 #include "chaos/effects/giveitem.sp"
 #include "chaos/effects/grantorremoveallupgrades.sp"
