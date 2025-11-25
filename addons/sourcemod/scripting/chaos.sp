@@ -76,6 +76,7 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/randomizeweaponorder.sp"
 #include "chaos/effects/removehealthandammo.sp"
 #include "chaos/effects/removerandomentity.sp"
+#include "chaos/effects/resizeplayer.sp"
 #include "chaos/effects/screenfade.sp"
 #include "chaos/effects/screenoverlay.sp"
 #include "chaos/effects/setattribute.sp"

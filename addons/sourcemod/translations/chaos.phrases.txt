@@ -701,6 +701,14 @@
 	{
 		"en"		"Spawn The Skull"
 	}
+	"#Chaos_Effect_BigPlayer"
+	{
+		"en"		"Giant Players"
+	}
+	"#Chaos_Effect_SmallPlayer"
+	{
+		"en"		"Tiny Players"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
