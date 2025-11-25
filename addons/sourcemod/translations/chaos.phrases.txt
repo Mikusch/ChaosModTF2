@@ -495,7 +495,7 @@
 	}
 	"#Chaos_Effect_BackstabImmune"
 	{
-		"en"		"The Razorback Movement"
+		"en"		"Backstab Immunity"
 	}
 	"#Chaos_Effect_UTurn"
 	{
