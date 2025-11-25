@@ -145,7 +145,7 @@ static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char
 
 static bool IsValidRobotPlayer(int client)
 {
-	return (0 < client <= MaxClients) && IsClientInGame(client) && (!GameRules_GetProp("m_bPlayingMannVsMachine") || !(GetEntityFlags(client) & FL_FAKECLIENT));
+	return (0 < client <= MaxClients) && IsClientInGame(client) && TF2_GetPlayerClass(client) > TFClass_Unknown && (!GameRules_GetProp("m_bPlayingMannVsMachine") || !(GetEntityFlags(client) & FL_FAKECLIENT));
 }
 
 static void SetRobotModel(int client)
