@@ -17,10 +17,7 @@ public bool SetFOV_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		if (TF2_IsPlayerInCondition(client, TFCond_Zoomed))
-			continue;
-		
-		SetFOV(iFOV);
+		SetFOV(client, iFOV);
 	}
 	
 	return true;
@@ -33,31 +30,20 @@ public void SetFOV_OnEnd(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		if (TF2_IsPlayerInCondition(client, TFCond_Zoomed))
-			continue;
-		
 		SetDefaultFOV(client);
 	}
 }
 
 public void SetFOV_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	SetFOV(effect.data.GetNum("fov"));
-}
-
-public void SetFOV_OnConditionAdded(ChaosEffect effect, int client, TFCond condition)
-{
-	if (condition == TFCond_Zoomed)
-	{
-		SetDefaultFOV(client);
-	}
+	SetFOV(client, effect.data.GetNum("fov"));
 }
 
 public void SetFOV_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
 {
-	if (condition == TFCond_Zoomed)
+	if (condition == TFCond_Zoomed || condition == TFCond_Teleporting || condition == TFCond_HalloweenKartDash)
 	{
-		SetFOV(effect.data.GetNum("fov"));
+		SetFOV(client, effect.data.GetNum("fov"));
 	}
 }
 
@@ -72,6 +58,6 @@ static void SetDefaultFOV(int client)
 	char szFOV[32];
 	if (GetClientInfo(client, "fov_desired", szFOV, sizeof(szFOV)))
 	{
-		SetFOV(StringToInt(szFOV));
+		SetFOV(client, StringToInt(szFOV));
 	}
 }
