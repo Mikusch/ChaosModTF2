@@ -697,10 +697,6 @@
 	{
 		"en"		"Christmas Presents"
 	}
-	"#Chaos_Effect_SpawnSkull"
-	{
-		"en"		"Spawn The Skull"
-	}
 	"#Chaos_Effect_BigPlayer"
 	{
 		"en"		"Giant Players"
