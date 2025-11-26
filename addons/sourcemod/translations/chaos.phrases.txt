@@ -709,6 +709,10 @@
 	{
 		"en"		"Tiny Players"
 	}
+	"#Chaos_Effect_Cocainum"
+	{
+		"en"		"Cocainum"
+	}
 	"#Chaos_Effect_Mirror"
 	{
 		"en"		"Mirrored World"
