@@ -697,6 +697,10 @@
 	{
 		"en"		"Christmas Presents"
 	}
+	"#Chaos_Effect_JumpyProps"
+	{
+		"en"		"Jumpy Props"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
