@@ -1,9 +1,10 @@
 
 // config
-MinProps <- 1
-JumpCooldown <- 2
+MinProps <- 1     // int, minimum props for effect to load
+JumpCooldown <- 2 // int, seconds
 VPhysicsClassnames <- [
 	"func_physbox"
+	"passtime_ball"
 	"prop_physics"
 	"prop_physics_multiplayer"
 	"prop_physics_override"
