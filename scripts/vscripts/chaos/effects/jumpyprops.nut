@@ -1,6 +1,6 @@
 
 // config
-MinProps <- 1     // int, minimum props for effect to load
+MinProps <- 1     // int, minimum vphysics props present for effect to load
 JumpCooldown <- 2 // int, seconds
 VPhysicsClassnames <- [
 	"func_physbox"
