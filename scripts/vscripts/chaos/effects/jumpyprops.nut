@@ -1,3 +1,4 @@
+// by pokemonpasta
 
 // config
 MinProps <- 1     // int, minimum vphysics props present for effect to load
