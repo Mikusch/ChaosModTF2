@@ -326,6 +326,16 @@ void UTIL_ScreenFade(int player, const int color[4], float fadeTime, float fadeH
 	}
 }
 
+void UTIL_ScreenShake(int player, ShakeCommand_t eCommand, float flAmplitude, float flFrequency, float flDuration)
+{
+	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Shake", player));
+		bf.WriteByte(view_as<int>(eCommand));
+		bf.WriteFloat(flAmplitude);
+		bf.WriteFloat(flFrequency);
+		bf.WriteFloat(flDuration);
+	EndMessage();
+}
+
 void WorldSpaceCenter(int entity, float vecCenter[3])
 {
 	float vecOrigin[3], vecMins[3], vecMaxs[3], vecOffset[3];
