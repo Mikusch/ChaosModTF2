@@ -2,7 +2,7 @@
 
 // config
 MinProps 		<- 1	// int, minimum vphysics props present for effect to load
-JumpCooldown 	<- 2.0 	// float, seconds
+JumpCooldown 	<- 1.5 	// float, seconds
 
 // code
 ThinkFuncs <- {}
@@ -14,16 +14,23 @@ function ChaosEffect_OnStart()
 		if(ent.GetMoveType() != MOVETYPE_VPHYSICS)
 			continue
 		
-		ent.ValidateScriptScope()
-		ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
-		
-		ent.GetScriptScope().JumpCooldown <- JumpCooldown
-		ent.GetScriptScope().JumpThink    <- JumpThink
-		EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, 5.0), null, null)
+		StartBouncing(ent)
 	}
 		
 	if(ThinkFuncs.len() < MinProps)
 		return false
+}
+
+function ChaosEffect_Update()
+{
+	for(local ent = Entities.First();ent = Entities.Next(ent);)
+	{
+		// Start bouncing any VPhysics entities we aren't tracking already
+		if(ent in ThinkFuncs || ent.GetMoveType() != MOVETYPE_VPHYSICS)
+			continue
+		
+		StartBouncing(ent)
+	}
 }
 
 function ChaosEffect_OnEnd()
@@ -33,18 +40,26 @@ function ChaosEffect_OnEnd()
 		if(!(ent in ThinkFuncs))
 			continue
 		
-		if(ent.GetMoveType() != MOVETYPE_VPHYSICS)
-			continue
-		
-		AddThinkToEnt(ent, ThinkFuncs[ent])
+		local think_func = ThinkFuncs[ent]
+		AddThinkToEnt(ent, think_func ? think_func : null)
 	}
 }
 
 function JumpThink()
 {
 	local vel = self.GetPhysVelocity()
-	vel.z = RandomFloat(250.0, 750.0)
+	vel.z = RandomFloat(400.0, 600.0)
 	self.SetPhysVelocity(vel)
 	
 	return JumpCooldown
+}
+
+function StartBouncing(ent)
+{
+	ent.ValidateScriptScope()
+	ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
+	
+	ent.GetScriptScope().JumpCooldown <- JumpCooldown
+	ent.GetScriptScope().JumpThink    <- JumpThink
+	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, 5.0), null, null)
 }
