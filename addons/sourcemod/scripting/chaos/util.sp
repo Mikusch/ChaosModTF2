@@ -106,17 +106,17 @@ bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const c
 void SendHudNotification(HudNotification_t iType, bool bForceShow = false)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageAll("HudNotify"));
-	bf.WriteByte(view_as<int>(iType));
-	bf.WriteBool(bForceShow);	// Display in cl_hud_minmode
+		bf.WriteByte(view_as<int>(iType));
+		bf.WriteBool(bForceShow);	// Display in cl_hud_minmode
 	EndMessage();
 }
 
 void SendCustomHudNotificationCustom(int client, const char[] szText, const char[] szIcon, TFTeam nTeam = TFTeam_Unassigned)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("HudNotifyCustom", client));
-	bf.WriteString(szText);
-	bf.WriteString(szIcon);
-	bf.WriteByte(view_as<int>(nTeam));
+		bf.WriteString(szText);
+		bf.WriteString(szIcon);
+		bf.WriteByte(view_as<int>(nTeam));
 	EndMessage();
 }
 
@@ -127,8 +127,8 @@ void PrintKeyHintText(int client, const char[] format, any...)
 	VFormat(buffer, sizeof(buffer), format, 3);
 	
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("KeyHintText", client));
-	bf.WriteByte(1);
-	bf.WriteString(buffer);
+		bf.WriteByte(1);
+		bf.WriteString(buffer);
 	EndMessage();
 }
 
@@ -315,14 +315,13 @@ void UTIL_ScreenFade(int player, const int color[4], float fadeTime, float fadeH
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Fade", player, USERMSG_RELIABLE));
 	if (bf != null)
 	{
-		bf.WriteShort(FixedUnsigned16(fadeTime, 1 << SCREENFADE_FRACBITS));
-		bf.WriteShort(FixedUnsigned16(fadeHold, 1 << SCREENFADE_FRACBITS));
-		bf.WriteShort(flags);
-		bf.WriteByte(color[0]);
-		bf.WriteByte(color[1]);
-		bf.WriteByte(color[2]);
-		bf.WriteByte(color[3]);
-		
+			bf.WriteShort(FixedUnsigned16(fadeTime, 1 << SCREENFADE_FRACBITS));
+			bf.WriteShort(FixedUnsigned16(fadeHold, 1 << SCREENFADE_FRACBITS));
+			bf.WriteShort(flags);
+			bf.WriteByte(color[0]);
+			bf.WriteByte(color[1]);
+			bf.WriteByte(color[2]);
+			bf.WriteByte(color[3]);
 		EndMessage();
 	}
 }

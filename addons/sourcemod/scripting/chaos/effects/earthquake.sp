@@ -61,9 +61,9 @@ static void OnGroundEntChangedPost(int client)
 static void Shake(int client, ShakeCommand_t eCommand, float flDuration)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Shake", client));
-	bf.WriteByte(view_as<int>(eCommand));	// shake command (SHAKE_START, STOP, FREQUENCY, AMPLITUDE)
-	bf.WriteFloat(15.0);					// shake magnitude/amplitude
-	bf.WriteFloat(150.0);					// shake noise frequency
-	bf.WriteFloat(flDuration);				// shake lasts this long
+		bf.WriteByte(view_as<int>(eCommand));	// shake command (SHAKE_START, STOP, FREQUENCY, AMPLITUDE)
+		bf.WriteFloat(15.0);					// shake magnitude/amplitude
+		bf.WriteFloat(150.0);					// shake noise frequency
+		bf.WriteFloat(flDuration);				// shake lasts this long
 	EndMessage();
 }
