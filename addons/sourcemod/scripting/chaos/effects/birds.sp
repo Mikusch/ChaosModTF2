@@ -16,6 +16,8 @@ public bool SpawnBirds_OnStart(ChaosEffect effect)
 	return true;
 }
 
+// TODO Fix me
+
 public void SpawnBirds_Update(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -31,9 +33,17 @@ public void SpawnBirds_Update(ChaosEffect effect)
 
 		g_flNextBirdSpawnTime[client] = GetGameTime() + GetRandomFloat(0.5, 1.0);
 
-		float vecCenter[3];
+		float vecLaunchSpot[3], vecOrigin[3], vecCenter[3];
+		GetClientAbsOrigin(client, vecOrigin);
 		WorldSpaceCenter(client, vecCenter);
-		SpawnClientsideFlyingBird(vecCenter);
+		AddVectors(vecOrigin, vecCenter, vecLaunchSpot);
+		ScaleVector(vecLaunchSpot, 0.5);
+
+		float vecRandom[3];
+		vecRandom[2] = GetRandomFloat(-10.0, 20.0);
+		AddVectors(vecLaunchSpot, vecRandom, vecLaunchSpot);
+
+		SpawnClientsideFlyingBird(vecLaunchSpot);
 	}
 }
 
