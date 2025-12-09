@@ -348,31 +348,6 @@ void WorldSpaceCenter(int entity, float vecCenter[3])
 	AddVectors(vecOrigin, vecOffset, vecCenter);
 }
 
-void RemoveAllItems(int client)
-{
-	// Nuke items.
-	int nMaxWeapons = GetEntPropArraySize(client, Prop_Data, "m_hMyWeapons");
-	for (int i = 0; i < nMaxWeapons; i++)
-	{
-		int weapon = GetEntPropEnt(client, Prop_Data, "m_hMyWeapons", i);
-		if (weapon == -1)
-			continue;
-
-		RemovePlayerItem(client, weapon);
-		RemoveEntity(weapon);
-	}
-
-	// Nuke wearables.
-	for (int wbl = TF2Util_GetPlayerWearableCount(client) - 1; wbl >= 0; wbl--)
-	{
-		int wearable = TF2Util_GetPlayerWearable(client, wbl);
-		if (wearable == -1)
-			continue;
-
-		TF2_RemoveWearable(client, wearable);
-	}
-}
-
 int FindItemOffset(int entity)
 {
 	char szNetClass[32];
