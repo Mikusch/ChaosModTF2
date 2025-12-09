@@ -1,74 +1,50 @@
 // by pokemonpasta
 
 // config
-MinProps <- 1     // int, minimum vphysics props present for effect to load
-JumpCooldown <- 2 // int, seconds
-VPhysicsClassnames <- [
-	"func_physbox"
-	"passtime_ball"
-	"prop_physics"
-	"prop_physics_multiplayer"
-	"prop_physics_override"
-	"prop_sphere"
-	"simple_physics_prop"
-	"simple_physics_brush"
-]
+MinProps 		<- 1	// int, minimum vphysics props present for effect to load
+JumpCooldown 	<- 2.0 	// float, seconds
 
 // code
-JumpingEntities <- {}
+ThinkFuncs <- {}
 
 function ChaosEffect_OnStart()
 {
-	foreach(classname in VPhysicsClassnames)
+	for(local ent = Entities.First();ent = Entities.Next(ent);)
 	{
-		for(local ent; ent = Entities.FindByClassname(ent, classname);)
-		{
-			AddEntity(ent)
-		}
+		if(ent.GetMoveType() != MOVETYPE_VPHYSICS)
+			continue
+		
+		ent.ValidateScriptScope()
+		ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
+		
+		ent.GetScriptScope().JumpCooldown <- JumpCooldown
+		ent.GetScriptScope().JumpThink    <- JumpThink
+		EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, 5.0), null, null)
 	}
 		
-	if(JumpingEntities.len() < MinProps)
+	if(ThinkFuncs.len() < MinProps)
 		return false
 }
 
-function ChaosEffect_OnUpdate()
+function ChaosEffect_OnEnd()
 {
-	local timemod = Time().tointeger()
-	timemod %= JumpCooldown
-	foreach(classname in VPhysicsClassnames)
+	for(local ent = Entities.First();ent = Entities.Next(ent);)
 	{
-		for(local ent; ent = Entities.FindByClassname(ent, classname);)
-		{
-			if(ent in JumpingEntities)
-			{
-				local info = JumpingEntities[ent]
-				if(timemod == info.modulus)
-				{
-					if(!info.in_jump)
-						JumpEntity(ent)
-				}
-				else
-					info.in_jump = false // We only really care about in_jump in the same second that the entity jumps, so we can reset it in the next second
-			}
-			else
-				AddEntity(ent)
-		}
+		if(!(ent in ThinkFuncs))
+			continue
+		
+		if(ent.GetMoveType() != MOVETYPE_VPHYSICS)
+			continue
+		
+		AddThinkToEnt(ent, ThinkFuncs[ent])
 	}
 }
 
-function JumpEntity(entity)
+function JumpThink()
 {
-	local vel = entity.GetPhysVelocity()
+	local vel = self.GetPhysVelocity()
 	vel.z = RandomFloat(250.0, 750.0)
-	entity.SetPhysVelocity(vel)
+	self.SetPhysVelocity(vel)
 	
-	JumpingEntities[entity].in_jump = true
-}
-
-function AddEntity(entity)
-{
-	JumpingEntities[entity] <- {
-		modulus = RandomInt(0, JumpCooldown - 1)
-		in_jump = false
-	}
+	return JumpCooldown
 }
