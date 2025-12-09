@@ -1,7 +1,7 @@
 // by pokemonpasta
 
 // config
-MinProps 		<- 1	// int, minimum vphysics props present for effect to load
+MinProps 		<- 1	// int, minimum vphysics ents present for effect to load
 JumpCooldown 	<- 1.5 	// float, seconds
 
 // code
