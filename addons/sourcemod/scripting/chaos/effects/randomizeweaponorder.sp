@@ -43,8 +43,8 @@ public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client
 	
 	ArrayList hWeapons = new ArrayList();
 	
-	int iLength = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
-	for (int i = 0; i < iLength; i++)
+	int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
+	for (int i = 0; i < nMaxWeapons; i++)
 	{
 		int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 		if (myWeapon == -1)
