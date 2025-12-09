@@ -26,6 +26,7 @@ function ChaosEffect_Update()
 	for(local ent = Entities.First();ent = Entities.Next(ent);)
 	{
 		// Start bouncing any VPhysics entities we aren't tracking already
+		// this will usually be new entities that weren't there when we started
 		if(ent in ThinkFuncs || ent.GetMoveType() != MOVETYPE_VPHYSICS)
 			continue
 		
@@ -41,7 +42,7 @@ function ChaosEffect_OnEnd()
 			continue
 		
 		local think_func = ThinkFuncs[ent]
-		AddThinkToEnt(ent, think_func ? think_func : null)
+		AddThinkToEnt(ent, think_func ? think_func : null) // if there was no original think function, we set to null to clear it
 	}
 }
 
