@@ -713,6 +713,22 @@
 	{
 		"en"		"Mirrored World"
 	}
+	"#Chaos_Effect_AxisMirror"
+	{
+		"en"		"FuuF"
+	}
+	"#Chaos_Effect_ScrollX"
+	{
+		"en"		"Horizontal Scroll"
+	}
+	"#Chaos_Effect_ScrollY"
+	{
+		"en"		"Vertical Scroll"
+	}
+	"#Chaos_Effect_Tile"
+	{
+		"en"		"See More"
+	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
 		"en"		"5x Timer Speed (Meta)"
