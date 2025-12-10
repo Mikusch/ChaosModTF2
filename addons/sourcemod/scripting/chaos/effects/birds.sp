@@ -8,6 +8,8 @@ static float g_flNextBirdSpawnTime[MAXPLAYERS + 1];
 
 public bool SpawnBirds_OnStart(ChaosEffect effect)
 {
+	PrecacheModel("models/props_forest/dove.mdl");
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		g_flNextBirdSpawnTime[client] = GetGameTime();
@@ -15,8 +17,6 @@ public bool SpawnBirds_OnStart(ChaosEffect effect)
 
 	return true;
 }
-
-// TODO Fix me
 
 public void SpawnBirds_Update(ChaosEffect effect)
 {
