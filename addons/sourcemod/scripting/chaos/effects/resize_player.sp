@@ -6,6 +6,10 @@ public bool ResizePlayer_OnStart(ChaosEffect effect)
 	if (!effect.data)
 		return false;
 
+	// Only allow one active at a time
+	if (IsEffectOfClassActive(effect.effect_class))
+		return false;
+
 	float flScale = effect.data.GetFloat("scale", 1.0);
 	float flChangeDuration = effect.data.GetFloat("change_duration");
 

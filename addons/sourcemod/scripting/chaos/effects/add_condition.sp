@@ -29,8 +29,15 @@ public bool AddCond_OnStart(ChaosEffect effect)
 {
 	if (!effect.data)
 		return false;
-	
+
 	TFCond nCondition = view_as<TFCond>(effect.data.GetNum("condition"));
+	
+	char szCondition[12];
+	effect.data.GetString("condition", szCondition, sizeof(szCondition));
+
+	// Don't apply the same condition twice
+	if (FindKeyValuePairInActiveEffects(effect.effect_class, "condition", szCondition))
+		return false;
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
