@@ -50,6 +50,7 @@ ChatConfig g_stChatConfig;
 // Regular effects
 #include "chaos/effects/addcond.sp"
 #include "chaos/effects/birds.sp"
+#include "chaos/effects/burnplayer.sp"
 #include "chaos/effects/cattoguns.sp"
 #include "chaos/effects/decompiled.sp"
 #include "chaos/effects/disablerandomdirection.sp"
@@ -60,7 +61,6 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/fakecrash.sp"
 #include "chaos/effects/falldamage.sp"
 #include "chaos/effects/flipviewmodels.sp"
-#include "chaos/effects/floorislava.sp"
 #include "chaos/effects/forceforward.sp"
 #include "chaos/effects/giveitem.sp"
 #include "chaos/effects/grantorremoveallupgrades.sp"
@@ -76,6 +76,7 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/randomizeweaponorder.sp"
 #include "chaos/effects/removehealthandammo.sp"
 #include "chaos/effects/removerandomentity.sp"
+#include "chaos/effects/resizeplayer.sp"
 #include "chaos/effects/screenfade.sp"
 #include "chaos/effects/screenoverlay.sp"
 #include "chaos/effects/setattribute.sp"
@@ -88,6 +89,7 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/slap.sp"
 #include "chaos/effects/spawnball.sp"
 #include "chaos/effects/stepsize.sp"
+#include "chaos/effects/timescale.sp"
 #include "chaos/effects/truce.sp"
 #include "chaos/effects/watermark.sp"
 #include "chaos/effects/wheredideverythinggo.sp"
@@ -137,20 +139,11 @@ public void OnPluginEnd()
 public void VScript_OnScriptVMInitialized()
 {
 	static bool bInitialized = false;
-	
+
 	if (bInitialized)
 		return;
-	
-	GameData hGameConf = new GameData("chaos");
-	if (hGameConf)
-	{
-		bInitialized = Data_InitializeEffects(hGameConf);
-		delete hGameConf;
-	}
-	else
-	{
-		LogError("Failed to find chaos gamedata");
-	}
+
+	bInitialized = Data_InitializeEffects();
 }
 
 public void OnMapStart()

@@ -1,0 +1,15 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CBaseCombatWeapon::CanDeploy"
+			{
+				"library"	"server"
+				"linux"		"267"
+				"windows"	"261"
+			}
+		}
+	}
+}

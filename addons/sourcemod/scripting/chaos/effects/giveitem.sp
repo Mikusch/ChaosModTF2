@@ -3,18 +3,20 @@
 
 static Handle g_hSDKCallPostInventoryApplication;
 
-public bool GiveItem_Initialize(ChaosEffect effect, GameData gameconf)
+public bool GiveItem_Initialize(ChaosEffect effect)
 {
+	GameData gameconf = new GameData("chaos/giveitem");
 	if (!gameconf)
 		return false;
-	
+
 	if (!g_hSDKCallPostInventoryApplication)
 	{
 		StartPrepSDKCall(SDKCall_Player);
 		PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
 		g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
 	}
-	
+
+	delete gameconf;
 	return g_hSDKCallPostInventoryApplication != null;
 }
 

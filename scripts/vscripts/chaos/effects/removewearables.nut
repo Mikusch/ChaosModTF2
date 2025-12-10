@@ -1,8 +1,3 @@
-const TF_DEFINDEX_CHARGIN_TARGE = 131
-const TF_DEFINDEX_SPLENDID_SCREEN = 406
-const TF_DEFINDEX_TIDE_TURNER = 1099
-const TF_DEFINDEX_FESTIVE_CHARGIN_TARGE = 1144
-
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)

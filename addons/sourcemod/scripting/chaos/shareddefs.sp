@@ -16,6 +16,16 @@
 
 #define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
 
+enum ShakeCommand_t
+{
+	SHAKE_START = 0,		// Starts the screen shake for all players within the radius.
+	SHAKE_STOP,				// Stops the screen shake for all players within the radius.
+	SHAKE_AMPLITUDE,		// Modifies the amplitude of an active screen shake for all players within the radius.
+	SHAKE_FREQUENCY,		// Modifies the frequency of an active screen shake for all players within the radius.
+	SHAKE_START_RUMBLEONLY,	// Starts a shake effect that only rumbles the controller, no screen effect.
+	SHAKE_START_NORUMBLE,	// Starts a shake that does NOT rumble the controller.
+};
+
 enum HudNotification_t
 {
 	HUD_NOTIFY_YOUR_FLAG_TAKEN,

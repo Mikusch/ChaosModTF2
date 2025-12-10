@@ -1,8 +1,8 @@
-const TF_GIFT_MODEL = "models/props_halloween/gargoyle_ghost.mdl"
+local TF_GIFT_MODEL = "models/props_halloween/gargoyle_ghost.mdl"
 PrecacheModel(TF_GIFT_MODEL)
 PrecacheScriptSound("Halloween.PumpkinPickup")
 
-const MAX_ATTEMPTS = 10
+local MAX_ATTEMPTS = 10
 
 function ChaosEffect_OnStart()
 {

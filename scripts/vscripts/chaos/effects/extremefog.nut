@@ -1,5 +1,3 @@
-const SF_FOG_MASTER = 0x0001
-
 local custom_fog_controller = null
 
 function ChaosEffect_OnStart()

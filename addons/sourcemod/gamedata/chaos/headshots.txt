@@ -1,0 +1,36 @@
+"Games"
+{
+	"tf"
+	{
+		"Offsets"
+		{
+			"CBaseCombatWeapon::WeaponSound"
+			{
+				"library"	"server"
+				"linux"		"309"
+				"windows"	"303"
+			}
+		}
+		"Functions"
+		{
+			"CBaseCombatWeapon::WeaponSound"
+			{
+				"offset"	"CBaseCombatWeapon::WeaponSound"
+				"hooktype"	"entity"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"sound_type"
+					{
+						"type"	"int"
+					}
+					"soundtime"
+					{
+						"type"	"float"
+					}
+				}
+			}
+		}
+	}
+}

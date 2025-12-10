@@ -41,11 +41,10 @@ public bool DisassembleMap_OnStart(ChaosEffect effect)
 		}
 	}
 	
-	AcceptEntityInput(converter, "ConvertTarget");
+	g_bActivated = AcceptEntityInput(converter, "ConvertTarget");
 	RemoveEntity(converter);
 	
-	g_bActivated = true;
-	return true;
+	return g_bActivated;
 }
 
 public void DisassembleMap_OnRoundStart(ChaosEffect effect)

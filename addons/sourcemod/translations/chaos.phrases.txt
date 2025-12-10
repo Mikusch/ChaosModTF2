@@ -425,9 +425,9 @@
 	{
 		"en"		"That's Some Slappin'"
 	}
-	"#Chaos_Effect_FloorIsLava"
+	"#Chaos_Effect_BurnPlayer"
 	{
-		"en"		"The Floor Is Lava"
+		"en"		"Burn"
 	}
 	"#Chaos_Effect_TiltedCamera"
 	{
@@ -465,9 +465,9 @@
 	{
 		"en"		"No Air Acceleration"
 	}
-	"#Chaos_Effect_CattoGuns"
+	"#Chaos_Effect_NoAmmo"
 	{
-		"en"		"Catto Guns"
+		"en"		"No Ammo"
 	}
 	"#Chaos_Effect_GiveGibus"
 	{
@@ -495,7 +495,7 @@
 	}
 	"#Chaos_Effect_BackstabImmune"
 	{
-		"en"		"The Razorback Movement"
+		"en"		"Backstab Immunity"
 	}
 	"#Chaos_Effect_UTurn"
 	{
@@ -697,9 +697,21 @@
 	{
 		"en"		"Christmas Presents"
 	}
-	"#Chaos_Effect_JumpyProps"
+	"#Chaos_Effect_BigPlayer"
 	{
-		"en"		"Jumpy Props"
+		"en"		"Giant Players"
+	}
+	"#Chaos_Effect_SmallPlayer"
+	{
+		"en"		"Tiny Players"
+	}
+	"#Chaos_Effect_Cocainum"
+	{
+		"en"		"Cocainum"
+	}
+	"#Chaos_Effect_Mirror"
+	{
+		"en"		"Mirrored World"
 	}
 	"#Chaos_MetaEffect_5xTimerSpeed"
 	{
@@ -728,5 +740,9 @@
 	"#Chaos_MetaEffect_ReinvokePreviousEffects"
 	{
 		"en"		"Reinvoke Previous Effects (Meta)"
+	}
+	"#Chaos_Effect_JumpyProps"
+	{
+		"en"		"Jumpy Props"
 	}
 }

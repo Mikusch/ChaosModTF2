@@ -161,11 +161,11 @@ enum struct ProgressBarConfig
 	}
 }
 
-bool Data_InitializeEffects(GameData hGameData)
+bool Data_InitializeEffects()
 {
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
-	
+
 	bool bSuccess = true;
 
 	KeyValues kv = new KeyValues("effects");
@@ -177,20 +177,19 @@ bool Data_InitializeEffects(GameData hGameData)
 			{
 				ChaosEffect effect;
 				effect.Parse(kv);
-				
+
 				if (g_hEffects.FindString(effect.id) != -1)
 				{
 					LogError("Effect '%T' has duplicate ID '%s', skipping...", effect.name, LANG_SERVER, effect.id);
 					continue;
 				}
-				
+
 				Function fnCallback = effect.GetCallbackFunction("Initialize");
 				if (fnCallback != INVALID_FUNCTION)
 				{
 					Call_StartFunction(null, fnCallback);
 					Call_PushArray(effect, sizeof(effect));
-					Call_PushCell(hGameData);
-					
+
 					// If Initialize throws or returns false, the effect is not added to our list
 					bool bReturn;
 					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
@@ -199,14 +198,14 @@ bool Data_InitializeEffects(GameData hGameData)
 						continue;
 					}
 				}
-				
+
 				g_hEffects.PushArray(effect);
 			}
 			while (kv.GotoNextKey(false));
 			kv.GoBack();
 		}
 		kv.GoBack();
-		
+
 		LogMessage("Registered %d effects", g_hEffects.Length);
 	}
 	else
@@ -214,7 +213,7 @@ bool Data_InitializeEffects(GameData hGameData)
 		LogError("Could not read from file '%s'", szFilePath);
 		bSuccess = false;
 	}
-	
+
 	return bSuccess;
 }
 
