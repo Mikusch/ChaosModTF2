@@ -64,5 +64,5 @@ function StartBouncing(ent)
 	ent.GetScriptScope().JumpThink <- JumpThink
 
 	// Run this on itself so we can add some delay
-	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, 5.0), null, null)
+	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, JUMP_COOLDOWN), null, null)
 }
