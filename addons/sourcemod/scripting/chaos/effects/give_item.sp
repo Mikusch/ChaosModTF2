@@ -5,7 +5,7 @@ static Handle g_hSDKCallPostInventoryApplication;
 
 public bool GiveItem_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos/giveitem");
+	GameData gameconf = new GameData("chaos");
 	if (!gameconf)
 		return false;
 

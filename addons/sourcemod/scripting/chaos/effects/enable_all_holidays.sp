@@ -5,7 +5,7 @@ static DynamicDetour g_hDetourIsHolidayActive;
 
 public bool EnableAllHolidays_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos/enableallholidays");
+	GameData gameconf = new GameData("chaos");
 	if (!gameconf)
 		return false;
 

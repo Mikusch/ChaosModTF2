@@ -7,7 +7,7 @@ static Handle g_hSDKCallGetSubType;
 
 public bool RandomizeWeaponOrder_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos/randomizeweaponorder");
+	GameData gameconf = new GameData("chaos");
 	if (!gameconf)
 		return false;
 

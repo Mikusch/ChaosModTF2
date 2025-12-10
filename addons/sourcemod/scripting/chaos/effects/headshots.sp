@@ -6,7 +6,7 @@ static ArrayList g_hDynamicHookIds;
 
 public bool Headshots_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos/headshots");
+	GameData gameconf = new GameData("chaos");
 	if (!gameconf)
 		return false;
 
