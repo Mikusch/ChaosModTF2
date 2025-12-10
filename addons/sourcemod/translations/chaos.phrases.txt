@@ -445,7 +445,7 @@
 	{
 		"en"		"Regenerate All Players"
 	}
-	"#Chaos_Effect_RobotModels"
+	"#Chaos_Effect_MannInTheMachine"
 	{
 		"en"		"Mann In The Machine"
 	}

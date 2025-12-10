@@ -11,14 +11,14 @@ enum Direction
 
 static Direction g_nDirection;
 
-public bool DisableRandomDirection_OnStart(ChaosEffect effect)
+public bool DisableDirection_OnStart(ChaosEffect effect)
 {
 	g_nDirection = view_as<Direction>(GetRandomInt(view_as<int>(Direction_Forward), view_as<int>(Direction_Left)));
 	
 	return true;
 }
 
-public Action DisableRandomDirection_OnPlayerRunCmd(ChaosEffect effect, int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
+public Action DisableDirection_OnPlayerRunCmd(ChaosEffect effect, int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
 {
 	if (!IsPlayerAlive(client))
 		return Plugin_Continue;
