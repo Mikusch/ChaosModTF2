@@ -38,7 +38,7 @@ public bool SpawnBall_OnStart(ChaosEffect effect)
 static bool CanFindBallSpawnLocation(const float vecSearchOrigin[3], float vecDropSpot[3])
 {
 	// Find clear space to drop the ball
-	for (float flAngle = 0.0; flAngle < 2.0 * PI; flAngle += 0.2)
+	for (float flAngle = 0.0; flAngle < 2.0 * FLOAT_PI; flAngle += 0.2)
 	{
 		float vecForward[3];
 		vecForward[0] = Cosine(flAngle);

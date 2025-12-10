@@ -167,6 +167,7 @@ bool Data_InitializeEffects()
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
 
 	bool bSuccess = true;
+	StringMap hInitializedClasses = new StringMap();
 
 	KeyValues kv = new KeyValues("effects");
 	if (kv.ImportFromFile(szFilePath))
@@ -184,19 +185,33 @@ bool Data_InitializeEffects()
 					continue;
 				}
 
-				Function fnCallback = effect.GetCallbackFunction("Initialize");
-				if (fnCallback != INVALID_FUNCTION)
+				// Only call Initialize once per effect class
+				if (effect.effect_class[0] && !hInitializedClasses.ContainsKey(effect.effect_class))
 				{
-					Call_StartFunction(null, fnCallback);
-					Call_PushArray(effect, sizeof(effect));
-
-					// If Initialize throws or returns false, the effect is not added to our list
-					bool bReturn;
-					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+					Function fnCallback = effect.GetCallbackFunction("Initialize");
+					if (fnCallback != INVALID_FUNCTION)
 					{
-						LogMessage("Failed to add effect '%T' (%s) to effects list", effect.name, LANG_SERVER, effect.id);
-						continue;
+						Call_StartFunction(null, fnCallback);
+						Call_PushArray(effect, sizeof(effect));
+
+						// If Initialize throws or returns false, effects using this class are not added
+						bool bReturn;
+						if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+						{
+							LogMessage("Failed to initialize effect class '%s'", effect.effect_class);
+							hInitializedClasses.SetValue(effect.effect_class, false);
+							continue;
+						}
 					}
+
+					hInitializedClasses.SetValue(effect.effect_class, true);
+				}
+				else if (effect.effect_class[0])
+				{
+					// Check if this effect class failed to initialize previously
+					bool bInitialized;
+					if (hInitializedClasses.GetValue(effect.effect_class, bInitialized) && !bInitialized)
+						continue;
 				}
 
 				g_hEffects.PushArray(effect);
@@ -214,6 +229,7 @@ bool Data_InitializeEffects()
 		bSuccess = false;
 	}
 
+	delete hInitializedClasses;
 	return bSuccess;
 }
 

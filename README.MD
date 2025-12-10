@@ -17,7 +17,7 @@ You can easily add your own effects using the provided Squirrel (VScript) or Sou
 * [asherkin/TF2Items](https://github.com/asherkin/TF2Items)
 * [nosoop/SM-TFUtils](https://github.com/nosoop/SM-TFUtils)
 * [nosoop/SM-TFEconData](https://github.com/nosoop/SM-TFEconData)
-* [FortyTwoFortyTwo/VScript](https://github.com/FortyTwoFortyTwo/VScript)
+* [Bradasparky/sm_vscript_comms](https://github.com/Bradasparky/sm_vscript_comms)
 * [DoctorMcKay/MoreColors](https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc) (compile
   only)
 

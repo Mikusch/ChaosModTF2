@@ -6,14 +6,7 @@ static int g_nMaxHealth;
 
 public bool SetHealth_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos/sethealth");
-	if (!gameconf)
-		return false;
-
-	if (!g_hDetourGetMaxHealthForBuffing)
-		g_hDetourGetMaxHealthForBuffing = DynamicDetour.FromConf(gameconf, "CTFPlayer::GetMaxHealthForBuffing");
-
-	delete gameconf;
+	g_hDetourGetMaxHealthForBuffing = Chaos_CreateDetour("CTFPlayer::GetMaxHealthForBuffing");
 	return g_hDetourGetMaxHealthForBuffing != null;
 }
 
