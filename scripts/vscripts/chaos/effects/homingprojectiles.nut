@@ -1,6 +1,6 @@
 // Contributed by Kamuixmod
 
-const TURN_RATE = 0.75
+local TURN_RATE = 0.75
 
 local validProjectiles =
 {

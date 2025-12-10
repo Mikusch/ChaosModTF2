@@ -1,6 +1,3 @@
-const TF_WPN_TYPE_PRIMARY = 0
-const FT_STATE_IDLE = 0
-
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)
