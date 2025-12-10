@@ -16,7 +16,7 @@
 		"#format"	"{1:t}"
 		"en"		"Next effect set to \"{1}\"."
 	}
-	"#Chaos_Effect_InvertAcceleration"
+	"#Chaos_Effect_InvertAccel"
 	{
 		"en"		"Invert Controls"
 	}
@@ -44,7 +44,7 @@
 	{
 		"en"		"Truce"
 	}
-	"#Chaos_Effect_WhereDidEverythingGo"
+	"#Chaos_Effect_HideWorld"
 	{
 		"en"		"Where Did Everything Go?"
 	}
@@ -52,11 +52,11 @@
 	{
 		"en"		"Eternal Screams"
 	}
-	"#Chaos_Effect_1HP"
+	"#Chaos_Effect_LowHp"
 	{
 		"en"		"One Hit K.O."
 	}
-	"#Chaos_Effect_1000HP"
+	"#Chaos_Effect_HighHp"
 	{
 		"en"		"Healthy Mercenaries"
 	}
@@ -68,7 +68,7 @@
 	{
 		"en"		"What Server Am I On Again?"
 	}
-	"#Chaos_Effect_ThrillerDance"
+	"#Chaos_Effect_Thriller"
 	{
 		"en"		"Thriller Night"
 	}
@@ -76,11 +76,11 @@
 	{
 		"en"		"Open Scoreboard"
 	}
-	"#Chaos_Effect_HighFOV"
+	"#Chaos_Effect_HighFov"
 	{
 		"en"		"Quake FOV"
 	}
-	"#Chaos_Effect_LowFOV"
+	"#Chaos_Effect_LowFov"
 	{
 		"en"		"Zoomed FOV"
 	}
@@ -112,9 +112,9 @@
 	{
 		"en"		"Squid Game"
 	}
-	"#Chaos_Effect_JingleAllTheWay"
+	"#Chaos_Effect_JingleFootsteps"
 	{
-		"en"		"Jingle All The Way"
+		"en"		"Jingle All the Way"
 	}
 	"#Chaos_Effect_SkeletonModels"
 	{
@@ -148,31 +148,31 @@
 	{
 		"en"		"All Players Swap Positions"
 	}
-	"#Chaos_Effect_RespawnAllDead"
+	"#Chaos_Effect_RespawnDead"
 	{
 		"en"		"Respawn Dead Players"
 	}
-	"#Chaos_Effect_Blindness"
+	"#Chaos_Effect_ScreenfadeBlack"
 	{
 		"en"		"Shared Blindness"
 	}
-	"#Chaos_Effect_Greyscale"
+	"#Chaos_Effect_GreyscaleOverlay"
 	{
 		"en"		"T.F. Noire"
 	}
-	"#Chaos_Effect_PipBoyOverlay"
+	"#Chaos_Effect_PipboyOverlay"
 	{
 		"en"		"Pip-Boy"
 	}
-	"#Chaos_Effect_NoJumpingAndCrouching"
+	"#Chaos_Effect_NoJumpDuck"
 	{
-		"en"		"No Jumping Or Crouching"
+		"en"		"No Jumping or Crouching"
 	}
-	"#Chaos_Effect_CompanionHeavy"
+	"#Chaos_Effect_HeavyOverlay"
 	{
 		"en"		"Companion Heavy"
 	}
-	"#Chaos_Effect_Grill"
+	"#Chaos_Effect_GrillOverlay"
 	{
 		"en"		"Meat The Grill"
 	}
@@ -198,7 +198,7 @@
 	}
 	"#Chaos_Effect_Pyrovision"
 	{
-		"en"		"A Visit To Pyroland"
+		"en"		"A Visit to Pyroland"
 	}
 	"#Chaos_Effect_Taunt"
 	{
@@ -212,7 +212,7 @@
 	{
 		"en"		"Noclip"
 	}
-	"#Chaos_Effect_HideHUD"
+	"#Chaos_Effect_HideHud"
 	{
 		"en"		"No HUD"
 	}
@@ -233,47 +233,47 @@
 	{
 		"en"		"Fling Players"
 	}
-	"#Chaos_Effect_RemoveHealthAndAmmo"
+	"#Chaos_Effect_RemovePickups"
 	{
-		"en"		"Remove Health And Ammo Pickups"
+		"en"		"Remove Health and Ammo Pickups"
 	}
-	"#Chaos_Effect_BulletImmune"
+	"#Chaos_Effect_BulletImmunity"
 	{
 		"en"		"Bullet Immunity"
 	}
-	"#Chaos_Effect_BlastImmune"
+	"#Chaos_Effect_BlastImmunity"
 	{
 		"en"		"Blast Immunity"
 	}
-	"#Chaos_Effect_FireImmune"
+	"#Chaos_Effect_FireImmunity"
 	{
 		"en"		"Fire Immunity"
 	}
-	"#Chaos_Effect_10xCaptureRate"
+	"#Chaos_Effect_FastCapture"
 	{
 		"en"		"10x Capture Rate"
 	}
 	"#Chaos_Effect_LaughOnKill"
 	{
-		"en"		"The Joy Of Killing"
+		"en"		"The Joy of Killing"
 	}
 	"#Chaos_Effect_HitSelfOnMiss"
 	{
 		"en"		"On Miss: Hit yourself. Idiot."
 	}
-	"#Chaos_Effect_DamageCausesAirblast"
+	"#Chaos_Effect_KnockbackOnHit"
 	{
 		"en"		"Damage Causes Airblast"
 	}
-	"#Chaos_Effect_StopAndStare"
+	"#Chaos_Effect_NoInput"
 	{
-		"en"		"Stop And Stare"
+		"en"		"Stop and Stare"
 	}
-	"#Chaos_Effect_EnableRandomCrits"
+	"#Chaos_Effect_RandomCritsOn"
 	{
 		"en"		"Enable Random Crits"
 	}
-	"#Chaos_Effect_DisableRandomCrits"
+	"#Chaos_Effect_RandomCritsOff"
 	{
 		"en"		"Disable Random Crits"
 	}
@@ -285,7 +285,7 @@
 	{
 		"en"		"Vanishing Act"
 	}
-	"#Chaos_Effect_BigHead"
+	"#Chaos_Effect_BigHeads"
 	{
 		"en"		"Big Heads"
 	}
@@ -301,11 +301,11 @@
 	{
 		"en"		"Fast Building"
 	}
-	"#Chaos_Effect_10xOverhealLimit"
+	"#Chaos_Effect_HighOverheal"
 	{
 		"en"		"10x Overheal Limit"
 	}
-	"#Chaos_Effect_10xChargeSpeed"
+	"#Chaos_Effect_FastCharge"
 	{
 		"en"		"10x Shield Charge Speed"
 	}
@@ -333,7 +333,7 @@
 	{
 		"en"		"Megaphone"
 	}
-	"#Chaos_Effect_SpawnOrangeBall"
+	"#Chaos_Effect_SpawnBall"
 	{
 		"en"		"Spawn Halloween Ball"
 	}
@@ -345,7 +345,7 @@
 	{
 		"en"		"Rich Man"
 	}
-	"#Chaos_Effect_ExtraAirDashes"
+	"#Chaos_Effect_ExtraJumps"
 	{
 		"en"		"Extra Scout Jumps"
 	}
@@ -355,7 +355,7 @@
 	}
 	"#Chaos_Effect_PaintItems"
 	{
-		"en"		"Apply Random Paint To Items"
+		"en"		"Apply Random Paint to Items"
 	}
 	"#Chaos_Effect_Nothing"
 	{
@@ -367,9 +367,9 @@
 	}
 	"#Chaos_Effect_Nothing_GiveEveryoneANose"
 	{
-		"en"		"Give Everyone A Nose"
+		"en"		"Give Everyone a Nose"
 	}
-	"#Chaos_Effect_Nothing_TeleportEveryone1Millimeter"
+	"#Chaos_Effect_Nothing_Teleport1Millimeter"
 	{
 		"en"		"Teleport Everyone by 1 Millimeter"
 	}
@@ -379,15 +379,15 @@
 	}
 	"#Chaos_Effect_Nothing_RemoveTheObserver"
 	{
-		"en"		"Remove The Observer"
+		"en"		"Remove the Observer"
 	}
 	"#Chaos_Effect_Nothing_IncreasePingBy1"
 	{
 		"en"		"Increase Ping by 1"
 	}
-	"#Chaos_Effect_Nothing_AllPlayersArePlayers"
+	"#Chaos_Effect_Nothing_TurnPlayersIntoPlayers"
 	{
-		"en"		"All Players Are Players"
+		"en"		"Turn All Players into Players"
 	}
 	"#Chaos_Effect_Nothing_Blank"
 	{
@@ -405,11 +405,19 @@
 	{
 		"en"		"No Crash"
 	}
+	"#Chaos_Effect_Nothing_RotateBy0Degrees"
+	{
+		"en"		"Rotate All Players by 0 Degrees"
+	}
+	"#Chaos_Effect_Nothing_PlaySilence"
+	{
+		"en"		"Play Silence"
+	}
 	"#Chaos_Effect_PlayerGlow"
 	{
 		"en"		"Look At Me, Look At Me!"
 	}
-	"#Chaos_Effect_DisableRespawnTimes"
+	"#Chaos_Effect_InstantRespawn"
 	{
 		"en"		"Instant Respawn"
 	}
@@ -429,9 +437,9 @@
 	{
 		"en"		"That's Some Slappin'"
 	}
-	"#Chaos_Effect_FloorIsLava"
+	"#Chaos_Effect_Burn"
 	{
-		"en"		"The Floor Is Lava"
+		"en"		"Burn"
 	}
 	"#Chaos_Effect_TiltedCamera"
 	{
@@ -445,19 +453,19 @@
 	{
 		"en"		"Disassemble Map"
 	}
-	"#Chaos_Effect_RegeneratePlayers"
+	"#Chaos_Effect_Regenerate"
 	{
 		"en"		"Regenerate All Players"
 	}
 	"#Chaos_Effect_MannInTheMachine"
 	{
-		"en"		"Mann In The Machine"
+		"en"		"Mann in the Machine"
 	}
 	"#Chaos_Effect_Headshots"
 	{
 		"en"		"All Weapons Can Headshot"
 	}
-	"#Chaos_Effect_LargeSmokeExplosions"
+	"#Chaos_Effect_SmokeExplosions"
 	{
 		"en"		"Directed by Michael Bay"
 	}
@@ -465,21 +473,21 @@
 	{
 		"en"		"Infinite Melee Range"
 	}
-	"#Chaos_Effect_NoAirAcceleration"
+	"#Chaos_Effect_NoAirAccel"
 	{
 		"en"		"No Air Acceleration"
 	}
-	"#Chaos_Effect_CattoGuns"
+	"#Chaos_Effect_NoAmmo"
 	{
-		"en"		"Catto Guns"
+		"en"		"No Ammo"
 	}
 	"#Chaos_Effect_GiveGibus"
 	{
-		"en"		"Give Everyone A Gibus"
+		"en"		"Give Everyone a Gibus"
 	}
 	"#Chaos_Effect_GiveTopNotch"
 	{
-		"en"		"Give Everyone A Top Notch"
+		"en"		"Give Everyone a Top Notch"
 	}
 	"#Chaos_Effect_FlipViewModels"
 	{
@@ -497,19 +505,19 @@
 	{
 		"en"		"Decapitated Mercenaries"
 	}
-	"#Chaos_Effect_BackstabImmune"
+	"#Chaos_Effect_BackstabImmunity"
 	{
-		"en"		"The Razorback Movement"
+		"en"		"Backstab Immunity"
 	}
-	"#Chaos_Effect_UTurn"
+	"#Chaos_Effect_Uturn"
 	{
 		"en"		"U-Turn"
 	}
-	"#Chaos_Effect_GrantAllUpgrades"
+	"#Chaos_Effect_GrantUpgrades"
 	{
 		"en"		"Grant All Upgrades"
 	}
-	"#Chaos_Effect_RemoveAllUpgrades"
+	"#Chaos_Effect_RemoveUpgrades"
 	{
 		"en"		"Remove All Upgrades"
 	}
@@ -529,19 +537,19 @@
 	{
 		"en"		"Help, My W Key Is Stuck"
 	}
-	"#Chaos_Effect_IncreasedGestureSpeed"
+	"#Chaos_Effect_FastTaunt"
 	{
 		"en"		"2x Taunt Speed"
 	}
-	"#Chaos_Effect_DecreasedGestureSpeed"
+	"#Chaos_Effect_SlowTaunt"
 	{
 		"en"		"0.5x Taunt Speed"
 	}
 	"#Chaos_Effect_SpawnBirds"
 	{
-		"en"		"Who Let The Birds Out?"
+		"en"		"Who Let the Birds Out?"
 	}
-	"#Chaos_Effect_EyeCamera"
+	"#Chaos_Effect_VRCamera"
 	{
 		"en"		"Out-Of-Body Experience"
 	}
@@ -557,7 +565,7 @@
 	{
 		"en"		"Bouncy Projectiles"
 	}
-	"#Chaos_Effect_Flashbang"
+	"#Chaos_Effect_ScreenfadeWhite"
 	{
 		"en"		"Flashbang"
 	}
@@ -569,15 +577,11 @@
 	{
 		"en"		"Teleport to (0, 0, 0)"
 	}
-	"#Chaos_Effect_HL2Player"
-	{
-		"en"		"Hello, Gordon!"
-	}
-	"#Chaos_Effect_JumpJump"
+	"#Chaos_Effect_ForceJump"
 	{
 		"en"		"Jump Jump"
 	}
-	"#Chaos_Effect_DisableRandomDirection"
+	"#Chaos_Effect_DisableDirection"
 	{
 		"en"		"Disable Random Direction"
 	}
@@ -585,7 +589,7 @@
 	{
 		"en"		"Swimming Curse"
 	}
-	"#Chaos_Effect_UncontrollableRecoil"
+	"#Chaos_Effect_Recoil"
 	{
 		"en"		"Uncontrollable Recoil"
 	}
@@ -593,7 +597,7 @@
 	{
 		"en"		"Overtime"
 	}
-	"#Chaos_Effect_ImmuneToPushback"
+	"#Chaos_Effect_PushbackImmunity"
 	{
 		"en"		"Knockback Immunity"
 	}
@@ -601,7 +605,7 @@
 	{
 		"en"		"Callouts"
 	}
-	"#Chaos_Effect_InvertAirAcceleration"
+	"#Chaos_Effect_InvertAirAccel"
 	{
 		"en"		"Invert Air Acceleration"
 	}
@@ -609,11 +613,7 @@
 	{
 		"en"		"All Weapons Fire Rockets"
 	}
-	"#Chaos_Effect_WeaponsFireBombs"
-	{
-		"en"		"All Weapons Fire Bombs"
-	}
-	"#Chaos_Effect_MedievalMode"
+	"#Chaos_Effect_Medieval"
 	{
 		"en"		"Ye Olde Combat"
 	}
@@ -621,11 +621,11 @@
 	{
 		"en"		"Pinpoint Accuracy"
 	}
-	"#Chaos_Effect_10xFallingDamage"
+	"#Chaos_Effect_HighFallDamage"
 	{
 		"en"		"All Players Take 10x Falling Damage"
 	}
-	"#Chaos_Effect_IncreasedStepSize"
+	"#Chaos_Effect_HighStepSize"
 	{
 		"en"		"Tall Legs"
 	}
@@ -637,7 +637,7 @@
 	{
 		"en"		"Drunk"
 	}
-	"#Chaos_Effect_Binoculars"
+	"#Chaos_Effect_BinocularOverlay"
 	{
 		"en"		"Binoculars"
 	}
@@ -649,7 +649,7 @@
 	{
 		"en"		"Randomize Weapon Order"
 	}
-	"#Chaos_Effect_PlayDevCommentary"
+	"#Chaos_Effect_PlayCommentary"
 	{
 		"en"		"Play Random Developer Commentary"
 	}
@@ -657,7 +657,7 @@
 	{
 		"en"		"Super Jumping"
 	}
-	"#Chaos_Effect_SmallHead"
+	"#Chaos_Effect_SmallHeads"
 	{
 		"en"		"Small Heads"
 	}
@@ -673,9 +673,9 @@
 	{
 		"en"		"All Weapons Are Honorbound"
 	}
-	"#Chaos_Effect_NoSelfBlastDamage"
+	"#Chaos_Effect_NoSelfBlast"
 	{
-		"en"		"No Damage From Blast Jumping"
+		"en"		"No Damage from Blast Jumping"
 	}
 	"#Chaos_Effect_NoOverhealDecay"
 	{
@@ -685,11 +685,11 @@
 	{
 		"en"		"Speedy Projectiles"
 	}
-	"#Chaos_Effect_IncreasedSentryRange"
+	"#Chaos_Effect_InfiniteSentryRange"
 	{
 		"en"		"Infinite Sentry Gun Range"
 	}
-	"#Chaos_Effect_IncreasedDispenserRange"
+	"#Chaos_Effect_InfiniteDispenserRange"
 	{
 		"en"		"Infinite Dispenser Range"
 	}
@@ -701,15 +701,31 @@
 	{
 		"en"		"Christmas Presents"
 	}
-	"#Chaos_MetaEffect_5xTimerSpeed"
+	"#Chaos_Effect_BigPlayers"
+	{
+		"en"		"Giant Players"
+	}
+	"#Chaos_Effect_SmallPlayers"
+	{
+		"en"		"Tiny Players"
+	}
+	"#Chaos_Effect_Cocainum"
+	{
+		"en"		"Cocainum"
+	}
+	"#Chaos_Effect_Mirror"
+	{
+		"en"		"Mirrored World"
+	}
+	"#Chaos_MetaEffect_Timer5x"
 	{
 		"en"		"5x Timer Speed (Meta)"
 	}
-	"#Chaos_MetaEffect_2xTimerSpeed"
+	"#Chaos_MetaEffect_Timer2x"
 	{
 		"en"		"2x Timer Speed (Meta)"
 	}
-	"#Chaos_MetaEffect_0.5xTimerSpeed"
+	"#Chaos_MetaEffect_TimerHalf"
 	{
 		"en"		"0.5x Timer Speed (Meta)"
 	}
@@ -717,15 +733,15 @@
 	{
 		"en"		"No Chaos (Meta)"
 	}
-	"#Chaos_MetaEffect_2xEffectDuration"
+	"#Chaos_MetaEffect_Duration2x"
 	{
 		"en"		"2x Effect Duration (Meta)"
 	}
-	"#Chaos_MetaEffect_0.5xEffectDuration"
+	"#Chaos_MetaEffect_DurationHalf"
 	{
 		"en"		"0.5x Effect Duration (Meta)"
 	}
-	"#Chaos_MetaEffect_ReinvokePreviousEffects"
+	"#Chaos_MetaEffect_Reinvoke"
 	{
 		"en"		"Reinvoke Previous Effects (Meta)"
 	}

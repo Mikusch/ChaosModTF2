@@ -10,24 +10,22 @@
 #include <tf2items>
 #include <tf2utils>
 #include <tf_econ_data>
-#include <vscript>
+#include <sm_vscript_comms>
 #include <morecolors>
 
-#define PLUGIN_VERSION	"1.7.1"
+#define PLUGIN_VERSION	"2.0.0"
 
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
-ConVar sm_chaos_meta_effect_interval;
-ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_effect_update_interval;
+ConVar sm_chaos_meta_effect_chance;
 
 bool g_bEnabled;
 bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
 float g_flTimeElapsed;
-float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
@@ -36,61 +34,66 @@ ProgressBarConfig g_stEffectBarConfig;
 ProgressBarConfig g_stTimerBarConfig;
 ChatConfig g_stChatConfig;
 
+VScriptHandle g_hVScriptStartEffect;
+VScriptHandle g_hVScriptUpdateEffect;
+VScriptHandle g_hVScriptEndEffect;
+
 #include "chaos/data.sp"
 #include "chaos/events.sp"
 #include "chaos/shareddefs.sp"
 #include "chaos/util.sp"
 
 // Meta effects
-#include "chaos/effects/meta/effectduration.sp"
-#include "chaos/effects/meta/nochaos.sp"
-#include "chaos/effects/meta/reinvokeeffects.sp"
-#include "chaos/effects/meta/timerspeed.sp"
+#include "chaos/effects/meta/effect_duration.sp"
+#include "chaos/effects/meta/no_chaos.sp"
+#include "chaos/effects/meta/reinvoke_effects.sp"
+#include "chaos/effects/meta/timer_speed.sp"
 
 // Regular effects
-#include "chaos/effects/addcond.sp"
+#include "chaos/effects/add_condition.sp"
 #include "chaos/effects/birds.sp"
-#include "chaos/effects/cattoguns.sp"
+#include "chaos/effects/burn_player.sp"
 #include "chaos/effects/decompiled.sp"
-#include "chaos/effects/disablerandomdirection.sp"
-#include "chaos/effects/disassemblemap.sp"
+#include "chaos/effects/disable_direction.sp"
+#include "chaos/effects/disassemble_map.sp"
 #include "chaos/effects/drunk.sp"
 #include "chaos/effects/earthquake.sp"
-#include "chaos/effects/enableallholidays.sp"
-#include "chaos/effects/fakecrash.sp"
-#include "chaos/effects/falldamage.sp"
-#include "chaos/effects/flipviewmodels.sp"
-#include "chaos/effects/floorislava.sp"
-#include "chaos/effects/forceforward.sp"
-#include "chaos/effects/giveitem.sp"
-#include "chaos/effects/grantorremoveallupgrades.sp"
+#include "chaos/effects/enable_all_holidays.sp"
+#include "chaos/effects/fake_crash.sp"
+#include "chaos/effects/fall_damage.sp"
+#include "chaos/effects/flip_viewmodels.sp"
+#include "chaos/effects/force_forward.sp"
+#include "chaos/effects/force_jump.sp"
+#include "chaos/effects/give_item.sp"
+#include "chaos/effects/grant_or_remove_all_upgrades.sp"
 #include "chaos/effects/headshots.sp"
-#include "chaos/effects/identitytheft.sp"
-#include "chaos/effects/invertconvar.sp"
-#include "chaos/effects/jumpjump.sp"
-#include "chaos/effects/killrandomplayer.sp"
+#include "chaos/effects/hide_world.sp"
+#include "chaos/effects/identity_theft.sp"
+#include "chaos/effects/invert_convar.sp"
+#include "chaos/effects/kill_random_player.sp"
 #include "chaos/effects/loudness.sp"
-#include "chaos/effects/manninthemachine.sp"
-#include "chaos/effects/modifypitch.sp"
+#include "chaos/effects/mann_in_the_machine.sp"
+#include "chaos/effects/modify_pitch.sp"
 #include "chaos/effects/nothing.sp"
-#include "chaos/effects/randomizeweaponorder.sp"
-#include "chaos/effects/removehealthandammo.sp"
-#include "chaos/effects/removerandomentity.sp"
-#include "chaos/effects/screenfade.sp"
-#include "chaos/effects/screenoverlay.sp"
-#include "chaos/effects/setattribute.sp"
-#include "chaos/effects/setconvar.sp"
-#include "chaos/effects/setcustommodel.sp"
-#include "chaos/effects/setfov.sp"
-#include "chaos/effects/sethealth.sp"
-#include "chaos/effects/showscoreboard.sp"
+#include "chaos/effects/randomize_weapon_order.sp"
+#include "chaos/effects/remove_pickups.sp"
+#include "chaos/effects/remove_random_entity.sp"
+#include "chaos/effects/resize_player.sp"
+#include "chaos/effects/screen_fade.sp"
+#include "chaos/effects/screen_overlay.sp"
+#include "chaos/effects/set_attribute.sp"
+#include "chaos/effects/set_convar.sp"
+#include "chaos/effects/set_custom_model.sp"
+#include "chaos/effects/set_fov.sp"
+#include "chaos/effects/set_health.sp"
+#include "chaos/effects/show_scoreboard.sp"
 #include "chaos/effects/silence.sp"
 #include "chaos/effects/slap.sp"
-#include "chaos/effects/spawnball.sp"
-#include "chaos/effects/stepsize.sp"
+#include "chaos/effects/spawn_ball.sp"
+#include "chaos/effects/step_size.sp"
+#include "chaos/effects/time_scale.sp"
 #include "chaos/effects/truce.sp"
 #include "chaos/effects/watermark.sp"
-#include "chaos/effects/wheredideverythinggo.sp"
 
 public Plugin myinfo =
 {
@@ -113,11 +116,10 @@ public void OnPluginStart()
 	CreateConVar("sm_chaos_version", PLUGIN_VERSION, "Plugin version.", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
-	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.", _, true, 0.0);
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "60", "Default cooldown between effects.", _, true, 0.0);
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation, in seconds.");
-	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation, in seconds.");
-	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval, in percent.", _, true, 0.0, true, 100.0);
 	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called, in seconds.");
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".02", "Chance to activate a meta effect instead of a regular one, in percent.", _, true, 0.0, true, 1.0);
 	
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
 	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to start.");
@@ -127,6 +129,27 @@ public void OnPluginStart()
 	
 	Data_Initialize();
 	Events_Initialize();
+
+	StartPrepVScriptCall(VScriptScope_Proxy);
+	PrepVScriptCall_SetFunction("Chaos_StartEffect");
+	PrepVScriptCall_AddParameter(VScriptParamType_String);
+	PrepVScriptCall_AddParameter(VScriptParamType_Float);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Bool);
+	g_hVScriptStartEffect = EndPrepVScriptCall();
+
+	StartPrepVScriptCall(VScriptScope_Proxy);
+	PrepVScriptCall_SetFunction("Chaos_UpdateEffect");
+	PrepVScriptCall_AddParameter(VScriptParamType_String);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Float);
+	g_hVScriptUpdateEffect = EndPrepVScriptCall();
+
+	StartPrepVScriptCall(VScriptScope_Proxy);
+	PrepVScriptCall_SetFunction("Chaos_EndEffect");
+	PrepVScriptCall_AddParameter(VScriptParamType_String);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Void);
+	g_hVScriptEndEffect = EndPrepVScriptCall();
+
+	Data_InitializeEffects();
 }
 
 public void OnPluginEnd()
@@ -134,34 +157,9 @@ public void OnPluginEnd()
 	ExpireAllActiveEffects(true);
 }
 
-public void VScript_OnScriptVMInitialized()
-{
-	static bool bInitialized = false;
-	
-	if (bInitialized)
-		return;
-	
-	GameData hGameConf = new GameData("chaos");
-	if (hGameConf)
-	{
-		bInitialized = Data_InitializeEffects(hGameConf);
-		delete hGameConf;
-	}
-	else
-	{
-		LogError("Failed to find chaos gamedata");
-	}
-}
-
 public void OnMapStart()
 {
 	g_flLastEffectDisplayTime = GetGameTime();
-	
-	// Initialize VScript system
-	ServerCommand("script_execute %s", "chaos");
-	
-	if (VScript_IsScriptVMInitialized())
-		VScript_OnScriptVMInitialized();
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
@@ -274,20 +272,14 @@ public void OnGameFrame()
 			{
 				if (effect.script_file[0])
 				{
-					VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffect"));
-					hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-					if (hExecute.Execute() != SCRIPT_ERROR)
-					{
-						float flUpdateInterval;
-						if (hExecute.ReturnType == FIELD_VOID)
-							flUpdateInterval = flDefaultUpdateInterval;
-						else
-							flUpdateInterval = float(hExecute.ReturnValue);
-						
-						delete hExecute;
-						
-						g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_script_update_time);
-					}
+					StartVScriptFunc(g_hVScriptUpdateEffect);
+					VScriptFunc_PushString(effect.script_file);
+					float flUpdateInterval = FireVScriptFunc_ReturnAny();
+
+					if (flUpdateInterval == 0.0)
+						flUpdateInterval = flDefaultUpdateInterval;
+
+					g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_script_update_time);
 				}
 			}
 		}
@@ -298,16 +290,13 @@ public void OnGameFrame()
 		return;
 	
 	float flTimerSpeed = GetGameFrameTime();
-	
-	// Meta effects tick independently
-	g_flMetaTimeElapsed += flTimerSpeed;
-	
+
 	// Check if a meta effect wants to modify the interval
 	for (int i = 0; i < nLength; i++)
 	{
 		if (!g_hEffects.Get(i, ChaosEffect::active))
 			continue;
-		
+
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{
@@ -321,26 +310,33 @@ public void OnGameFrame()
 			}
 		}
 	}
-	
+
 	g_flTimeElapsed += flTimerSpeed;
-	
+
 	// Show interval progress bar
 	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= flCurTime)
 	{
 		g_flTimerBarDisplayTime = flCurTime;
-		
+
 		DisplayTimerBar();
 	}
-	
+
 	// Activate a new effect
 	float flEffectInterval = sm_chaos_effect_interval.FloatValue;
-	if (flEffectInterval && g_flTimeElapsed >= flEffectInterval)
+	if (flEffectInterval > 0.0 && g_flTimeElapsed >= flEffectInterval)
 	{
 		g_flTimeElapsed = 0.0;
-		
+
 		if (!g_szForceEffectId[0])
 		{
-			SelectRandomEffect();
+			// Attempt to roll a meta effect
+			float flMetaChance = sm_chaos_meta_effect_chance.FloatValue;
+			bool bActivateMeta = flMetaChance > 0.0 && GetRandomFloat() < flMetaChance;
+
+			if (!bActivateMeta || !SelectRandomEffect(true))
+			{
+				SelectRandomEffect();
+			}
 		}
 		else
 		{
@@ -348,22 +344,9 @@ public void OnGameFrame()
 			{
 				LogError("Failed to force effect id '%s'", g_szForceEffectId);
 			}
-			
+
 			// Clear out forced effect
 			g_szForceEffectId[0] = EOS;
-		}
-	}
-	
-	// Attempt to activate a new meta effect
-	float flMetaEffectInterval = sm_chaos_meta_effect_interval.FloatValue;
-	if (flMetaEffectInterval && g_flMetaTimeElapsed >= flMetaEffectInterval)
-	{
-		g_flMetaTimeElapsed = 0.0;
-		
-		// Meta effects randomly activate
-		if (GetRandomFloat() <= sm_chaos_meta_effect_chance.FloatValue)
-		{
-			SelectRandomEffect(true);
 		}
 	}
 }
@@ -671,13 +654,11 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	
 	if (effect.script_file[0])
 	{
-		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_StartEffect"));
-		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-		hExecute.SetParam(2, FIELD_FLOAT, effect.duration);
-		hExecute.Execute();
-		bool bReturn = hExecute.ReturnValue;
-		delete hExecute;
-		
+		StartVScriptFunc(g_hVScriptStartEffect);
+		VScriptFunc_PushString(effect.script_file);
+		VScriptFunc_PushFloat(effect.duration);
+		bool bReturn = FireVScriptFunc_ReturnAny();
+
 		if (!bReturn)
 		{
 			LogMessage("Skipped script file '%s' because its 'OnStart' callback returned false", effect.script_file);
@@ -924,10 +905,9 @@ void ForceExpireEffect(ChaosEffect effect, bool bExpireAllTags = false)
 		
 		if (effect.script_file[0])
 		{
-			VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_EndEffect"));
-			hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-			hExecute.Execute();
-			delete hExecute;
+			StartVScriptFunc(g_hVScriptEndEffect);
+			VScriptFunc_PushString(effect.script_file);
+			FireVScriptFunc_Void();
 		}
 		
 		if (effect.start_sound[0])
@@ -1062,7 +1042,6 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 void SetChaosTimers(float flTime)
 {
 	g_flTimeElapsed = 0.0;
-	g_flMetaTimeElapsed = 0.0;
 	g_flTimerBarDisplayTime = flTime;
 }
 

@@ -4,7 +4,7 @@
 static ArrayList g_hFakeNames;
 static char g_szFakeName[64];
 
-public bool Nothing_Initialize(ChaosEffect effect, GameData gameconf)
+public bool Nothing_Initialize(ChaosEffect effect)
 {
 	if (!effect.data)
 		return true;

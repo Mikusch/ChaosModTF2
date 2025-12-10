@@ -1,11 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define INVALID_EFFECT_ID	-1
+#define GAMEDATA_FILE	"chaos"
 
 #define MAX_USER_MSG_DATA	255
-
-#define PI	3.14159265358979323846
 
 // Fade in/out
 #define FFADE_IN			0x0001		// Just here so we don't pass 0 into the function
@@ -15,6 +13,16 @@
 #define FFADE_PURGE			0x0010		// Purges all other fades, replacing them with this one
 
 #define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
+
+enum ShakeCommand_t
+{
+	SHAKE_START = 0,		// Starts the screen shake for all players within the radius.
+	SHAKE_STOP,				// Stops the screen shake for all players within the radius.
+	SHAKE_AMPLITUDE,		// Modifies the amplitude of an active screen shake for all players within the radius.
+	SHAKE_FREQUENCY,		// Modifies the frequency of an active screen shake for all players within the radius.
+	SHAKE_START_RUMBLEONLY,	// Starts a shake effect that only rumbles the controller, no screen effect.
+	SHAKE_START_NORUMBLE,	// Starts a shake that does NOT rumble the controller.
+};
 
 enum HudNotification_t
 {

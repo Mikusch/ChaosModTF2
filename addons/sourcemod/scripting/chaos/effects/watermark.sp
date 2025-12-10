@@ -5,7 +5,7 @@ static Handle g_hHudSync;
 static ConVar hostname;
 static float g_flNextDisplayTime;
 
-public bool Watermark_Initialize(ChaosEffect effect, GameData gameconf)
+public bool Watermark_Initialize(ChaosEffect effect)
 {
 	g_hHudSync = CreateHudSynchronizer();
 	hostname = FindConVar("hostname");
