@@ -10,7 +10,7 @@
 #include <tf2items>
 #include <tf2utils>
 #include <tf_econ_data>
-#include <vscript>
+#include <sm_vscript_comms>
 #include <morecolors>
 
 #define PLUGIN_VERSION	"2.0.0"
@@ -35,6 +35,10 @@ char g_szForceEffectId[64];
 ProgressBarConfig g_stEffectBarConfig;
 ProgressBarConfig g_stTimerBarConfig;
 ChatConfig g_stChatConfig;
+
+VScriptHandle g_hVScriptStartEffect;
+VScriptHandle g_hVScriptUpdateEffect;
+VScriptHandle g_hVScriptEndEffect;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"
@@ -128,6 +132,27 @@ public void OnPluginStart()
 	
 	Data_Initialize();
 	Events_Initialize();
+
+	StartPrepVScriptCall(VScriptScope_Proxy);
+	PrepVScriptCall_SetFunction("Chaos_StartEffect");
+	PrepVScriptCall_AddParameter(VScriptParamType_String);
+	PrepVScriptCall_AddParameter(VScriptParamType_Float);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Bool);
+	g_hVScriptStartEffect = EndPrepVScriptCall();
+
+	StartPrepVScriptCall(VScriptScope_Proxy);
+	PrepVScriptCall_SetFunction("Chaos_UpdateEffect");
+	PrepVScriptCall_AddParameter(VScriptParamType_String);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Float);
+	g_hVScriptUpdateEffect = EndPrepVScriptCall();
+
+	StartPrepVScriptCall(VScriptScope_Proxy);
+	PrepVScriptCall_SetFunction("Chaos_EndEffect");
+	PrepVScriptCall_AddParameter(VScriptParamType_String);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Void);
+	g_hVScriptEndEffect = EndPrepVScriptCall();
+
+	Data_InitializeEffects();
 }
 
 public void OnPluginEnd()
@@ -135,25 +160,9 @@ public void OnPluginEnd()
 	ExpireAllActiveEffects(true);
 }
 
-public void VScript_OnScriptVMInitialized()
-{
-	static bool bInitialized = false;
-
-	if (bInitialized)
-		return;
-
-	bInitialized = Data_InitializeEffects();
-}
-
 public void OnMapStart()
 {
 	g_flLastEffectDisplayTime = GetGameTime();
-	
-	// Initialize VScript system
-	ServerCommand("script_execute %s", "chaos");
-	
-	if (VScript_IsScriptVMInitialized())
-		VScript_OnScriptVMInitialized();
 	
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
@@ -266,20 +275,14 @@ public void OnGameFrame()
 			{
 				if (effect.script_file[0])
 				{
-					VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffect"));
-					hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-					if (hExecute.Execute() != SCRIPT_ERROR)
-					{
-						float flUpdateInterval;
-						if (hExecute.ReturnType == FIELD_VOID)
-							flUpdateInterval = flDefaultUpdateInterval;
-						else
-							flUpdateInterval = float(hExecute.ReturnValue);
-						
-						delete hExecute;
-						
-						g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_script_update_time);
-					}
+					StartVScriptFunc(g_hVScriptUpdateEffect);
+					VScriptFunc_PushString(effect.script_file);
+					float flUpdateInterval = FireVScriptFunc_ReturnAny();
+
+					if (flUpdateInterval == 0.0)
+						flUpdateInterval = flDefaultUpdateInterval;
+
+					g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_script_update_time);
 				}
 			}
 		}
@@ -663,13 +666,11 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	
 	if (effect.script_file[0])
 	{
-		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_StartEffect"));
-		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-		hExecute.SetParam(2, FIELD_FLOAT, effect.duration);
-		hExecute.Execute();
-		bool bReturn = hExecute.ReturnValue;
-		delete hExecute;
-		
+		StartVScriptFunc(g_hVScriptStartEffect);
+		VScriptFunc_PushString(effect.script_file);
+		VScriptFunc_PushFloat(effect.duration);
+		bool bReturn = FireVScriptFunc_ReturnAny();
+
 		if (!bReturn)
 		{
 			LogMessage("Skipped script file '%s' because its 'OnStart' callback returned false", effect.script_file);
@@ -916,10 +917,9 @@ void ForceExpireEffect(ChaosEffect effect, bool bExpireAllTags = false)
 		
 		if (effect.script_file[0])
 		{
-			VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_EndEffect"));
-			hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-			hExecute.Execute();
-			delete hExecute;
+			StartVScriptFunc(g_hVScriptEndEffect);
+			VScriptFunc_PushString(effect.script_file);
+			FireVScriptFunc_Void();
 		}
 		
 		if (effect.start_sound[0])

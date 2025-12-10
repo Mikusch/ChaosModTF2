@@ -31,8 +31,8 @@ jobs:
             "https://raw.githubusercontent.com/nosoop/SMExt-SourceScramble/refs/heads/master/scripting/include/sourcescramble.inc"
             "https://raw.githubusercontent.com/asherkin/TF2Items/refs/heads/master/pawn/tf2items.inc"
             "https://raw.githubusercontent.com/nosoop/SM-TFUtils/refs/heads/master/scripting/include/tf2utils.inc"
-            "https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/refs/heads/main/scripting/include/vscript.inc"
             "https://raw.githubusercontent.com/nosoop/SM-TFEconData/refs/heads/master/scripting/include/tf_econ_data.inc"
+            "https://raw.githubusercontent.com/Bradasparky/sm_vscript_comms/refs/heads/main/addons/sourcemod/scripting/include/sm_vscript_comms.inc"
           )
 
           mkdir -p "${{ env.SCRIPTS_PATH }}/include"

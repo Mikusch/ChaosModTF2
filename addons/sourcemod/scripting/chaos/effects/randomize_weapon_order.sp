@@ -1,47 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle g_hSDKCallCanDeploy;
-static Handle g_hSDKCallCanBeSelected;
-static Handle g_hSDKCallGetSubType;
+static VScriptHandle g_hVScriptGetSubType;
+static VScriptHandle g_hVScriptCanBeSelected;
 
 public bool RandomizeWeaponOrder_Initialize(ChaosEffect effect)
 {
-	GameData gameconf;
-	if (!Chaos_LoadGameData(gameconf))
-		return false;
+	StartPrepVScriptCall(VScriptScope_EntityInstance);
+	PrepVScriptCall_SetFunction("GetSubType");
+	PrepVScriptCall_AddParameter(VScriptParamType_Entity);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Int);
+	g_hVScriptGetSubType = EndPrepVScriptCall();
 
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "CBaseCombatWeapon::CanDeploy");
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
-	g_hSDKCallCanDeploy = EndPrepSDKCall();
-	delete gameconf;
-
-	if (!g_hSDKCallCanDeploy)
-	{
-		LogError("Failed to create SDKCall for CBaseCombatWeapon::CanDeploy");
-		return false;
-	}
-
-	VScriptFunction hScriptGetSubType = VScript_GetClassFunction("CBaseCombatWeapon", "GetSubType");
-	if (hScriptGetSubType)
-		g_hSDKCallGetSubType = hScriptGetSubType.CreateSDKCall();
-
-	if (!g_hSDKCallGetSubType)
-	{
-		LogError("Failed to create SDKCall for CBaseCombatWeapon::GetSubType");
-		return false;
-	}
-
-	VScriptFunction hScriptCanBeSelected = VScript_GetClassFunction("CBaseCombatWeapon", "CanBeSelected");
-	if (hScriptCanBeSelected)
-		g_hSDKCallCanBeSelected = hScriptCanBeSelected.CreateSDKCall();
-
-	if (!g_hSDKCallCanBeSelected)
-	{
-		LogError("Failed to create SDKCall for CBaseCombatWeapon::CanBeSelected");
-		return false;
-	}
+	StartPrepVScriptCall(VScriptScope_EntityInstance);
+	PrepVScriptCall_SetFunction("CanBeSelected");
+	PrepVScriptCall_AddParameter(VScriptParamType_Entity);
+	PrepVScriptCall_SetReturnType(VScriptReturnType_Bool);
+	g_hVScriptCanBeSelected = EndPrepVScriptCall();
 
 	return true;
 }
@@ -66,22 +41,27 @@ public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client
 		int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 		if (myWeapon == -1)
 			continue;
-		
+
 		if (myWeapon == activeWeapon)
 			continue;
-		
-		if (!SDKCall(g_hSDKCallCanBeSelected, myWeapon))
+
+		StartVScriptFunc(g_hVScriptCanBeSelected);
+		VScriptFunc_PushEntity(myWeapon);
+		if (!FireVScriptFunc_ReturnAny())
 			continue;
-		
+
 		hWeapons.Push(myWeapon);
 	}
-	
+
 	if (hWeapons.Length != 0)
 	{
 		int newWeapon = hWeapons.Get(GetRandomInt(0, hWeapons.Length - 1));
 		weapon = newWeapon;
-		subtype = SDKCall(g_hSDKCallGetSubType, newWeapon);
-		
+
+		StartVScriptFunc(g_hVScriptGetSubType);
+		VScriptFunc_PushEntity(newWeapon);
+		subtype = FireVScriptFunc_ReturnAny();
+
 		delete hWeapons;
 		return Plugin_Changed;
 	}
