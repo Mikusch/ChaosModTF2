@@ -1,14 +1,16 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ENTITY_FLYING_BIRD_SPEED_MIN 200.0
-#define ENTITY_FLYING_BIRD_SPEED_MAX 500.0
+#define ENTITY_FLYING_BIRD_MODEL	"models/props_forest/dove.mdl"
+
+#define ENTITY_FLYING_BIRD_SPEED_MIN	200.0
+#define ENTITY_FLYING_BIRD_SPEED_MAX	500.0
 
 static float g_flNextBirdSpawnTime[MAXPLAYERS + 1];
 
 public bool SpawnBirds_OnStart(ChaosEffect effect)
 {
-	PrecacheModel("models/props_forest/dove.mdl");
+	PrecacheModel(ENTITY_FLYING_BIRD_MODEL);
 
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -33,17 +35,17 @@ public void SpawnBirds_Update(ChaosEffect effect)
 
 		g_flNextBirdSpawnTime[client] = GetGameTime() + GetRandomFloat(0.5, 1.0);
 
-		float vecLaunchSpot[3], vecOrigin[3], vecCenter[3];
+		float vecPos[3], vecOrigin[3], vecCenter[3];
 		GetClientAbsOrigin(client, vecOrigin);
 		WorldSpaceCenter(client, vecCenter);
-		AddVectors(vecOrigin, vecCenter, vecLaunchSpot);
-		ScaleVector(vecLaunchSpot, 0.5);
+		AddVectors(vecOrigin, vecCenter, vecPos);
+		ScaleVector(vecPos, 0.5);
 
 		float vecRandom[3];
 		vecRandom[2] = GetRandomFloat(-10.0, 20.0);
-		AddVectors(vecLaunchSpot, vecRandom, vecLaunchSpot);
+		AddVectors(vecPos, vecRandom, vecPos);
 
-		SpawnClientsideFlyingBird(vecLaunchSpot);
+		SpawnClientsideFlyingBird(vecPos);
 	}
 }
 
