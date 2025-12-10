@@ -18,7 +18,6 @@
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
-ConVar sm_chaos_meta_effect_interval;
 ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_effect_update_interval;
 
@@ -27,7 +26,6 @@ bool g_bNoChaos;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
 float g_flTimeElapsed;
-float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
 char g_szForceEffectId[64];
@@ -118,10 +116,9 @@ public void OnPluginStart()
 	CreateConVar("sm_chaos_version", PLUGIN_VERSION, "Plugin version.", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
-	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.", _, true, 0.0);
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "60", "Default cooldown between effects.", _, true, 0.0);
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation, in seconds.");
-	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "40", "Interval between each attempted meta effect activation, in seconds.");
-	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".025", "Chance for a meta effect to be activated every interval, in percent.", _, true, 0.0, true, 100.0);
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.02", "Chance to activate a meta effect instead of a regular one, in percent.", _, true, 0.0, true, 1.0);
 	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called, in seconds.");
 	
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
@@ -133,7 +130,6 @@ public void OnPluginStart()
 	Data_Initialize();
 	Events_Initialize();
 
-	// Prepare VScript handles for chaos effect calls
 	StartPrepVScriptCall(VScriptScope_Proxy);
 	PrepVScriptCall_SetFunction("Chaos_StartEffect");
 	PrepVScriptCall_AddParameter(VScriptParamType_String);
@@ -294,16 +290,13 @@ public void OnGameFrame()
 		return;
 	
 	float flTimerSpeed = GetGameFrameTime();
-	
-	// Meta effects tick independently
-	g_flMetaTimeElapsed += flTimerSpeed;
-	
+
 	// Check if a meta effect wants to modify the interval
 	for (int i = 0; i < nLength; i++)
 	{
 		if (!g_hEffects.Get(i, ChaosEffect::active))
 			continue;
-		
+
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{
@@ -317,26 +310,33 @@ public void OnGameFrame()
 			}
 		}
 	}
-	
+
 	g_flTimeElapsed += flTimerSpeed;
-	
+
 	// Show interval progress bar
 	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= flCurTime)
 	{
 		g_flTimerBarDisplayTime = flCurTime;
-		
+
 		DisplayTimerBar();
 	}
-	
+
 	// Activate a new effect
 	float flEffectInterval = sm_chaos_effect_interval.FloatValue;
-	if (flEffectInterval && g_flTimeElapsed >= flEffectInterval)
+	if (flEffectInterval > 0.0 && g_flTimeElapsed >= flEffectInterval)
 	{
 		g_flTimeElapsed = 0.0;
-		
+
 		if (!g_szForceEffectId[0])
 		{
-			SelectRandomEffect();
+			// Attempt to roll a meta effect
+			float flMetaChance = sm_chaos_meta_effect_chance.FloatValue;
+			bool bActivateMeta = flMetaChance > 0.0 && GetRandomFloat() < flMetaChance;
+
+			if (!bActivateMeta || !SelectRandomEffect(true))
+			{
+				SelectRandomEffect();
+			}
 		}
 		else
 		{
@@ -344,22 +344,9 @@ public void OnGameFrame()
 			{
 				LogError("Failed to force effect id '%s'", g_szForceEffectId);
 			}
-			
+
 			// Clear out forced effect
 			g_szForceEffectId[0] = EOS;
-		}
-	}
-	
-	// Attempt to activate a new meta effect
-	float flMetaEffectInterval = sm_chaos_meta_effect_interval.FloatValue;
-	if (flMetaEffectInterval && g_flMetaTimeElapsed >= flMetaEffectInterval)
-	{
-		g_flMetaTimeElapsed = 0.0;
-		
-		// Meta effects randomly activate
-		if (GetRandomFloat() <= sm_chaos_meta_effect_chance.FloatValue)
-		{
-			SelectRandomEffect(true);
 		}
 	}
 }
