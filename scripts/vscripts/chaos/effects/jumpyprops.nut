@@ -1,11 +1,11 @@
 // by pokemonpasta
 
 // config
-local MinProps <- 1 // int, minimum vphysics ents present for effect to load
-local JumpCooldown <- 1.5 // float, seconds
+local MIN_PROPS = 1		// int, minimum vphysics ents present for effect to load
+local JUMP_COOLDOWN = 1.5	// float, seconds
 
 // code
-local ThinkFuncs <- {}
+local ThinkFuncs = {}
 
 function ChaosEffect_OnStart()
 {
@@ -17,7 +17,7 @@ function ChaosEffect_OnStart()
 		StartBouncing(ent)
 	}
 
-	if (ThinkFuncs.len() < MinProps)
+	if (ThinkFuncs.len() < MIN_PROPS)
 		return false
 }
 
@@ -60,7 +60,7 @@ function StartBouncing(ent)
 	ent.ValidateScriptScope()
 	ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
 
-	ent.GetScriptScope().JumpCooldown <- JumpCooldown
+	ent.GetScriptScope().JumpCooldown <- JUMP_COOLDOWN
 	ent.GetScriptScope().JumpThink <- JumpThink
 
 	// Run this on itself so we can add some delay
