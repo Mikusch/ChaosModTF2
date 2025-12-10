@@ -47,7 +47,6 @@ ChatConfig g_stChatConfig;
 
 // Regular effects
 #include "chaos/effects/add_condition.sp"
-#include "chaos/effects/birds.sp"
 #include "chaos/effects/burn_player.sp"
 #include "chaos/effects/decompiled.sp"
 #include "chaos/effects/disable_direction.sp"
@@ -86,6 +85,7 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/silence.sp"
 #include "chaos/effects/slap.sp"
 #include "chaos/effects/spawn_ball.sp"
+#include "chaos/effects/spawn_birds.sp"
 #include "chaos/effects/step_size.sp"
 #include "chaos/effects/time_scale.sp"
 #include "chaos/effects/truce.sp"
