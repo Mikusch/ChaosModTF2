@@ -1,11 +1,11 @@
 // by pokemonpasta
 
 // config
-MinProps <- 1 // int, minimum vphysics ents present for effect to load
-JumpCooldown <- 1.5 // float, seconds
+local MinProps <- 1 // int, minimum vphysics ents present for effect to load
+local JumpCooldown <- 1.5 // float, seconds
 
 // code
-ThinkFuncs <- {}
+local ThinkFuncs <- {}
 
 function ChaosEffect_OnStart()
 {
