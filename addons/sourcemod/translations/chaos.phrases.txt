@@ -745,4 +745,8 @@
 	{
 		"en"		"Reinvoke Previous Effects (Meta)"
 	}
+	"#Chaos_Effect_JumpyProps"
+	{
+		"en"		"Jumpy Props"
+	}
 }
