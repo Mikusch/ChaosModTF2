@@ -114,7 +114,7 @@
 	}
 	"#Chaos_Effect_JingleFootsteps"
 	{
-		"en"		"Jingle All The Way"
+		"en"		"Jingle All the Way"
 	}
 	"#Chaos_Effect_SkeletonModels"
 	{
@@ -166,7 +166,7 @@
 	}
 	"#Chaos_Effect_NoJumpDuck"
 	{
-		"en"		"No Jumping Or Crouching"
+		"en"		"No Jumping or Crouching"
 	}
 	"#Chaos_Effect_HeavyOverlay"
 	{
@@ -198,7 +198,7 @@
 	}
 	"#Chaos_Effect_Pyrovision"
 	{
-		"en"		"A Visit To Pyroland"
+		"en"		"A Visit to Pyroland"
 	}
 	"#Chaos_Effect_Taunt"
 	{
@@ -235,7 +235,7 @@
 	}
 	"#Chaos_Effect_RemovePickups"
 	{
-		"en"		"Remove Health And Ammo Pickups"
+		"en"		"Remove Health and Ammo Pickups"
 	}
 	"#Chaos_Effect_BulletImmunity"
 	{
@@ -255,7 +255,7 @@
 	}
 	"#Chaos_Effect_LaughOnKill"
 	{
-		"en"		"The Joy Of Killing"
+		"en"		"The Joy of Killing"
 	}
 	"#Chaos_Effect_HitSelfOnMiss"
 	{
@@ -267,7 +267,7 @@
 	}
 	"#Chaos_Effect_NoInput"
 	{
-		"en"		"Stop And Stare"
+		"en"		"Stop and Stare"
 	}
 	"#Chaos_Effect_RandomCritsOn"
 	{
@@ -351,7 +351,7 @@
 	}
 	"#Chaos_Effect_PaintItems"
 	{
-		"en"		"Apply Random Paint To Items"
+		"en"		"Apply Random Paint to Items"
 	}
 	"#Chaos_Effect_Nothing"
 	{
@@ -363,9 +363,9 @@
 	}
 	"#Chaos_Effect_Nothing_GiveEveryoneANose"
 	{
-		"en"		"Give Everyone A Nose"
+		"en"		"Give Everyone a Nose"
 	}
-	"#Chaos_Effect_Nothing_TeleportEveryone1Millimeter"
+	"#Chaos_Effect_Nothing_Teleport1Millimeter"
 	{
 		"en"		"Teleport Everyone by 1 Millimeter"
 	}
@@ -375,15 +375,15 @@
 	}
 	"#Chaos_Effect_Nothing_RemoveTheObserver"
 	{
-		"en"		"Remove The Observer"
+		"en"		"Remove the Observer"
 	}
 	"#Chaos_Effect_Nothing_IncreasePingBy1"
 	{
 		"en"		"Increase Ping by 1"
 	}
-	"#Chaos_Effect_Nothing_AllPlayersArePlayers"
+	"#Chaos_Effect_Nothing_TurnPlayersIntoPlayers"
 	{
-		"en"		"All Players Are Players"
+		"en"		"Turn All Players into Players"
 	}
 	"#Chaos_Effect_Nothing_Blank"
 	{
@@ -400,6 +400,14 @@
 	"#Chaos_Effect_Nothing_NoCrash"
 	{
 		"en"		"No Crash"
+	}
+	"#Chaos_Effect_Nothing_RotateBy0Degrees"
+	{
+		"en"		"Rotate All Players by 0 Degrees"
+	}
+	"#Chaos_Effect_Nothing_PlaySilence"
+	{
+		"en"		"Play Silence"
 	}
 	"#Chaos_Effect_PlayerGlow"
 	{
@@ -447,7 +455,7 @@
 	}
 	"#Chaos_Effect_MannInTheMachine"
 	{
-		"en"		"Mann In The Machine"
+		"en"		"Mann in the Machine"
 	}
 	"#Chaos_Effect_Headshots"
 	{
@@ -471,11 +479,11 @@
 	}
 	"#Chaos_Effect_GiveGibus"
 	{
-		"en"		"Give Everyone A Gibus"
+		"en"		"Give Everyone a Gibus"
 	}
 	"#Chaos_Effect_GiveTopNotch"
 	{
-		"en"		"Give Everyone A Top Notch"
+		"en"		"Give Everyone a Top Notch"
 	}
 	"#Chaos_Effect_FlipViewModels"
 	{
@@ -535,7 +543,7 @@
 	}
 	"#Chaos_Effect_SpawnBirds"
 	{
-		"en"		"Who Let The Birds Out?"
+		"en"		"Who Let the Birds Out?"
 	}
 	"#Chaos_Effect_VRCamera"
 	{
@@ -663,7 +671,7 @@
 	}
 	"#Chaos_Effect_NoSelfBlast"
 	{
-		"en"		"No Damage From Blast Jumping"
+		"en"		"No Damage from Blast Jumping"
 	}
 	"#Chaos_Effect_NoOverhealDecay"
 	{
