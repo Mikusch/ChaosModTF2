@@ -265,7 +265,7 @@
 	{
 		"en"		"Damage Causes Airblast"
 	}
-	"#Chaos_Effect_NoInput"
+	"#Chaos_Effect_Stop"
 	{
 		"en"		"Stop and Stare"
 	}
