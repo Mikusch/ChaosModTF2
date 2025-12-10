@@ -9,7 +9,7 @@ function ChaosEffect_OnStart()
 			continue
 		
 		// SetGravity(0.0) doesn't do anything, so we use a really small min value instead for effectively no gravity.
-		player.SetGravity(RandomFloat(0.000001, 2.0))
+		player.SetGravity(RandomFloat(0.000001, 3.0))
 	}
 }
 
@@ -25,12 +25,11 @@ function ChaosEffect_OnEnd()
 	}
 }
 
-// Extra set for late players
 function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
-	if(player != null && player.GetGravity() == 1.0) // unlikely for a player OnStart to have gravity be set to 1
+	if (player != null && player.GetGravity() == 1.0) // unlikely for a player OnStart to have gravity be set to 1
 	{
-		player.SetGravity(RandomFloat(0.000001, 2.0))
+		player.SetGravity(RandomFloat(0.000001, 3.0))
 	}
 }
