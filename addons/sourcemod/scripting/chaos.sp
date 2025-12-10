@@ -18,8 +18,8 @@
 ConVar sm_chaos_enabled;
 ConVar sm_chaos_effect_cooldown;
 ConVar sm_chaos_effect_interval;
-ConVar sm_chaos_meta_effect_chance;
 ConVar sm_chaos_effect_update_interval;
+ConVar sm_chaos_meta_effect_chance;
 
 bool g_bEnabled;
 bool g_bNoChaos;
@@ -118,8 +118,8 @@ public void OnPluginStart()
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
 	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "60", "Default cooldown between effects.", _, true, 0.0);
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation, in seconds.");
-	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", "0.02", "Chance to activate a meta effect instead of a regular one, in percent.", _, true, 0.0, true, 1.0);
 	sm_chaos_effect_update_interval = CreateConVar("sm_chaos_effect_update_interval", ".1", "Interval at which effect update functions should be called, in seconds.");
+	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".02", "Chance to activate a meta effect instead of a regular one, in percent.", _, true, 0.0, true, 1.0);
 	
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
 	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to start.");
