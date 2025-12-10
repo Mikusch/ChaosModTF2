@@ -14,7 +14,7 @@ screenspace_general
 	{
 		$no_draw 1
 	}
-		
+
 	$copyalpha                 1
 	$alpha_blend_color_overlay 0
 	$alpha_blend               0
@@ -23,7 +23,7 @@ screenspace_general
 	$linearread_texture1       0
 	$linearread_texture2       0
 	$linearread_texture3       0
-	
+
 	Proxies
 	{
 		Equals

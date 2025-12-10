@@ -2,8 +2,6 @@ screenspace_general // NAME: See More
 {
 	$pixshader "chaos_tile_ps20"
 
-	// Textures to use
-	// Use _rt_FullFrameFB to fetch the screen texture (framebuffer)
 	$basetexture "_rt_FullFrameFB"
 	$texture1    ""
 	$texture2    ""
@@ -17,9 +15,7 @@ screenspace_general // NAME: See More
 	{
 		$no_draw 1
 	}
-	
-	// Various color/alpha mixing parameters
-	// usually you don't need to change these
+
 	$copyalpha                 1
 	$alpha_blend_color_overlay 0
 	$alpha_blend               0
@@ -29,9 +25,8 @@ screenspace_general // NAME: See More
 	$linearread_texture2       0
 	$linearread_texture3       0
 
-	// 16 customizable parameters that are passed to the shader
 	$c0_x  5.0 // x^2 = num of tiles
-	
+
 	Proxies
 	{
 		Equals

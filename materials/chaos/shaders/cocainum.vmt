@@ -14,7 +14,7 @@ screenspace_general
 	{
 		$no_draw 1
 	}
-		
+
 	$copyalpha                 1
 	$alpha_blend_color_overlay 0
 	$alpha_blend               0
@@ -34,7 +34,7 @@ screenspace_general
 	$c1_w     15.0 // oscillation period
 	$c2_x     1.02 // constrast
 	$c2_y     0.02 // hue shift
-	
+
 	Proxies
 	{
 		Equals

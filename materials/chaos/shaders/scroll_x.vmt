@@ -27,7 +27,7 @@ screenspace_general
 	$c0_x     0.0 // time
 	$c0_y     0.0 // direction; 0 for X axis, 1 for Y axis
 	$c0_z     0.1 // speed. negative for backwards
-	
+
 	Proxies
 	{
 		Equals
