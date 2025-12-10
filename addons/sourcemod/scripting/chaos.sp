@@ -1042,7 +1042,6 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 void SetChaosTimers(float flTime)
 {
 	g_flTimeElapsed = 0.0;
-	g_flMetaTimeElapsed = 0.0;
 	g_flTimerBarDisplayTime = flTime;
 }
 
