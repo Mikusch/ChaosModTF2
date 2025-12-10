@@ -5,8 +5,6 @@
 
 #define MAX_USER_MSG_DATA	255
 
-#define PI	3.14159265358979323846
-
 // Fade in/out
 #define FFADE_IN			0x0001		// Just here so we don't pass 0 into the function
 #define FFADE_OUT			0x0002		// Fade out (not in)
