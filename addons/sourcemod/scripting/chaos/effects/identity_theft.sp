@@ -5,8 +5,8 @@ static Handle g_hSDKCallGiveNamedItem;
 
 public bool IdentityTheft_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos");
-	if (!gameconf)
+	GameData gameconf;
+	if (!Chaos_LoadGameData(gameconf))
 		return false;
 
 	StartPrepSDKCall(SDKCall_Player);
@@ -17,10 +17,15 @@ public bool IdentityTheft_Initialize(ChaosEffect effect)
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_ByValue);
 	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
 	g_hSDKCallGiveNamedItem = EndPrepSDKCall();
-
 	delete gameconf;
 
-	return g_hSDKCallGiveNamedItem != null;
+	if (!g_hSDKCallGiveNamedItem)
+	{
+		LogError("Failed to create SDKCall for CTFPlayer::GiveNamedItem");
+		return false;
+	}
+
+	return true;
 }
 
 public bool IdentityTheft_OnStart(ChaosEffect effect)

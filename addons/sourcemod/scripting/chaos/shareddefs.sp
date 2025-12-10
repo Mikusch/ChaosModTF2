@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define INVALID_EFFECT_ID	-1
+#define GAMEDATA_FILE	"chaos"
 
 #define MAX_USER_MSG_DATA	255
 
