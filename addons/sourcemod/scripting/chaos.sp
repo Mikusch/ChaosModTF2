@@ -133,6 +133,7 @@ public void OnPluginStart()
 	Data_Initialize();
 	Events_Initialize();
 
+	// Prepare VScript handles for chaos effect calls
 	StartPrepVScriptCall(VScriptScope_Proxy);
 	PrepVScriptCall_SetFunction("Chaos_StartEffect");
 	PrepVScriptCall_AddParameter(VScriptParamType_String);
