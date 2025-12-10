@@ -5,22 +5,19 @@ static Handle g_hSDKCallPostInventoryApplication;
 
 public bool GiveItem_Initialize(ChaosEffect effect)
 {
+	GameData gameconf;
+	if (!Chaos_LoadGameData(gameconf))
+		return false;
+
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
+	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
+	delete gameconf;
+
 	if (!g_hSDKCallPostInventoryApplication)
 	{
-		GameData gameconf;
-		if (!Chaos_LoadGameData(gameconf))
-			return false;
-
-		StartPrepSDKCall(SDKCall_Player);
-		PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
-		g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
-		delete gameconf;
-
-		if (!g_hSDKCallPostInventoryApplication)
-		{
-			LogError("Failed to create SDKCall for CTFPlayer::PostInventoryApplication");
-			return false;
-		}
+		LogError("Failed to create SDKCall for CTFPlayer::PostInventoryApplication");
+		return false;
 	}
 
 	return true;

@@ -6,9 +6,7 @@ static int g_nMaxHealth;
 
 public bool SetHealth_Initialize(ChaosEffect effect)
 {
-	if (!g_hDetourGetMaxHealthForBuffing)
-		g_hDetourGetMaxHealthForBuffing = Chaos_CreateDetour("CTFPlayer::GetMaxHealthForBuffing");
-
+	g_hDetourGetMaxHealthForBuffing = Chaos_CreateDetour("CTFPlayer::GetMaxHealthForBuffing");
 	return g_hDetourGetMaxHealthForBuffing != null;
 }
 
