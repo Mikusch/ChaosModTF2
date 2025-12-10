@@ -353,6 +353,53 @@ int FindItemOffset(int entity)
 	char szNetClass[32];
 	if (!GetEntityNetClass(entity, szNetClass, sizeof(szNetClass)))
 		return -1;
-	
+
 	return FindSendPropInfo(szNetClass, "m_Item");
+}
+
+bool Chaos_LoadGameData(GameData &gameconf)
+{
+	gameconf = new GameData(GAMEDATA_FILE);
+	if (!gameconf)
+	{
+		LogError("Failed to load gamedata file '%s'", GAMEDATA_FILE);
+		return false;
+	}
+	return true;
+}
+
+DynamicDetour Chaos_CreateDetour(const char[] name)
+{
+	GameData gameconf;
+	if (!Chaos_LoadGameData(gameconf))
+		return null;
+
+	DynamicDetour detour = DynamicDetour.FromConf(gameconf, name);
+	delete gameconf;
+
+	if (!detour)
+	{
+		LogError("Failed to create detour for '%s'", name);
+		return null;
+	}
+
+	return detour;
+}
+
+DynamicHook Chaos_CreateDynamicHook(const char[] name)
+{
+	GameData gameconf;
+	if (!Chaos_LoadGameData(gameconf))
+		return null;
+
+	DynamicHook hook = DynamicHook.FromConf(gameconf, name);
+	delete gameconf;
+
+	if (!hook)
+	{
+		LogError("Failed to create hook for '%s'", name);
+		return null;
+	}
+
+	return hook;
 }

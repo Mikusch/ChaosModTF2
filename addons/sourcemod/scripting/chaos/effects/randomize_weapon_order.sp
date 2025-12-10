@@ -1,32 +1,32 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle g_hSDKCallCanDeploy;
 static Handle g_hSDKCallCanBeSelected;
 static Handle g_hSDKCallGetSubType;
 
 public bool RandomizeWeaponOrder_Initialize(ChaosEffect effect)
 {
-	GameData gameconf = new GameData("chaos/randomizeweaponorder");
-	if (!gameconf)
-		return false;
-
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "CBaseCombatWeapon::CanDeploy");
-	PrepSDKCall_SetReturnInfo(SDKType_Bool, SDKPass_ByValue);
-	g_hSDKCallCanDeploy = EndPrepSDKCall();
-
-	delete gameconf;
-
 	VScriptFunction hScriptGetSubType = VScript_GetClassFunction("CBaseCombatWeapon", "GetSubType");
 	if (hScriptGetSubType)
 		g_hSDKCallGetSubType = hScriptGetSubType.CreateSDKCall();
+
+	if (!g_hSDKCallGetSubType)
+	{
+		LogError("Failed to create SDKCall for CBaseCombatWeapon::GetSubType");
+		return false;
+	}
 
 	VScriptFunction hScriptCanBeSelected = VScript_GetClassFunction("CBaseCombatWeapon", "CanBeSelected");
 	if (hScriptCanBeSelected)
 		g_hSDKCallCanBeSelected = hScriptCanBeSelected.CreateSDKCall();
 
-	return g_hSDKCallCanDeploy && g_hSDKCallGetSubType && g_hSDKCallCanBeSelected;
+	if (!g_hSDKCallCanBeSelected)
+	{
+		LogError("Failed to create SDKCall for CBaseCombatWeapon::CanBeSelected");
+		return false;
+	}
+
+	return true;
 }
 
 public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])

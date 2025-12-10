@@ -1,11 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define INVALID_EFFECT_ID	-1
+#define GAMEDATA_FILE	"chaos"
 
 #define MAX_USER_MSG_DATA	255
-
-#define PI	3.14159265358979323846
 
 // Fade in/out
 #define FFADE_IN			0x0001		// Just here so we don't pass 0 into the function

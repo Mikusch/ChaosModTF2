@@ -1,12 +1,12 @@
 // By Kamuixmod
 
-const GRACE_PERIOD = 25.0
-const BLINK_PERIOD = 5.0
-const BLINK_DURATION = 0.25
-const ROT_SPEED = 2
-const REWARD_DURATION_MIN = 7.5
-const REWARD_DURATION_MAX = 20.0
-const PARTICLE_DURATION = 3
+local GRACE_PERIOD = 25.0
+local BLINK_PERIOD = 5.0
+local BLINK_DURATION = 0.25
+local ROT_SPEED = 2
+local REWARD_DURATION_MIN = 7.5
+local REWARD_DURATION_MAX = 20.0
+local PARTICLE_DURATION = 3
 
 ::itemIndex <- PrecacheModel("models/items/gift_festive.mdl")
 
