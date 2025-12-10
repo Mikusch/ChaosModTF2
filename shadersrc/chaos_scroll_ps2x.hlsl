@@ -1,4 +1,3 @@
-
 #include "common.hlsl"
 
 #define Time  Constants0.x
@@ -8,10 +7,9 @@
 float4 main( PS_INPUT i ) : COLOR
 {
 	float2 uv = i.uv;
-
 	float scrollOffset = frac(Time * Speed);
 	
-	if(Vert == 1.0)
+	if (Vert == 1.0)
 		uv.y = frac(uv.y + scrollOffset);
 	else
 		uv.x = frac(uv.x + scrollOffset);

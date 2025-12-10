@@ -1,15 +1,12 @@
 screenspace_general
 {
-	$pixshader "chaos_axismirror4_ps20"
+	$pixshader "chaos_axismirror_ps20"
 
-	// Textures to use
-	// Use _rt_FullFrameFB to fetch the screen texture (framebuffer)
 	$basetexture "_rt_FullFrameFB"
 	$texture1    ""
 	$texture2    ""
 	$texture3    ""
 
-	// Mandatory parameters, do not change these
 	$x360appchooser 1
 	$ignorez        1
 	$fix_fb         32768
@@ -17,9 +14,7 @@ screenspace_general
 	{
 		$no_draw 1
 	}
-	
-	// Various color/alpha mixing parameters
-	// usually you don't need to change these
+
 	$copyalpha                 1
 	$alpha_blend_color_overlay 0
 	$alpha_blend               0
@@ -29,6 +24,8 @@ screenspace_general
 	$linearread_texture2       0
 	$linearread_texture3       0
 	
+	$c0_x     0.0 // vertical mirror (y-axis)
+
 	Proxies
 	{
 		Equals

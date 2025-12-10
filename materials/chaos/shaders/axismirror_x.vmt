@@ -1,6 +1,6 @@
 screenspace_general
 {
-	$pixshader "chaos_scroll_ps20"
+	$pixshader "chaos_axismirror_ps20"
 
 	$basetexture "_rt_FullFrameFB"
 	$texture1    ""
@@ -24,20 +24,14 @@ screenspace_general
 	$linearread_texture2       0
 	$linearread_texture3       0
 
-	$c0_x     0.0 // time
-	$c0_y     0.0 // direction; 0 for X axis, 1 for Y axis
-	$c0_z     0.1 // speed. negative for backwards
-	
+	$c0_x     1.0 // horizontal mirror (x-axis)
+
 	Proxies
 	{
 		Equals
 		{
 			srcVar1			$fix_fb
 			resultVar		$flags2
-		}
-		CurrentTime
-		{
-			resultVar		$c0_x
 		}
 	}
 }
