@@ -964,19 +964,27 @@ void ForceExpireEffect(ChaosEffect effect, bool bExpireAllTags = false)
  */
 bool IsEffectOfClassActive(const char[] szEffectClass)
 {
+	ChaosEffect effect;
+	return GetActiveEffectByClass(szEffectClass, effect);
+}
+
+/**
+ * Retrieves the active effect with the given class.
+ */
+bool GetActiveEffectByClass(const char[] szEffectClass, ChaosEffect effect)
+{
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
 	{
 		if (!g_hEffects.Get(i, ChaosEffect::active))
 			continue;
-		
-		ChaosEffect effect;
+
 		if (g_hEffects.GetArray(i, effect) && StrEqual(szEffectClass, effect.effect_class))
 		{
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 

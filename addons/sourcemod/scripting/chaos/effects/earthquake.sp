@@ -4,8 +4,6 @@
 #define EARTHQUAKE_AMPLITUDE 15.0
 #define EARTHQUAKE_FREQUENCY 150.0
 
-static ChaosEffect g_hEffect;
-
 public void Earthquake_OnStartPost(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -34,12 +32,6 @@ public void Earthquake_OnEnd(ChaosEffect effect)
 	}
 }
 
-public void Earthquake_Update(ChaosEffect effect)
-{
-	// Update cached effect for use in GroundEntChanged hook
-	g_hEffect = effect;
-}
-
 public void Earthquake_OnClientPutInServer(ChaosEffect effect, int client)
 {
 	SDKHook(client, SDKHook_GroundEntChangedPost, OnGroundEntChangedPost);
@@ -47,6 +39,13 @@ public void Earthquake_OnClientPutInServer(ChaosEffect effect, int client)
 
 static void OnGroundEntChangedPost(int client)
 {
-	float flDuration = g_hEffect.activate_time + g_hEffect.current_duration - GetGameTime();
-	UTIL_ScreenShake(client, GetEntPropEnt(client, Prop_Send, "m_hGroundEntity") == -1 ? SHAKE_START : SHAKE_STOP, EARTHQUAKE_AMPLITUDE, EARTHQUAKE_FREQUENCY, flDuration);
+	ChaosEffect effect;
+	if (!GetActiveEffectByClass("Earthquake", effect))
+		return;
+
+	bool bOnGround = GetEntPropEnt(client, Prop_Send, "m_hGroundEntity") != -1;
+	float flDuration = effect.activate_time + effect.current_duration - GetGameTime();
+
+	UTIL_ScreenShake(client, SHAKE_STOP, EARTHQUAKE_AMPLITUDE, EARTHQUAKE_FREQUENCY, 0.0);
+	UTIL_ScreenShake(client, SHAKE_START, EARTHQUAKE_AMPLITUDE, EARTHQUAKE_FREQUENCY, bOnGround ? 1.0 : flDuration);
 }
