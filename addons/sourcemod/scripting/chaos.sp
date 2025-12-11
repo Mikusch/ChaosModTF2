@@ -845,7 +845,7 @@ void DisplayActiveEffects()
 						StrCat(szProgressBar, sizeof(szProgressBar), g_stEffectBarConfig.empty);
 					}
 					
-					Format(szLine, sizeof(szLine), bPhraseExists ? "%T %s" : "%s %s", szName, client, szProgressBar);
+					Format(szLine, sizeof(szLine), bPhraseExists ? "%s %T" : "%s %s", szProgressBar, szName, client);
 				}
 				// One-shot effects stay on screen for 60 seconds
 				else if (!effect.duration && GetGameTime() - effect.activate_time <= 60.0)
