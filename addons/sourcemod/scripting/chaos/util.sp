@@ -122,7 +122,7 @@ void SendCustomHudNotificationCustom(int client, const char[] szText, const char
 
 void PrintKeyHintText(int client, const char[] format, any...)
 {
-	char buffer[256];
+	char buffer[MAX_USER_MSG_DATA - 1];
 	SetGlobalTransTarget(client);
 	VFormat(buffer, sizeof(buffer), format, 3);
 	
