@@ -732,24 +732,17 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		PlayStaticSound(effect.start_sound);
 	}
 	
-	char szName[64];
-	if (effect.GetName(szName, sizeof(szName)) && szName[0])
+	for (int client = 1; client <= MaxClients; client++)
 	{
-		if (TranslationPhraseExists(szName))
+		if (!IsClientInGame(client))
+			continue;
+
+		char szName[64];
+		if (effect.GetDisplayName(szName, sizeof(szName), client) && szName[0])
 		{
-			for (int client = 1; client <= MaxClients; client++)
-			{
-				if (!IsClientInGame(client))
-					continue;
-
-				char szMessage[256];
-				Format(szMessage, sizeof(szMessage), "%T", szName, client);
-				SendCustomHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
-			}
+			SendCustomHudNotificationCustom(client, szName, "ico_notify_flag_moving_alt");
+			CPrintToChat(client, "%s%t", g_stChatConfig.tag, "#Chaos_Effect_Activated", szName);
 		}
-
-		if (TranslationPhraseExists("#Chaos_Effect_Activated"))
-			CPrintToChatAll("%s%t", g_stChatConfig.tag, "#Chaos_Effect_Activated", szName);
 	}
 	
 	// For effects that need to access modified properties
@@ -761,7 +754,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		Call_Finish();
 	}
 	
-	LogMessage("Activated effect '%T'", effect.name, LANG_SERVER);
+	LogMessage("Activated effect '%s'", effect.id);
 	
 	return true;
 }
@@ -818,7 +811,7 @@ void DisplayActiveEffects()
 					continue;
 				
 				char szName[64];
-				if (!effect.GetName(szName, sizeof(szName)) || !szName[0])
+				if (!effect.GetDisplayName(szName, sizeof(szName), client) || !szName[0])
 					continue;
 				
 				bool bPhraseExists = TranslationPhraseExists(szName);

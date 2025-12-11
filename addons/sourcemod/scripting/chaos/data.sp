@@ -79,7 +79,7 @@ enum struct ChaosEffect
 		return GetFunctionByName(hPlugin, szFunctionName);
 	}
 	
-	bool GetName(char[] szName, int iMaxLength)
+	bool GetDisplayName(char[] szName, int iMaxLength, int client)
 	{
 		// This callback only applies to the current effect
 		Function fnCallback = this.GetCallbackFunction("ModifyEffectName");
@@ -93,11 +93,14 @@ enum struct ChaosEffect
 			bool bReturn;
 			if (Call_Finish(bReturn) == SP_ERROR_NONE && bReturn)
 			{
-				return bReturn;
+				if (TranslationPhraseExists(szName))
+					Format(szName, iMaxLength, "%T", szName, client);
+
+				return true;
 			}
 		}
 		
-		return strcopy(szName, iMaxLength, this.name) != 0;
+		return TranslationPhraseExists(this.name) ? Format(szName, iMaxLength, "%T", this.name, client) : strcopy(szName, iMaxLength, this.name);
 	}
 	
 	bool IsCompatibleWithActiveEffects()

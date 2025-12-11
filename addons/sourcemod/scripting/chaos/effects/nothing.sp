@@ -49,8 +49,8 @@ public bool Nothing_ModifyEffectName(ChaosEffect effect, char[] name, int maxlen
 	if (!g_szFakeName[0])
 		return false;
 	
-	if (effect.activate_time + 10.0 < GetGameTime())
+	if (effect.activate_time + 8.0 < GetGameTime())
 		return false;
 	
-	return strcopy(name, maxlength, g_szFakeName) != 0;
+	return strcopy(name, maxlength, g_szFakeName);
 }
