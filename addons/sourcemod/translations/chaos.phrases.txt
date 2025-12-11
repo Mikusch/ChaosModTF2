@@ -5,6 +5,11 @@
 		"#format"	"{1:t}"
 		"en"		"{1}"
 	}
+	"#Chaos_Effect_Activated_Chat"
+	{
+		"#format"	"{1:t}"
+		"en"		"{lightgreen}{1}{default} has been activated."
+	}
 	"#Chaos_Effect_NotFound"
 	{
 		"#format"	"{1:s}"

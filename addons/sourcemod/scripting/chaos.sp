@@ -735,15 +735,21 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	char szName[64];
 	if (effect.GetName(szName, sizeof(szName)) && szName[0])
 	{
-		for (int client = 1; client <= MaxClients; client++)
+		if (TranslationPhraseExists(szName))
 		{
-			if (!IsClientInGame(client))
-				continue;
-			
-			char szMessage[256];
-			Format(szMessage, sizeof(szMessage), "%t", "#Chaos_Effect_Activated", szName, client);
-			SendCustomHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
+			for (int client = 1; client <= MaxClients; client++)
+			{
+				if (!IsClientInGame(client))
+					continue;
+
+				char szMessage[256];
+				Format(szMessage, sizeof(szMessage), "%T", szName, client);
+				SendCustomHudNotificationCustom(client, szMessage, "ico_notify_flag_moving_alt");
+			}
 		}
+
+		if (TranslationPhraseExists("#Chaos_Effect_Activated"))
+			CPrintToChatAll("%s%t", g_stChatConfig.tag, "#Chaos_Effect_Activated", szName);
 	}
 	
 	// For effects that need to access modified properties
@@ -815,6 +821,8 @@ void DisplayActiveEffects()
 				if (!effect.GetName(szName, sizeof(szName)) || !szName[0])
 					continue;
 				
+				bool bPhraseExists = TranslationPhraseExists(szName);
+				
 				char szLine[128];
 				
 				// Expiring effects stay on screen while active
@@ -837,12 +845,12 @@ void DisplayActiveEffects()
 						StrCat(szProgressBar, sizeof(szProgressBar), g_stEffectBarConfig.empty);
 					}
 					
-					Format(szLine, sizeof(szLine), "%T %s", szName, client, szProgressBar);
+					Format(szLine, sizeof(szLine), bPhraseExists ? "%T %s" : "%s %s", szName, client, szProgressBar);
 				}
 				// One-shot effects stay on screen for 60 seconds
 				else if (!effect.duration && GetGameTime() - effect.activate_time <= 60.0)
 				{
-					Format(szLine, sizeof(szLine), "%T", szName, client);
+					Format(szLine, sizeof(szLine), bPhraseExists ? "%T" : "%s", szName, client);
 				}
 				
 				// -2 to include null terminators
