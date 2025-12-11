@@ -25,6 +25,12 @@
 		}
 		"Offsets"
 		{
+			"IVEngineServer::SetPausedForced"
+			{
+				"library"	"engine"
+				"linux"		"123"
+				"windows"	"123"
+			}
 			"CTFPlayer::GiveNamedItem"
 			{
 				"library"	"server"
