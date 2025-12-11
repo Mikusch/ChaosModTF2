@@ -1070,14 +1070,14 @@ static Action ConCmd_SetNextEffect(int client, int args)
 	int nIndex = g_hEffects.FindString(g_szForceEffectId);
 	if (nIndex == -1)
 	{
-		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", g_szForceEffectId);
+		CReplyToCommand(client, "%t", "#Chaos_Effect_NotFound", g_szForceEffectId);
 	}
 	else
 	{
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(nIndex, effect))
 		{
-			ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Done", effect.name);
+			CReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Success", effect.name);
 		}
 	}
 	
@@ -1101,7 +1101,7 @@ static Action ConCmd_ForceEffect(int client, int args)
 	int nIndex = g_hEffects.FindString(szEffectId);
 	if (nIndex == -1)
 	{
-		ReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Invalid", szEffectId);
+		CReplyToCommand(client, "%t", "#Chaos_Effect_NotFound", szEffectId);
 	}
 	else
 	{

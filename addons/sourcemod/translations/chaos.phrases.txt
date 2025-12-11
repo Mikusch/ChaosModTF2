@@ -1,20 +1,19 @@
 "Phrases"
 {
-	// HUD center message with the effect name
 	"#Chaos_Effect_Activated"
 	{
 		"#format"	"{1:t}"
 		"en"		"{1}"
 	}
-	"#Chaos_Effect_SetNextEffect_Invalid"
+	"#Chaos_Effect_NotFound"
 	{
 		"#format"	"{1:s}"
-		"en"		"No effect with ID \"{1}\" found."
+		"en"		"No effect with ID {lightgreen}{1}{default} found."
 	}
-	"#Chaos_Effect_SetNextEffect_Done"
+	"#Chaos_Effect_SetNextEffect_Success"
 	{
 		"#format"	"{1:t}"
-		"en"		"Next effect set to \"{1}\"."
+		"en"		"Next effect set to {lightgreen}{1}{default}."
 	}
 	"#Chaos_Effect_InvertAccel"
 	{
