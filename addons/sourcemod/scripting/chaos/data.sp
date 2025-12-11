@@ -19,6 +19,7 @@ enum struct ChaosEffect
 	char end_sound[PLATFORM_MAX_PATH];
 	ArrayList tags;
 	KeyValues data;
+	char script_data[2048];
 	
 	// Runtime data
 	bool active;
@@ -39,6 +40,7 @@ enum struct ChaosEffect
 			this.meta = kv.GetNum("meta") != 0;
 			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class));
 			kv.GetString("script_file", this.script_file, sizeof(this.script_file));
+			kv.GetString("data", this.script_data, sizeof(this.script_data));
 			kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 			kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 			

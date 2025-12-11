@@ -4,7 +4,7 @@ IncludeScript("chaos/util")
 const CHAOS_SCOPE_PREFIX = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 
-function Chaos_StartEffect(name, duration)
+function Chaos_StartEffect(name, duration, data_string = "")
 {
 	local scope_name = CHAOS_SCOPE_PREFIX + name
 	if (scope_name in ROOT)
@@ -21,10 +21,28 @@ function Chaos_StartEffect(name, duration)
 
 	scope.Chaos_EffectName <- CHAOS_SCOPE_PREFIX + name
 
+	if (data_string != "")
+	{
+		try
+		{
+			local data_func = compilestring("return " + data_string)
+			scope.Chaos_Data <- data_func()
+		}
+		catch (e)
+		{
+			printf(CHAOS_LOG_PREFIX + "Failed to parse data for effect '%s': %s\n", name, e)
+			scope.Chaos_Data <- {}
+		}
+	}
+	else
+	{
+		scope.Chaos_Data <- {}
+	}
+
 	local success = true
 	if ("ChaosEffect_OnStart" in scope)
 		success = scope.ChaosEffect_OnStart()
-	
+
 	if (success == null)
 		success = true
 

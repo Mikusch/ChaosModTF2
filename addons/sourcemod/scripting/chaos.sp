@@ -654,10 +654,11 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_StartEffect"));
 		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
 		hExecute.SetParam(2, FIELD_FLOAT, effect.duration);
+		hExecute.SetParamString(3, FIELD_CSTRING, effect.script_data);
 		hExecute.Execute();
 		bool bReturn = hExecute.ReturnValue;
 		delete hExecute;
-		
+
 		if (!bReturn)
 		{
 			LogMessage("Skipped script file '%s' because its 'OnStart' callback returned false", effect.script_file);
