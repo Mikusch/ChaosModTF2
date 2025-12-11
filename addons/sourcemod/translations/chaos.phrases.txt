@@ -156,7 +156,7 @@
 	{
 		"en"		"Respawn Dead Players"
 	}
-	"#Chaos_Effect_ScreenfadeBlack"
+	"#Chaos_Effect_ScreenFadeBlack"
 	{
 		"en"		"Shared Blindness"
 	}
@@ -569,7 +569,7 @@
 	{
 		"en"		"Bouncy Projectiles"
 	}
-	"#Chaos_Effect_ScreenfadeWhite"
+	"#Chaos_Effect_ScreenFadeWhite"
 	{
 		"en"		"Flashbang"
 	}
