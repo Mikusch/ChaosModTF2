@@ -4,13 +4,13 @@
 static DynamicDetour g_hDetourGetMaxHealthForBuffing;
 static int g_nMaxHealth;
 
-public bool SetHealth_Initialize(ChaosEffect effect)
+public bool SetMaxHealth_Initialize(ChaosEffect effect)
 {
 	g_hDetourGetMaxHealthForBuffing = Chaos_CreateDetour("CTFPlayer::GetMaxHealthForBuffing");
 	return g_hDetourGetMaxHealthForBuffing != null;
 }
 
-public bool SetHealth_OnStart(ChaosEffect effect)
+public bool SetMaxHealth_OnStart(ChaosEffect effect)
 {
 	if (!effect.data)
 		return false;
@@ -38,7 +38,7 @@ public bool SetHealth_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void SetHealth_OnEnd(ChaosEffect effect)
+public void SetMaxHealth_OnEnd(ChaosEffect effect)
 {
 	g_hDetourGetMaxHealthForBuffing.Disable(Hook_Pre, OnGetMaxHealthForBuffing);
 }

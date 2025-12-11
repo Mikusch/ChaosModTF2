@@ -80,7 +80,7 @@ ChatConfig g_stChatConfig;
 #include "chaos/effects/set_convar.sp"
 #include "chaos/effects/set_custom_model.sp"
 #include "chaos/effects/set_fov.sp"
-#include "chaos/effects/set_health.sp"
+#include "chaos/effects/set_max_health.sp"
 #include "chaos/effects/show_scoreboard.sp"
 #include "chaos/effects/silence.sp"
 #include "chaos/effects/slap.sp"
