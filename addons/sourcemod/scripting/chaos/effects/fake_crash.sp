@@ -12,8 +12,8 @@ public bool FakeCrash_Initialize(ChaosEffect effect)
 
 	StartPrepSDKCall(SDKCall_Engine);
 	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "IVEngineServer::SetPausedForced");
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_ByValue);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_ByValue);
 	g_hSDKCallSetPausedForced = EndPrepSDKCall();
 	delete gameconf;
 
