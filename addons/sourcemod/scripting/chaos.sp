@@ -799,9 +799,10 @@ void DisplayActiveEffects()
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
+		// KeyHintText has a 1 byte param
 		char szMessage[MAX_USER_MSG_DATA - 1];
-		
+
 		// Go through all effects until we find a valid one 
 		int nLength = g_hEffects.Length;
 		for (int i = 0; i < nLength; i++)
@@ -848,7 +849,7 @@ void DisplayActiveEffects()
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%T" : "%s", szName, client);
 				}
 				
-				// -2 to include null terminators
+				// -1 accounts for newline
 				if (szLine[0] && strlen(szMessage) + strlen(szLine) < sizeof(szMessage) - 1)
 				{
 					Format(szMessage, sizeof(szMessage), "%s\n%s", szMessage, szLine);
