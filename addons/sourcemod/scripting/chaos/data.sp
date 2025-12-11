@@ -70,9 +70,7 @@ enum struct ChaosEffect
 	Function GetCallbackFunction(const char[] szKey, Handle hPlugin = null)
 	{
 		if (!this.effect_class[0])
-		{
 			return INVALID_FUNCTION;
-		}
 		
 		char szFunctionName[64];
 		Format(szFunctionName, sizeof(szFunctionName), "%s_%s", this.effect_class, szKey);

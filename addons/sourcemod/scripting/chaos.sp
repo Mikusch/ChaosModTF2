@@ -741,7 +741,9 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		if (effect.GetDisplayName(szName, sizeof(szName), client) && szName[0])
 		{
 			SendCustomHudNotificationCustom(client, szName, "ico_notify_flag_moving_alt");
-			CPrintToChat(client, "%s%t", g_stChatConfig.tag, "#Chaos_Effect_Activated", szName);
+
+			if (TranslationPhraseExists("#Chaos_Effect_Activated"))
+				CPrintToChat(client, "%s%t", g_stChatConfig.tag, "#Chaos_Effect_Activated", szName);
 		}
 	}
 	
