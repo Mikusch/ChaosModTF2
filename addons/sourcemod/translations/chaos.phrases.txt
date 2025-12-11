@@ -32,6 +32,11 @@
 	{
 		"en"		"Kill Random Player"
 	}
+	"#Chaos_Effect_KillRandomPlayer_Killed"
+	{
+		"#format"	"{1:N}"
+		"en"		"Screw {lightgreen}{1}{default} in particular."
+	}
 	"#Chaos_Effect_FriendlyFire"
 	{
 		"en"		"Friendly Fire"
