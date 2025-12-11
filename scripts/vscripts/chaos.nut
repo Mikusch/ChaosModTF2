@@ -84,3 +84,22 @@ function Chaos_EndEffect(name)
 
 	return true
 }
+
+// Override ClearGameEventCallbacks to wipe events from the root table or from entities only.
+// This way, backwards compatibility is preserved with maps using this deprecated function.
+// Events that are namespaced and not tied to the entity (e.g. for script plugins) are preserved.
+function ClearGameEventCallbacks()
+{
+	foreach (callbacks in [GameEventCallbacks, ScriptEventCallbacks, ScriptHookCallbacks])
+	{
+		foreach (event_name, scopes in callbacks)
+		{
+			for (local i = scopes.len() - 1; i >= 0; i--)
+			{
+				local scope = scopes[i]
+				if (scope == null || scope == ROOT || "__vrefs" in scope)
+					scopes.remove(i)
+			}
+		}
+	}
+}
