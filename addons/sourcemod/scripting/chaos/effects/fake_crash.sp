@@ -35,15 +35,19 @@ public bool FakeCrash_OnStart(ChaosEffect effect)
 		return false;
 
 	net_fakeloss.IntValue = 100;
-	SDKCall(g_hSDKCallSetPausedForced, true, GetRandomFloat(6.0, 12.0));
-
-	// Server doesn't tick when paused, so the next frame happens after unpausing
-	RequestFrame(Frame_StopFakeCrash);
+	SetPausedForced(true);
+	CreateTimer(GetRandomFloat(6.0, 12.0), Timer_EndFakeCrash);
 
 	return true;
 }
 
-static void Frame_StopFakeCrash()
+static void Timer_EndFakeCrash(Handle timer)
 {
+	SetPausedForced(false);
 	net_fakeloss.IntValue = 0;
+}
+
+static void SetPausedForced(bool bPaused, float flDuration = -1.0)
+{
+	SDKCall(g_hSDKCallSetPausedForced, bPaused, flDuration);
 }
