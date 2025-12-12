@@ -351,11 +351,13 @@ int GetEntityForLoadoutSlot(int client, int iLoadoutSlot)
 	if (entity != -1)
 		return entity;
 	
+	int nMaxWeapons = GetEntPropArraySize(client , Prop_Send,"m_hMyWeapons");
+	
 	// TF2Util_GetPlayerLoadoutEntity does not find weapons equipped by the wrong classes.
 	// Iterate all classes and check their weapons.
 	for (TFClassType nClass = TFClass_Scout; nClass <= TFClass_Engineer; nClass++)
 	{
-		for (int i = 0; i < MAX_WEAPONS; i++)
+		for (int i = 0; i < nMaxWeapons; i++)
 		{
 			int hMyWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 			if (hMyWeapon == -1)
