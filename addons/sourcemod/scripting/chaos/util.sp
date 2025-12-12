@@ -253,34 +253,6 @@ int Color32ToInt(int r, int g, int b, int a)
 	return (r << 24) | (g << 16) | (b << 8) | (a);
 }
 
-bool IsMiscSlot(int iSlot)
-{
-	return iSlot == LOADOUT_POSITION_MISC
-		|| iSlot == LOADOUT_POSITION_MISC2
-		|| iSlot == LOADOUT_POSITION_HEAD;
-}
-
-bool IsTauntSlot(int iSlot)
-{
-	return iSlot == LOADOUT_POSITION_TAUNT
-		|| iSlot == LOADOUT_POSITION_TAUNT2
-		|| iSlot == LOADOUT_POSITION_TAUNT3
-		|| iSlot == LOADOUT_POSITION_TAUNT4
-		|| iSlot == LOADOUT_POSITION_TAUNT5
-		|| iSlot == LOADOUT_POSITION_TAUNT6
-		|| iSlot == LOADOUT_POSITION_TAUNT7
-		|| iSlot == LOADOUT_POSITION_TAUNT8;
-}
-
-bool IsWearableSlot(int iSlot)
-{
-	return iSlot == LOADOUT_POSITION_HEAD
-		|| iSlot == LOADOUT_POSITION_MISC
-		|| iSlot == LOADOUT_POSITION_ACTION
-		|| IsMiscSlot(iSlot)
-		|| IsTauntSlot(iSlot);
-}
-
 int GetItemDefinitionIndexByName(const char[] szItemName)
 {
 	if (!szItemName[0])
