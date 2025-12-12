@@ -49,19 +49,20 @@ bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
 	{
 		if (kv.GotoFirstSubKey(false))
 		{
-			// Current key is a section. Browse it recursively.
-			return FindKeyInKeyValues(kv, szKeyToFind);
+			// Current key is a section, browse it recursively
+			if (FindKeyInKeyValues(kv, szKeyToFind))
+				return true;
+
+			kv.GoBack();
 		}
 		else
 		{
-			// Current key is a regular key, or an empty section.
+			// Current key is a regular key, or an empty section
 			if (kv.GetDataType(NULL_STRING) != KvData_None)
 			{
 				char szKey[64];
 				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
-				{
 					return true;
-				}
 			}
 		}
 	}
@@ -70,36 +71,72 @@ bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
 	return false;
 }
 
-bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const char[] szValueToFind)
+static bool FindValueInKeyValues(KeyValues kv, const char[] szValueToFind)
 {
 	do
 	{
 		if (kv.GotoFirstSubKey(false))
 		{
-			// Current key is a section. Browse it recursively.
-			return FindKeyValuePairInKeyValues(kv, szKeyToFind, szValueToFind);
+			// It's a section, recurse into it
+			if (FindValueInKeyValues(kv, szValueToFind))
+				return true;
+
+			kv.GoBack();
 		}
-		else
+		else if (kv.GetDataType(NULL_STRING) != KvData_None)
 		{
-			// Current key is a regular key, or an empty section.
-			if (kv.GetDataType(NULL_STRING) != KvData_None)
+			// It's a key-value pair
+			char szValue[64];
+			kv.GetString(NULL_STRING, szValue, sizeof(szValue));
+
+			if (StrEqual(szValue, szValueToFind))
+				return true;
+		}
+	}
+	while (kv.GotoNextKey(false));
+
+	return false;
+}
+
+bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const char[] szValueToFind)
+{
+	do
+	{
+		char szKey[64];
+		kv.GetSectionName(szKey, sizeof(szKey));
+
+		if (kv.GotoFirstSubKey(false))
+		{
+			// Current key is a section
+			if (StrEqual(szKey, szKeyToFind))
 			{
-				char szKey[64];
-				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
-				{
-					char szValue[64];
-					kv.GetString(NULL_STRING, szValue, sizeof(szValue));
-					
-					if (StrEqual(szValue, szValueToFind))
-					{
-						return true;
-					}
-				}
+				// Found target section, recursively search for the value
+				if (FindValueInKeyValues(kv, szValueToFind))
+					return true;
+			}
+			else
+			{
+				// Not the target section, recurse to find nested instances
+				if (FindKeyValuePairInKeyValues(kv, szKeyToFind, szValueToFind))
+					return true;
+			}
+			kv.GoBack();
+		}
+		else if (kv.GetDataType(NULL_STRING) != KvData_None)
+		{
+			// Current key is a regular key-value pair
+			if (StrEqual(szKey, szKeyToFind))
+			{
+				char szValue[64];
+				kv.GetString(NULL_STRING, szValue, sizeof(szValue));
+
+				if (StrEqual(szValue, szValueToFind))
+					return true;
 			}
 		}
 	}
 	while (kv.GotoNextKey(false));
-	
+
 	return false;
 }
 
