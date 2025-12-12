@@ -1,10 +1,5 @@
 "Phrases"
 {
-	"#Chaos_Effect_Activated"
-	{
-		"#format"	"{1:s}"
-		"en"		"{lightgreen}{1}{default} has been activated."
-	}
 	"#Chaos_Effect_NotFound"
 	{
 		"#format"	"{1:s}"

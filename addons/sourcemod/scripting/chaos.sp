@@ -738,16 +738,13 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 			continue;
 
 		char szName[64];
-		if (effect.GetDisplayName(szName, sizeof(szName), client) && szName[0])
-		{
-			SendCustomHudNotificationCustom(client, szName, "ico_notify_flag_moving_alt");
+		if (!effect.GetDisplayName(szName, sizeof(szName), client))
+			continue;
 
-			if (TranslationPhraseExists("#Chaos_Effect_Activated"))
-				CPrintToChat(client, "%s%t", g_stChatConfig.tag, "#Chaos_Effect_Activated", szName);
-		}
+		SendCustomHudNotificationCustom(client, szName, "ico_notify_flag_moving_alt");
 	}
 	
-	// For effects that need to access modified properties
+	// For effects that need to access properties set after successful activation
 	fnCallback = effect.GetCallbackFunction("OnStartPost");
 	if (fnCallback != INVALID_FUNCTION)
 	{
@@ -814,7 +811,7 @@ void DisplayActiveEffects()
 					continue;
 				
 				char szName[64];
-				if (!effect.GetDisplayName(szName, sizeof(szName), client) || !szName[0])
+				if (!effect.GetDisplayName(szName, sizeof(szName), client))
 					continue;
 				
 				bool bPhraseExists = TranslationPhraseExists(szName);

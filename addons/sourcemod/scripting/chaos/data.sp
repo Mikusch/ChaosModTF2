@@ -77,7 +77,7 @@ enum struct ChaosEffect
 		return GetFunctionByName(hPlugin, szFunctionName);
 	}
 	
-	bool GetDisplayName(char[] szName, int iMaxLength, int client)
+	bool GetDisplayName(char[] szName, int iMaxLength, int client = 0)
 	{
 		// This callback only applies to the current effect
 		Function fnCallback = this.GetCallbackFunction("ModifyEffectName");
@@ -98,6 +98,7 @@ enum struct ChaosEffect
 			}
 		}
 		
+		// Attempt to translate, or return the phrase as-is if it doesn't exist in translations
 		return TranslationPhraseExists(this.name) ? Format(szName, iMaxLength, "%T", this.name, client) : strcopy(szName, iMaxLength, this.name);
 	}
 	
