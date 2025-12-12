@@ -49,24 +49,52 @@ bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
 	{
 		if (kv.GotoFirstSubKey(false))
 		{
-			// Current key is a section. Browse it recursively.
-			return FindKeyInKeyValues(kv, szKeyToFind);
+			// Current key is a section, browse it recursively
+			if (FindKeyInKeyValues(kv, szKeyToFind))
+				return true;
+
+			kv.GoBack();
 		}
 		else
 		{
-			// Current key is a regular key, or an empty section.
+			// Current key is a regular key, or an empty section
 			if (kv.GetDataType(NULL_STRING) != KvData_None)
 			{
 				char szKey[64];
 				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
-				{
 					return true;
-				}
 			}
 		}
 	}
 	while (kv.GotoNextKey(false));
 	
+	return false;
+}
+
+static bool FindValueInKeyValues(KeyValues kv, const char[] szValueToFind)
+{
+	do
+	{
+		if (kv.GotoFirstSubKey(false))
+		{
+			// It's a section, recurse into it
+			if (FindValueInKeyValues(kv, szValueToFind))
+				return true;
+
+			kv.GoBack();
+		}
+		else if (kv.GetDataType(NULL_STRING) != KvData_None)
+		{
+			// It's a key-value pair
+			char szValue[64];
+			kv.GetString(NULL_STRING, szValue, sizeof(szValue));
+
+			if (StrEqual(szValue, szValueToFind))
+				return true;
+		}
+	}
+	while (kv.GotoNextKey(false));
+
 	return false;
 }
 
@@ -74,61 +102,70 @@ bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const c
 {
 	do
 	{
+		char szKey[64];
+		kv.GetSectionName(szKey, sizeof(szKey));
+
 		if (kv.GotoFirstSubKey(false))
 		{
-			// Current key is a section. Browse it recursively.
-			return FindKeyValuePairInKeyValues(kv, szKeyToFind, szValueToFind);
-		}
-		else
-		{
-			// Current key is a regular key, or an empty section.
-			if (kv.GetDataType(NULL_STRING) != KvData_None)
+			// Current key is a section
+			if (StrEqual(szKey, szKeyToFind))
 			{
-				char szKey[64];
-				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
-				{
-					char szValue[64];
-					kv.GetString(NULL_STRING, szValue, sizeof(szValue));
-					
-					if (StrEqual(szValue, szValueToFind))
-					{
-						return true;
-					}
-				}
+				// Found target section, recursively search for the value
+				if (FindValueInKeyValues(kv, szValueToFind))
+					return true;
+			}
+			else
+			{
+				// Not the target section, recurse to find nested instances
+				if (FindKeyValuePairInKeyValues(kv, szKeyToFind, szValueToFind))
+					return true;
+			}
+			kv.GoBack();
+		}
+		else if (kv.GetDataType(NULL_STRING) != KvData_None)
+		{
+			// Current key is a regular key-value pair
+			if (StrEqual(szKey, szKeyToFind))
+			{
+				char szValue[64];
+				kv.GetString(NULL_STRING, szValue, sizeof(szValue));
+
+				if (StrEqual(szValue, szValueToFind))
+					return true;
 			}
 		}
 	}
 	while (kv.GotoNextKey(false));
-	
+
 	return false;
 }
 
 void SendHudNotification(HudNotification_t iType, bool bForceShow = false)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageAll("HudNotify"));
-	bf.WriteByte(view_as<int>(iType));
-	bf.WriteBool(bForceShow);	// Display in cl_hud_minmode
+		bf.WriteByte(view_as<int>(iType));
+		bf.WriteBool(bForceShow);	// Display in cl_hud_minmode
 	EndMessage();
 }
 
 void SendCustomHudNotificationCustom(int client, const char[] szText, const char[] szIcon, TFTeam nTeam = TFTeam_Unassigned)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("HudNotifyCustom", client));
-	bf.WriteString(szText);
-	bf.WriteString(szIcon);
-	bf.WriteByte(view_as<int>(nTeam));
+		bf.WriteString(szText);
+		bf.WriteString(szIcon);
+		bf.WriteByte(view_as<int>(nTeam));
 	EndMessage();
 }
 
 void PrintKeyHintText(int client, const char[] format, any...)
 {
-	char buffer[256];
+	char buffer[MAX_USER_MSG_DATA - 1];
 	SetGlobalTransTarget(client);
 	VFormat(buffer, sizeof(buffer), format, 3);
 	
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("KeyHintText", client));
-	bf.WriteByte(1);
-	bf.WriteString(buffer);
+		bf.WriteByte(1);
+		bf.WriteString(buffer);
 	EndMessage();
 }
 
@@ -315,16 +352,25 @@ void UTIL_ScreenFade(int player, const int color[4], float fadeTime, float fadeH
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Fade", player, USERMSG_RELIABLE));
 	if (bf != null)
 	{
-		bf.WriteShort(FixedUnsigned16(fadeTime, 1 << SCREENFADE_FRACBITS));
-		bf.WriteShort(FixedUnsigned16(fadeHold, 1 << SCREENFADE_FRACBITS));
-		bf.WriteShort(flags);
-		bf.WriteByte(color[0]);
-		bf.WriteByte(color[1]);
-		bf.WriteByte(color[2]);
-		bf.WriteByte(color[3]);
-		
+			bf.WriteShort(FixedUnsigned16(fadeTime, 1 << SCREENFADE_FRACBITS));
+			bf.WriteShort(FixedUnsigned16(fadeHold, 1 << SCREENFADE_FRACBITS));
+			bf.WriteShort(flags);
+			bf.WriteByte(color[0]);
+			bf.WriteByte(color[1]);
+			bf.WriteByte(color[2]);
+			bf.WriteByte(color[3]);
 		EndMessage();
 	}
+}
+
+void UTIL_ScreenShake(int player, ShakeCommand_t eCommand, float flAmplitude, float flFrequency, float flDuration)
+{
+	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Shake", player));
+		bf.WriteByte(view_as<int>(eCommand));
+		bf.WriteFloat(flAmplitude);
+		bf.WriteFloat(flFrequency);
+		bf.WriteFloat(flDuration);
+	EndMessage();
 }
 
 void WorldSpaceCenter(int entity, float vecCenter[3])
@@ -344,6 +390,53 @@ int FindItemOffset(int entity)
 	char szNetClass[32];
 	if (!GetEntityNetClass(entity, szNetClass, sizeof(szNetClass)))
 		return -1;
-	
+
 	return FindSendPropInfo(szNetClass, "m_Item");
+}
+
+bool Chaos_LoadGameData(GameData &gameconf)
+{
+	gameconf = new GameData(GAMEDATA_FILE);
+	if (!gameconf)
+	{
+		LogError("Failed to load gamedata file '%s'", GAMEDATA_FILE);
+		return false;
+	}
+	return true;
+}
+
+DynamicDetour Chaos_CreateDetour(const char[] name)
+{
+	GameData gameconf;
+	if (!Chaos_LoadGameData(gameconf))
+		return null;
+
+	DynamicDetour detour = DynamicDetour.FromConf(gameconf, name);
+	delete gameconf;
+
+	if (!detour)
+	{
+		LogError("Failed to create detour for '%s'", name);
+		return null;
+	}
+
+	return detour;
+}
+
+DynamicHook Chaos_CreateDynamicHook(const char[] name)
+{
+	GameData gameconf;
+	if (!Chaos_LoadGameData(gameconf))
+		return null;
+
+	DynamicHook hook = DynamicHook.FromConf(gameconf, name);
+	delete gameconf;
+
+	if (!hook)
+	{
+		LogError("Failed to create hook for '%s'", name);
+		return null;
+	}
+
+	return hook;
 }

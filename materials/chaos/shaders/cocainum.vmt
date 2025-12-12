@@ -1,0 +1,50 @@
+screenspace_general
+{
+	$pixshader "chaos_cocainum_ps20"
+
+	$basetexture "_rt_FullFrameFB"
+	$texture1    ""
+	$texture2    ""
+	$texture3    ""
+
+	$x360appchooser 1
+	$ignorez        1
+	$fix_fb         32768
+	"<dx90"
+	{
+		$no_draw 1
+	}
+
+	$copyalpha                 1
+	$alpha_blend_color_overlay 0
+	$alpha_blend               0
+	$linearwrite               0
+	$linearread_basetexture    0
+	$linearread_texture1       0
+	$linearread_texture2       0
+	$linearread_texture3       0
+
+	$c0_x     0.0  // time
+	$c0_y     0.01 // color shift intensity
+	$c0_z     0.2  // color distortion strength
+	$c0_w     0.5  // color speed
+	$c1_x     3.0  // wave frequency
+	$c1_y     0.03 // wave amplitude
+	$c1_z     0.5  // radial strength
+	$c1_w     15.0 // oscillation period
+	$c2_x     1.02 // constrast
+	$c2_y     0.02 // hue shift
+
+	Proxies
+	{
+		Equals
+		{
+			srcVar1			$fix_fb
+			resultVar		$flags2
+		}
+		CurrentTime
+		{
+			resultVar		$c0_x
+		}
+	}
+}

@@ -1,0 +1,39 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+public bool HideWorld_OnStart(ChaosEffect effect)
+{
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
+	{
+		SDKHook(entity, SDKHook_SetTransmit, OnEntitySetTransmit);
+	}
+	
+	return true;
+}
+
+public void HideWorld_OnEnd(ChaosEffect effect)
+{
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
+	{
+		SDKUnhook(entity, SDKHook_SetTransmit, OnEntitySetTransmit);
+	}
+}
+
+public void HideWorld_OnEntityCreated(ChaosEffect effect, int entity, const char[] classname)
+{
+	SDKHook(entity, SDKHook_SetTransmit, OnEntitySetTransmit);
+}
+
+static Action OnEntitySetTransmit(int entity, int client)
+{
+	if (entity == client)
+		return Plugin_Continue;
+	
+	if (HasEntProp(entity, Prop_Send, "m_hOwnerEntity") && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+		return Plugin_Continue;
+	
+	// Hide every entity
+	return Plugin_Handled;
+}

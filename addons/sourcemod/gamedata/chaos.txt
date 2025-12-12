@@ -16,12 +16,6 @@
 				"linux"		"@_ZN9CTFPlayer22GetMaxHealthForBuffingEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x57\x8B\xF9\xFF\xB7\xD0\x22\x00\x00"
 			}
-			"SpawnClientsideFlyingBird"
-			{
-				"library"	"server"
-				"linux"		"@_Z25SpawnClientsideFlyingBirdR6Vector"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x38\xD9\x05\x2A\x2A\x2A\x2A"
-			}
 			"TF_IsHolidayActive"
 			{
 				"library"	"server"
@@ -31,17 +25,17 @@
 		}
 		"Offsets"
 		{
+			"IVEngineServer::SetPausedForced"
+			{
+				"library"	"engine"
+				"linux"		"123"
+				"windows"	"123"
+			}
 			"CTFPlayer::GiveNamedItem"
 			{
 				"library"	"server"
 				"linux"		"494"
 				"windows"	"487"
-			}
-			"CBaseCombatWeapon::CanDeploy"
-			{
-				"library"	"server"
-				"linux"		"267"
-				"windows"	"261"
 			}
 			"CBaseCombatWeapon::WeaponSound"
 			{

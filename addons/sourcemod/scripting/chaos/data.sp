@@ -19,6 +19,7 @@ enum struct ChaosEffect
 	char end_sound[PLATFORM_MAX_PATH];
 	ArrayList tags;
 	KeyValues data;
+	char data_string[2048];
 	
 	// Runtime data
 	bool active;
@@ -39,6 +40,7 @@ enum struct ChaosEffect
 			this.meta = kv.GetNum("meta") != 0;
 			kv.GetString("effect_class", this.effect_class, sizeof(this.effect_class));
 			kv.GetString("script_file", this.script_file, sizeof(this.script_file));
+			kv.GetString("data", this.data_string, sizeof(this.data_string));
 			kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 			kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 			
@@ -68,16 +70,14 @@ enum struct ChaosEffect
 	Function GetCallbackFunction(const char[] szKey, Handle hPlugin = null)
 	{
 		if (!this.effect_class[0])
-		{
 			return INVALID_FUNCTION;
-		}
 		
 		char szFunctionName[64];
 		Format(szFunctionName, sizeof(szFunctionName), "%s_%s", this.effect_class, szKey);
 		return GetFunctionByName(hPlugin, szFunctionName);
 	}
 	
-	bool GetName(char[] szName, int iMaxLength)
+	bool GetDisplayName(char[] szName, int iMaxLength, int client = 0)
 	{
 		// This callback only applies to the current effect
 		Function fnCallback = this.GetCallbackFunction("ModifyEffectName");
@@ -91,11 +91,15 @@ enum struct ChaosEffect
 			bool bReturn;
 			if (Call_Finish(bReturn) == SP_ERROR_NONE && bReturn)
 			{
-				return bReturn;
+				if (TranslationPhraseExists(szName))
+					Format(szName, iMaxLength, "%T", szName, client);
+
+				return true;
 			}
 		}
 		
-		return strcopy(szName, iMaxLength, this.name) != 0;
+		// Attempt to translate, or return the phrase as-is if it doesn't exist in translations
+		return TranslationPhraseExists(this.name) ? Format(szName, iMaxLength, "%T", this.name, client) : strcopy(szName, iMaxLength, this.name);
 	}
 	
 	bool IsCompatibleWithActiveEffects()
@@ -131,16 +135,6 @@ enum struct ChaosEffect
 	}
 }
 
-enum struct ChatConfig
-{
-	char tag[64];
-	
-	void Parse(KeyValues kv)
-	{
-		kv.GetString("tag", this.tag, sizeof(this.tag));
-	}
-}
-
 enum struct ProgressBarConfig
 {
 	int num_blocks;
@@ -161,12 +155,13 @@ enum struct ProgressBarConfig
 	}
 }
 
-bool Data_InitializeEffects(GameData hGameData)
+bool Data_InitializeEffects()
 {
 	char szFilePath[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, szFilePath, sizeof(szFilePath), "configs/chaos/effects.cfg");
-	
+
 	bool bSuccess = true;
+	StringMap hInitializedClasses = new StringMap();
 
 	KeyValues kv = new KeyValues("effects");
 	if (kv.ImportFromFile(szFilePath))
@@ -177,36 +172,49 @@ bool Data_InitializeEffects(GameData hGameData)
 			{
 				ChaosEffect effect;
 				effect.Parse(kv);
-				
+
 				if (g_hEffects.FindString(effect.id) != -1)
 				{
 					LogError("Effect '%T' has duplicate ID '%s', skipping...", effect.name, LANG_SERVER, effect.id);
 					continue;
 				}
-				
-				Function fnCallback = effect.GetCallbackFunction("Initialize");
-				if (fnCallback != INVALID_FUNCTION)
+
+				// Only call Initialize once per effect class
+				if (effect.effect_class[0] && !hInitializedClasses.ContainsKey(effect.effect_class))
 				{
-					Call_StartFunction(null, fnCallback);
-					Call_PushArray(effect, sizeof(effect));
-					Call_PushCell(hGameData);
-					
-					// If Initialize throws or returns false, the effect is not added to our list
-					bool bReturn;
-					if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+					Function fnCallback = effect.GetCallbackFunction("Initialize");
+					if (fnCallback != INVALID_FUNCTION)
 					{
-						LogMessage("Failed to add effect '%T' (%s) to effects list", effect.name, LANG_SERVER, effect.id);
-						continue;
+						Call_StartFunction(null, fnCallback);
+						Call_PushArray(effect, sizeof(effect));
+
+						// If Initialize throws or returns false, effects using this class are not added
+						bool bReturn;
+						if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
+						{
+							LogMessage("Failed to initialize effect class '%s'", effect.effect_class);
+							hInitializedClasses.SetValue(effect.effect_class, false);
+							continue;
+						}
 					}
+
+					hInitializedClasses.SetValue(effect.effect_class, true);
 				}
-				
+				else if (effect.effect_class[0])
+				{
+					// Check if this effect class failed to initialize previously
+					bool bInitialized;
+					if (hInitializedClasses.GetValue(effect.effect_class, bInitialized) && !bInitialized)
+						continue;
+				}
+
 				g_hEffects.PushArray(effect);
 			}
 			while (kv.GotoNextKey(false));
 			kv.GoBack();
 		}
 		kv.GoBack();
-		
+
 		LogMessage("Registered %d effects", g_hEffects.Length);
 	}
 	else
@@ -214,7 +222,8 @@ bool Data_InitializeEffects(GameData hGameData)
 		LogError("Could not read from file '%s'", szFilePath);
 		bSuccess = false;
 	}
-	
+
+	delete hInitializedClasses;
 	return bSuccess;
 }
 
@@ -226,12 +235,6 @@ void Data_Initialize()
 	KeyValues kv = new KeyValues("visuals");
 	if (kv.ImportFromFile(szFilePath))
 	{
-		if (kv.JumpToKey("chat"))
-		{
-			g_stChatConfig.Parse(kv);
-		}
-		kv.GoBack();
-		
 		if (kv.JumpToKey("timer_bar"))
 		{
 			g_stTimerBarConfig.Parse(kv);
