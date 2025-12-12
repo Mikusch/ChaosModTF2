@@ -14,7 +14,6 @@ You can easily add your own effects using the provided Squirrel (VScript) or Sou
 
 * SourceMod 1.12+
 * [FlaminSarge/tf2attributes](https://github.com/FlaminSarge/tf2attributes)
-* [asherkin/TF2Items](https://github.com/asherkin/TF2Items)
 * [nosoop/SM-TFUtils](https://github.com/nosoop/SM-TFUtils)
 * [nosoop/SM-TFEconData](https://github.com/nosoop/SM-TFEconData)
 * [FortyTwoFortyTwo/VScript](https://github.com/FortyTwoFortyTwo/VScript)

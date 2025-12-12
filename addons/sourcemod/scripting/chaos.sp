@@ -7,7 +7,6 @@
 #include <dhooks>
 #include <tf2attributes>
 #include <tf2_stocks>
-#include <tf2items>
 #include <tf2utils>
 #include <tf_econ_data>
 #include <vscript>
