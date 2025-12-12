@@ -51,8 +51,8 @@ static void AddItemsFromData(int client, KeyValues kv)
 			do
 			{
 				char szItemName[64];
-				kv.GetString("name", szItemName, sizeof(szItemName));
-				
+				kv.GetSectionName(szItemName, sizeof(szItemName));
+
 				int item = AddItem(client, szItemName);
 				if (!IsValidEntity(item))
 					continue;
