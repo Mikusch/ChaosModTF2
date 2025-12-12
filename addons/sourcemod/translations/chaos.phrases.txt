@@ -1,5 +1,9 @@
 "Phrases"
 {
+	"#Chaos_Tag"
+	{
+		"en"		"[{darkorange}TF2 CHAOS{default}] "
+	}
 	"#Chaos_Effect_NotFound"
 	{
 		"#format"	"{1:s}"

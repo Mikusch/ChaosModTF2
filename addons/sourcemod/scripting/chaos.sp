@@ -32,7 +32,6 @@ char g_szForceEffectId[64];
 
 ProgressBarConfig g_stEffectBarConfig;
 ProgressBarConfig g_stTimerBarConfig;
-ChatConfig g_stChatConfig;
 
 #include "chaos/data.sp"
 #include "chaos/events.sp"

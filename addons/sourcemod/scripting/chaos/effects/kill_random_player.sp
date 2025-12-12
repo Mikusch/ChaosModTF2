@@ -7,7 +7,7 @@ public bool KillRandomPlayer_OnStart(ChaosEffect effect)
 	if (client == -1)
 		return false;
 
-	CPrintToChatAll("%s%t", g_stChatConfig.tag, "#Chaos_Effect_KillRandomPlayer_Killed", client);
+	CPrintToChatAll("%t%t", "#Chaos_Tag", "#Chaos_Effect_KillRandomPlayer_Killed", client);
 	ForcePlayerSuicide(client, true);
 	
 	return true;

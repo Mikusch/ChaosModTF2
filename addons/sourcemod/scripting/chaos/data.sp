@@ -135,16 +135,6 @@ enum struct ChaosEffect
 	}
 }
 
-enum struct ChatConfig
-{
-	char tag[64];
-	
-	void Parse(KeyValues kv)
-	{
-		kv.GetString("tag", this.tag, sizeof(this.tag));
-	}
-}
-
 enum struct ProgressBarConfig
 {
 	int num_blocks;
@@ -245,12 +235,6 @@ void Data_Initialize()
 	KeyValues kv = new KeyValues("visuals");
 	if (kv.ImportFromFile(szFilePath))
 	{
-		if (kv.JumpToKey("chat"))
-		{
-			g_stChatConfig.Parse(kv);
-		}
-		kv.GoBack();
-		
 		if (kv.JumpToKey("timer_bar"))
 		{
 			g_stTimerBarConfig.Parse(kv);
