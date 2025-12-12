@@ -345,6 +345,36 @@ void UTIL_ScreenShake(int player, ShakeCommand_t eCommand, float flAmplitude, fl
 	EndMessage();
 }
 
+int GetEntityForLoadoutSlot(int client, int iLoadoutSlot)
+{
+	int entity = TF2Util_GetPlayerLoadoutEntity(client, iLoadoutSlot);
+	if (entity != -1)
+		return entity;
+	
+	// TF2Util_GetPlayerLoadoutEntity does not find weapons equipped by the wrong classes.
+	// Iterate all classes and check their weapons.
+	for (TFClassType nClass = TFClass_Scout; nClass <= TFClass_Engineer; nClass++)
+	{
+		for (int i = 0; i < MAX_WEAPONS; i++)
+		{
+			int hMyWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+			if (hMyWeapon == -1)
+				continue;
+			
+			if (!GetEntProp(hMyWeapon, "m_bInitialized"))
+				continue;
+			
+			int iItemDefIndex = GetEntProp(hMyWeapon, Prop_Send, "m_iItemDefinitionIndex");
+			
+			// Only if our class does not have a matching loadout slot for this weapon
+			if (TF2Econ_GetItemLoadoutSlot(iItemDefIndex, nClass) == iLoadoutSlot && TF2Econ_GetItemLoadoutSlot(iItemDefIndex, TF2_GetPlayerClass(client)) == -1)
+				return hMyWeapon;
+		}
+	}
+	
+	return -1;
+}
+
 void WorldSpaceCenter(int entity, float vecCenter[3])
 {
 	float vecOrigin[3], vecMins[3], vecMaxs[3], vecOffset[3];

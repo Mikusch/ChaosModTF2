@@ -500,6 +500,10 @@
 	{
 		"en"		"Economy Violation"
 	}
+	"#Chaos_Effect_ValveRocketLauncher"
+	{
+		"en"		"Give Everyone a Valve Rocket Launcher"
+	}
 	"#Chaos_Effect_Decompiled"
 	{
 		"en"		"Decompiled"
