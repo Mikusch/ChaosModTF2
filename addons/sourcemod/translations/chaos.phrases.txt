@@ -496,7 +496,7 @@
 	{
 		"en"		"Flip Viewmodels"
 	}
-	"#Chaos_Effect_GiveGoldPan"
+	"#Chaos_Effect_EconViolation"
 	{
 		"en"		"Economy Violation"
 	}

@@ -510,47 +510,6 @@ public void TF2_OnWaitingForPlayersStart()
 	SetChaosTimers(0.0);
 }
 
-public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int itemDefIndex, Handle &item)
-{
-	if (!g_bEnabled)
-		return Plugin_Continue;
-	
-	Action nReturn = Plugin_Continue;
-	
-	int nLength = g_hEffects.Length;
-	for (int i = 0; i < nLength; i++)
-	{
-		if (!g_hEffects.Get(i, ChaosEffect::active))
-			continue;
-		
-		ChaosEffect effect;
-		if (g_hEffects.GetArray(i, effect))
-		{
-			Function fnCallback = effect.GetCallbackFunction("OnGiveNamedItem");
-			if (fnCallback != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, fnCallback);
-				Call_PushArray(effect, sizeof(effect));
-				Call_PushCell(client);
-				Call_PushString(classname);
-				Call_PushCell(itemDefIndex);
-				Call_PushCellRef(item);
-				
-				Action nResult;
-				if (Call_Finish(nResult) == SP_ERROR_NONE)
-				{
-					if (nResult > nReturn)
-					{
-						nReturn = nResult;
-					}
-				}
-			}
-		}
-	}
-	
-	return nReturn;
-}
-
 // --------------------------------------------------------------------------------------------------- //
 // Plugin Functions
 // --------------------------------------------------------------------------------------------------- //
