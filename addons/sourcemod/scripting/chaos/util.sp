@@ -363,7 +363,7 @@ int GetEntityForLoadoutSlot(int client, int iLoadoutSlot)
 			if (hMyWeapon == -1)
 				continue;
 			
-			if (!GetEntProp(hMyWeapon, "m_bInitialized"))
+			if (!GetEntProp(hMyWeapon, Prop_Send, "m_bInitialized"))
 				continue;
 			
 			int iItemDefIndex = GetEntProp(hMyWeapon, Prop_Send, "m_iItemDefinitionIndex");
