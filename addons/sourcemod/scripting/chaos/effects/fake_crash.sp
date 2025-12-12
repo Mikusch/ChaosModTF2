@@ -30,13 +30,19 @@ public bool FakeCrash_Initialize(ChaosEffect effect)
 
 public bool FakeCrash_OnStart(ChaosEffect effect)
 {
-	// Fake crash already in progress
-	if (net_fakeloss.IntValue)
+	if (!effect.data)
 		return false;
+
+	// Fake crash already in progress
+	if (IsEffectOfClassActive(effect.effect_class) || net_fakeloss.IntValue != 0)
+		return false;
+
+	float flMinDuration = effect.data.GetFloat("min_duration");
+	float flMaxDuration = effect.data.GetFloat("max_duration");
 
 	net_fakeloss.IntValue = 100;
 	SetPausedForced(true);
-	CreateTimer(GetRandomFloat(6.0, 12.0), Timer_EndFakeCrash);
+	CreateTimer(GetRandomFloat(flMinDuration, flMaxDuration), Timer_EndFakeCrash);
 
 	return true;
 }
