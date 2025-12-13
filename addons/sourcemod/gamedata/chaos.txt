@@ -4,11 +4,10 @@
 	{
 		"Signatures"
 		{
-			"CTFPlayer::PostInventoryApplication"
+			"BotGenerateAndWearItem"
 			{
-				"library"	"server"
-				"linux"		"@_ZN9CTFPlayer24PostInventoryApplicationEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x3C\x53\x8B\xD9\x56\x57"
+				"linux"		"@_Z22BotGenerateAndWearItemP9CTFPlayerPKc"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x58\x53\x8B\x5D\x08\x85\xDB"
 			}
 			"CTFPlayer::GetMaxHealthForBuffing"
 			{

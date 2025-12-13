@@ -253,34 +253,6 @@ int Color32ToInt(int r, int g, int b, int a)
 	return (r << 24) | (g << 16) | (b << 8) | (a);
 }
 
-bool IsMiscSlot(int iSlot)
-{
-	return iSlot == LOADOUT_POSITION_MISC
-		|| iSlot == LOADOUT_POSITION_MISC2
-		|| iSlot == LOADOUT_POSITION_HEAD;
-}
-
-bool IsTauntSlot(int iSlot)
-{
-	return iSlot == LOADOUT_POSITION_TAUNT
-		|| iSlot == LOADOUT_POSITION_TAUNT2
-		|| iSlot == LOADOUT_POSITION_TAUNT3
-		|| iSlot == LOADOUT_POSITION_TAUNT4
-		|| iSlot == LOADOUT_POSITION_TAUNT5
-		|| iSlot == LOADOUT_POSITION_TAUNT6
-		|| iSlot == LOADOUT_POSITION_TAUNT7
-		|| iSlot == LOADOUT_POSITION_TAUNT8;
-}
-
-bool IsWearableSlot(int iSlot)
-{
-	return iSlot == LOADOUT_POSITION_HEAD
-		|| iSlot == LOADOUT_POSITION_MISC
-		|| iSlot == LOADOUT_POSITION_ACTION
-		|| IsMiscSlot(iSlot)
-		|| IsTauntSlot(iSlot);
-}
-
 int GetItemDefinitionIndexByName(const char[] szItemName)
 {
 	if (!szItemName[0])
@@ -371,6 +343,38 @@ void UTIL_ScreenShake(int player, ShakeCommand_t eCommand, float flAmplitude, fl
 		bf.WriteFloat(flFrequency);
 		bf.WriteFloat(flDuration);
 	EndMessage();
+}
+
+int GetEntityForLoadoutSlot(int client, int iLoadoutSlot)
+{
+	int entity = TF2Util_GetPlayerLoadoutEntity(client, iLoadoutSlot);
+	if (entity != -1)
+		return entity;
+	
+	int nMaxWeapons = GetEntPropArraySize(client , Prop_Send,"m_hMyWeapons");
+	
+	// TF2Util_GetPlayerLoadoutEntity does not find weapons equipped by the wrong classes.
+	// Iterate all classes and check their weapons.
+	for (TFClassType nClass = TFClass_Scout; nClass <= TFClass_Engineer; nClass++)
+	{
+		for (int i = 0; i < nMaxWeapons; i++)
+		{
+			int hMyWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+			if (hMyWeapon == -1)
+				continue;
+			
+			if (!GetEntProp(hMyWeapon, Prop_Send, "m_bInitialized"))
+				continue;
+			
+			int iItemDefIndex = GetEntProp(hMyWeapon, Prop_Send, "m_iItemDefinitionIndex");
+			
+			// Only if our class does not have a matching loadout slot for this weapon
+			if (TF2Econ_GetItemLoadoutSlot(iItemDefIndex, nClass) == iLoadoutSlot && TF2Econ_GetItemLoadoutSlot(iItemDefIndex, TF2_GetPlayerClass(client)) == -1)
+				return hMyWeapon;
+		}
+	}
+	
+	return -1;
 }
 
 void WorldSpaceCenter(int entity, float vecCenter[3])

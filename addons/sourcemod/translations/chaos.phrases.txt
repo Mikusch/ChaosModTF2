@@ -500,6 +500,10 @@
 	{
 		"en"		"Economy Violation"
 	}
+	"#Chaos_Effect_ValveRocketLauncher"
+	{
+		"en"		"Give Everyone a Valve Rocket Launcher"
+	}
 	"#Chaos_Effect_Decompiled"
 	{
 		"en"		"Decompiled"
@@ -771,5 +775,9 @@
 	"#Chaos_Effect_JumpyProps"
 	{
 		"en"		"Jumpy Props"
+	}
+	"#Chaos_Effect_SpinProps"
+	{
+		"en"		"Beyblades"
 	}
 }

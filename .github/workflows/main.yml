@@ -30,7 +30,6 @@ jobs:
           includes=(
             "https://raw.githubusercontent.com/DoctorMcKay/sourcemod-plugins/master/scripting/include/morecolors.inc"
             "https://raw.githubusercontent.com/FlaminSarge/tf2attributes/refs/heads/master/scripting/include/tf2attributes.inc"
-            "https://raw.githubusercontent.com/asherkin/TF2Items/refs/heads/master/pawn/tf2items.inc"
             "https://raw.githubusercontent.com/nosoop/SM-TFUtils/refs/heads/master/scripting/include/tf2utils.inc"
             "https://raw.githubusercontent.com/FortyTwoFortyTwo/VScript/refs/heads/main/scripting/include/vscript.inc"
             "https://raw.githubusercontent.com/nosoop/SM-TFEconData/refs/heads/master/scripting/include/tf_econ_data.inc"
