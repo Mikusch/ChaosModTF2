@@ -52,7 +52,7 @@ function JumpThink()
 	vel.z = RandomFloat(400.0, 600.0)
 	self.SetPhysVelocity(vel)
 
-	return JumpCooldown
+	return JUMP_COOLDOWN
 }
 
 function StartBouncing(ent)
@@ -60,7 +60,7 @@ function StartBouncing(ent)
 	ent.ValidateScriptScope()
 	ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
 
-	ent.GetScriptScope().JumpCooldown <- JUMP_COOLDOWN
+	ent.GetScriptScope().JUMP_COOLDOWN <- JUMP_COOLDOWN
 	ent.GetScriptScope().JumpThink <- JumpThink
 
 	// Run this on itself so we can add some delay
