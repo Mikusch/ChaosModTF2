@@ -2,7 +2,6 @@
 
 // config
 local MIN_PROPS = 1		// int, minimum vphysics ents present for effect to load
-local JUMP_COOLDOWN = 1.5	// float, seconds
 
 // code
 local ThinkFuncs = {}
@@ -14,7 +13,7 @@ function ChaosEffect_OnStart()
 		if (ent.GetMoveType() != MOVETYPE_VPHYSICS)
 			continue
 
-		StartBouncing(ent)
+		StartSpinning(ent)
 	}
 
 	if (ThinkFuncs.len() < MIN_PROPS)
@@ -25,12 +24,12 @@ function ChaosEffect_Update()
 {
 	for (local ent = Entities.First(); ent = Entities.Next(ent);)
 	{
-		// Start bouncing any VPhysics entities we aren't tracking already
+		// Start spinning any VPhysics entities we aren't tracking already
 		// this will usually be new entities that weren't there when we started
 		if (ent in ThinkFuncs || ent.GetMoveType() != MOVETYPE_VPHYSICS)
 			continue
 
-		StartBouncing(ent)
+		StartSpinning(ent)
 	}
 }
 
@@ -46,23 +45,20 @@ function ChaosEffect_OnEnd()
 	}
 }
 
-function JumpThink()
+function SpinThink()
 {
-	local vel = self.GetPhysVelocity()
-	vel.z = RandomFloat(400.0, 600.0)
-	self.SetPhysVelocity(vel)
-
-	return JUMP_COOLDOWN
+	local vel = self.GetPhysAngularVelocity()
+	vel.z = 1500.0
+	self.SetPhysAngularVelocity(vel)
 }
 
-function StartBouncing(ent)
+function StartSpinning(ent)
 {
 	ent.ValidateScriptScope()
 	ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
 
-	ent.GetScriptScope().JUMP_COOLDOWN <- JUMP_COOLDOWN
-	ent.GetScriptScope().JumpThink <- JumpThink
+	ent.GetScriptScope().SpinThink <- SpinThink
 
 	// Run this on itself so we can add some delay
-	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, JUMP_COOLDOWN), null, null)
+	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `SpinThink`)", 0.0, null, null)
 }
