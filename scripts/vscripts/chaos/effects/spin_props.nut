@@ -58,7 +58,6 @@ function StartSpinning(ent)
 	ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
 
 	ent.GetScriptScope().SpinThink <- SpinThink
-
-	// Run this on itself so we can add some delay
-	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `SpinThink`)", 0.0, null, null)
+	
+	AddThinkToEnt(ent, "SpinThink")
 }
