@@ -31,6 +31,9 @@ static Action OnEntitySetTransmit(int entity, int client)
 	if (entity == client)
 		return Plugin_Continue;
 	
+	if (TF2_GetClientTeam(client) <= TFTeam_Spectator)
+		return Plugin_Continue;
+	
 	if (HasEntProp(entity, Prop_Send, "m_hOwnerEntity") && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
 		return Plugin_Continue;
 	
