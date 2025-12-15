@@ -14,7 +14,7 @@ public bool MultiEffect_OnStart(ChaosEffect effect)
 	if (IsEffectOfClassActive(effect.effect_class))
 		return false;
         
-    g_iNumEffects = effect.data.GetInt("effect_count");
+    g_iNumEffects = effect.data.GetNum("effect_count");
     if(g_iNumEffects < 1)
         return false;
         
