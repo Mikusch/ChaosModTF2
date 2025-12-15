@@ -21,7 +21,7 @@ public bool MultiEffect_OnStart(ChaosEffect effect)
     g_iActivatedEffects = 0;
     float flNextEffectDelay = 10.0 / float(g_iNumEffects); // n effects over 10 seconds
     
-    Handle hTimer = CreateTimer(g_flNextEffectDelay, Timer_NextEffect, _, TIMER_REPEAT);
+    Handle hTimer = CreateTimer(flNextEffectDelay, Timer_NextEffect, _, TIMER_REPEAT);
     return hTimer != INVALID_HANDLE;
 }
 
