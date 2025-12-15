@@ -29,8 +29,8 @@ static Action Timer_NextEffect(Handle timer)
 {
 	SelectRandomEffect(false); // Don't allow meta effects within the multi
     
-    if(++g_iActivatedEffects >= g_iNumEffects)
-        return Plugin_Stop;
+    if(++g_iActivatedEffects < g_iNumEffects)
+        return Plugin_Continue;
     
-    return Plugin_Continue;
+    return Plugin_Stop;
 }
