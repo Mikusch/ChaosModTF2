@@ -768,6 +768,14 @@
 	{
 		"en"		"Reinvoke Previous Effects (Meta)"
 	}
+	"#Chaos_MetaEffect_Multi3"
+	{
+		"en"		"Combo Time (Meta)"
+	}
+	"#Chaos_MetaEffect_Multi6"
+	{
+		"en"		"WOMBO COMBO TIME (Meta)"
+	}
 	"#Chaos_Effect_JumpyProps"
 	{
 		"en"		"Jumpy Props"
