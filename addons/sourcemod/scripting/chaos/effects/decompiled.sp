@@ -372,7 +372,7 @@ static int CreateModel(const char[] szModel, const float vecOrigin[3], const flo
 static bool ShouldSpawnVisual()
 {
 	// Don't spawn more entities if we're already near the limit
-	return float(GetNumEdicts()) / float(GetMaxEntities()) < 0.95;
+	return float(GetNumEdicts()) / float(GetMaxEntities()) < 0.9;
 }
 
 static void ShowTriggers_Toggle()
