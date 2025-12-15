@@ -263,7 +263,7 @@ public void OnGameFrame()
 				if (effect.script_file[0])
 				{
 					VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_UpdateEffect"));
-					hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
+					hExecute.SetParamString(1, FIELD_CSTRING, effect.id);
 					if (hExecute.Execute() != SCRIPT_ERROR)
 					{
 						float flUpdateInterval;
@@ -610,9 +610,10 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	if (effect.script_file[0])
 	{
 		VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_StartEffect"));
-		hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
-		hExecute.SetParam(2, FIELD_FLOAT, effect.duration);
-		hExecute.SetParamString(3, FIELD_CSTRING, effect.data_string);
+		hExecute.SetParamString(1, FIELD_CSTRING, effect.id);
+		hExecute.SetParamString(2, FIELD_CSTRING, effect.script_file);
+		hExecute.SetParam(3, FIELD_FLOAT, effect.duration);
+		hExecute.SetParamString(4, FIELD_CSTRING, effect.data_string);
 		hExecute.Execute();
 		bool bReturn = hExecute.ReturnValue;
 		delete hExecute;
@@ -865,7 +866,7 @@ void ForceExpireEffect(ChaosEffect effect, bool bExpireAllTags = false)
 		if (effect.script_file[0])
 		{
 			VScriptExecute hExecute = new VScriptExecute(HSCRIPT_RootTable.GetValue("Chaos_EndEffect"));
-			hExecute.SetParamString(1, FIELD_CSTRING, effect.script_file);
+			hExecute.SetParamString(1, FIELD_CSTRING, effect.id);
 			hExecute.Execute();
 			delete hExecute;
 		}

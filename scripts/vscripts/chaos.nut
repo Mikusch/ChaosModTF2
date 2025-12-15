@@ -4,22 +4,23 @@ IncludeScript("chaos/util")
 const CHAOS_SCOPE_PREFIX = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 
-function Chaos_StartEffect(name, duration, data_string = "")
+function Chaos_StartEffect(id, script_file, duration, data_string = "")
 {
-	local scope_name = CHAOS_SCOPE_PREFIX + name
+	local scope_name = CHAOS_SCOPE_PREFIX + id
 	if (scope_name in ROOT)
 	{
-		printf(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...\n", name)
-		Chaos_EndEffect(name)
+		printf(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...\n", id)
+		Chaos_EndEffect(id)
 	}
 
 	ROOT[scope_name] <- {}
 	local scope = ROOT[scope_name]
 
-	IncludeScript("chaos/effects/" + name.tolower(), scope)
+	IncludeScript("chaos/effects/" + script_file.tolower(), scope)
 	__CollectGameEventCallbacks(scope)
 
-	scope.Chaos_EffectName <- CHAOS_SCOPE_PREFIX + name
+	scope.Chaos_EffectId <- id
+	scope.Chaos_EffectName <- CHAOS_SCOPE_PREFIX + id
 
 	if (data_string != "")
 	{
@@ -30,7 +31,7 @@ function Chaos_StartEffect(name, duration, data_string = "")
 		}
 		catch (e)
 		{
-			printf(CHAOS_LOG_PREFIX + "Failed to parse data for effect '%s': %s\n", name, e)
+			printf(CHAOS_LOG_PREFIX + "Failed to parse data for effect '%s': %s\n", id, e)
 			scope.Chaos_Data <- {}
 		}
 	}
@@ -48,22 +49,22 @@ function Chaos_StartEffect(name, duration, data_string = "")
 
 	if (success)
 	{
-		printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", name)
+		printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", id)
 
 		if (duration > 0)
 			ROOT[scope_name] <- scope
 	}
 	else
 	{
-		printf(CHAOS_LOG_PREFIX + "Failed to start effect '%s'\n", name)
+		printf(CHAOS_LOG_PREFIX + "Failed to start effect '%s'\n", id)
 	}
 
 	return success
 }
 
-function Chaos_UpdateEffect(name)
+function Chaos_UpdateEffect(id)
 {
-	local scope_name = CHAOS_SCOPE_PREFIX + name
+	local scope_name = CHAOS_SCOPE_PREFIX + id
 	if (!(scope_name in ROOT))
 		return
 
@@ -77,21 +78,21 @@ function Chaos_UpdateEffect(name)
 	return scope.ChaosEffect_Update()
 }
 
-function Chaos_EndEffect(name)
+function Chaos_EndEffect(id)
 {
-	printf(CHAOS_LOG_PREFIX + "Stopping effect '%s'\n", name)
+	printf(CHAOS_LOG_PREFIX + "Stopping effect '%s'\n", id)
 
-	local scope_name = CHAOS_SCOPE_PREFIX + name
+	local scope_name = CHAOS_SCOPE_PREFIX + id
 	if (!(scope_name in ROOT))
 	{
-		printf(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!\n", name)
+		printf(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!\n", id)
 		return false
 	}
 
 	local scope = ROOT[scope_name]
 	if (scope == null)
 	{
-		printf(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!\n", name)
+		printf(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!\n", id)
 		return false
 	}
 
