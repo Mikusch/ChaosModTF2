@@ -245,7 +245,7 @@ static void SpawnLightsFromData()
 {
 	if (g_hLightData.Length == 0)
 	{
-		LogMessage("No light data found! Restart the map to allow OnMapInit to parse light entities.");
+		LogMessage("No light data found! Restart the map to allow OnMapStart to parse light entities.");
 		return;
 	}
 	
