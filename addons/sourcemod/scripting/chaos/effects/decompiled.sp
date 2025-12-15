@@ -390,16 +390,8 @@ static bool ShouldSpawnVisual()
 
 static void ShowTriggers_Toggle()
 {
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-		
-		// We can't use ServerCommand because it is delayed by a frame
-		SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") & ~FCVAR_CHEAT);
-		FakeClientCommand(client, "showtriggers_toggle");
-		SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") | FCVAR_CHEAT);
-		
-		break;
-	}
+	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") & ~FCVAR_CHEAT);
+	ServerCommand("showtriggers_toggle");
+	ServerExecute();
+	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") | FCVAR_CHEAT);
 }
