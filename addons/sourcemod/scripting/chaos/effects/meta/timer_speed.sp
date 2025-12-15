@@ -13,8 +13,8 @@ public bool TimerSpeed_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void TimerSpeed_ModifyTimerSpeed(ChaosEffect effect, float &flTimerSpeed)
+public void TimerSpeed_ModifyTimerSpeed(ChaosEffect effect, float &speed)
 {
 	float flMult = effect.data.GetFloat("multiplier");
-	flTimerSpeed *= flMult;
+	speed *= flMult;
 }
