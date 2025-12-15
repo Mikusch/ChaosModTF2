@@ -31,4 +31,6 @@ static Action Timer_NextEffect(Handle timer)
     
     if(++g_iActivatedEffects >= g_iNumEffects)
         return Plugin_Stop;
+    
+    return Plugin_Continue;
 }
