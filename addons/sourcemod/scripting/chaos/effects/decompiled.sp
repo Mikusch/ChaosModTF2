@@ -369,23 +369,10 @@ static int CreateModel(const char[] szModel, const float vecOrigin[3], const flo
 	return -1;
 }
 
-static int GetCurrentEntities()
-{
-	int nCurrentEntities = 0;
-	
-	int entity = -1;
-	while ((entity = FindEntityByClassname(entity, "*")) != -1)
-	{
-		nCurrentEntities++;
-	}
-	
-	return nCurrentEntities;
-}
-
 static bool ShouldSpawnVisual()
 {
 	// Don't spawn more entities if we're already near the limit
-	return float(GetCurrentEntities()) / float(GetMaxEntities()) < 0.95;
+	return float(GetNumEdicts()) / float(GetMaxEntities()) < 0.95;
 }
 
 static void ShowTriggers_Toggle()

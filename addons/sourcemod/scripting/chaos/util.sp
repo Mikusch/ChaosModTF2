@@ -1,6 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+int GetNumEdicts()
+{
+	int nNumEdicts = 0;
+	
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
+	{
+		if (!IsEntNetworkable(entity))
+			continue;
+		
+		nNumEdicts++;
+	}
+	
+	return nNumEdicts;
+}
+
 any Max(any a, any b)
 {
 	return (a >= b) ? a : b;
