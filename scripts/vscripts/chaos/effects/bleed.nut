@@ -1,10 +1,8 @@
 function ChaosEffect_OnStart()
 {
-	if (!("duration" in Chaos_Data))
-		return false
-
-	local duration = Chaos_Data.duration
+	local duration = ("duration" in Chaos_Data) ? Chaos_Data.duration : 10.0
 	local damage = ("damage" in Chaos_Data) ? Chaos_Data.damage : TF_BLEEDING_DMG
+	local endless = ("endless" in Chaos_Data) ? Chaos_Data.endless : false
 
 	for (local i = 1; i <= MaxClients(); i++)
 	{
@@ -12,6 +10,6 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 
-		player.BleedPlayerEx(duration, damage, true, TF_DMG_CUSTOM_BLEEDING)
+		player.BleedPlayerEx(duration, damage, endless, TF_DMG_CUSTOM_BLEEDING)
 	}
 }
