@@ -114,39 +114,20 @@ function SetupPlayer(player)
 	scope.viewcontrol <- viewcontrol
 
 	EntFireByHandle(viewcontrol, "Enable", "!activator", -1, player, viewcontrol)
-	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", -1, player, null)
-}
-
-function PostViewControlEnable()
-{
-	local weapon = activator.GetActiveWeapon()
-	if (weapon != null)
-		weapon.SetDrawEnabled(true)
-
-	NetProps.SetPropInt(activator, "m_takedamage", DAMAGE_YES)
+	EntFireByHandle(player, "RunScriptCode", "ViewControl_PostEnable(self)", -1, player, null)
 }
 
 function RemoveViewControl(player)
 {
 	local scope = player.GetScriptScope()
-	if (scope == null || !("viewcontrol" in scope))
+	if (scope == null)
 		return
-
-	local viewcontrol = scope.viewcontrol
 
 	delete scope.position_history
 	delete scope.origin
 	delete scope.angles
-	delete scope.viewcontrol
 
-	if (viewcontrol == null || !viewcontrol.IsValid())
-		return
-
-	EntFireByHandle(player, "RunScriptCode", "self.GetScriptScope().lifeState <- NetProps.GetPropInt(self, `m_lifeState`)", -1, null, null)
-	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, 0)", -1, null, null)
-	EntFireByHandle(viewcontrol, "Disable", null, -1, player, player)
-	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, self.GetScriptScope().lifeState)", -1, null, null)
-	EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
+	ViewControl_Remove(player)
 }
 
 function OnGameEvent_player_spawn(params)

@@ -119,3 +119,31 @@ function LerpAngles(a, b, t)
 		LerpAngle(a.z, b.z, t)
 	)
 }
+
+function ViewControl_PostEnable(player)
+{
+	local weapon = player.GetActiveWeapon()
+	if (weapon != null)
+		weapon.SetDrawEnabled(true)
+
+	NetProps.SetPropInt(player, "m_takedamage", DAMAGE_YES)
+}
+
+function ViewControl_Remove(player)
+{
+	local scope = player.GetScriptScope()
+	if (scope == null || !("viewcontrol" in scope))
+		return
+
+	local viewcontrol = scope.viewcontrol
+	delete scope.viewcontrol
+
+	if (viewcontrol == null || !viewcontrol.IsValid())
+		return
+
+	EntFireByHandle(player, "RunScriptCode", "self.GetScriptScope().lifeState <- NetProps.GetPropInt(self, `m_lifeState`)", -1, null, null)
+	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, 0)", -1, null, null)
+	EntFireByHandle(viewcontrol, "Disable", null, -1, player, player)
+	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, self.GetScriptScope().lifeState)", -1, null, null)
+	EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
+}

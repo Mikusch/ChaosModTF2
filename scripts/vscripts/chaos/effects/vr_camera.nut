@@ -22,7 +22,7 @@ function ChaosEffect_OnEnd()
 			continue
 
 		player.SetForceLocalDraw(false)
-		RemoveViewControl(player)
+		ViewControl_Remove(player)
 	}
 }
 
@@ -35,37 +35,9 @@ function SetupPlayer(player)
 	EntFireByHandle(viewcontrol, "SetParent", "!activator", -1, player, viewcontrol)
 	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") != 0 ? "eyes" : "head", -1, null, null)
 	EntFireByHandle(viewcontrol, "Enable", "!activator", -1, player, viewcontrol)
-	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", -1, player, null)
+	EntFireByHandle(player, "RunScriptCode", "ViewControl_PostEnable(self)", -1, player, null)
 
 	player.GetScriptScope().viewcontrol <- viewcontrol
-}
-
-function PostViewControlEnable()
-{
-	local weapon = activator.GetActiveWeapon()
-	if (weapon != null)
-		weapon.SetDrawEnabled(true)
-
-	NetProps.SetPropInt(activator, "m_takedamage", DAMAGE_YES)
-}
-
-function RemoveViewControl(player)
-{
-	local scope = player.GetScriptScope()
-	if (scope == null || !("viewcontrol" in scope))
-		return
-
-	local viewcontrol = scope.viewcontrol
-	delete scope.viewcontrol
-
-	if (viewcontrol == null || !viewcontrol.IsValid())
-		return
-
-	EntFireByHandle(player, "RunScriptCode", "self.GetScriptScope().lifeState <- NetProps.GetPropInt(self, `m_lifeState`)", -1, null, null)
-	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, 0)", -1, null, null)
-	EntFireByHandle(viewcontrol, "Disable", null, -1, player, player)
-	EntFireByHandle(player, "RunScriptCode", "NetProps.SetPropInt(self, `m_lifeState`, self.GetScriptScope().lifeState)", -1, null, null)
-	EntFireByHandle(viewcontrol, "Kill", null, -1, null, null)
 }
 
 function OnGameEvent_player_spawn(params)
@@ -74,7 +46,7 @@ function OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	RemoveViewControl(player)
+	ViewControl_Remove(player)
 	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".SetupPlayer(self)", -1, player, null)
 }
 
@@ -87,5 +59,5 @@ function OnGameEvent_player_death(params)
 	if (params.death_flags & TF_DEATHFLAG_DEADRINGER)
 		return
 
-	RemoveViewControl(player)
+	ViewControl_Remove(player)
 }
