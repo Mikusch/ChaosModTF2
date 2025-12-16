@@ -22,7 +22,7 @@ ConVar sm_chaos_effect_update_interval;
 ConVar sm_chaos_meta_effect_chance;
 
 bool g_bEnabled;
-bool g_bNoChaos;
+bool g_bPaused;
 ArrayList g_hEffects;
 Handle g_hTimerBarHudSync;
 float g_flTimeElapsed;
@@ -280,11 +280,12 @@ public void OnGameFrame()
 			}
 		}
 	}
-	
+
+	// Only run during an active round
 	RoundState nRoundState = GameRules_GetRoundState();
-	if (g_bNoChaos || (nRoundState != RoundState_RoundRunning && nRoundState != RoundState_Stalemate) || GameRules_GetProp("m_bInWaitingForPlayers") || GameRules_GetProp("m_bInSetup"))
+	if (g_bPaused || (nRoundState != RoundState_RoundRunning && nRoundState != RoundState_Stalemate) || GameRules_GetProp("m_bInWaitingForPlayers") || GameRules_GetProp("m_bInSetup"))
 		return;
-	
+
 	float flTimerSpeed = GetGameFrameTime();
 
 	// Check if a meta effect wants to modify the interval
@@ -310,7 +311,7 @@ public void OnGameFrame()
 	g_flTimeElapsed += flTimerSpeed;
 
 	// Show interval progress bar
-	if (g_flTimerBarDisplayTime && g_flTimerBarDisplayTime + 0.1 <= flCurTime)
+	if (g_flTimerBarDisplayTime > 0.0 && g_flTimerBarDisplayTime + 0.1 <= flCurTime)
 	{
 		g_flTimerBarDisplayTime = flCurTime;
 
@@ -507,7 +508,7 @@ public void TF2_OnWaitingForPlayersStart()
 	if (!g_bEnabled)
 		return;
 	
-	SetChaosTimers(0.0);
+	StopChaosTimers();
 }
 
 // --------------------------------------------------------------------------------------------------- //
@@ -520,11 +521,11 @@ void TogglePlugin(bool bEnable)
 	
 	if (bEnable)
 	{
-		SetChaosTimers(GetGameTime());
+		StartChaosTimers();
 	}
 	else
 	{
-		SetChaosTimers(0.0);
+		StopChaosTimers();
 		ExpireAllActiveEffects(true);
 	}
 	
@@ -1045,6 +1046,21 @@ void SetChaosTimers(float flTime)
 {
 	g_flTimeElapsed = 0.0;
 	g_flTimerBarDisplayTime = flTime;
+}
+
+void StartChaosTimers()
+{
+	SetChaosTimers(GetGameTime());
+}
+
+void StopChaosTimers()
+{
+	SetChaosTimers(-1.0);
+}
+
+void SetChaosPaused(bool bPaused)
+{
+	g_bPaused = bPaused;
 }
 
 static void ConVarChanged_ChaosEnable(ConVar convar, const char[] oldValue, const char[] newValue)

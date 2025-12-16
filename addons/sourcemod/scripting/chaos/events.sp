@@ -145,8 +145,8 @@ static void EventHook_ArenaRoundStart(Event event, const char[] name, bool dontB
 
 static void EventHook_TeamplayRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
-	SetChaosTimers(0.0);
-	
+	SetChaosTimers(-1.0);
+
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
 	{
