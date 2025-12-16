@@ -3,13 +3,12 @@ gamerules <- Entities.FindByClassname(null, "tf_gamerules")
 
 function GetEnemyTeam(team)
 {
-	if (team == TF_TEAM_RED)
-		return TF_TEAM_BLUE
-
-	if (team == TF_TEAM_BLUE)
-		return TF_TEAM_RED
-
-	return team
+	switch (team)
+	{
+		case TF_TEAM_RED: return TF_TEAM_BLUE
+		case TF_TEAM_BLUE: return TF_TEAM_RED
+		default: return team
+	}
 }
 
 function VectorAngles(forward)

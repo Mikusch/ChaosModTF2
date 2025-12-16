@@ -572,6 +572,10 @@
 	{
 		"en"		"Delayed Camera"
 	}
+	"#Chaos_Effect_LeaveCamera"
+	{
+		"en"		"Goodbye"
+	}
 	"#Chaos_Effect_SpeedUp"
 	{
 		"en"		"Adrenaline Shot"
