@@ -570,7 +570,7 @@
 	}
 	"#Chaos_Effect_DelayedCamera"
 	{
-		"en"		"Delayed Camera"
+		"en"		"'Meet the Soldier' Camera"
 	}
 	"#Chaos_Effect_LeaveCamera"
 	{
