@@ -45,6 +45,7 @@ ProgressBarConfig g_stTimerBarConfig;
 #include "chaos/effects/meta/timer_speed.sp"
 
 // Regular effects
+#include "chaos/effects/add_attribute.sp"
 #include "chaos/effects/add_cond.sp"
 #include "chaos/effects/burn_player.sp"
 #include "chaos/effects/decompiled.sp"
@@ -75,7 +76,6 @@ ProgressBarConfig g_stTimerBarConfig;
 #include "chaos/effects/resize_player.sp"
 #include "chaos/effects/screen_fade.sp"
 #include "chaos/effects/screen_overlay.sp"
-#include "chaos/effects/set_attribute.sp"
 #include "chaos/effects/set_convar.sp"
 #include "chaos/effects/set_custom_model.sp"
 #include "chaos/effects/set_fov.sp"

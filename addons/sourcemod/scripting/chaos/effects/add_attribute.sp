@@ -1,38 +1,38 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public bool SetAttribute_OnStart(ChaosEffect effect)
+public bool AddAttribute_OnStart(ChaosEffect effect)
 {
 	if (!effect.data)
 		return false;
-	
+
 	// Don't set the same attribute twice
 	if (IsAlreadyActive(effect))
 		return false;
-	
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		ApplyAttributesToPlayer(effect, client);
 	}
-	
+
 	return true;
 }
 
-public void SetAttribute_OnEnd(ChaosEffect effect)
+public void AddAttribute_OnEnd(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		ApplyAttributesToPlayer(effect, client, true);
 	}
 }
 
-public void SetAttribute_OnPostInventoryApplication(ChaosEffect effect, int client)
+public void AddAttribute_OnPostInventoryApplication(ChaosEffect effect, int client)
 {
 	ApplyAttributesToPlayer(effect, client);
 }
@@ -40,10 +40,10 @@ public void SetAttribute_OnPostInventoryApplication(ChaosEffect effect, int clie
 static bool IsAlreadyActive(ChaosEffect effect)
 {
 	KeyValues kv = effect.data;
-	
+
 	// Make sure we traverse back to not mess up effect data
 	bool bFoundKey = false;
-	
+
 	if (kv.JumpToKey("attributes", false))
 	{
 		if (kv.GotoFirstSubKey(false))
@@ -62,16 +62,16 @@ static bool IsAlreadyActive(ChaosEffect effect)
 		}
 		kv.GoBack();
 	}
-	
+
 	return bFoundKey;
 }
 
 static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove = false)
 {
 	KeyValues kv = effect.data;
-	
+
 	bool bApplyToWeapons = kv.GetNum("apply_to_weapons") != 0;
-	
+
 	if (kv.JumpToKey("attributes", false))
 	{
 		if (kv.GotoFirstSubKey(false))
@@ -82,7 +82,7 @@ static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove
 				if (kv.GetSectionName(szAttrib, sizeof(szAttrib)))
 				{
 					float flValue = kv.GetFloat(NULL_STRING);
-					
+
 					if (bApplyToWeapons)
 					{
 						int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
@@ -120,6 +120,6 @@ static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove
 		}
 		kv.GoBack();
 	}
-	
+
 	TF2Util_UpdatePlayerSpeed(client);
 }
