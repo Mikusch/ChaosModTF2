@@ -39,11 +39,11 @@ public Action ForceMove_OnPlayerRunCmd(ChaosEffect effect, int client, int &butt
 
 	switch (g_nDirection)
 	{
-		case DIR_FWD:	vel[0] = cl_forwardspeed.FloatValue;
-		case DIR_BACK:	vel[0] = -cl_backspeed.FloatValue;
-		case DIR_LEFT:	vel[1] = -cl_sidespeed.FloatValue;
-		case DIR_RIGHT:	vel[1] = cl_sidespeed.FloatValue;
-		case DIR_UP:	vel[2] = cl_upspeed.FloatValue;
+		case DIR_FWD:	vel[0] += cl_forwardspeed.FloatValue;
+		case DIR_BACK:	vel[0] -= cl_backspeed.FloatValue;
+		case DIR_LEFT:	vel[1] -= cl_sidespeed.FloatValue;
+		case DIR_RIGHT:	vel[1] += cl_sidespeed.FloatValue;
+		case DIR_UP:	vel[2] += cl_upspeed.FloatValue;
 		default: return Plugin_Continue;
 	}
 
