@@ -15,6 +15,8 @@ CONST.setdelegate({ _newslot = @(k, v) compilestring("const " + k + "=" + (typeo
 
 const FLT_MAX = 0x7F7FFFFF
 
+const MAX_WEAPONS = 48
+
 // m_takedamage
 const DAMAGE_NO = 0
 const DAMAGE_EVENTS_ONLY = 1
@@ -36,6 +38,15 @@ const TF_WPN_TYPE_SECONDARY2 = 11
 const TF_WPN_TYPE_PRIMARY2 = 12
 const TF_WPN_TYPE_ITEM3 = 13
 const TF_WPN_TYPE_ITEM4 = 14
+
+const TF_AMMO_DUMM = 0
+const TF_AMMO_PRIMARY = 1
+const TF_AMMO_SECONDARY = 2
+const TF_AMMO_METAL = 3
+const TF_AMMO_GRENADES1 = 4
+const TF_AMMO_GRENADES2 = 5
+const TF_AMMO_GRENADES3 = 6
+const TF_AMMO_COUNT = 7 
 
 // Flamethrower firing state
 const FT_STATE_IDLE = 0

@@ -486,7 +486,7 @@
 	}
 	"#Chaos_Effect_NoAmmo"
 	{
-		"en"		"No Ammo"
+		"en"		"Remove All Ammo"
 	}
 	"#Chaos_Effect_GiveGibus"
 	{
