@@ -110,17 +110,17 @@ static void ApplyAttribute(int client, const char[] szAttrib, float flValue, boo
 				TF2Attrib_SetByName(weapon, szAttrib, flValue);
 		}
 
-		int nMaxWearables = TF2Util_GetPlayerWearableCount(attacker);
+		int nMaxWearables = TF2Util_GetPlayerWearableCount(client);
 		for (int i = 0; i < nMaxWearables; i++)
 		{
-			int wearable = TF2Util_GetPlayerWearable(attacker, i);
+			int wearable = TF2Util_GetPlayerWearable(client, i);
 			if (wearable == -1)
 				continue;
 
 			if (bRemove)
-				TF2Attrib_RemoveByName(weapon, szAttrib);
+				TF2Attrib_RemoveByName(wearable, szAttrib);
 			else
-				TF2Attrib_SetByName(weapon, szAttrib, flValue);
+				TF2Attrib_SetByName(wearable, szAttrib, flValue);
 		}
 	}
 	else
