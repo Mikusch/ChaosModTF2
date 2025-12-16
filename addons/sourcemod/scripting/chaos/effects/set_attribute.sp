@@ -85,7 +85,7 @@ static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove
 					
 					if (bApplyToWeapons)
 					{
-						int nMaxWeapons = GetEntPropArraySize(client , Prop_Send,"m_hMyWeapons");
+						int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
 						for (int i = 0; i < nMaxWeapons; i++)
 						{
 							int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
