@@ -41,27 +41,25 @@ static bool IsAlreadyActive(ChaosEffect effect)
 {
 	KeyValues kv = effect.data;
 
-	// Make sure we traverse back to not mess up effect data
-	bool bFoundKey = false;
+	if (!kv.JumpToKey("attributes", false))
+		return false;
 
-	if (kv.JumpToKey("attributes", false))
+	bool bFoundKey = false;
+	if (kv.GotoFirstSubKey(false))
 	{
-		if (kv.GotoFirstSubKey(false))
+		do
 		{
-			do
+			char szAttrib[64];
+			if (kv.GetSectionName(szAttrib, sizeof(szAttrib)) && FindKeyInActiveEffects(effect.effect_class, szAttrib))
 			{
-				// Check if the same attribute is already active in this effect class
-				char szAttrib[64];
-				if (kv.GetSectionName(szAttrib, sizeof(szAttrib)) && FindKeyInActiveEffects(effect.effect_class, szAttrib))
-				{
-					bFoundKey = true;
-				}
+				bFoundKey = true;
+				break;
 			}
-			while (!bFoundKey && kv.GotoNextKey(false));
-			kv.GoBack();
 		}
+		while (kv.GotoNextKey(false));
 		kv.GoBack();
 	}
+	kv.GoBack();
 
 	return bFoundKey;
 }
@@ -69,57 +67,62 @@ static bool IsAlreadyActive(ChaosEffect effect)
 static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove = false)
 {
 	KeyValues kv = effect.data;
+	bool bApplyToItems = kv.GetNum("apply_to_items") != 0;
 
-	bool bApplyToWeapons = kv.GetNum("apply_to_weapons") != 0;
+	if (!kv.JumpToKey("attributes", false))
+		return;
 
-	if (kv.JumpToKey("attributes", false))
+	if (kv.GotoFirstSubKey(false))
 	{
-		if (kv.GotoFirstSubKey(false))
+		do
 		{
-			do
-			{
-				char szAttrib[64];
-				if (kv.GetSectionName(szAttrib, sizeof(szAttrib)))
-				{
-					float flValue = kv.GetFloat(NULL_STRING);
-
-					if (bApplyToWeapons)
-					{
-						int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
-						for (int i = 0; i < nMaxWeapons; i++)
-						{
-							int myWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-							if (myWeapon != -1)
-							{
-								if (!bRemove)
-								{
-									TF2Attrib_SetByName(myWeapon, szAttrib, flValue);
-								}
-								else
-								{
-									TF2Attrib_RemoveByName(myWeapon, szAttrib);
-								}
-							}
-						}
-					}
-					else
-					{
-						if (!bRemove)
-						{
-							TF2Attrib_SetByName(client, szAttrib, flValue);
-						}
-						else
-						{
-							TF2Attrib_RemoveByName(client, szAttrib);
-						}
-					}
-				}
-			}
-			while (kv.GotoNextKey(false));
-			kv.GoBack();
+			char szAttrib[64];
+			if (kv.GetSectionName(szAttrib, sizeof(szAttrib)))
+				ApplyAttribute(client, szAttrib, kv.GetFloat(NULL_STRING), bApplyToItems, bRemove);
 		}
+		while (kv.GotoNextKey(false));
 		kv.GoBack();
 	}
+	kv.GoBack();
 
 	TF2Util_UpdatePlayerSpeed(client);
+}
+
+static void ApplyAttribute(int client, const char[] szAttrib, float flValue, bool bApplyToItems, bool bRemove)
+{
+	if (bApplyToItems)
+	{
+		int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
+		for (int i = 0; i < nMaxWeapons; i++)
+		{
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+			if (weapon == -1)
+				continue;
+
+			if (bRemove)
+				TF2Attrib_RemoveByName(weapon, szAttrib);
+			else
+				TF2Attrib_SetByName(weapon, szAttrib, flValue);
+		}
+
+		int nMaxWearables = TF2Util_GetPlayerWearableCount(attacker);
+		for (int i = 0; i < nMaxWearables; i++)
+		{
+			int wearable = TF2Util_GetPlayerWearable(attacker, i);
+			if (wearable == -1)
+				continue;
+
+			if (bRemove)
+				TF2Attrib_RemoveByName(weapon, szAttrib);
+			else
+				TF2Attrib_SetByName(weapon, szAttrib, flValue);
+		}
+	}
+	else
+	{
+		if (bRemove)
+			TF2Attrib_RemoveCustomPlayerAttribute(client, szAttrib);
+		else
+			TF2Attrib_AddCustomPlayerAttribute(client, szAttrib, flValue);
+	}
 }
