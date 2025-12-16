@@ -566,7 +566,7 @@
 	}
 	"#Chaos_Effect_VRCamera"
 	{
-		"en"		"Out-Of-Body Experience"
+		"en"		"Virtual Reality Camera"
 	}
 	"#Chaos_Effect_DelayedCamera"
 	{
