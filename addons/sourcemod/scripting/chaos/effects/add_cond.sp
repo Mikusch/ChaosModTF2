@@ -43,7 +43,8 @@ public bool AddCond_OnStart(ChaosEffect effect)
 
 			if (FindKeyValuePairInActiveEffects(effect.effect_class, "conditions", szCondition))
 			{
-				effect.data.GoBack();
+				effect.data.GoBack(); // Go back to "conditions"
+				effect.data.GoBack(); // Go back to root
 				return false;
 			}
 		}

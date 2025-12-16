@@ -1008,6 +1008,39 @@ bool FindKeyValuePairInActiveEffects(const char[] szEffectClass, const char[] sz
 	return false;
 }
 
+/**
+ * Returns true if the given key was found in the given section in active effects with the given class.
+ */
+bool FindKeyInSectionInActiveEffects(const char[] szEffectClass, const char[] szSection, const char[] szKey)
+{
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
+	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+
+		if (!g_hEffects.Get(i, ChaosEffect::data))
+			continue;
+
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect) && StrEqual(effect.effect_class, szEffectClass))
+		{
+			KeyValues kv = new KeyValues("data");
+			kv.Import(effect.data);
+
+			if (FindKeyInSectionInKeyValues(kv, szSection, szKey))
+			{
+				delete kv;
+				return true;
+			}
+
+			delete kv;
+		}
+	}
+
+	return false;
+}
+
 void SetChaosTimers(float flTime)
 {
 	g_flTimeElapsed = 0.0;

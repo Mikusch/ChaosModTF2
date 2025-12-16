@@ -156,6 +156,42 @@ bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const c
 	return false;
 }
 
+bool FindKeyInSectionInKeyValues(KeyValues kv, const char[] szSectionToFind, const char[] szKeyToFind)
+{
+	do
+	{
+		char szKey[64];
+		kv.GetSectionName(szKey, sizeof(szKey));
+
+		if (kv.GotoFirstSubKey(false))
+		{
+			// Current key is a section
+			if (StrEqual(szKey, szSectionToFind))
+			{
+				// Found target section, search for the key name inside it
+				if (FindKeyInKeyValues(kv, szKeyToFind))
+				{
+					kv.GoBack();
+					return true;
+				}
+			}
+			else
+			{
+				// Not the target section, recurse to find nested instances
+				if (FindKeyInSectionInKeyValues(kv, szSectionToFind, szKeyToFind))
+				{
+					kv.GoBack();
+					return true;
+				}
+			}
+			kv.GoBack();
+		}
+	}
+	while (kv.GotoNextKey(false));
+
+	return false;
+}
+
 void SendHudNotification(HudNotification_t iType, bool bForceShow = false)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageAll("HudNotify"));
