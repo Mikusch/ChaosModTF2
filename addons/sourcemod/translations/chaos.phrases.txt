@@ -63,9 +63,13 @@
 	{
 		"en"		"Healthy Mercenaries"
 	}
-	"#Chaos_Effect_ShortMercs"
+	"#Chaos_Effect_NoTorso"
 	{
-		"en"		"Midget Mercenaries"
+		"en"		"Manlets"
+	}
+	"#Chaos_Effect_BigHands"
+	{
+		"en"		"Massive Grabbers"
 	}
 	"#Chaos_Effect_Watermark"
 	{
@@ -81,7 +85,7 @@
 	}
 	"#Chaos_Effect_HighFov"
 	{
-		"en"		"Quake FOV"
+		"en"		"Quake Pro"
 	}
 	"#Chaos_Effect_LowFov"
 	{
@@ -157,7 +161,7 @@
 	}
 	"#Chaos_Effect_ScreenFadeBlack"
 	{
-		"en"		"Shared Blindness"
+		"en"		"Blind"
 	}
 	"#Chaos_Effect_GreyscaleOverlay"
 	{
@@ -288,7 +292,7 @@
 	{
 		"en"		"Vanishing Act"
 	}
-	"#Chaos_Effect_BigHeads"
+	"#Chaos_Effect_BigHead"
 	{
 		"en"		"Big Heads"
 	}
@@ -352,7 +356,7 @@
 	{
 		"en"		"Extra Scout Jumps"
 	}
-	"#Chaos_Effect_TallMercs"
+	"#Chaos_Effect_BigTorso"
 	{
 		"en"		"Stretchy Mercenaries"
 	}
@@ -504,7 +508,11 @@
 	{
 		"en"		"Decompiled"
 	}
-	"#Chaos_Effect_NoHeads"
+	"#Chaos_Effect_SmallHead"
+	{
+		"en"		"Hold the Fuck Up"
+	}
+	"#Chaos_Effect_NoHead"
 	{
 		"en"		"Decapitated Mercenaries"
 	}
@@ -710,7 +718,7 @@
 	}
 	"#Chaos_Effect_BigPlayers"
 	{
-		"en"		"Giant Players"
+		"en"		"Large Players"
 	}
 	"#Chaos_Effect_SmallPlayers"
 	{
