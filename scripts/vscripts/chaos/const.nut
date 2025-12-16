@@ -17,6 +17,8 @@ const FLT_MAX = 0x7F7FFFFF
 
 const MAX_WEAPONS = 48
 
+const TF_DEATHFLAG_DEADRINGER = 32
+
 // m_takedamage
 const DAMAGE_NO = 0
 const DAMAGE_EVENTS_ONLY = 1
