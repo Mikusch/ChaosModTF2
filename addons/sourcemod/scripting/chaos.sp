@@ -582,13 +582,13 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	
 	if (effect.active)
 	{
-		LogError("The effect '%T' (%s) is already active!", effect.name, LANG_SERVER, effect.id);
+		LogError("Effect '%s' is already active!", effect.id);
 		return false;
 	}
 	
 	if (!effect.IsCompatibleWithActiveEffects())
 	{
-		LogMessage("Skipped effect '%T' (%s) because it is incompatible with other active effects", effect.name, LANG_SERVER, effect.id);
+		LogMessage("Skipped '%s' because it's incompatible with other active effects", effect.id);
 		return false;
 	}
 	
@@ -602,7 +602,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 		bool bReturn;
 		if (Call_Finish(bReturn) != SP_ERROR_NONE || !bReturn)
 		{
-			LogMessage("Skipped effect '%T' (%s) because its 'OnStart' callback returned false", effect.name, LANG_SERVER, effect.id);
+			LogMessage("Skipped '%s' because the 'OnStart' callback returned false", effect.id);
 			return false;
 		}
 	}
@@ -620,7 +620,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 
 		if (!bReturn)
 		{
-			LogMessage("Skipped script file '%s' because its 'OnStart' callback returned false", effect.script_file);
+			LogMessage("Skipped '%s' because the 'OnStart' script function returned false", effect.id);
 			return false;
 		}
 	}
