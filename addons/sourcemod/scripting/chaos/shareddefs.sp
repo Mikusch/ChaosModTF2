@@ -14,6 +14,19 @@
 
 #define SCREENFADE_FRACBITS		9		// which leaves 16-this for the integer part
 
+enum Dir_t
+{
+	DIR_FWD,
+	DIR_BACK,
+	DIR_LEFT,
+	DIR_RIGHT,
+
+	DIR_UP,
+	DIR_DOWN,
+
+	NUM_DIRS
+}
+
 enum ShakeCommand_t
 {
 	SHAKE_START = 0,		// Starts the screen shake for all players within the radius.
