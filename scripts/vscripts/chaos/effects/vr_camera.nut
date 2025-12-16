@@ -9,9 +9,7 @@ function ChaosEffect_OnStart()
 		if (!player.IsAlive())
 			continue
 
-		player.SetForceLocalDraw(true)
-		player.ValidateScriptScope()
-		player.GetScriptScope().viewcontrol <- CreateViewControl(player)
+		SetupPlayer(player)
 	}
 }
 
@@ -28,14 +26,18 @@ function ChaosEffect_OnEnd()
 	}
 }
 
-function CreateViewControl(player)
+function SetupPlayer(player)
 {
+	player.ValidateScriptScope()
+	player.SetForceLocalDraw(true)
+
 	local viewcontrol = SpawnEntityFromTable("point_viewcontrol", { origin = player.EyePosition(), angles = player.EyeAngles() })
 	EntFireByHandle(viewcontrol, "SetParent", "!activator", -1, player, viewcontrol)
-	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") == 0 ? "head" : "eyes", -1, null, null)
+	EntFireByHandle(viewcontrol, "SetParentAttachment", player.LookupAttachment("eyes") != 0 ? "eyes" : "head", -1, null, null)
 	EntFireByHandle(viewcontrol, "Enable", "!activator", -1, player, viewcontrol)
 	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".PostViewControlEnable()", -1, player, null)
-	return viewcontrol
+
+	player.GetScriptScope().viewcontrol <- viewcontrol
 }
 
 function PostViewControlEnable()
@@ -49,10 +51,13 @@ function PostViewControlEnable()
 
 function RemoveViewControl(player)
 {
-	if (!("viewcontrol" in player.GetScriptScope()))
+	local scope = player.GetScriptScope()
+	if (scope == null || !("viewcontrol" in scope))
 		return
 
-	local viewcontrol = player.GetScriptScope().viewcontrol
+	local viewcontrol = scope.viewcontrol
+	delete scope.viewcontrol
+
 	if (viewcontrol == null || !viewcontrol.IsValid())
 		return
 
@@ -69,15 +74,8 @@ function OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	if (params.team == TEAM_UNASSIGNED)
-	{
-		player.ValidateScriptScope()
-		return
-	}
-
-	player.SetForceLocalDraw(true)
 	RemoveViewControl(player)
-	player.GetScriptScope().viewcontrol <- CreateViewControl(player)
+	EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".SetupPlayer(self)", -1, player, null)
 }
 
 function OnGameEvent_player_death(params)

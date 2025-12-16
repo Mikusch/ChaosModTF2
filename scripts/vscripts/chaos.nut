@@ -40,6 +40,11 @@ function Chaos_StartEffect(id, script_file, duration, data_string = "")
 		scope.Chaos_Data <- {}
 	}
 
+	scope.Chaos_Data.GetOrDefault <- function(key, default_val)
+	{
+		return key in this ? this[key] : default_val
+	}
+
 	local success = true
 	if ("ChaosEffect_OnStart" in scope)
 		success = scope.ChaosEffect_OnStart()

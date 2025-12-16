@@ -1,7 +1,7 @@
-::worldspawn <- Entities.FindByClassname(null, "worldspawn")
-::gamerules <- Entities.FindByClassname(null, "tf_gamerules")
+worldspawn <- Entities.FindByClassname(null, "worldspawn")
+gamerules <- Entities.FindByClassname(null, "tf_gamerules")
 
-::GetEnemyTeam <- function(team)
+function GetEnemyTeam(team)
 {
 	if (team == TF_TEAM_RED)
 		return TF_TEAM_BLUE
@@ -12,32 +12,7 @@
 	return team
 }
 
-::NormalizeAngle <- function(target)
-{
-	target %= 360.0
-	if (target > 180.0)
-		target -= 360.0
-	else if (target < -180.0)
-		target += 360.0
-	
-	return target
-}
-
-::ApproachAngle <- function(target, value, speed)
-{
-	target = NormalizeAngle(target)
-	value = NormalizeAngle(value)
-
-	local delta = NormalizeAngle(target - value)
-	if (delta > speed)
-		return value + speed
-	else if (delta < -speed)
-		return value - speed
-	
-	return value
-}
-
-::VectorAngles <- function(forward)
+function VectorAngles(forward)
 {
 	local yaw, pitch
 	if (forward.y == 0.0 && forward.x == 0.0)
@@ -61,7 +36,7 @@
 	return QAngle(pitch, yaw, 0.0)
 }
 
-::ShuffleArray <- function(arr)
+function ShuffleArray(arr)
 {
 	local i = arr.len()
 	while (i > 0)
@@ -73,14 +48,14 @@
 	}
 }
 
-::DebugDrawCross3D <- function(position, size, r, g, b, no_depth_test, duration)
+function DebugDrawCross3D(position, size, r, g, b, no_depth_test, duration)
 {
 	DebugDrawLine(position + Vector(size, 0, 0), position - Vector(size, 0, 0), r, g, b, no_depth_test, duration)
 	DebugDrawLine(position + Vector(0, size, 0), position - Vector(0, size, 0), r, g, b, no_depth_test, duration)
 	DebugDrawLine(position + Vector(0, 0, size), position - Vector(0, 0, size), r, g, b, no_depth_test, duration)
 }
 
-::IsSpaceToSpawnHere <- function(where, hullmin, hullmax)
+function IsSpaceToSpawnHere(where, hullmin, hullmax)
 {
 	local trace =
 	{
@@ -100,7 +75,7 @@
 	return trace.fraction >= 1.0
 }
 
-::IsPlayerStuck <- function(player)
+function IsPlayerStuck(player)
 {
 	local trace =
 	{
@@ -111,11 +86,37 @@
 		mask = MASK_SOLID_BRUSHONLY,
 		ignore = player
 	}
-		
+
 	return TraceHull(trace) && trace.hit
 }
 
-::ForcePlayerSuicide <- function(player)
+function ForcePlayerSuicide(player)
 {
 	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
+}
+
+function LerpVector(a, b, t)
+{
+	return Vector(
+		a.x + (b.x - a.x) * t,
+		a.y + (b.y - a.y) * t,
+		a.z + (b.z - a.z) * t
+	)
+}
+
+function LerpAngle(a, b, t)
+{
+	local diff = b - a
+	while (diff > 180) diff -= 360
+	while (diff < -180) diff += 360
+	return a + diff * t
+}
+
+function LerpAngles(a, b, t)
+{
+	return Vector(
+		LerpAngle(a.x, b.x, t),
+		LerpAngle(a.y, b.y, t),
+		LerpAngle(a.z, b.z, t)
+	)
 }

@@ -11,7 +11,7 @@ function ChaosEffect_OnStart()
 			continue
 		
 		player.ValidateScriptScope()
-		player.GetScriptScope().prevLastFireTime <- NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
+		player.GetScriptScope().prev_last_fire_time <- NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
 	}
 }
 
@@ -27,11 +27,11 @@ function ChaosEffect_Update()
 		if (weapon == null)
 			continue
 		
-		local lastFireTime = NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
-		if (lastFireTime > player.GetScriptScope().prevLastFireTime)
+		local last_fire_time = NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
+		if (last_fire_time > player.GetScriptScope().prev_last_fire_time)
 		{
 			player.ViewPunch(QAngle(-6, RandomInt(-4, 4), 0))
-			player.GetScriptScope().prevLastFireTime <- lastFireTime
+			player.GetScriptScope().prev_last_fire_time <- last_fire_time
 		}
 
 		if (player.GetPlayerClass() == TF_CLASS_PYRO && weapon != null && weapon.GetSlot() == TF_WPN_TYPE_PRIMARY && NetProps.GetPropInt(weapon, "m_iWeaponState") != FT_STATE_IDLE)
@@ -49,10 +49,15 @@ function OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 	
+	if (params.team == TEAM_UNASSIGNED)
+	{
+		player.ValidateScriptScope()
+		return
+	}
+
 	local weapon = player.GetActiveWeapon()
 	if (weapon == null)
 		return
-		
-	player.ValidateScriptScope()
-	player.GetScriptScope().prevLastFireTime <- NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
+	
+	player.GetScriptScope().prev_last_fire_time <- NetProps.GetPropFloat(weapon, "LocalActiveTFWeaponData.m_flLastFireTime")
 }

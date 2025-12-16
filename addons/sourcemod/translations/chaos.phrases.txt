@@ -568,6 +568,10 @@
 	{
 		"en"		"Out-Of-Body Experience"
 	}
+	"#Chaos_Effect_DelayedCamera"
+	{
+		"en"		"Delayed Camera"
+	}
 	"#Chaos_Effect_SpeedUp"
 	{
 		"en"		"Adrenaline Shot"

@@ -1,8 +1,8 @@
 function ChaosEffect_OnStart()
 {
-	local duration = ("duration" in Chaos_Data) ? Chaos_Data.duration : 10.0
-	local damage = ("damage" in Chaos_Data) ? Chaos_Data.damage : TF_BLEEDING_DMG
-	local endless = ("endless" in Chaos_Data) ? Chaos_Data.endless : false
+	local duration = Chaos_Data.GetOrDefault("duration", 10.0)
+	local damage = Chaos_Data.GetOrDefault("damage", TF_BLEEDING_DMG)
+	local endless = Chaos_Data.GetOrDefault("endless", false)
 
 	for (local i = 1; i <= MaxClients(); i++)
 	{
