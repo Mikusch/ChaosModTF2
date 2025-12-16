@@ -60,18 +60,48 @@ static void Events_AddEvent(const char[] szName, EventHook fnCallback, EventHook
 
 static void EventHook_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	
+	int userid = event.GetInt("userid");
+	int client = GetClientOfUserId(userid);
+
 	int nLength = g_hEffects.Length;
 	for (int i = 0; i < nLength; i++)
 	{
 		if (!g_hEffects.Get(i, ChaosEffect::active))
 			continue;
-		
+
 		ChaosEffect effect;
 		if (g_hEffects.GetArray(i, effect))
 		{
 			Function fnCallback = effect.GetCallbackFunction("OnPlayerSpawn");
+			if (fnCallback != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, fnCallback);
+				Call_PushArray(effect, sizeof(effect));
+				Call_PushCell(client);
+				Call_Finish();
+			}
+		}
+	}
+
+	RequestFrame(Frame_PlayerSpawnPost, userid);
+}
+
+static void Frame_PlayerSpawnPost(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if (client == 0)
+		return;
+
+	int nLength = g_hEffects.Length;
+	for (int i = 0; i < nLength; i++)
+	{
+		if (!g_hEffects.Get(i, ChaosEffect::active))
+			continue;
+
+		ChaosEffect effect;
+		if (g_hEffects.GetArray(i, effect))
+		{
+			Function fnCallback = effect.GetCallbackFunction("OnPlayerSpawnPost");
 			if (fnCallback != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, fnCallback);

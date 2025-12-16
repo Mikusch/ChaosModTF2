@@ -32,6 +32,11 @@ public void AddAttribute_OnEnd(ChaosEffect effect)
 	}
 }
 
+public void AddAttribute_OnPlayerSpawnPost(ChaosEffect effect, int client)
+{
+	ApplyAttributesToPlayer(effect, client);
+}
+
 public void AddAttribute_OnPostInventoryApplication(ChaosEffect effect, int client)
 {
 	ApplyAttributesToPlayer(effect, client);
