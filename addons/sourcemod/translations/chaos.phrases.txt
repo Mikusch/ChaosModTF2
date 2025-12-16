@@ -163,7 +163,7 @@
 	{
 		"en"		"Blind"
 	}
-	"#Chaos_Effect_GreyscaleOverlay"
+	"#Chaos_Effect_Greyscale"
 	{
 		"en"		"T.F. Noire"
 	}

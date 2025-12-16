@@ -1,6 +1,6 @@
-screenspace_general // NAME: See More
+screenspace_general
 {
-	$pixshader "chaos_tile_ps20"
+	$pixshader "chaos_greyscale_ps20"
 
 	$basetexture "_rt_FullFrameFB"
 	$texture1    ""
@@ -23,8 +23,6 @@ screenspace_general // NAME: See More
 	$linearread_texture1       0
 	$linearread_texture2       0
 	$linearread_texture3       0
-
-	$c0_x  5.0 // x^2 = num of tiles
 
 	Proxies
 	{
