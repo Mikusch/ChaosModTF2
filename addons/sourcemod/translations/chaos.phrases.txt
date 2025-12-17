@@ -47,7 +47,7 @@
 	{
 		"en"		"Truce"
 	}
-	"#Chaos_Effect_HideWorld"
+	"#Chaos_Effect_NoTransmit"
 	{
 		"en"		"Where Did Everything Go?"
 	}
