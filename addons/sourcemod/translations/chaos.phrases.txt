@@ -101,7 +101,7 @@
 	}
 	"#Chaos_Effect_BumperCars"
 	{
-		"en"		"Bumper Cars"
+		"en"		"Bump in the Night"
 	}
 	"#Chaos_Effect_ViewRoll"
 	{
@@ -117,7 +117,7 @@
 	}
 	"#Chaos_Effect_SquidFootsteps"
 	{
-		"en"		"Squid Game"
+		"en"		"I'm Squidward"
 	}
 	"#Chaos_Effect_JingleFootsteps"
 	{
@@ -270,7 +270,7 @@
 	}
 	"#Chaos_Effect_KnockbackOnHit"
 	{
-		"en"		"Damage Causes Airblast"
+		"en"		"Airblast on Hit"
 	}
 	"#Chaos_Effect_Stop"
 	{
@@ -422,7 +422,7 @@
 	}
 	"#Chaos_Effect_PlayerGlow"
 	{
-		"en"		"Look At Me, Look At Me!"
+		"en"		"Glow-in-the-Dark Mercs"
 	}
 	"#Chaos_Effect_InstantRespawn"
 	{
@@ -462,7 +462,7 @@
 	}
 	"#Chaos_Effect_Regenerate"
 	{
-		"en"		"Regenerate All Players"
+		"en"		"Regenerate"
 	}
 	"#Chaos_Effect_MannInTheMachine"
 	{
@@ -554,7 +554,7 @@
 	}
 	"#Chaos_Effect_FastTaunt"
 	{
-		"en"		"2x Taunt Speed"
+		"en"		"3x Taunt Speed"
 	}
 	"#Chaos_Effect_SlowTaunt"
 	{
@@ -594,7 +594,7 @@
 	}
 	"#Chaos_Effect_EnableAllHolidays"
 	{
-		"en"		"Enable All Holidays"
+		"en"		"Activate All Holidays"
 	}
 	"#Chaos_Effect_TeleportToZero"
 	{
@@ -602,7 +602,7 @@
 	}
 	"#Chaos_Effect_ForceJump"
 	{
-		"en"		"Jump Jump"
+		"en"		"Jump! Jump!"
 	}
 	"#Chaos_Effect_DisableDirection"
 	{
