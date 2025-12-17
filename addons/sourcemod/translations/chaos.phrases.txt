@@ -554,7 +554,7 @@
 	}
 	"#Chaos_Effect_FastTaunt"
 	{
-		"en"		"3x Taunt Speed"
+		"en"		"2x Taunt Speed"
 	}
 	"#Chaos_Effect_SlowTaunt"
 	{
