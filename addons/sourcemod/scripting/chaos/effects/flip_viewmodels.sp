@@ -8,7 +8,8 @@ public bool FlipViewModels_OnStart(ChaosEffect effect)
 		if (!IsClientInGame(client))
 			continue;
 		
-		for (int i = 0; i < GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons"); i++)
+		int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
+		for (int i = 0; i < nMaxWeapons; i++)
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 			if (weapon == -1)
