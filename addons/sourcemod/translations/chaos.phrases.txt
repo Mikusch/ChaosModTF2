@@ -69,7 +69,7 @@
 	}
 	"#Chaos_Effect_BigHands"
 	{
-		"en"		"Massive Grabbers"
+		"en"		"Big Guns"
 	}
 	"#Chaos_Effect_Watermark"
 	{
