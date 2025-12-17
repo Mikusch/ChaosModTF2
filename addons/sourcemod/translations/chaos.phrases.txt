@@ -55,11 +55,11 @@
 	{
 		"en"		"Eternal Screams"
 	}
-	"#Chaos_Effect_LowHp"
+	"#Chaos_Effect_LowHP"
 	{
 		"en"		"One Hit K.O."
 	}
-	"#Chaos_Effect_HighHp"
+	"#Chaos_Effect_HighHP"
 	{
 		"en"		"Healthy Mercs"
 	}
@@ -647,10 +647,6 @@
 	"#Chaos_Effect_HighFallDamage"
 	{
 		"en"		"All Players Take 10x Falling Damage"
-	}
-	"#Chaos_Effect_HighStepSize"
-	{
-		"en"		"Tall Legs"
 	}
 	"#Chaos_Effect_IdentityTheft"
 	{
