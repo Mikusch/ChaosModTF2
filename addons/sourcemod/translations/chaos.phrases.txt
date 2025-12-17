@@ -61,7 +61,7 @@
 	}
 	"#Chaos_Effect_HighHp"
 	{
-		"en"		"Healthy Mercenaries"
+		"en"		"Healthy Mercs"
 	}
 	"#Chaos_Effect_NoTorso"
 	{
@@ -358,7 +358,7 @@
 	}
 	"#Chaos_Effect_BigTorso"
 	{
-		"en"		"Stretchy Mercenaries"
+		"en"		"Stretchy Mercs"
 	}
 	"#Chaos_Effect_PaintItems"
 	{
@@ -514,7 +514,7 @@
 	}
 	"#Chaos_Effect_NoHead"
 	{
-		"en"		"Decapitated Mercenaries"
+		"en"		"Decapitated Mercs"
 	}
 	"#Chaos_Effect_BackstabImmunity"
 	{
