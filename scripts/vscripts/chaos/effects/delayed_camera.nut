@@ -123,9 +123,12 @@ function RemoveViewControl(player)
 	if (scope == null)
 		return
 
-	delete scope.position_history
-	delete scope.origin
-	delete scope.angles
+	if ("position_history" in scope)
+		delete scope.position_history
+	if ("origin" in scope)
+		delete scope.origin
+	if ("angles" in scope)
+		delete scope.angles
 
 	ViewControl_Remove(player)
 }
