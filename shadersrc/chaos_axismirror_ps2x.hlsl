@@ -1,6 +1,6 @@
 #include "common.hlsl"
 
-float4 main(PS_INPUT i) : COLOR
+float4 main( PS_INPUT i ) : COLOR
 {
 	float2 uv = i.uv;
 	float h = Constants0.x;

@@ -1,0 +1,44 @@
+screenspace_general
+{
+	$pixshader "chaos_deepfried_ps20"
+
+	$basetexture "_rt_FullFrameFB"
+	$texture1    ""
+	$texture2    ""
+	$texture3    ""
+
+	$x360appchooser 1
+	$ignorez        1
+	$fix_fb         32768
+	"<dx90"
+	{
+		$no_draw 1
+	}
+
+	$copyalpha                 1
+	$alpha_blend_color_overlay 0
+	$alpha_blend               0
+	$linearwrite               0
+	$linearread_basetexture    0
+	$linearread_texture1       0
+	$linearread_texture2       0
+	$linearread_texture3       0
+
+	$c0_x     1.5   // brightness
+	$c0_y     2.2   // contrast
+	$c0_z     3.5   // saturation
+	$c0_w     0.2   // noise amount
+	$c1_x     0.005 // chromatic aberration
+	$c1_y     1.4   // red tint
+	$c1_z     1.15  // green tint
+	$c1_w     0.6   // blue tint
+
+	Proxies
+	{
+		Equals
+		{
+			srcVar1			$fix_fb
+			resultVar		$flags2
+		}
+	}
+}

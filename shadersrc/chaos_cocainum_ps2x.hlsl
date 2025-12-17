@@ -4,16 +4,16 @@
 
 #define PI 3.14159265
 
-#define Time              Constants0.x
-#define ColorIntensity    Constants0.y
-#define ColorDistortion   Constants0.z
-#define ColorSpeed        Constants0.w
-#define WaveFrequency	  Constants1.x
-#define WaveAmplitude	  Constants1.y
-#define RadialStrength    Constants1.z
-#define OscillationPeriod Constants1.w
-#define Contrast          Constants2.x
-#define HueShift          Constants2.y
+#define Time				Constants0.x
+#define ColorIntensity		Constants0.y
+#define ColorDistortion		Constants0.z
+#define ColorSpeed			Constants0.w
+#define WaveFrequency		Constants1.x
+#define WaveAmplitude		Constants1.y
+#define RadialStrength		Constants1.z
+#define OscillationPeriod	Constants1.w
+#define Contrast			Constants2.x
+#define HueShift			Constants2.y
 
 float3 rgb2hsv(float3 c)
 {

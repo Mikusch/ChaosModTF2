@@ -167,6 +167,10 @@
 	{
 		"en"		"T.F. Noire"
 	}
+	"#Chaos_Effect_DeepFried"
+	{
+		"en"		"Deep Fried"
+	}
 	"#Chaos_Effect_PipboyOverlay"
 	{
 		"en"		"Pip-Boy"
@@ -331,10 +335,6 @@
 	"#Chaos_Effect_RandomGravity"
 	{
 		"en"		"Random Gravity"
-	}
-	"#Chaos_Effect_LoudSpeaker"
-	{
-		"en"		"Is This Thing On?"
 	}
 	"#Chaos_Effect_Loudness"
 	{
