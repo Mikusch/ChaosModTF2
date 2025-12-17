@@ -28,8 +28,8 @@ screenspace_general
 	$c0_y     2.2   // contrast
 	$c0_z     3.5   // saturation
 	$c0_w     0.2   // noise amount
-	$c1_x     0.005 // chromatic aberration
 	$c1_y     1.4   // red tint
+	$c1_x     0.003 // chromatic aberration
 	$c1_z     1.15  // green tint
 	$c1_w     0.6   // blue tint
 
