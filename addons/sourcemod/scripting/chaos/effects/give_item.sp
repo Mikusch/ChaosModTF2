@@ -132,12 +132,12 @@ static int AddItem(int client, KeyValues kv)
 				EquipPlayerWeapon(client, newItem);
 				TF2Util_SetPlayerActiveWeapon(client, newItem);
 			}
+
+			SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
 		}
-		
-		SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
-		
+
 		SDKCall(g_hSDKCallPostInventoryApplication, client);
-		
+
 		delete hItem;
 		return newItem;
 	}

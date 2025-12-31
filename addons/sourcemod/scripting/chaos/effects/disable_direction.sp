@@ -15,11 +15,11 @@ public Action DisableDirection_OnPlayerRunCmd(ChaosEffect effect, int client, in
 	if (!IsPlayerAlive(client))
 		return Plugin_Continue;
 	
-	if (g_nDirection == DIR_FWD && vel[0] > 0.0 || g_nDirection == DIR_BACK && vel[0] < 0.0)
+	if ((g_nDirection == DIR_FWD && vel[0] > 0.0) || (g_nDirection == DIR_BACK && vel[0] < 0.0))
 		vel[0] = 0.0;
-	else if (g_nDirection == DIR_RIGHT && vel[1] > 0.0 || g_nDirection == DIR_LEFT && vel[1] < 0.0)
+	else if ((g_nDirection == DIR_RIGHT && vel[1] > 0.0) || (g_nDirection == DIR_LEFT && vel[1] < 0.0))
 		vel[1] = 0.0;
-	else if (g_nDirection == DIR_UP && vel[2] > 0.0 || g_nDirection == DIR_DOWN && vel[2] < 0.0)
+	else if ((g_nDirection == DIR_UP && vel[2] > 0.0) || (g_nDirection == DIR_DOWN && vel[2] < 0.0))
 		vel[2] = 0.0;
 	else
 		return Plugin_Continue;

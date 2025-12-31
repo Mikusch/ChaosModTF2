@@ -16,7 +16,7 @@ static char g_szBotModels[][] =
 	"models/bots/engineer/bot_engineer.mdl"
 };
 
-char g_szBotBossModels[][] =
+static char g_szBotBossModels[][] =
 {
 	"", //TF_CLASS_UNDEFINED
 	
@@ -31,7 +31,7 @@ char g_szBotBossModels[][] =
 	"models/bots/engineer/bot_engineer.mdl"
 };
 
-char g_szBotClassNames[][] =
+static char g_szBotClassNames[][] =
 {
 	"", //TF_CLASS_UNDEFINED
 	
@@ -158,7 +158,7 @@ static void SetRobotModel(int client)
 static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(event.GetInt("userid"));
-	int death_flags = GetClientOfUserId(event.GetInt("death_flags"));
+	int death_flags = event.GetInt("death_flags");
 	
 	if (!IsValidRobotPlayer(victim))
 		return;

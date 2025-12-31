@@ -44,7 +44,7 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(event.GetInt("userid"));
 	int attacker = GetClientOfUserId(event.GetInt("attacker"));
-	int death_flags = GetClientOfUserId(event.GetInt("death_flags"));
+	int death_flags = event.GetInt("death_flags");
 
 	if (victim != attacker && (0 < attacker <= MaxClients) && !(death_flags & TF_DEATHFLAG_DEADRINGER))
 	{
