@@ -56,12 +56,13 @@ function Chaos_StartEffect(id, script_file, duration, data_string = "")
 	{
 		printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", id)
 
-		if (duration > 0)
-			ROOT[scope_name] <- scope
+		if (duration <= 0)
+			delete ROOT[scope_name]
 	}
 	else
 	{
 		printf(CHAOS_LOG_PREFIX + "Failed to start effect '%s'\n", id)
+		delete ROOT[scope_name]
 	}
 
 	return success
