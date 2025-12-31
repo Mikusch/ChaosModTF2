@@ -158,12 +158,8 @@ static void SetRobotModel(int client)
 static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 {
 	int victim = GetClientOfUserId(event.GetInt("userid"));
-	int death_flags = event.GetInt("death_flags");
 	
 	if (!IsValidRobotPlayer(victim))
-		return;
-	
-	if (death_flags & TF_DEATHFLAG_DEADRINGER)
 		return;
 	
 	if (GetEntProp(victim, Prop_Send, "m_bIsMiniBoss"))
