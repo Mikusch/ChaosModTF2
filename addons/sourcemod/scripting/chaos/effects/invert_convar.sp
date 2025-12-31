@@ -27,9 +27,11 @@ public void InvertConVar_OnEnd(ChaosEffect effect)
 {
 	char szName[512];
 	effect.data.GetString("convar", szName, sizeof(szName));
-	
+
 	ConVar convar = FindConVar(szName);
-	
+	if (!convar)
+		return;
+
 	convar.RemoveChangeHook(OnConVarChanged);
 	convar.FloatValue = -convar.FloatValue;
 }

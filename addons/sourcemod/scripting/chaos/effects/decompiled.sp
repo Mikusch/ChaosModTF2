@@ -33,7 +33,6 @@ public bool Decompiled_Initialize(ChaosEffect effect)
 	g_hEntityToSpriteMap.SetString("color_correction", "editor/color_correction.vmt");
 	g_hEntityToSpriteMap.SetString("env_cubemap", "editor/env_cubemap.vmt");
 	g_hEntityToSpriteMap.SetString("env_global", "editor/env_global.vmt");
-	g_hEntityToSpriteMap.SetString("env_global", "editor/obsolete.vmt");
 	g_hEntityToSpriteMap.SetString("env_explosion", "editor/env_explosion.vmt");
 	g_hEntityToSpriteMap.SetString("env_fog_controller", "editor/fog_controller.vmt");
 	g_hEntityToSpriteMap.SetString("env_shake", "editor/env_shake.vmt");
@@ -120,7 +119,7 @@ public void Decompiled_OnMapStart(ChaosEffect effect)
 		EntityLumpEntry entry = EntityLump.Get(i);
 		
 		int index = entry.FindKey("classname");
-		if (index == 1)
+		if (index == -1)
 			continue;
 		
 		char classname[64];
