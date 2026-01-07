@@ -756,6 +756,10 @@
 	{
 		"en"		"See More"
 	}
+	"#Chaos_Effect_ProjectileParry"
+	{
+		"en"		"Melee Parries Projectiles"
+	}
 	"#Chaos_MetaEffect_Timer5x"
 	{
 		"en"		"5x Timer Speed (Meta)"
