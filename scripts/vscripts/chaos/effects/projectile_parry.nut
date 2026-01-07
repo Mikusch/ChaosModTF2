@@ -5,12 +5,7 @@ local MAX_PARRIED_PROJECTILES = 64 // Max projectile a player can parry at once
 local SND_PARRY = "weapons/saxxy_impact_gen_01.wav" // Sound that plays on a successful parry
 local SND_PARRY_RADIUS = 512.0 // Max audiable distance of the parry sound
 
-local SLOT_MELEE = 2
-
-function ChaosEffect_OnStart()
-{
-	PrecacheSound(SND_PARRY)
-}
+PrecacheSound(SND_PARRY)
 
 function ChaosEffect_Update()
 {
@@ -27,7 +22,8 @@ function ChaosEffect_Update()
 		if (NetProps.GetPropInt(player, "m_Shared.m_iNextMeleeCrit") == 0)
 		{
 			// When switching away from melee, m_iNextMeleeCrit will also be 0
-			if (player.GetActiveWeapon().GetSlot() == SLOT_MELEE)
+			local weapon = player.GetActiveWeapon()
+			if (weapon != null && weapon.GetSlot() == TF_WPN_TYPE_MELEE)
 			{
 				local bone = player.LookupBone("bip_spine_2")
 				local search_pos = bone != -1 ? player.GetBoneOrigin(bone) : player.EyePosition()
@@ -36,7 +32,7 @@ function ChaosEffect_Update()
 				local projectile = null
 				while (projectile = Entities.FindByClassnameWithin(projectile, "tf_projectile_*", search_pos, PARRY_RADIUS))
 				{
-					if (projectile_count > MAX_PARRIED_PROJECTILES)
+					if (projectile_count >= MAX_PARRIED_PROJECTILES)
 						break
 
 					if (!CanParryProjectile(player, projectile))
@@ -68,7 +64,7 @@ function ChaosEffect_Update()
 function CanParryProjectile(player, projectile)
 {
 	// Do not parry projectiles that are on the same team
-	if (projectile.GetTeam() == player.GetTeam()) 
+	if (projectile.GetTeam() == player.GetTeam())
 		return false
 
 	// Do not parry stickies that already stick to something
@@ -104,7 +100,7 @@ function ParryProjectile(player, projectile)
 {
 	local eye_fwr = player.EyeAngles().Forward()
 	local player_team = player.GetTeam()
-	// Projectiles that use Vphysics have to be handeled differently
+	// Projectiles that use VPhysics have to be handled differently
 	// (pipes, stickies, jarate, mad milk, cleaver, scout balls, gas passer)
 	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
 	{
@@ -126,7 +122,7 @@ function ParryProjectile(player, projectile)
 	projectile.SetTeam(player_team)
 	// 0 = red model skin
 	// 1 = blu model skin
-	projectile.SetSkin(player_team == TF_TEAM_RED ? 0 : 1)
+	projectile.SetSkin(player_team - 2)
 
 	// Change trail color of projectiles that have them
 	for (local trail = projectile.FirstMoveChild(); trail != null; trail = trail.NextMovePeer())
