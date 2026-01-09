@@ -2,6 +2,8 @@ name: Compile and release
 
 on:
   push:
+  pull_request:
+  workflow_dispatch:
 
 env:
   PLUGIN_NAME: chaos
