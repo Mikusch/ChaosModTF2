@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache include files
         id: cache-includes
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ env.SCRIPTS_PATH }}/include
           key: includes-${{ hashFiles('.github/workflows/main.yml') }}
@@ -63,12 +63,6 @@ jobs:
 
       - name: Zip output
         run: zip -qq -r ${{ github.event.repository.name }}.zip addons/sourcemod scripts
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.PLUGIN_NAME }}-${{ steps.setup_sp.outputs.plugin-version }}
-          path: ${{ github.event.repository.name }}.zip
 
       - name: Create GitHub release
         if: github.ref_name == 'master'
