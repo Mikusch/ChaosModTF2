@@ -51,6 +51,14 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		TF2_SetPlayerClass(attacker, TF2_GetPlayerClass(victim), _, false);
 		TF2_RegeneratePlayer(attacker);
 
+		char model[PLATFORM_MAX_PATH];
+		GetEntPropString(victim, Prop_Send, "m_iszCustomModel", model, sizeof(model));
+
+		// Copy victim's model.
+		SetVariantString(model);
+		AcceptEntityInput(attacker, "SetCustomModel");
+		SetEntProp(attacker, Prop_Send, "m_bUseClassAnimations", GetEntProp(victim, Prop_Send, "m_bUseClassAnimations"));
+
 		// Nuke items.
 		int nMaxWeapons = GetEntPropArraySize(attacker, Prop_Data, "m_hMyWeapons");
 		for (int i = 0; i < nMaxWeapons; i++)
