@@ -51,13 +51,23 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		TF2_SetPlayerClass(attacker, TF2_GetPlayerClass(victim), _, false);
 		TF2_RegeneratePlayer(attacker);
 
-		char model[PLATFORM_MAX_PATH];
-		GetEntPropString(victim, Prop_Send, "m_iszCustomModel", model, sizeof(model));
-
 		// Copy victim's model.
-		SetVariantString(model);
+		char szCustomModel[PLATFORM_MAX_PATH];
+		GetEntPropString(victim, Prop_Send, "m_iszCustomModel", szCustomModel, sizeof(szCustomModel));
+
+		SetVariantString(szCustomModel);
 		AcceptEntityInput(attacker, "SetCustomModel");
+
 		SetEntProp(attacker, Prop_Send, "m_bUseClassAnimations", GetEntProp(victim, Prop_Send, "m_bUseClassAnimations"));
+		SetEntProp(attacker, Prop_Send, "m_bCustomModelRotates", GetEntProp(victim, Prop_Send, "m_bCustomModelRotates"));
+		SetEntProp(attacker, Prop_Send, "m_bCustomModelRotationSet", GetEntProp(victim, Prop_Send, "m_bCustomModelRotationSet"));
+		SetEntProp(attacker, Prop_Send, "m_bCustomModelVisibleToSelf", GetEntProp(victim, Prop_Send, "m_bCustomModelVisibleToSelf"));
+
+		float vecCustomModelOffset[3], angCustomModelRotation[3];
+		GetEntPropVector(victim, Prop_Send, "m_vecCustomModelOffset", vecCustomModelOffset);
+		SetEntPropVector(attacker, Prop_Send, "m_vecCustomModelOffset", vecCustomModelOffset);
+		GetEntPropVector(victim, Prop_Send, "m_angCustomModelRotation", angCustomModelRotation);
+		SetEntPropVector(attacker, Prop_Send, "m_angCustomModelRotation", angCustomModelRotation);
 
 		// Nuke items.
 		int nMaxWeapons = GetEntPropArraySize(attacker, Prop_Data, "m_hMyWeapons");
