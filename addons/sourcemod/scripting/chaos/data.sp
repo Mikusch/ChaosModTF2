@@ -219,7 +219,7 @@ bool Data_InitializeEffects()
 	}
 	else
 	{
-		LogError("Could not read from file '%s'", szFilePath);
+		SetFailState("Could not read from file '%s'", szFilePath);
 		bSuccess = false;
 	}
 
@@ -235,6 +235,8 @@ void Data_Initialize()
 	KeyValues kv = new KeyValues("visuals");
 	if (kv.ImportFromFile(szFilePath))
 	{
+		g_flOneshotDisplayTime = kv.GetFloat("oneshot_display_time", 60.0);
+
 		if (kv.JumpToKey("timer_bar"))
 		{
 			g_stTimerBarConfig.Parse(kv);
@@ -249,7 +251,7 @@ void Data_Initialize()
 	}
 	else
 	{
-		LogError("Could not read from file '%s'", szFilePath);
+		SetFailState("Could not read from file '%s'", szFilePath);
 	}
 	delete kv;
 }

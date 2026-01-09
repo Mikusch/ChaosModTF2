@@ -28,6 +28,7 @@ Handle g_hTimerBarHudSync;
 float g_flTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
+float g_flOneshotDisplayTime;
 char g_szForceEffectId[64];
 
 ProgressBarConfig g_stEffectBarConfig;
@@ -800,8 +801,8 @@ void DisplayActiveEffects()
 					
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%s %T" : "%s %s", szProgressBar, szName, client);
 				}
-				// One-shot effects stay on screen for 60 seconds
-				else if (!effect.duration && GetGameTime() - effect.activate_time <= 60.0)
+				// One-shot effects stay on screen for a configurable duration
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= g_flOneshotDisplayTime)
 				{
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%T" : "%s", szName, client);
 				}
