@@ -33,20 +33,12 @@ public bool TimeScale_OnStart(ChaosEffect effect)
 	host_timescale.FloatValue = flTimescale;
 
 	host_timescale.AddChangeHook(OnTimescaleChanged);
-
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-
-		if (IsFakeClient(client))
-			SetFakeClientConVar(client, "sv_cheats", "1");
-		else
-			sv_cheats.ReplicateToClient(client, "1");
-	}
+	sv_cheats.AddChangeHook(OnCheatsChanged);
 
 	AddNormalSoundHook(OnNormalSoundPlayed);
 	AddAmbientSoundHook(OnAmbientSoundPlayed);
+
+	ReplicateCheatsToClients("1");
 
 	return true;
 }
@@ -54,24 +46,21 @@ public bool TimeScale_OnStart(ChaosEffect effect)
 public void TimeScale_OnEnd(ChaosEffect effect)
 {
 	host_timescale.RemoveChangeHook(OnTimescaleChanged);
+	sv_cheats.RemoveChangeHook(OnCheatsChanged);
 	host_timescale.FloatValue = g_flOldTimescale;
-
-	char szValue[512];
-	sv_cheats.GetString(szValue, sizeof(szValue));
-
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-
-		if (IsFakeClient(client))
-			SetFakeClientConVar(client, "sv_cheats", szValue);
-		else
-			sv_cheats.ReplicateToClient(client, szValue);
-	}
 
 	RemoveNormalSoundHook(OnNormalSoundPlayed);
 	RemoveAmbientSoundHook(OnAmbientSoundPlayed);
+
+	// Replicate current server value back to clients
+	char szValue[512];
+	sv_cheats.GetString(szValue, sizeof(szValue));
+	ReplicateCheatsToClients(szValue);
+}
+
+public void TimeScale_OnClientPutInServer(ChaosEffect effect, int client)
+{
+	ReplicateCheatsToClient(client, "1");
 }
 
 static void OnTimescaleChanged(ConVar convar, const char[] oldValue, const char[] newValue)
@@ -81,6 +70,17 @@ static void OnTimescaleChanged(ConVar convar, const char[] oldValue, const char[
 	host_timescale.AddChangeHook(OnTimescaleChanged);
 
 	g_flOldTimescale = StringToFloat(newValue);
+}
+
+static void OnCheatsChanged(ConVar convar, const char[] oldValue, const char[] newValue)
+{
+	// Allow clients to react to the initial change first
+	RequestFrame(RequestFrameCallback_ReplicateCheats);
+}
+
+public void RequestFrameCallback_ReplicateCheats()
+{
+	ReplicateCheatsToClients("1");
 }
 
 static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
@@ -93,4 +93,23 @@ static Action OnAmbientSoundPlayed(char sample[PLATFORM_MAX_PATH], int &entity, 
 {
 	pitch = RoundToNearest(pitch * g_flCurrentTimescale);
 	return Plugin_Changed;
+}
+
+static void ReplicateCheatsToClient(int client, const char[] szValue)
+{
+	if (IsFakeClient(client))
+		SetFakeClientConVar(client, "sv_cheats", szValue);
+	else
+		sv_cheats.ReplicateToClient(client, szValue);
+}
+
+static void ReplicateCheatsToClients(const char[] szValue)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+
+		ReplicateCheatsToClient(client, szValue);
+	}
 }
