@@ -56,15 +56,18 @@ public void TimeScale_OnEnd(ChaosEffect effect)
 	host_timescale.RemoveChangeHook(OnTimescaleChanged);
 	host_timescale.FloatValue = g_flOldTimescale;
 
+	char szValue[512];
+	sv_cheats.GetString(szValue, sizeof(szValue));
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
 
 		if (IsFakeClient(client))
-			SetFakeClientConVar(client, "sv_cheats", "0");
+			SetFakeClientConVar(client, "sv_cheats", szValue);
 		else
-			sv_cheats.ReplicateToClient(client, "0");
+			sv_cheats.ReplicateToClient(client, szValue);
 	}
 
 	RemoveNormalSoundHook(OnNormalSoundPlayed);

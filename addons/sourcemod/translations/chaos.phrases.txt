@@ -793,7 +793,7 @@
 		"en"		"Jumpy Props"
 	}
 	"#Chaos_Effect_SpinProps"
-    {
-        "en"        "Beyblades"
-    }
+	{
+		"en"		"Beyblades"
+	}
 }
