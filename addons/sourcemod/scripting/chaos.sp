@@ -41,6 +41,7 @@ ProgressBarConfig g_stTimerBarConfig;
 
 // Meta effects
 #include "chaos/effects/meta/effect_duration.sp"
+#include "chaos/effects/meta/multi_effect.sp"
 #include "chaos/effects/meta/no_chaos.sp"
 #include "chaos/effects/meta/reinvoke_effects.sp"
 #include "chaos/effects/meta/timer_speed.sp"
