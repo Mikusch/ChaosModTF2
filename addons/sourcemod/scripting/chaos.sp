@@ -115,7 +115,7 @@ public void OnPluginStart()
 	CreateConVar("sm_chaos_version", PLUGIN_VERSION, "Plugin version.", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	sm_chaos_enabled = CreateConVar("sm_chaos_enabled", "1", "Enable or disable the plugin.");
 	sm_chaos_enabled.AddChangeHook(ConVarChanged_ChaosEnable);
-	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "50", "Default cooldown between effects.", _, true, 0.0);
+	sm_chaos_effect_cooldown = CreateConVar("sm_chaos_effect_cooldown", "60", "Default cooldown between effects.", _, true, 0.0);
 	sm_chaos_effect_interval = CreateConVar("sm_chaos_effect_interval", "30", "Interval between each effect activation, in seconds.");
 	sm_chaos_meta_effect_interval = CreateConVar("sm_chaos_meta_effect_interval", "12", "Interval between each attempted meta effect activation, in seconds.");
 	sm_chaos_meta_effect_chance = CreateConVar("sm_chaos_meta_effect_chance", ".0075", "Chance for a meta effect to be activated every interval, in percent.", _, true, 0.0, true, 100.0);
