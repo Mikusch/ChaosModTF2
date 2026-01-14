@@ -30,9 +30,10 @@ function ChaosEffect_OnStart()
 			scope.teleport_origin <- other.GetOrigin()
 			scope.teleport_angles <- other.GetAbsAngles()
 			scope.teleport_velocity <- other.GetAbsVelocity()
+			scope.TeleportPlayer <- TeleportPlayer
 
 			// Delay it, so that other players can get our old position
-			EntFireByHandle(player, "RunScriptCode", Chaos_EffectName + ".TeleportPlayer()", -1, player, null)
+			EntFireByHandle(player, "CallScriptFunction", "TeleportPlayer", -1, player, null)
 
 			others.remove(j)
 			break
@@ -42,9 +43,9 @@ function ChaosEffect_OnStart()
 
 function TeleportPlayer()
 {
-	local scope = activator.GetScriptScope()
-	activator.SetAbsOrigin(scope.teleport_origin)
-	activator.SetAbsAngles(scope.teleport_angles)
-	activator.SetAbsVelocity(scope.teleport_velocity)
-	DispatchParticleEffect(activator.GetTeam() == TF_TEAM_RED ? "teleportedin_red" : "teleportedin_blue", activator.GetOrigin(), activator.GetAbsAngles() + Vector())
+	local scope = self.GetScriptScope()
+	self.SetAbsOrigin(scope.teleport_origin)
+	self.SetAbsAngles(scope.teleport_angles)
+	self.SetAbsVelocity(scope.teleport_velocity)
+	DispatchParticleEffect(self.GetTeam() == TF_TEAM_RED ? "teleportedin_red" : "teleportedin_blue", self.GetOrigin(), self.GetAbsAngles() + Vector())
 }
