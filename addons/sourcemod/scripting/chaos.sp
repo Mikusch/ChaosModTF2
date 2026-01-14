@@ -273,10 +273,10 @@ public void OnGameFrame()
 						else
 							flUpdateInterval = float(hExecute.ReturnValue);
 						
-						delete hExecute;
-						
 						g_hEffects.Set(i, flCurTime + flUpdateInterval, ChaosEffect::next_script_update_time);
 					}
+
+					delete hExecute;
 				}
 			}
 		}

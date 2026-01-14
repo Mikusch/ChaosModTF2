@@ -42,7 +42,7 @@ public bool FakeCrash_OnStart(ChaosEffect effect)
 
 	net_fakeloss.IntValue = 100;
 	SetPausedForced(true);
-	CreateTimer(GetRandomFloat(flMinDuration, flMaxDuration), Timer_EndFakeCrash);
+	CreateTimer(GetRandomFloat(flMinDuration, flMaxDuration), Timer_EndFakeCrash, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	return true;
 }
