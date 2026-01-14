@@ -88,22 +88,21 @@ function ProjectileThink()
 	if (closest_target)
 	{
 		local initial_velocity = NetProps.GetPropVector(self, "m_vInitialVelocity")
-		local speed_base = initial_velocity.Length() * 0.4
-		
+		local speed_base = initial_velocity.Length() * SPEED_MULTIPLIER
+
 		local deflected = NetProps.GetPropInt(self, "m_iDeflected")
 		local speed_new = speed_base + deflected * speed_base * 1.1
-		
-		local new_velocity = closest_dir * speed_new	
-				
+
+		local new_velocity = closest_dir * speed_new
+
 		if (self.GetMoveType() == MOVETYPE_VPHYSICS)
 		{
 			self.SetPhysVelocity(new_velocity)
 		}
 		else
 		{
-			local new_angles = VectorAngles(closest_dir)		
-			local new_velocity = closest_dir * speed_new
-			
+			local new_angles = VectorAngles(closest_dir)
+
 			self.Teleport(false, new_velocity, true, new_angles, true, new_velocity)
 		}
 	}

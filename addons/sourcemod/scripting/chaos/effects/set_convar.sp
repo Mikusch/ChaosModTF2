@@ -55,13 +55,11 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 
 			convar.GetString(szOldValue, sizeof(szOldValue));
 
-			// Don't set if the convar value is already set to the desired value
-			if (StrEqual(szOldValue, szValue))
-				continue;
-
 			g_hOldConVarValues.SetString(szName, szOldValue);
-			convar.SetString(szValue, true);
 			bAnySet = true;
+
+			if (!StrEqual(szOldValue, szValue))
+				convar.SetString(szValue, true);
 
 			// If this effect has a duration, add the change hook
 			if (effect.duration)
