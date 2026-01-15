@@ -1,6 +1,6 @@
 screenspace_general
 {
-	$pixshader "chaos_tile_ps20"
+	$pixshader "chaos_blur_ps20"
 
 	$basetexture "_rt_FullFrameFB"
 	$texture1    ""
@@ -14,8 +14,8 @@ screenspace_general
 	{
 		$no_draw 1
 	}
-
-	$copyalpha                 1
+		
+	$copyalpha                 0
 	$alpha_blend_color_overlay 0
 	$alpha_blend               0
 	$linearwrite               0
@@ -24,8 +24,9 @@ screenspace_general
 	$linearread_texture2       0
 	$linearread_texture3       0
 
-	$c0_x	5.0 // x^2 = num of tiles
-
+	$c0_x     10.0 // blur strength
+	$c0_y     0.2  // edge depth threshold
+	
 	Proxies
 	{
 		Equals

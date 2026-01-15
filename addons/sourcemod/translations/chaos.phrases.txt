@@ -171,9 +171,9 @@
 	{
 		"en"		"Deep Fried"
 	}
-	"#Chaos_Effect_PipboyOverlay"
+	"#Chaos_Effect_Blur"
 	{
-		"en"		"Pip-Boy"
+		"en"		"Nearsighted"
 	}
 	"#Chaos_Effect_NoJumpDuck"
 	{
