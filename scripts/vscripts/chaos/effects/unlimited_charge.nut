@@ -1,5 +1,8 @@
 function ApplyUnlimitedCharge(player)
 {
+	if (!NetProps.GetPropBool(player, "m_Shared.m_bShieldEquipped"))
+		return
+
 	player.AddCustomAttribute("charge time increased", 99999.0, -1)
 	NetProps.SetPropFloat(player, "m_Shared.m_flChargeMeter", 100.0)
 }
@@ -28,6 +31,9 @@ function ChaosEffect_Update()
 			continue
 
 		if (!player.IsAlive())
+			continue
+
+		if (!NetProps.GetPropBool(player, "m_Shared.m_bShieldEquipped"))
 			continue
 
 		NetProps.SetPropFloat(player, "m_Shared.m_flChargeMeter", 100.0)
