@@ -152,7 +152,7 @@ seterrorhandler(function(error)
 		{
 			foreach (name, value in stack.locals) 
 			{
-				local type = type(v)
+				local type = type(value)
 				type ==    "null" ? Chat(format("[%s] NULL"  , name))        :
 				type == "integer" ? Chat(format("[%s] %d"    , name, value)) :
 				type ==   "float" ? Chat(format("[%s] %.14g" , name, value)) :
