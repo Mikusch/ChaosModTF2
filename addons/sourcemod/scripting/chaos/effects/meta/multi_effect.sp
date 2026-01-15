@@ -5,6 +5,7 @@
 
 static int g_iNumEffects;
 static int g_iActivatedEffects;
+static Handle g_hTimer;
 
 public bool MultiEffect_OnStart(ChaosEffect effect)
 {
@@ -20,15 +21,23 @@ public bool MultiEffect_OnStart(ChaosEffect effect)
 		return false;
 
 	g_iActivatedEffects = 0;
-	float flNextEffectDelay = 10.0 / float(g_iNumEffects); // n effects over 10 seconds
+	float flNextEffectDelay = effect.duration / float(g_iNumEffects); // n effects over m seconds
 
-	CreateTimer(flNextEffectDelay, Timer_NextEffect, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+	g_hTimer = CreateTimer(flNextEffectDelay, Timer_NextEffect, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
 	return true;
 }
 
+public void MultiEffect_OnEnd(ChaosEffect effect)
+{
+	delete g_hTimer;
+}
+
 static Action Timer_NextEffect(Handle timer)
 {
+	if (g_hTimer != timer)
+		return Plugin_Stop;
+
 	SelectRandomEffect(false); // Don't allow meta effects within the multi
 
 	if (++g_iActivatedEffects < g_iNumEffects)
