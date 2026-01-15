@@ -316,9 +316,9 @@
 	{
 		"en"		"10x Overheal Limit"
 	}
-	"#Chaos_Effect_FastCharge"
+	"#Chaos_Effect_UnlimitedCharge"
 	{
-		"en"		"10x Shield Charge Speed"
+		"en"		"Unlimited Shield Charge"
 	}
 	"#Chaos_Effect_AlwaysLoser"
 	{
