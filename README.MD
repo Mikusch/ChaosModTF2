@@ -1,6 +1,6 @@
 # TF2 Chaos Mod
 
-**As seen on [TFConnect 2023](https://tfconnect.org)!**
+**As seen on [TFConnect](https://tfconnect.org), a gaming charity fundraising event supporting SpecialEffect's mission to aid & empower gamers with physical disabilities by helping them play video games!**
 
 <img alt="TF2 Chaos Mod Logo" src="https://user-images.githubusercontent.com/25514044/216839199-de0a68ae-27d4-44c6-b394-54c98c85d701.png" width="540"/>
 
