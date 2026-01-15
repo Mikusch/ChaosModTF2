@@ -21,7 +21,7 @@ public bool MultiEffect_OnStart(ChaosEffect effect)
 		return false;
 
 	g_iActivatedEffects = 0;
-	float flNextEffectDelay = effect.duration / float(g_iNumEffects); // n effects over m seconds
+	float flNextEffectDelay = (effect.duration - 0.1) / float(g_iNumEffects); // n effects over m seconds
 
 	g_hTimer = CreateTimer(flNextEffectDelay, Timer_NextEffect, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 
@@ -30,7 +30,7 @@ public bool MultiEffect_OnStart(ChaosEffect effect)
 
 public void MultiEffect_OnEnd(ChaosEffect effect)
 {
-	delete g_hTimer;
+	g_hTimer = null;
 }
 
 static Action Timer_NextEffect(Handle timer)
