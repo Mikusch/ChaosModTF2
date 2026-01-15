@@ -814,7 +814,7 @@ void DisplayActiveEffects()
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%s %T" : "%s %s", szProgressBar, szName, client);
 				}
 				// One-shot effects stay on screen for some time
-				else if (!effect.duration && GetGameTime() - effect.activate_time <= 75.0)
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= ONESHOT_EFFECT_DISPLAY_TIME)
 				{
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%T" : "%s", szName, client);
 				}

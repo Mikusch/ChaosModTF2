@@ -60,9 +60,12 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	if (effect1.activate_time != effect2.activate_time)
 		return Compare(effect2.activate_time, effect1.activate_time);
 
+	float duration1 = effect1.duration ? effect1.duration : ONESHOT_EFFECT_DISPLAY_TIME;
+	float duration2 = effect2.duration ? effect2.duration : ONESHOT_EFFECT_DISPLAY_TIME;
+
 	// Sort by duration ascending
-	if (effect1.duration != effect2.duration)
-		return Compare(effect1.duration, effect2.duration);
+	if (duration1 != duration2)
+		return Compare(duration1, duration2);
 
 	// Sort alphabetically by ID
 	return strcmp(effect1.id, effect2.id);
@@ -457,10 +460,10 @@ int FindItemOffset(int entity)
 
 bool Chaos_LoadGameData(GameData &gameconf)
 {
-	gameconf = new GameData(GAMEDATA_FILE);
+	gameconf = new GameData("chaos");
 	if (!gameconf)
 	{
-		LogError("Failed to load gamedata file '%s'", GAMEDATA_FILE);
+		LogError("Failed to load gamedata file");
 		return false;
 	}
 	return true;

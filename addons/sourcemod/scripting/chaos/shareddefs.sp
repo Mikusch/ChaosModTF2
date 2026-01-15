@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define GAMEDATA_FILE	"chaos"
+#define ONESHOT_EFFECT_DISPLAY_TIME	75.0
 
 #define MAX_USER_MSG_DATA	255
 
