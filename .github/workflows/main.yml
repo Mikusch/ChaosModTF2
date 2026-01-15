@@ -62,7 +62,7 @@ jobs:
         working-directory: ${{ env.SCRIPTS_PATH }}
 
       - name: Zip output
-        run: zip -qq -r ${{ github.event.repository.name }}.zip addons/sourcemod scripts
+        run: zip -qq -r ${{ github.event.repository.name }}.zip addons materials scripts shaders
 
       - name: Create GitHub release
         if: github.ref_name == 'master'
