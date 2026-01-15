@@ -65,6 +65,7 @@ jobs:
         run: zip -qq -r ${{ github.event.repository.name }}.zip addons materials scripts shaders
 
       - name: Create GitHub release
+        if: github.ref_name == 'master'
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
