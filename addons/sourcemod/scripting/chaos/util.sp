@@ -60,6 +60,10 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	if (effect1.activate_time != effect2.activate_time)
 		return Compare(effect2.activate_time, effect1.activate_time);
 
+	// Sort meta effects first
+	if (effect1.meta != effect2.meta)
+		return Compare(effect2.meta, effect1.meta);
+
 	float duration1 = effect1.duration ? effect1.duration : ONESHOT_EFFECT_DISPLAY_TIME;
 	float duration2 = effect2.duration ? effect2.duration : ONESHOT_EFFECT_DISPLAY_TIME;
 
