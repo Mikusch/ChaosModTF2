@@ -2,7 +2,7 @@
 
 **As seen on [TFConnect 2023](https://tfconnect.org)!**
 
-<img alt="TF2 Chaos Mod Logo" src="https://user-images.githubusercontent.com/25514044/216839199-de0a68ae-27d4-44c6-b394-54c98c85d701.png" width="500"/>
+<img alt="TF2 Chaos Mod Logo" src="https://user-images.githubusercontent.com/25514044/216839199-de0a68ae-27d4-44c6-b394-54c98c85d701.png" width="830"/>
 
 **Welcome to the official home of the TF2 Chaos Mod!**
 
