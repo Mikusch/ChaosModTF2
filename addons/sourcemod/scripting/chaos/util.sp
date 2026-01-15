@@ -60,9 +60,9 @@ int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Ha
 	if (effect1.activate_time != effect2.activate_time)
 		return Compare(effect2.activate_time, effect1.activate_time);
 
-	// Sort by duration descending
+	// Sort by duration ascending
 	if (effect1.duration != effect2.duration)
-		return Compare(effect2.duration, effect1.duration);
+		return Compare(effect1.duration, effect2.duration);
 
 	// Sort alphabetically by ID
 	return strcmp(effect1.id, effect2.id);
