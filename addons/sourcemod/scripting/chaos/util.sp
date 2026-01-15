@@ -51,12 +51,21 @@ int SortFuncADTArray_SortChaosEffectsByCooldown(int index1, int index2, Handle a
 int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Handle array, Handle hndl)
 {
 	ArrayList list = view_as<ArrayList>(array);
-	
+
 	ChaosEffect effect1, effect2;
 	list.GetArray(index1, effect1);
 	list.GetArray(index2, effect2);
-	
-	return (effect1.activate_time == effect2.activate_time) ? strcmp(effect2.id, effect1.id) : Compare(effect1.activate_time, effect2.activate_time);
+
+	// Sort by activation time descending
+	if (effect1.activate_time != effect2.activate_time)
+		return Compare(effect2.activate_time, effect1.activate_time);
+
+	// Sort by duration descending
+	if (effect1.duration != effect2.duration)
+		return Compare(effect2.duration, effect1.duration);
+
+	// Sort alphabetically by ID
+	return strcmp(effect1.id, effect2.id);
 }
 
 bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
