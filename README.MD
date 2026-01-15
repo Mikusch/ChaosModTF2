@@ -2,7 +2,7 @@
 
 <img alt="TF2 Chaos Mod Logo" src="https://user-images.githubusercontent.com/25514044/216839199-de0a68ae-27d4-44c6-b394-54c98c85d701.png" width="540"/>
 
-<sub>Logo created by [RatX](https://steamcommunity.com/id/ratx15)</sub>
+<sub>Logo created by [RatX](https://steamcommunity.com/profiles/76561198058574997)</sub>
 
 ---
 
