@@ -30,7 +30,6 @@ float g_flTimeElapsed;
 float g_flMetaTimeElapsed;
 float g_flLastEffectDisplayTime;
 float g_flTimerBarDisplayTime;
-float g_flOneshotDisplayTime;
 char g_szForceEffectId[64];
 
 ProgressBarConfig g_stEffectBarConfig;
@@ -814,8 +813,8 @@ void DisplayActiveEffects()
 					
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%s %T" : "%s %s", szProgressBar, szName, client);
 				}
-				// One-shot effects stay on screen for a configurable duration
-				else if (!effect.duration && GetGameTime() - effect.activate_time <= g_flOneshotDisplayTime)
+				// One-shot effects stay on screen for roughly two effect activations
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= sm_chaos_effect_interval.FloatValue * 2.0)
 				{
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%T" : "%s", szName, client);
 				}

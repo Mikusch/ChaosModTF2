@@ -235,8 +235,6 @@ void Data_Initialize()
 	KeyValues kv = new KeyValues("visuals");
 	if (kv.ImportFromFile(szFilePath))
 	{
-		g_flOneshotDisplayTime = kv.GetFloat("oneshot_display_time", 60.0);
-
 		if (kv.JumpToKey("timer_bar"))
 		{
 			g_stTimerBarConfig.Parse(kv);
