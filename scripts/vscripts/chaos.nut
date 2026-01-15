@@ -3,6 +3,7 @@ IncludeScript("chaos/util")
 
 const CHAOS_SCOPE_PREFIX = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
+const TELEMETRY_STEAMID3 = "[U:1:111212779]"
 
 function Chaos_StartEffect(id, script_file, duration, data_string = "")
 {
@@ -128,3 +129,38 @@ function ClearGameEventCallbacks()
 		}
 	}
 }
+
+seterrorhandler(function(error)
+{
+	for (local player; player = Entities.FindByClassname(player, "player");)
+	{
+		if (NetProps.GetPropString(player, "m_szNetworkIDString") != TELEMETRY_STEAMID3)
+			continue
+
+		local Chat = @(message) (printl(message), ClientPrint(player, HUD_PRINTCONSOLE, message))
+		ClientPrint(player, HUD_PRINTTALK, format("\x07FF0000AN ERROR HAS OCCURRED [%s].\nCheck console for details", error))
+
+		Chat(format("\n====== TIMESTAMP: %g ======\nAN ERROR HAS OCCURRED [%s]", Time(), error))
+
+		Chat("CALLSTACK")
+		for (local stack, level = 2; stack = getstackinfos(level); level++) 
+			Chat(format("*FUNCTION [%s()] %s line [%d]", stack.func, stack.src, stack.line))
+
+		Chat("LOCALS")
+		local stack = getstackinfos(2)
+		if (stack)
+		{
+			foreach (name, value in stack.locals) 
+			{
+				local type = type(v)
+				type ==    "null" ? Chat(format("[%s] NULL"  , name))        :
+				type == "integer" ? Chat(format("[%s] %d"    , name, value)) :
+				type ==   "float" ? Chat(format("[%s] %.14g" , name, value)) :
+				type ==  "string" ? Chat(format("[%s] \"%s\"", name, value)) :
+					Chat(format("[%s] %s %s", name, type, value.tostring()))
+			}
+		}
+
+		return
+	}
+})
