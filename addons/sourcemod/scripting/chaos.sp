@@ -813,8 +813,8 @@ void DisplayActiveEffects()
 					
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%s %T" : "%s %s", szProgressBar, szName, client);
 				}
-				// One-shot effects stay on screen for roughly two effect activations
-				else if (!effect.duration && GetGameTime() - effect.activate_time <= sm_chaos_effect_interval.FloatValue * 2.0)
+				// One-shot effects stay on screen for some time
+				else if (!effect.duration && GetGameTime() - effect.activate_time <= sm_chaos_effect_interval.FloatValue * 2.5)
 				{
 					Format(szLine, sizeof(szLine), bPhraseExists ? "%T" : "%s", szName, client);
 				}
