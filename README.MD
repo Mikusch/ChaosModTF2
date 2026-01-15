@@ -27,6 +27,6 @@ For more information on effect creation, see [here](https://github.com/Mikusch/C
 
 ## Special Thanks
 
-* [ficool2](https://github.com/ficool2) - For assistance in setting up the VScript API
-* [Red Sun Over Paradise](https://redsun.tf) - For playtesting and giving feedback
-* [TFConnect](https://tfconnect.org) - For featuring Chaos Mod on TFConnect, a gaming charity fundraising event supporting SpecialEffect's mission to aid & empower gamers with physical disabilities by helping them play video games
+* [ficool2](https://github.com/ficool2) – For assistance in setting up the VScript API
+* [Red Sun Over Paradise](https://redsun.tf) – For playtesting and giving feedback
+* [TFConnect](https://tfconnect.org) – For featuring Chaos Mod on TFConnect, a gaming charity fundraising event supporting SpecialEffect's mission to aid & empower gamers with physical disabilities by helping them play video games
