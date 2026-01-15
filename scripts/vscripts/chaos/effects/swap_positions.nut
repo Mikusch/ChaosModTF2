@@ -18,8 +18,6 @@ function ChaosEffect_OnStart()
 	local others = players.slice(0)
 	ShuffleArray(others)
 
-	local teleported_count = 0
-
 	foreach (i, player in players)
 	{
 		for (local j = others.len() - 1; j >= 0; j--)
@@ -38,12 +36,9 @@ function ChaosEffect_OnStart()
 			EntFireByHandle(player, "CallScriptFunction", "TeleportPlayer", -1, player, null)
 
 			others.remove(j)
-			teleported_count++
 			break
 		}
 	}
-
-	return teleported_count >= 2
 }
 
 function TeleportPlayer()
