@@ -27,7 +27,7 @@ public bool ForceMove_OnStart(ChaosEffect effect)
 	if (IsEffectOfClassActive(effect.effect_class))
 		return false;
 
-	g_nDirection = view_as<Dir_t>(effect.data.GetNum("direction", DIR_FWD));
+	g_nDirection = view_as<Dir_t>(effect.data.GetNum("direction", view_as<int>(DIR_FWD)));
 
 	return true;
 }

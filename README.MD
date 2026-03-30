@@ -20,7 +20,7 @@ For more information on effect creation, see [here](https://github.com/Mikusch/C
 * [asherkin/TF2Items](https://github.com/asherkin/TF2Items)
 * [nosoop/SM-TFUtils](https://github.com/nosoop/SM-TFUtils)
 * [nosoop/SM-TFEconData](https://github.com/nosoop/SM-TFEconData)
-* [FortyTwoFortyTwo/VScript](https://github.com/FortyTwoFortyTwo/VScript)
+* [Mikusch/vscript-ext](https://github.com/Mikusch/vscript-ext)
 * [DoctorMcKay/MoreColors](https://github.com/DoctorMcKay/sourcemod-plugins/blob/master/scripting/include/morecolors.inc) (compile only)
 
 ## Special Thanks
