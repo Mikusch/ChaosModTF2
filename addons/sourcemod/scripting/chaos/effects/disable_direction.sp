@@ -5,7 +5,7 @@ static Dir_t g_nDirection;
 
 public bool DisableDirection_OnStart(ChaosEffect effect)
 {
-	g_nDirection = view_as<Dir_t>(GetRandomInt(DIR_FWD, DIR_RIGHT));
+	g_nDirection = view_as<Dir_t>(GetRandomInt(view_as<int>(DIR_FWD), view_as<int>(DIR_RIGHT)));
 	
 	return true;
 }

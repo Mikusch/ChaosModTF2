@@ -1,31 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle g_hSDKCallCanBeSelected;
-static Handle g_hSDKCallGetSubType;
+static ScriptCall g_hCanBeSelected;
+static ScriptCall g_hGetSubType;
 
 public bool RandomizeWeaponOrder_Initialize(ChaosEffect effect)
 {
-	VScriptFunction hScriptGetSubType = VScript_GetClassFunction("CBaseCombatWeapon", "GetSubType");
-	if (hScriptGetSubType)
-		g_hSDKCallGetSubType = hScriptGetSubType.CreateSDKCall();
-
-	if (!g_hSDKCallGetSubType)
-	{
-		LogError("Failed to create SDKCall for CBaseCombatWeapon::GetSubType");
-		return false;
-	}
-
-	VScriptFunction hScriptCanBeSelected = VScript_GetClassFunction("CBaseCombatWeapon", "CanBeSelected");
-	if (hScriptCanBeSelected)
-		g_hSDKCallCanBeSelected = hScriptCanBeSelected.CreateSDKCall();
-
-	if (!g_hSDKCallCanBeSelected)
-	{
-		LogError("Failed to create SDKCall for CBaseCombatWeapon::CanBeSelected");
-		return false;
-	}
-
+	g_hGetSubType = new ScriptCall("GetSubType", ScriptField_Int);
+	g_hCanBeSelected = new ScriptCall("CanBeSelected", ScriptField_Bool);
 	return true;
 }
 
@@ -53,7 +35,10 @@ public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client
 		if (myWeapon == activeWeapon)
 			continue;
 		
-		if (!SDKCall(g_hSDKCallCanBeSelected, myWeapon))
+		if (g_hCanBeSelected.ExecuteInScope(VScript_EntityToHScript(myWeapon, true)) != ScriptStatus_Done)
+			continue;
+
+		if (!g_hCanBeSelected.GetReturnBool())
 			continue;
 		
 		hWeapons.Push(myWeapon);
@@ -63,8 +48,9 @@ public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client
 	{
 		int newWeapon = hWeapons.Get(GetRandomInt(0, hWeapons.Length - 1));
 		weapon = newWeapon;
-		subtype = SDKCall(g_hSDKCallGetSubType, newWeapon);
-		
+		if (g_hGetSubType.ExecuteInScope(VScript_EntityToHScript(newWeapon, true)) == ScriptStatus_Done)
+			subtype = g_hGetSubType.GetReturnInt();
+
 		delete hWeapons;
 		return Plugin_Changed;
 	}

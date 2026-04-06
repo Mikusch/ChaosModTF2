@@ -99,7 +99,7 @@ enum struct ChaosEffect
 		}
 		
 		// Attempt to translate, or return the phrase as-is if it doesn't exist in translations
-		return TranslationPhraseExists(this.name) ? Format(szName, iMaxLength, "%T", this.name, client) : strcopy(szName, iMaxLength, this.name);
+		return TranslationPhraseExists(this.name) ? (Format(szName, iMaxLength, "%T", this.name, client) != 0) : (strcopy(szName, iMaxLength, this.name) != 0);
 	}
 	
 	bool IsCompatibleWithActiveEffects()

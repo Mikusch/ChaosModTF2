@@ -58,11 +58,11 @@ static void SpawnClientsideFlyingBird(float vecSpawn[3])
 	float flGlideTime = GetRandomFloat(0.25, 1.0);
 
 	BfWrite bf = UserMessageToBfWrite(StartMessageAll("SpawnFlyingBird"));
-		bf.WriteVecCoord(vecSpawn);
-		bf.WriteFloat(flyAngle);
-		bf.WriteFloat(flyAngleRate);
-		bf.WriteFloat(accelZ);
-		bf.WriteFloat(speed);
-		bf.WriteFloat(flGlideTime);
+	bf.WriteVecCoord(vecSpawn);
+	bf.WriteFloat(flyAngle);
+	bf.WriteFloat(flyAngleRate);
+	bf.WriteFloat(accelZ);
+	bf.WriteFloat(speed);
+	bf.WriteFloat(flGlideTime);
 	EndMessage();
 }
