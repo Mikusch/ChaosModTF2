@@ -35,7 +35,9 @@ public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client
 		if (myWeapon == activeWeapon)
 			continue;
 		
-		g_hCanBeSelected.ExecuteInScope(VScript_GetEntityScriptScope(myWeapon));
+		if (g_hCanBeSelected.ExecuteInScope(VScript_EntityToHScript(myWeapon, true)) != ScriptStatus_Done)
+			continue;
+
 		if (!g_hCanBeSelected.GetReturnBool())
 			continue;
 		
@@ -46,9 +48,9 @@ public Action RandomizeWeaponOrder_OnPlayerRunCmd(ChaosEffect effect, int client
 	{
 		int newWeapon = hWeapons.Get(GetRandomInt(0, hWeapons.Length - 1));
 		weapon = newWeapon;
-		g_hGetSubType.ExecuteInScope(VScript_GetEntityScriptScope(newWeapon));
-		subtype = g_hGetSubType.GetReturnInt();
-		
+		if (g_hGetSubType.ExecuteInScope(VScript_EntityToHScript(newWeapon, true)) == ScriptStatus_Done)
+			subtype = g_hGetSubType.GetReturnInt();
+
 		delete hWeapons;
 		return Plugin_Changed;
 	}

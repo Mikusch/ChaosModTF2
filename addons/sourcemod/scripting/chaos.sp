@@ -135,24 +135,13 @@ public void OnPluginStart()
 	g_hUpdateEffect = new ScriptCall("Chaos_UpdateEffect", ScriptField_Variant, ScriptField_String);
 	g_hStartEffect = new ScriptCall("Chaos_StartEffect", ScriptField_Bool, ScriptField_String, ScriptField_String, ScriptField_Float, ScriptField_String);
 	g_hEndEffect = new ScriptCall("Chaos_EndEffect", ScriptField_Void, ScriptField_String);
-	
-	if (VScript_IsVMInitialized())
-		VScript_OnScriptVMInitialized();
+
+	Data_InitializeEffects();
 }
 
 public void OnPluginEnd()
 {
 	ExpireAllActiveEffects(true);
-}
-
-public void VScript_OnScriptVMInitialized()
-{
-	static bool bInitialized = false;
-
-	if (bInitialized)
-		return;
-
-	bInitialized = Data_InitializeEffects();
 }
 
 public void OnMapStart()
@@ -626,9 +615,7 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false)
 	
 	if (effect.script_file[0])
 	{
-		g_hStartEffect.Execute(effect.id, effect.script_file, effect.duration, effect.data_string);
-		bool bReturn = g_hStartEffect.GetReturnBool();
-
+		bool bReturn = g_hStartEffect.Execute(effect.id, effect.script_file, effect.duration, effect.data_string) == ScriptStatus_Done && g_hStartEffect.GetReturnBool();
 		if (!bReturn)
 		{
 			LogMessage("Skipped '%s' because the 'OnStart' script function returned false", effect.id);
