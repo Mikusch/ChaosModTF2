@@ -26,7 +26,7 @@ function ChaosEffect_Update()
 			delete TrackedProjectiles[projectile]
 	}
 
-	return -1
+	return CHAOS_UPDATE_EVERY_FRAME
 }
 
 function ChaosEffect_OnEnd()
@@ -93,18 +93,7 @@ function ProjectileThink()
 		local deflected = NetProps.GetPropInt(self, "m_iDeflected")
 		local speed_new = speed_base + deflected * speed_base * 1.1
 
-		local new_velocity = closest_dir * speed_new
-
-		if (self.GetMoveType() == MOVETYPE_VPHYSICS)
-		{
-			self.SetPhysVelocity(new_velocity)
-		}
-		else
-		{
-			local new_angles = VectorAngles(closest_dir)
-
-			self.Teleport(false, new_velocity, true, new_angles, true, new_velocity)
-		}
+		SetProjectileVelocity(self, closest_dir * speed_new)
 	}
 
 	return THINK_INTERVAL

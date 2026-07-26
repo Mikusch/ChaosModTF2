@@ -3,11 +3,12 @@
 
 public bool SpawnBall_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
+
 	char szModel[PLATFORM_MAX_PATH];
-	effect.data.GetString("model", szModel, sizeof(szModel));
+	kv.GetString("model", szModel, sizeof(szModel));
 	
 	int client = GetRandomPlayer();
 	if (client == -1)

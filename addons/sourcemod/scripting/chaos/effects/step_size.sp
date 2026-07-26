@@ -2,34 +2,36 @@
 #pragma newdecls required
 
 static ConVar sv_stepsize;
-static float g_flStepSize;
 
 public bool StepSize_Initialize(ChaosEffect effect)
 {
 	sv_stepsize = FindConVar("sv_stepsize");
-	
+
 	return true;
+}
+
+public void StepSize_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("player:step_size");
 }
 
 public bool StepSize_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	// Only allow one active at a time
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-	
-	g_flStepSize = effect.data.GetFloat("stepsize");
-	
+
+	float flStepSize = kv.GetFloat("stepsize");
+	effect.state.SetValue("stepsize", flStepSize);
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
-		SetEntPropFloat(client, Prop_Send, "m_flStepSize", g_flStepSize);
+
+		SetEntPropFloat(client, Prop_Send, "m_flStepSize", flStepSize);
 	}
-	
+
 	return true;
 }
 
@@ -39,12 +41,16 @@ public void StepSize_OnEnd(ChaosEffect effect)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		SetEntPropFloat(client, Prop_Send, "m_flStepSize", sv_stepsize.FloatValue);
 	}
 }
 
 public void StepSize_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	SetEntPropFloat(client, Prop_Send, "m_flStepSize", g_flStepSize);
+	float flStepSize;
+	if (!effect.state.GetValue("stepsize", flStepSize))
+		return;
+
+	SetEntPropFloat(client, Prop_Send, "m_flStepSize", flStepSize);
 }

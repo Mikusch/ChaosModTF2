@@ -1,42 +1,33 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define WATERMARK_DISPLAY_TIME	5.0
+
 static Handle g_hHudSync;
 static ConVar hostname;
-static float g_flNextDisplayTime;
 
 public bool Watermark_Initialize(ChaosEffect effect)
 {
 	g_hHudSync = CreateHudSynchronizer();
 	hostname = FindConVar("hostname");
-	
+
 	return true;
 }
 
-public bool Watermark_OnStart(ChaosEffect effect)
+public float Watermark_Update(ChaosEffect effect)
 {
-	g_flNextDisplayTime = GetGameTime();
-	
-	return true;
-}
+	char szHostname[512];
+	hostname.GetString(szHostname, sizeof(szHostname));
 
-public void Watermark_Update(ChaosEffect effect)
-{
-	if (g_flNextDisplayTime <= GetGameTime())
+	SetHudTextParams(GetRandomFloat(), GetRandomFloat(), WATERMARK_DISPLAY_TIME, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
+
+	for (int client = 1; client <= MaxClients; client++)
 	{
-		g_flNextDisplayTime = GetGameTime() + 5.0;
-		
-		char szHostname[512];
-		hostname.GetString(szHostname, sizeof(szHostname));
-		
-		SetHudTextParams(GetRandomFloat(), GetRandomFloat(), 5.0, GetRandomInt(0, 255), GetRandomInt(0, 255), GetRandomInt(0, 255), 255);
-		
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (!IsClientInGame(client))
-				continue;
-			
-			ShowSyncHudText(client, g_hHudSync, szHostname);
-		}
+		if (!IsClientInGame(client))
+			continue;
+
+		ShowSyncHudText(client, g_hHudSync, "%s", szHostname);
 	}
+
+	return WATERMARK_DISPLAY_TIME;
 }

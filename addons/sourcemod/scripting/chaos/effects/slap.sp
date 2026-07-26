@@ -1,30 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float g_flNextSlapTime;
-
-public bool Slap_OnStart(ChaosEffect effect)
+public float Slap_Update(ChaosEffect effect)
 {
-	g_flNextSlapTime = GetGameTime();
-	
-	return true;
-}
-
-public void Slap_Update(ChaosEffect effect)
-{
-	if (g_flNextSlapTime <= GetGameTime())
+	for (int client = 1; client <= MaxClients; client++)
 	{
-		g_flNextSlapTime = GetGameTime() + GetRandomFloat(1.0, 2.0);
-		
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (!IsClientInGame(client))
-				continue;
-			
-			if (!IsPlayerAlive(client))
-				continue;
-			
-			SlapPlayer(client, 0);
-		}
+		if (!IsClientInGame(client))
+			continue;
+
+		if (!IsPlayerAlive(client))
+			continue;
+
+		SlapPlayer(client, 0);
 	}
+
+	return GetRandomFloat(1.0, 2.0);
 }

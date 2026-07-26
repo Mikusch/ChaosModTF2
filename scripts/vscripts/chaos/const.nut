@@ -15,6 +15,8 @@ CONST.setdelegate({ _newslot = @(k, v) compilestring("const " + k + "=" + (typeo
 
 const FLT_MAX = 0x7F7FFFFF
 
+const CHAOS_UPDATE_EVERY_FRAME = -1.0
+
 const MAX_WEAPONS = 48
 
 const TF_DEATHFLAG_DEADRINGER = 32

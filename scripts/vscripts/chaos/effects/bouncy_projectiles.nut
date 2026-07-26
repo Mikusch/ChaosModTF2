@@ -5,8 +5,7 @@ function ChaosEffect_Update()
 	local projectile
 	while (projectile = Entities.FindByClassname(projectile, "tf_projectile_*"))
 	{
-		local velocity = projectile.GetAbsVelocity()
-		local direction = velocity
+		local direction = GetProjectileVelocity(projectile)
 		local speed = direction.Norm()
 
 		local trace =
@@ -20,10 +19,9 @@ function ChaosEffect_Update()
 		if (TraceLineEx(trace) && trace.hit)
 		{
 			local new_direction = direction - (trace.plane_normal * direction.Dot(trace.plane_normal) * 2.0)
-			projectile.SetAbsVelocity(new_direction * speed)
-			projectile.SetForwardVector(new_direction)
+			SetProjectileVelocity(projectile, new_direction * speed)
 		}
 	}
 
-	return -1
+	return CHAOS_UPDATE_EVERY_FRAME
 }

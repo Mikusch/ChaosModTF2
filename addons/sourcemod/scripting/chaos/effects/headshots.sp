@@ -6,9 +6,12 @@ static ArrayList g_hDynamicHookIds;
 
 public bool Headshots_Initialize(ChaosEffect effect)
 {
+	if (!SDKCalls_CanGetWeaponID())
+		return false;
+
 	g_hDynamicHookIds = new ArrayList();
 
-	g_hDHookOnWeaponSound = Chaos_CreateDynamicHook("CBaseCombatWeapon::WeaponSound");
+	g_hDHookOnWeaponSound = DHooks_CreateVirtual("CBaseCombatWeapon::WeaponSound");
 	return g_hDHookOnWeaponSound != null;
 }
 
@@ -78,7 +81,7 @@ static void OnWeaponEquipPost(int client, int weapon)
 static MRESReturn OnWeaponSound(int weapon, DHookParam hParams)
 {
 	// Miniguns and Flame Throwers do not support burst sounds
-	int weaponID = TF2Util_GetWeaponID(weapon);
+	int weaponID = GetWeaponID(weapon);
 	return weaponID == TF_WEAPON_MINIGUN || weaponID == TF_WEAPON_FLAMETHROWER ? MRES_Supercede : MRES_Ignored;
 }
 

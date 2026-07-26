@@ -1,42 +1,26 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle g_hSDKCallPostInventoryApplication;
-
 public bool GiveItem_Initialize(ChaosEffect effect)
 {
-	GameData gameconf;
-	if (!Chaos_LoadGameData(gameconf))
-		return false;
-
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(gameconf, SDKConf_Signature, "CTFPlayer::PostInventoryApplication");
-	g_hSDKCallPostInventoryApplication = EndPrepSDKCall();
-	delete gameconf;
-
-	if (!g_hSDKCallPostInventoryApplication)
-	{
-		LogError("Failed to create SDKCall for CTFPlayer::PostInventoryApplication");
-		return false;
-	}
-
-	return true;
+	return SDKCalls_CanEquipWearable() && SDKCalls_CanPostInventoryApplication();
 }
 
 public bool GiveItem_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		if (!IsPlayerAlive(client))
 			continue;
-		
-		AddItemsFromData(client, effect.data);
+
+		AddItemsFromData(client, kv);
 	}
 	
 	return true;
@@ -83,25 +67,25 @@ static int AddItem(int client, KeyValues kv)
 		if (IsWearableSlot(iSlot))
 		{
 			// Remove any wearable that has a conflicting equip_region
-			for (int wbl = 0; wbl < TF2Util_GetPlayerWearableCount(client); wbl++)
+			ArrayList hWearables = GetWearables(client);
+			for (int wbl = 0; wbl < hWearables.Length; wbl++)
 			{
-				int wearable = TF2Util_GetPlayerWearable(client, wbl);
-				if (wearable == -1)
-					continue;
-				
+				int wearable = hWearables.Get(wbl);
+
 				if (!GetEntProp(wearable, Prop_Send, "m_bInitialized"))
 					continue;
-				
+
 				int nWearableRegionMask = TF2Econ_GetItemEquipRegionMask(GetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex"));
 				if (nWearableRegionMask & nNewItemRegionMask)
 				{
 					TF2_RemoveWearable(client, wearable);
 				}
 			}
+			delete hWearables;
 		}
 		else
 		{
-			int entity = TF2Util_GetPlayerLoadoutEntity(client, iSlot);
+			int entity = GetPlayerLoadoutEntity(client, iSlot);
 			if (entity != -1)
 			{
 				RemovePlayerItem(client, entity);
@@ -123,20 +107,20 @@ static int AddItem(int client, KeyValues kv)
 		int newItem = TF2Items_GiveNamedItem(client, hItem);
 		if (newItem != -1)
 		{
-			if (TF2Util_IsEntityWearable(newItem))
+			if (IsEntityWearable(newItem))
 			{
-				TF2Util_EquipPlayerWearable(client, newItem);
+				EquipPlayerWearable(client, newItem);
 			}
-			else if (TF2Util_IsEntityWeapon(newItem))
+			else if (IsEntityWeapon(newItem))
 			{
 				EquipPlayerWeapon(client, newItem);
-				TF2Util_SetPlayerActiveWeapon(client, newItem);
+				SetPlayerActiveWeapon(client, newItem);
 			}
 
 			SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
 		}
 
-		SDKCall(g_hSDKCallPostInventoryApplication, client);
+		PostInventoryApplication(client);
 
 		delete hItem;
 		return newItem;

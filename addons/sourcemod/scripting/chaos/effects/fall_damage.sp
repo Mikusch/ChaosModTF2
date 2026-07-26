@@ -3,16 +3,18 @@
 
 static float g_flMultiplier;
 
+public void FallDamage_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("player:fall_damage");
+}
+
 public bool FallDamage_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	// Only allow one active at a time
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-	
-	g_flMultiplier = effect.data.GetFloat("multiplier");
+
+	g_flMultiplier = kv.GetFloat("multiplier");
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{

@@ -5,7 +5,7 @@ static DynamicDetour g_hDetourIsHolidayActive;
 
 public bool EnableAllHolidays_Initialize(ChaosEffect effect)
 {
-	g_hDetourIsHolidayActive = Chaos_CreateDetour("TF_IsHolidayActive");
+	g_hDetourIsHolidayActive = DHooks_CreateDetour("TF_IsHolidayActive");
 	return g_hDetourIsHolidayActive != null;
 }
 

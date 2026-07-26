@@ -6,20 +6,22 @@ static int g_nMaxHealth;
 
 public bool SetMaxHealth_Initialize(ChaosEffect effect)
 {
-	g_hDetourGetMaxHealthForBuffing = Chaos_CreateDetour("CTFPlayer::GetMaxHealthForBuffing");
+	g_hDetourGetMaxHealthForBuffing = DHooks_CreateDetour("CTFPlayer::GetMaxHealthForBuffing");
 	return g_hDetourGetMaxHealthForBuffing != null;
+}
+
+public void SetMaxHealth_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("player:max_health");
 }
 
 public bool SetMaxHealth_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	// Only allow one active at a time
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-	
-	g_nMaxHealth = effect.data.GetNum("health");
+
+	g_nMaxHealth = kv.GetNum("health");
 	
 	if (!g_hDetourGetMaxHealthForBuffing.Enable(Hook_Pre, OnGetMaxHealthForBuffing))
 		return false;

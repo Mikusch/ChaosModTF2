@@ -44,7 +44,7 @@ static void OnGroundEntChangedPost(int client)
 		return;
 
 	bool bOnGround = GetEntPropEnt(client, Prop_Send, "m_hGroundEntity") != -1;
-	float flDuration = effect.activate_time + effect.current_duration - GetGameTime();
+	float flDuration = effect.end_time - GetGameTime();
 
 	UTIL_ScreenShake(client, SHAKE_STOP, EARTHQUAKE_AMPLITUDE, EARTHQUAKE_FREQUENCY, 0.0);
 	UTIL_ScreenShake(client, SHAKE_START, EARTHQUAKE_AMPLITUDE, EARTHQUAKE_FREQUENCY, bOnGround ? 1.0 : flDuration);

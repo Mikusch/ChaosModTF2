@@ -58,7 +58,7 @@ function ChaosEffect_Update()
 		}
 	}
 
-	return -1
+	return CHAOS_UPDATE_EVERY_FRAME
 }
 
 function CanParryProjectile(player, projectile)
@@ -100,21 +100,8 @@ function ParryProjectile(player, projectile)
 {
 	local eye_fwr = player.EyeAngles().Forward()
 	local player_team = player.GetTeam()
-	// Projectiles that use VPhysics have to be handled differently
-	// (pipes, stickies, jarate, mad milk, cleaver, scout balls, gas passer)
-	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
-	{
-		local phys_velocity = projectile.GetPhysVelocity()
-		local speed = phys_velocity.Norm() * SPEED_MULTIPLIER
-		projectile.SetPhysVelocity(eye_fwr * speed)
-	}
-	else
-	{
-		local velocity = projectile.GetAbsVelocity()
-		local speed = velocity.Norm() * SPEED_MULTIPLIER
-		projectile.SetAbsVelocity(eye_fwr * speed)
-		projectile.SetForwardVector(eye_fwr)
-	}
+	local speed = GetProjectileVelocity(projectile).Norm() * SPEED_MULTIPLIER
+	SetProjectileVelocity(projectile, eye_fwr * speed)
 
 	NetProps.SetPropEntity(projectile, "m_hOwnerEntity", player)
 	NetProps.SetPropEntity(projectile, "m_hThrower", player)

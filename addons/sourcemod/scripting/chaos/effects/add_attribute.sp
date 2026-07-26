@@ -1,35 +1,44 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void AddAttribute_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("attributes", false))
+		return;
+
+	if (kv.GotoFirstSubKey(false))
+	{
+		do
+		{
+			char szAttrib[64];
+			if (!kv.GetSectionName(szAttrib, sizeof(szAttrib)))
+				continue;
+
+			char szClaim[EFFECT_MAX_CLAIM_LENGTH];
+			FormatEx(szClaim, sizeof(szClaim), "attribute:%s", szAttrib);
+
+			claims.PushString(szClaim);
+		}
+		while (kv.GotoNextKey(false));
+	}
+
+	kv.Rewind();
+}
+
 public bool AddAttribute_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	if (!effect.OpenData())
 		return false;
 
-	// Don't set the same attribute twice
-	if (IsAlreadyActive(effect))
-		return false;
-
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-
-		ApplyAttributesToPlayer(effect, client);
-	}
+	ApplyAttributesToAll(effect);
 
 	return true;
 }
 
 public void AddAttribute_OnEnd(ChaosEffect effect)
 {
-	for (int client = 1; client <= MaxClients; client++)
-	{
-		if (!IsClientInGame(client))
-			continue;
-
-		ApplyAttributesToPlayer(effect, client, true);
-	}
+	ApplyAttributesToAll(effect, true);
 }
 
 public void AddAttribute_OnPlayerSpawnPost(ChaosEffect effect, int client)
@@ -42,39 +51,41 @@ public void AddAttribute_OnPostInventoryApplication(ChaosEffect effect, int clie
 	ApplyAttributesToPlayer(effect, client);
 }
 
-static bool IsAlreadyActive(ChaosEffect effect)
+static void ApplyAttributesToAll(ChaosEffect effect, bool bRemove = false)
 {
-	KeyValues kv = effect.data;
+	ArrayList hWearables = AppliesToItems(effect) ? GetWearables() : null;
 
-	if (!kv.JumpToKey("attributes", false))
-		return false;
-
-	bool bFoundKey = false;
-	if (kv.GotoFirstSubKey(false))
+	for (int client = 1; client <= MaxClients; client++)
 	{
-		do
-		{
-			char szAttrib[64];
-			if (kv.GetSectionName(szAttrib, sizeof(szAttrib)) && FindKeyInActiveEffects(effect.effect_class, szAttrib))
-			{
-				bFoundKey = true;
-				break;
-			}
-		}
-		while (kv.GotoNextKey(false));
-		kv.GoBack();
-	}
-	kv.GoBack();
+		if (!IsClientInGame(client))
+			continue;
 
-	return bFoundKey;
+		ApplyAttributes(effect, client, hWearables, bRemove);
+	}
+
+	delete hWearables;
 }
 
 static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove = false)
 {
-	KeyValues kv = effect.data;
-	bool bApplyToItems = kv.GetNum("apply_to_items") != 0;
+	ArrayList hWearables = AppliesToItems(effect) ? GetWearables(client) : null;
 
-	if (!kv.JumpToKey("attributes", false))
+	ApplyAttributes(effect, client, hWearables, bRemove);
+
+	delete hWearables;
+}
+
+static bool AppliesToItems(ChaosEffect effect)
+{
+	KeyValues kv = effect.OpenData();
+
+	return kv && kv.GetNum("apply_to_items") != 0;
+}
+
+static void ApplyAttributes(ChaosEffect effect, int client, ArrayList hWearables, bool bRemove)
+{
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("attributes", false))
 		return;
 
 	if (kv.GotoFirstSubKey(false))
@@ -83,51 +94,53 @@ static void ApplyAttributesToPlayer(ChaosEffect effect, int client, bool bRemove
 		{
 			char szAttrib[64];
 			if (kv.GetSectionName(szAttrib, sizeof(szAttrib)))
-				ApplyAttribute(client, szAttrib, kv.GetFloat(NULL_STRING), bApplyToItems, bRemove);
+				ApplyAttribute(client, hWearables, szAttrib, kv.GetFloat(NULL_STRING), bRemove);
 		}
 		while (kv.GotoNextKey(false));
-		kv.GoBack();
 	}
-	kv.GoBack();
 
-	TF2Util_UpdatePlayerSpeed(client);
+	kv.Rewind();
+
+	// Cheapest way to force a speed recalculation without gamedata
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, GetGameFrameTime());
 }
 
-static void ApplyAttribute(int client, const char[] szAttrib, float flValue, bool bApplyToItems, bool bRemove)
+static void ApplyAttribute(int client, ArrayList hWearables, const char[] szAttrib, float flValue, bool bRemove)
 {
-	if (bApplyToItems)
-	{
-		int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
-		for (int i = 0; i < nMaxWeapons; i++)
-		{
-			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-			if (weapon == -1)
-				continue;
-
-			if (bRemove)
-				TF2Attrib_RemoveByName(weapon, szAttrib);
-			else
-				TF2Attrib_SetByName(weapon, szAttrib, flValue);
-		}
-
-		int nMaxWearables = TF2Util_GetPlayerWearableCount(client);
-		for (int i = 0; i < nMaxWearables; i++)
-		{
-			int wearable = TF2Util_GetPlayerWearable(client, i);
-			if (wearable == -1)
-				continue;
-
-			if (bRemove)
-				TF2Attrib_RemoveByName(wearable, szAttrib);
-			else
-				TF2Attrib_SetByName(wearable, szAttrib, flValue);
-		}
-	}
-	else
+	if (!hWearables)
 	{
 		if (bRemove)
 			TF2Attrib_RemoveCustomPlayerAttribute(client, szAttrib);
 		else
 			TF2Attrib_AddCustomPlayerAttribute(client, szAttrib, flValue);
+
+		return;
+	}
+
+	int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
+	for (int i = 0; i < nMaxWeapons; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if (weapon == -1)
+			continue;
+
+		if (bRemove)
+			TF2Attrib_RemoveByName(weapon, szAttrib);
+		else
+			TF2Attrib_SetByName(weapon, szAttrib, flValue);
+	}
+
+	int nLength = hWearables.Length;
+	for (int i = 0; i < nLength; i++)
+	{
+		int wearable = hWearables.Get(i);
+
+		if (GetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity") != client)
+			continue;
+
+		if (bRemove)
+			TF2Attrib_RemoveByName(wearable, szAttrib);
+		else
+			TF2Attrib_SetByName(wearable, szAttrib, flValue);
 	}
 }

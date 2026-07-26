@@ -70,14 +70,6 @@ public bool MannInTheMachine_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void MannInTheMachine_OnPlayerSpawn(ChaosEffect effect, int client)
-{
-	if (!IsValidRobotPlayer(client))
-		return;
-	
-	SetRobotModel(client);
-}
-
 public void MannInTheMachine_OnEnd(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -91,6 +83,14 @@ public void MannInTheMachine_OnEnd(ChaosEffect effect)
 	
 	RemoveNormalSoundHook(OnNormalSoundPlayed);
 	UnhookEvent("player_death", OnPlayerDeath);
+}
+
+public void MannInTheMachine_OnPlayerSpawn(ChaosEffect effect, int client)
+{
+	if (!IsValidRobotPlayer(client))
+		return;
+	
+	SetRobotModel(client);
 }
 
 static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)

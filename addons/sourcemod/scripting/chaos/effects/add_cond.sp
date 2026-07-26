@@ -1,6 +1,27 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void AddCond_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("conditions", false))
+		return;
+
+	if (kv.GotoFirstSubKey(false))
+	{
+		do
+		{
+			char szClaim[EFFECT_MAX_CLAIM_LENGTH];
+			FormatEx(szClaim, sizeof(szClaim), "cond:%d", kv.GetNum(NULL_STRING));
+
+			claims.PushString(szClaim);
+		}
+		while (kv.GotoNextKey(false));
+	}
+
+	kv.Rewind();
+}
+
 public void AddCond_OnMapStart(ChaosEffect effect)
 {
 	// Halloween Ghost
@@ -27,38 +48,15 @@ public void AddCond_OnMapStart(ChaosEffect effect)
 
 public bool AddCond_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("conditions"))
 		return false;
 
-	if (!effect.data.JumpToKey("conditions"))
-		return false;
-
-	// Check for duplicate conditions in active effects
-	if (effect.data.GotoFirstSubKey(false))
+	if (kv.GotoFirstSubKey(false))
 	{
 		do
 		{
-			char szCondition[12];
-			effect.data.GetString(NULL_STRING, szCondition, sizeof(szCondition));
-
-			if (FindKeyValuePairInActiveEffects(effect.effect_class, "conditions", szCondition))
-			{
-				effect.data.GoBack(); // Go back to "conditions"
-				effect.data.GoBack(); // Go back to root
-				return false;
-			}
-		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
-	}
-
-	// Apply all conditions
-	if (effect.data.GotoFirstSubKey(false))
-	{
-		do
-		{
-			TFCond nCondition = view_as<TFCond>(effect.data.GetNum(NULL_STRING));
+			TFCond nCondition = view_as<TFCond>(kv.GetNum(NULL_STRING));
 
 			for (int client = 1; client <= MaxClients; client++)
 			{
@@ -68,25 +66,24 @@ public bool AddCond_OnStart(ChaosEffect effect)
 				TF2_AddCondition(client, nCondition);
 			}
 		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
+		while (kv.GotoNextKey(false));
 	}
 
-	effect.data.GoBack();
+	kv.Rewind();
 	return true;
 }
 
 public void AddCond_OnEnd(ChaosEffect effect)
 {
-	if (!effect.data.JumpToKey("conditions"))
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("conditions"))
 		return;
 
-	if (effect.data.GotoFirstSubKey(false))
+	if (kv.GotoFirstSubKey(false))
 	{
 		do
 		{
-			TFCond nCondition = view_as<TFCond>(effect.data.GetNum(NULL_STRING));
+			TFCond nCondition = view_as<TFCond>(kv.GetNum(NULL_STRING));
 
 			for (int client = 1; client <= MaxClients; client++)
 			{
@@ -96,52 +93,48 @@ public void AddCond_OnEnd(ChaosEffect effect)
 				TF2_RemoveCondition(client, nCondition);
 			}
 		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
+		while (kv.GotoNextKey(false));
 	}
 
-	effect.data.GoBack();
+	kv.Rewind();
 }
 
 public void AddCond_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	if (!effect.data.JumpToKey("conditions"))
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("conditions"))
 		return;
 
-	if (effect.data.GotoFirstSubKey(false))
+	if (kv.GotoFirstSubKey(false))
 	{
 		do
 		{
-			TF2_AddCondition(client, view_as<TFCond>(effect.data.GetNum(NULL_STRING)));
+			TF2_AddCondition(client, view_as<TFCond>(kv.GetNum(NULL_STRING)));
 		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
+		while (kv.GotoNextKey(false));
 	}
 
-	effect.data.GoBack();
+	kv.Rewind();
 }
 
 public void AddCond_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
 {
-	if (!effect.data.JumpToKey("conditions"))
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("conditions"))
 		return;
 
-	if (effect.data.GotoFirstSubKey(false))
+	if (kv.GotoFirstSubKey(false))
 	{
 		do
 		{
-			if (view_as<TFCond>(effect.data.GetNum(NULL_STRING)) == condition)
+			if (view_as<TFCond>(kv.GetNum(NULL_STRING)) == condition)
 			{
 				TF2_AddCondition(client, condition);
 				break;
 			}
 		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
+		while (kv.GotoNextKey(false));
 	}
 
-	effect.data.GoBack();
+	kv.Rewind();
 }

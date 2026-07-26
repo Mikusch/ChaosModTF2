@@ -11,30 +11,6 @@ function GetEnemyTeam(team)
 	}
 }
 
-function VectorAngles(forward)
-{
-	local yaw, pitch
-	if (forward.y == 0.0 && forward.x == 0.0)
-	{
-		yaw = 0.0
-		if (forward.z > 0.0)
-			pitch = 270.0
-		else
-			pitch = 90.0
-	}
-	else
-	{
-		yaw = (atan2(forward.y, forward.x) * 180.0 / Constants.Math.Pi)
-		if (yaw < 0.0)
-			yaw += 360.0
-		pitch = (atan2(-forward.z, forward.Length2D()) * 180.0 / Constants.Math.Pi)
-		if (pitch < 0.0)
-			pitch += 360.0
-	}
-
-	return QAngle(pitch, yaw, 0.0)
-}
-
 function ShuffleArray(arr)
 {
 	local i = arr.len()
@@ -92,6 +68,28 @@ function IsPlayerStuck(player)
 function ForcePlayerSuicide(player)
 {
 	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
+}
+
+function GetProjectileVelocity(projectile)
+{
+	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
+		return projectile.GetPhysVelocity()
+
+	return projectile.GetAbsVelocity()
+}
+
+function SetProjectileVelocity(projectile, velocity)
+{
+	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
+	{
+		projectile.SetPhysVelocity(velocity)
+		return
+	}
+
+	projectile.SetAbsVelocity(velocity)
+
+	if (velocity.Length() > 0.0)
+		projectile.SetForwardVector(velocity)
 }
 
 function LerpVector(a, b, t)

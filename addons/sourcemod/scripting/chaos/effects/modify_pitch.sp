@@ -1,20 +1,23 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void ModifyPitch_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("player:sound");
+}
+
 static int g_nPitch;
 
 public bool ModifyPitch_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-	
+
 	AddNormalSoundHook(OnNormalSoundPlayed);
 	AddAmbientSoundHook(OnAmbientSoundPlayed);
-	
-	g_nPitch = effect.data.GetNum("pitch");
+
+	g_nPitch = kv.GetNum("pitch");
 	
 	return true;
 }

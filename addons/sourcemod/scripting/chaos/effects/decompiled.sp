@@ -117,45 +117,13 @@ public void Decompiled_OnMapStart(ChaosEffect effect)
 	for (int i = 0; i < EntityLump.Length(); i++)
 	{
 		EntityLumpEntry entry = EntityLump.Get(i);
-		
-		int index = entry.FindKey("classname");
-		if (index == -1)
-			continue;
-		
-		char classname[64];
-		entry.Get(index, _, _, classname, sizeof(classname));
-		
-		if (!StrEqual(classname, "light") && !StrEqual(classname, "light_spot") && !StrEqual(classname, "light_environment"))
-			continue;
-		
+
 		LightData data;
-		
-		strcopy(data.classname, sizeof(data.classname), classname);
-		
-		char value[64];
-		if (entry.GetNextKey("_light", value, sizeof(value)) != -1)
+		if (ParseLightEntry(entry, data))
 		{
-			StringToColor(value, data.color);
+			g_hLightData.PushArray(data);
 		}
-		
-		if (entry.GetNextKey("origin", value, sizeof(value)) != -1)
-		{
-			StringToVector(value, data.origin);
-		}
-		
-		if (entry.GetNextKey("angles", value, sizeof(value)) != -1)
-		{
-			StringToVector(value, data.angles);
-			
-			if (entry.GetNextKey("pitch", value, sizeof(value)) != -1)
-			{
-				float angle = StringToFloat(value);
-				data.angles[0] = -angle;
-			}
-		}
-		
-		g_hLightData.PushArray(data);
-		
+
 		delete entry;
 	}
 }
@@ -168,6 +136,38 @@ public bool Decompiled_OnStart(ChaosEffect effect)
 	Decompiled_OnRoundStart(effect);
 	
 	return true;
+}
+
+public void Decompiled_OnEnd(ChaosEffect effect)
+{
+	showtriggers.BoolValue = false;
+	ShowTriggers_Toggle();
+	
+	for (int i = 0; i < g_hCreatedVisuals.Length; i++)
+	{
+		int visual = g_hCreatedVisuals.Get(i, VisualData::visual);
+		
+		if (!IsValidEntity(visual))
+			continue;
+		
+		RemoveEntity(visual);
+	}
+	
+	g_hCreatedVisuals.Clear();
+}
+
+public void Decompiled_OnRoundStart(ChaosEffect effect)
+{
+	SpawnLightsFromData();
+	
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
+	{
+		if (g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::entity) == -1)
+		{
+			OnEntitySpawned(entity);
+		}
+	}
 }
 
 public void Decompiled_OnEntityCreated(ChaosEffect effect, int entity, const char[] classname)
@@ -194,38 +194,6 @@ public void Decompiled_OnEntityDestroyed(ChaosEffect effect, int entity)
 			RemoveEntity(visual);
 		}
 	}
-}
-
-public void Decompiled_OnRoundStart(ChaosEffect effect)
-{
-	SpawnLightsFromData();
-	
-	int entity = -1;
-	while ((entity = FindEntityByClassname(entity, "*")) != -1)
-	{
-		if (g_hCreatedVisuals.FindValue(EntIndexToEntRef(EntRefToEntIndex(entity)), VisualData::entity) == -1)
-		{
-			OnEntitySpawned(entity);
-		}
-	}
-}
-
-public void Decompiled_OnEnd(ChaosEffect effect)
-{
-	showtriggers.BoolValue = false;
-	ShowTriggers_Toggle();
-	
-	for (int i = 0; i < g_hCreatedVisuals.Length; i++)
-	{
-		int visual = g_hCreatedVisuals.Get(i, VisualData::visual);
-		
-		if (!IsValidEntity(visual))
-			continue;
-		
-		RemoveEntity(visual);
-	}
-	
-	g_hCreatedVisuals.Clear();
 }
 
 static void OnEntitySpawned(int entity)
@@ -380,4 +348,43 @@ static void ShowTriggers_Toggle()
 	ServerCommand("showtriggers_toggle");
 	ServerExecute();
 	SetCommandFlags("showtriggers_toggle", GetCommandFlags("showtriggers_toggle") | FCVAR_CHEAT);
+}
+
+static bool ParseLightEntry(EntityLumpEntry entry, LightData data)
+{
+	int index = entry.FindKey("classname");
+	if (index == -1)
+		return false;
+
+	char classname[64];
+	entry.Get(index, _, _, classname, sizeof(classname));
+
+	if (!StrEqual(classname, "light") && !StrEqual(classname, "light_spot") && !StrEqual(classname, "light_environment"))
+		return false;
+
+	strcopy(data.classname, sizeof(data.classname), classname);
+
+	char value[64];
+	if (entry.GetNextKey("_light", value, sizeof(value)) != -1)
+	{
+		StringToColor(value, data.color);
+	}
+
+	if (entry.GetNextKey("origin", value, sizeof(value)) != -1)
+	{
+		StringToVector(value, data.origin);
+	}
+
+	if (entry.GetNextKey("angles", value, sizeof(value)) != -1)
+	{
+		StringToVector(value, data.angles);
+
+		if (entry.GetNextKey("pitch", value, sizeof(value)) != -1)
+		{
+			float angle = StringToFloat(value);
+			data.angles[0] = -angle;
+		}
+	}
+
+	return true;
 }

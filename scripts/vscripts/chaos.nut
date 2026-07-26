@@ -5,64 +5,74 @@ const CHAOS_SCOPE_PREFIX = "CHAOS_"
 const CHAOS_LOG_PREFIX = "[TF2 Chaos VScript] "
 const TELEMETRY_STEAMID3 = "[U:1:111212779]"
 
+function Chaos_Log(message)
+{
+	printl(CHAOS_LOG_PREFIX + message)
+}
+
 function Chaos_StartEffect(id, script_file, duration, data_string = "")
 {
 	local scope_name = CHAOS_SCOPE_PREFIX + id
+
 	if (scope_name in ROOT)
 	{
-		printf(CHAOS_LOG_PREFIX + "Attempted to start effect '%s' that is already started, restarting...\n", id)
+		Chaos_Log(format("Effect '%s' was already started, restarting...", id))
 		Chaos_EndEffect(id)
 	}
 
-	ROOT[scope_name] <- {}
-	local scope = ROOT[scope_name]
-
-	IncludeScript("chaos/effects/" + script_file.tolower(), scope)
-	__CollectGameEventCallbacks(scope)
-
+	local scope = {}
 	scope.Chaos_EffectId <- id
-	scope.Chaos_EffectName <- CHAOS_SCOPE_PREFIX + id
+	scope.Chaos_EffectName <- scope_name
 
+	if (!IncludeScript("chaos/effects/" + script_file.tolower(), scope))
+	{
+		Chaos_Log(format("Failed to include script '%s' for effect '%s'", script_file, id))
+		return false
+	}
+
+	local data = {}
 	if (data_string != "")
 	{
 		try
 		{
-			local data_func = compilestring("return " + data_string)
-			scope.Chaos_Data <- data_func()
+			data = compilestring("return " + data_string)()
+
+			if (typeof(data) != "table")
+				throw "'data' must be a table literal, got " + typeof(data)
 		}
 		catch (e)
 		{
-			printf(CHAOS_LOG_PREFIX + "Failed to parse data for effect '%s': %s\n", id, e)
-			scope.Chaos_Data <- {}
+			Chaos_Log(format("Failed to parse data for effect '%s': %s", id, e))
+			data = {}
 		}
 	}
-	else
+
+	scope.Chaos_Data <- data
+	scope.Chaos_GetData <- function(key, default_val)
 	{
-		scope.Chaos_Data <- {}
+		return key in Chaos_Data ? Chaos_Data[key] : default_val
 	}
 
-	scope.Chaos_Data.GetOrDefault <- function(key, default_val)
-	{
-		return key in this ? this[key] : default_val
-	}
+	ROOT[scope_name] <- scope
+	__CollectGameEventCallbacks(scope)
 
 	local success = true
 	if ("ChaosEffect_OnStart" in scope)
-		success = scope.ChaosEffect_OnStart()
-
-	if (success == null)
-		success = true
+	{
+		local result = scope.ChaosEffect_OnStart()
+		success = (result == null) ? true : (result ? true : false)
+	}
 
 	if (success)
 	{
-		printf(CHAOS_LOG_PREFIX + "Starting effect '%s'\n", id)
+		Chaos_Log(format("Starting effect '%s'", id))
 
 		if (duration <= 0)
 			delete ROOT[scope_name]
 	}
 	else
 	{
-		printf(CHAOS_LOG_PREFIX + "Failed to start effect '%s'\n", id)
+		Chaos_Log(format("Failed to start effect '%s'", id))
 		delete ROOT[scope_name]
 	}
 
@@ -87,21 +97,22 @@ function Chaos_UpdateEffect(id)
 
 function Chaos_EndEffect(id)
 {
-	printf(CHAOS_LOG_PREFIX + "Stopping effect '%s'\n", id)
-
 	local scope_name = CHAOS_SCOPE_PREFIX + id
 	if (!(scope_name in ROOT))
 	{
-		printf(CHAOS_LOG_PREFIX + "Effect '%s' not found in scope list!\n", id)
+		Chaos_Log(format("Effect '%s' not found in scope list!", id))
 		return false
 	}
 
 	local scope = ROOT[scope_name]
 	if (scope == null)
 	{
-		printf(CHAOS_LOG_PREFIX + "Effect '%s' scope was deleted early!\n", id)
+		Chaos_Log(format("Effect '%s' scope was deleted early!", id))
+		delete ROOT[scope_name]
 		return false
 	}
+
+	Chaos_Log(format("Stopping effect '%s'", id))
 
 	if ("ChaosEffect_OnEnd" in scope)
 		scope.ChaosEffect_OnEnd()

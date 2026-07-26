@@ -1,31 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle g_hSDKCallGiveNamedItem;
-
 public bool IdentityTheft_Initialize(ChaosEffect effect)
 {
-	GameData gameconf;
-	if (!Chaos_LoadGameData(gameconf))
-		return false;
-
-	StartPrepSDKCall(SDKCall_Player);
-	PrepSDKCall_SetFromConf(gameconf, SDKConf_Virtual, "CTFPlayer::GiveNamedItem");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_ByValue);
-	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
-	g_hSDKCallGiveNamedItem = EndPrepSDKCall();
-	delete gameconf;
-
-	if (!g_hSDKCallGiveNamedItem)
-	{
-		LogError("Failed to create SDKCall for CTFPlayer::GiveNamedItem");
-		return false;
-	}
-
-	return true;
+	return SDKCalls_CanGetWeaponID() && SDKCalls_CanEquipWearable() && SDKCalls_CanGiveNamedItem();
 }
 
 public bool IdentityTheft_OnStart(ChaosEffect effect)
@@ -77,7 +55,7 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 			if (weapon == -1)
 				continue;
 			
-			if (TF2Util_GetWeaponID(weapon) == TF_WEAPON_BUILDER)
+			if (GetWeaponID(weapon) == TF_WEAPON_BUILDER)
 				continue;
 
 			RemovePlayerItem(attacker, weapon);
@@ -85,14 +63,12 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		}
 
 		// Nuke wearables.
-		for (int wbl = TF2Util_GetPlayerWearableCount(attacker) - 1; wbl >= 0; wbl--)
+		ArrayList hAttackerWearables = GetWearables(attacker);
+		for (int wbl = 0; wbl < hAttackerWearables.Length; wbl++)
 		{
-			int wearable = TF2Util_GetPlayerWearable(attacker, wbl);
-			if (wearable == -1)
-				continue;
-
-			TF2_RemoveWearable(attacker, wearable);
+			TF2_RemoveWearable(attacker, hAttackerWearables.Get(wbl));
 		}
+		delete hAttackerWearables;
 
 		// Copy victim's weapons.
 		for (int i = 0; i < GetEntPropArraySize(victim, Prop_Data, "m_hMyWeapons"); i++)
@@ -115,7 +91,7 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 			
 			TF2Econ_TranslateWeaponEntForClass(szClassname, sizeof(szClassname), TF2_GetPlayerClass(attacker));
 
-			int newItem = SDKCall(g_hSDKCallGiveNamedItem, attacker, szClassname, 0, pItem, true);
+			int newItem = GiveNamedItem(attacker, szClassname, 0, pItem, true);
 			if (newItem == -1)
 				continue;
 			
@@ -125,17 +101,16 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 			// Switch to our victim's active weapon.
 			if (weapon == GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon"))
 			{
-				TF2Util_SetPlayerActiveWeapon(attacker, newItem);
+				SetPlayerActiveWeapon(attacker, newItem);
 			}
 		}
 		
 		// Copy victim's wearables.
-		for (int wbl = TF2Util_GetPlayerWearableCount(victim) - 1; wbl >= 0; wbl--)
+		ArrayList hVictimWearables = GetWearables(victim);
+		for (int wbl = 0; wbl < hVictimWearables.Length; wbl++)
 		{
-			int wearable = TF2Util_GetPlayerWearable(victim, wbl);
-			if (wearable == -1)
-				continue;
-			
+			int wearable = hVictimWearables.Get(wbl);
+
 			int iItemOffset = FindItemOffset(wearable);
 			if (iItemOffset == -1)
 				continue;
@@ -150,12 +125,13 @@ static void OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 			TF2Econ_TranslateWeaponEntForClass(szClassname, sizeof(szClassname), TF2_GetPlayerClass(attacker));
 			
-			int newItem = SDKCall(g_hSDKCallGiveNamedItem, attacker, szClassname, 0, pItem, true);
+			int newItem = GiveNamedItem(attacker, szClassname, 0, pItem, true);
 			if (newItem == -1)
 				continue;
 			
 			SetEntProp(newItem, Prop_Send, "m_bValidatedAttachedEntity", true);
-			TF2Util_EquipPlayerWearable(attacker, newItem);
+			EquipPlayerWearable(attacker, newItem);
 		}
+		delete hVictimWearables;
 	}
 }

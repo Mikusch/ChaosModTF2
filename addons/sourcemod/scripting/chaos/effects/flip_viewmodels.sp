@@ -24,11 +24,6 @@ public bool FlipViewModels_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void FlipViewModels_OnClientPutInServer(ChaosEffect effect, int client)
-{
-	SDKHook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
-}
-
 public void FlipViewModels_OnEnd(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -48,6 +43,11 @@ public void FlipViewModels_OnEnd(ChaosEffect effect)
 		
 		SDKUnhook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
 	}
+}
+
+public void FlipViewModels_OnClientPutInServer(ChaosEffect effect, int client)
+{
+	SDKHook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
 }
 
 static void SDKHookCB_Client_WeaponEquipPost(int client, int weapon)

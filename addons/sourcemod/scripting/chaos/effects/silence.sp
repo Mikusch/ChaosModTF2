@@ -17,10 +17,16 @@ public void Silence_OnEnd(ChaosEffect effect)
 
 static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+	if (flags & (SND_STOP | SND_STOPLOOPING))
+		return Plugin_Continue;
+
 	return Plugin_Handled;
 }
 
 static Action OnAmbientSoundPlayed(char sample[PLATFORM_MAX_PATH], int& entity, float& volume, int& level, int& pitch, float pos[3], int& flags, float& delay)
 {
+	if (flags & (SND_STOP | SND_STOPLOOPING))
+		return Plugin_Continue;
+
 	return Plugin_Handled;
 }

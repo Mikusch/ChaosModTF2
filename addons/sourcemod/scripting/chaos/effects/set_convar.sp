@@ -1,53 +1,48 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static StringMap g_hOldConVarValues;
-
-public bool SetConVar_Initialize(ChaosEffect effect)
+public void SetConVar_GetClaims(ChaosEffect effect, ArrayList claims)
 {
-	if (!g_hOldConVarValues)
-		g_hOldConVarValues = new StringMap();
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("convars"))
+		return;
 
-	return true;
+	if (kv.GotoFirstSubKey(false))
+	{
+		do
+		{
+			char szName[128];
+			if (!kv.GetSectionName(szName, sizeof(szName)))
+				continue;
+
+			char szClaim[EFFECT_MAX_CLAIM_LENGTH];
+			FormatEx(szClaim, sizeof(szClaim), "convar:%s", szName);
+
+			claims.PushString(szClaim);
+		}
+		while (kv.GotoNextKey(false));
+	}
+
+	kv.Rewind();
 }
 
 public bool SetConVar_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("convars"))
 		return false;
 
-	if (!effect.data.JumpToKey("convars"))
-		return false;
-
-	// Check for duplicate convars in active effects
-	if (effect.data.GotoFirstSubKey(false))
-	{
-		do
-		{
-			char szName[512];
-			effect.data.GetSectionName(szName, sizeof(szName));
-
-			if (FindKeyInSectionInActiveEffects(effect.effect_class, "convars", szName))
-			{
-				effect.data.GoBack(); // Go back to "convars"
-				effect.data.GoBack(); // Go back to root
-				return false;
-			}
-		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
-	}
-
-	// Apply all convars
 	bool bAnySet = false;
-	if (effect.data.GotoFirstSubKey(false))
+
+	if (kv.GotoFirstSubKey(false))
 	{
 		do
 		{
-			char szName[512], szValue[512], szOldValue[512];
-			effect.data.GetSectionName(szName, sizeof(szName));
-			effect.data.GetString(NULL_STRING, szValue, sizeof(szValue));
+			char szName[128], szValue[512], szOldValue[512];
+			if (!kv.GetSectionName(szName, sizeof(szName)))
+				continue;
+
+			kv.GetString(NULL_STRING, szValue, sizeof(szValue));
 
 			ConVar convar = FindConVar(szName);
 			if (!convar)
@@ -59,36 +54,38 @@ public bool SetConVar_OnStart(ChaosEffect effect)
 			if (StrEqual(szOldValue, szValue))
 				continue;
 
-			g_hOldConVarValues.SetString(szName, szOldValue);
-			convar.SetString(szValue, true);
-			bAnySet = true;
+			effect.state.SetString(szName, szOldValue);
 
-			// If this effect has a duration, add the change hook
+			convar.SetString(szValue, true);
+
 			if (effect.duration)
 				convar.AddChangeHook(OnConVarChanged);
-		}
-		while (effect.data.GotoNextKey(false));
 
-		effect.data.GoBack();
+			bAnySet = true;
+		}
+		while (kv.GotoNextKey(false));
 	}
 
-	effect.data.GoBack();
+	kv.Rewind();
 	return bAnySet;
 }
 
 public void SetConVar_OnEnd(ChaosEffect effect)
 {
-	if (!effect.data.JumpToKey("convars"))
+	KeyValues kv = effect.OpenData();
+	if (!kv || !kv.JumpToKey("convars"))
 		return;
 
-	if (effect.data.GotoFirstSubKey(false))
+	if (kv.GotoFirstSubKey(false))
 	{
 		do
 		{
-			char szName[512], szOldValue[512];
-			effect.data.GetSectionName(szName, sizeof(szName));
+			char szName[128], szOldValue[512];
+			if (!kv.GetSectionName(szName, sizeof(szName)))
+				continue;
 
-			if (!g_hOldConVarValues.GetString(szName, szOldValue, sizeof(szOldValue)))
+			// Only restore what we actually changed
+			if (!effect.state.GetString(szName, szOldValue, sizeof(szOldValue)))
 				continue;
 
 			ConVar convar = FindConVar(szName);
@@ -97,26 +94,32 @@ public void SetConVar_OnEnd(ChaosEffect effect)
 
 			convar.RemoveChangeHook(OnConVarChanged);
 			convar.SetString(szOldValue, true);
-			g_hOldConVarValues.Remove(szName);
 		}
-		while (effect.data.GotoNextKey(false));
-
-		effect.data.GoBack();
+		while (kv.GotoNextKey(false));
 	}
 
-	effect.data.GoBack();
+	kv.Rewind();
 }
 
 static void OnConVarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	char szName[512];
+	char szName[128];
 	convar.GetName(szName, sizeof(szName));
 
-	// Restore the old value
+	char szClaim[EFFECT_MAX_CLAIM_LENGTH];
+	FormatEx(szClaim, sizeof(szClaim), "convar:%s", szName);
+
+	char szOwnerId[64];
+	if (!g_hActiveClaims.GetString(szClaim, szOwnerId, sizeof(szOwnerId)))
+		return;
+
+	ChaosEffect owner;
+	if (!GetEffectById(szOwnerId, owner) || !owner.state)
+		return;
+
 	convar.RemoveChangeHook(OnConVarChanged);
 	convar.SetString(oldValue, true);
 	convar.AddChangeHook(OnConVarChanged);
 
-	// Update our stored value
-	g_hOldConVarValues.SetString(szName, newValue);
+	owner.state.SetString(szName, newValue);
 }

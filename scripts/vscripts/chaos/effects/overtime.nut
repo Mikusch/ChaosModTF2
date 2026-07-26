@@ -1,19 +1,9 @@
-nextOvertimeNag <- 0.0
-
-function ChaosEffect_OnStart()
-{
-	nextOvertimeNag = Time()
-}
-
 function ChaosEffect_Update()
 {
-	if (Time() > nextOvertimeNag)
+	if (RandomInt(0, 1) > 0)
 	{
-		nextOvertimeNag = Time() + 1.0;
-
-		if (RandomInt(0, 1) > 0)
-		{
-			SendGlobalGameEvent("overtime_nag", {})
-		}
+		SendGlobalGameEvent("overtime_nag", {})
 	}
+
+	return 1.0
 }

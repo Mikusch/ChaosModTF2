@@ -14,6 +14,21 @@
 		"#format"	"{1:t}"
 		"en"		"Next effect set to {lightgreen}{1}{default}."
 	}
+	"#Chaos_Effect_ForceEffect_Failed"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Could not activate {lightgreen}{1}{default}: {2}"
+	}
+	"#Chaos_Effect_Expire_NotActive"
+	{
+		"#format"	"{1:s}"
+		"en"		"Effect {lightgreen}{1}{default} is not active."
+	}
+	"#Chaos_Effect_Expire_Success"
+	{
+		"#format"	"{1:t}"
+		"en"		"Expired effect {lightgreen}{1}{default}."
+	}
 	"#Chaos_Effect_InvertAccel"
 	{
 		"en"		"Invert Controls"
@@ -663,10 +678,6 @@
 	"#Chaos_Effect_HomingProjectiles"
 	{
 		"en"		"Homing Projectiles"
-	}
-	"#Chaos_Effect_RandomizeWeaponOrder"
-	{
-		"en"		"Randomize Weapon Order"
 	}
 	"#Chaos_Effect_PlayCommentary"
 	{

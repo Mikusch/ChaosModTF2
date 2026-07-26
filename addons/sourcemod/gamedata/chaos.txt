@@ -8,18 +8,21 @@
 			{
 				"library"	"server"
 				"linux"		"@_ZN9CTFPlayer24PostInventoryApplicationEv"
+				"linux64"	"@_ZN9CTFPlayer24PostInventoryApplicationEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x3C\x53\x8B\xD9\x56\x57"
 			}
 			"CTFPlayer::GetMaxHealthForBuffing"
 			{
 				"library"	"server"
 				"linux"		"@_ZN9CTFPlayer22GetMaxHealthForBuffingEv"
+				"linux64"	"@_ZN9CTFPlayer22GetMaxHealthForBuffingEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x57\x8B\xF9\xFF\xB7\xD0\x22\x00\x00"
 			}
 			"TF_IsHolidayActive"
 			{
 				"library"	"server"
 				"linux"		"@_Z18TF_IsHolidayActivei"
+				"linux64"	"@_Z18TF_IsHolidayActivei"
 				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x83\x78\x30\x00\x74\x2A\x32\xC0"
 			}
 		}
@@ -29,19 +32,41 @@
 			{
 				"library"	"engine"
 				"linux"		"123"
+				"linux64"	"123"
 				"windows"	"123"
+				"windows64"	"123"
 			}
 			"CTFPlayer::GiveNamedItem"
 			{
 				"library"	"server"
 				"linux"		"494"
+				"linux64"	"494"
 				"windows"	"487"
+				"windows64"	"487"
 			}
 			"CBaseCombatWeapon::WeaponSound"
 			{
 				"library"	"server"
 				"linux"		"309"
+				"linux64"	"309"
 				"windows"	"303"
+				"windows64"	"303"
+			}
+			"CTFWeaponBase::GetWeaponID"
+			{
+				"library"	"server"
+				"linux"		"388"
+				"linux64"	"388"
+				"windows"	"382"
+				"windows64"	"382"
+			}
+			"CBasePlayer::EquipWearable"
+			{
+				"library"	"server"
+				"linux"		"440"
+				"linux64"	"440"
+				"windows"	"439"
+				"windows64"	"439"
 			}
 		}
 		"Functions"
