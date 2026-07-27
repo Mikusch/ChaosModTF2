@@ -4,6 +4,11 @@
 	{
 		"en"		"[{darkorange}TF2 CHAOS{default}] "
 	}
+	"#Chaos_Cmd_Usage"
+	{
+		"#format"	"{1:s}"
+		"en"		"Usage: {lightgreen}{1}{default}"
+	}
 	"#Chaos_Effect_NotFound"
 	{
 		"#format"	"{1:s}"
@@ -11,8 +16,13 @@
 	}
 	"#Chaos_Effect_SetNextEffect_Success"
 	{
-		"#format"	"{1:t}"
+		"#format"	"{1:s}"
 		"en"		"Next effect set to {lightgreen}{1}{default}."
+	}
+	"#Chaos_Effect_ForceEffect_Success"
+	{
+		"#format"	"{1:s}"
+		"en"		"Forced effect {lightgreen}{1}{default}."
 	}
 	"#Chaos_Effect_ForceEffect_Failed"
 	{
@@ -26,7 +36,7 @@
 	}
 	"#Chaos_Effect_Expire_Success"
 	{
-		"#format"	"{1:t}"
+		"#format"	"{1:s}"
 		"en"		"Expired effect {lightgreen}{1}{default}."
 	}
 	"#Chaos_Effect_InvertAccel"

@@ -129,7 +129,6 @@ public void OnPluginStart()
 
 	RegAdminCmd("sm_chaos_setnexteffect", ConCmd_SetNextEffect, ADMFLAG_CHEATS, "Sets the next effect.");
 	RegAdminCmd("sm_chaos_forceeffect", ConCmd_ForceEffect, ADMFLAG_CHEATS, "Immediately forces an effect to start.");
-	RegAdminCmd("sm_chaos_list", ConCmd_List, ADMFLAG_GENERIC, "Lists effects with their state, cooldown and remaining time.");
 	RegAdminCmd("sm_chaos_expire", ConCmd_Expire, ADMFLAG_CHEATS, "Expires a single active effect.");
 
 	g_hEffects = new ArrayList(sizeof(ChaosEffect));
@@ -1120,7 +1119,7 @@ static Action ConCmd_SetNextEffect(int client, int args)
 
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_chaos_setnexteffect <id>");
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Cmd_Usage", "sm_chaos_setnexteffect <id>");
 		return Plugin_Handled;
 	}
 
@@ -1130,13 +1129,16 @@ static Action ConCmd_SetNextEffect(int client, int args)
 	ChaosEffect effect;
 	if (!GetEffectById(szEffectId, effect))
 	{
-		CReplyToCommand(client, "%t", "#Chaos_Effect_NotFound", szEffectId);
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_NotFound", szEffectId);
 		return Plugin_Handled;
 	}
 
 	strcopy(g_szForceEffectId, sizeof(g_szForceEffectId), szEffectId);
 
-	CReplyToCommand(client, "%t", "#Chaos_Effect_SetNextEffect_Success", effect.name);
+	char szName[128];
+	effect.GetDisplayName(szName, sizeof(szName), client);
+
+	CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_SetNextEffect_Success", szName);
 
 	return Plugin_Handled;
 }
@@ -1148,77 +1150,32 @@ static Action ConCmd_ForceEffect(int client, int args)
 
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_chaos_forceeffect <id>");
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Cmd_Usage", "sm_chaos_forceeffect <id>");
 		return Plugin_Handled;
 	}
 
 	char szEffectId[64];
 	GetCmdArg(1, szEffectId, sizeof(szEffectId));
 
-	if (FindEffectIndexById(szEffectId) == -1)
+	ChaosEffect effect;
+	if (!GetEffectById(szEffectId, effect))
 	{
-		CReplyToCommand(client, "%t", "#Chaos_Effect_NotFound", szEffectId);
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_NotFound", szEffectId);
 		return Plugin_Handled;
 	}
 
+	char szName[128];
+	effect.GetDisplayName(szName, sizeof(szName), client);
+
 	char szReason[192];
-	if (!ActivateEffectById(szEffectId, true, szReason, sizeof(szReason)))
+	if (ActivateEffectById(szEffectId, true, szReason, sizeof(szReason)))
 	{
-		CReplyToCommand(client, "%t", "#Chaos_Effect_ForceEffect_Failed", szEffectId, szReason);
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_ForceEffect_Success", szName);
 	}
-
-	return Plugin_Handled;
-}
-
-static Action ConCmd_List(int client, int args)
-{
-	if (!g_bEnabled)
-		return Plugin_Continue;
-
-	char szFilter[64];
-	if (args >= 1)
+	else
 	{
-		GetCmdArg(1, szFilter, sizeof(szFilter));
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_ForceEffect_Failed", szName, szReason);
 	}
-
-	float flCurTime = GetGameTime();
-	int nShown = 0, nActive = 0;
-
-	// One line per effect would flood chat
-	ReplySource nOldSource = SetCmdReplySource(SM_REPLY_TO_CONSOLE);
-
-	int nLength = g_hEffects.Length;
-	for (int i = 0; i < nLength; i++)
-	{
-		ChaosEffect effect;
-		if (!g_hEffects.GetArray(i, effect))
-			continue;
-
-		if (effect.active)
-			nActive++;
-
-		if (szFilter[0] && StrContains(effect.id, szFilter, false) == -1)
-			continue;
-
-		nShown++;
-
-		if (effect.active)
-		{
-			ReplyToCommand(client, "[SM] %-32s ACTIVE   %.0fs left%s", effect.id, effect.end_time - flCurTime, effect.meta ? "   (meta)" : "");
-		}
-		else if (!effect.enabled)
-		{
-			ReplyToCommand(client, "[SM] %-32s DISABLED", effect.id);
-		}
-		else
-		{
-			ReplyToCommand(client, "[SM] %-32s ready in %d activation(s)%s", effect.id, effect.cooldown_left, effect.meta ? "   (meta)" : "");
-		}
-	}
-
-	ReplyToCommand(client, "[SM] %d effect(s) shown, %d active, %d registered.", nShown, nActive, nLength);
-
-	SetCmdReplySource(nOldSource);
 
 	return Plugin_Handled;
 }
@@ -1230,7 +1187,7 @@ static Action ConCmd_Expire(int client, int args)
 
 	if (args < 1)
 	{
-		ReplyToCommand(client, "[SM] Usage: sm_chaos_expire <id>");
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Cmd_Usage", "sm_chaos_expire <id>");
 		return Plugin_Handled;
 	}
 
@@ -1240,18 +1197,21 @@ static Action ConCmd_Expire(int client, int args)
 	ChaosEffect effect;
 	if (!GetEffectById(szEffectId, effect))
 	{
-		CReplyToCommand(client, "%t", "#Chaos_Effect_NotFound", szEffectId);
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_NotFound", szEffectId);
 		return Plugin_Handled;
 	}
 
+	char szName[128];
+	effect.GetDisplayName(szName, sizeof(szName), client);
+
 	if (!effect.active)
 	{
-		CReplyToCommand(client, "%t", "#Chaos_Effect_Expire_NotActive", szEffectId);
+		CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_Expire_NotActive", szName);
 		return Plugin_Handled;
 	}
 
 	ForceExpireEffect(effect);
-	CReplyToCommand(client, "%t", "#Chaos_Effect_Expire_Success", effect.name);
+	CReplyToCommand(client, "%t%t", "#Chaos_Tag", "#Chaos_Effect_Expire_Success", szName);
 
 	return Plugin_Handled;
 }

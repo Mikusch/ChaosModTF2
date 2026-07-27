@@ -106,18 +106,18 @@ static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char
 		if (GetEntProp(entity, Prop_Send, "m_bIsMiniBoss") && nClass != TFClass_Sniper && nClass != TFClass_Engineer && nClass != TFClass_Medic && nClass != TFClass_Spy)
 		{
 			ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/mght/", false);
-			Format(szClassMvM, sizeof(szClassMvM), "%s_mvm_m", g_szBotClassNames[view_as<int>(nClass)]);
+			FormatEx(szClassMvM, sizeof(szClassMvM), "%s_mvm_m", g_szBotClassNames[view_as<int>(nClass)]);
 		}
 		else
 		{
 			ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/norm/", false);
-			Format(szClassMvM, sizeof(szClassMvM), "%s_mvm", g_szBotClassNames[view_as<int>(nClass)]);
+			FormatEx(szClassMvM, sizeof(szClassMvM), "%s_mvm", g_szBotClassNames[view_as<int>(nClass)]);
 		}
 		
 		ReplaceString(sample, sizeof(sample), g_szBotClassNames[view_as<int>(nClass)], szClassMvM);
 		
 		char szSoundPath[PLATFORM_MAX_PATH];
-		Format(szSoundPath, sizeof(szSoundPath), "sound/%s", sample);
+		FormatEx(szSoundPath, sizeof(szSoundPath), "sound/%s", sample);
 		
 		if (FileExists(szSoundPath, true))
 		{
