@@ -69,14 +69,15 @@ jobs:
           path: addons/sourcemod/plugins/${{ env.PLUGIN_NAME }}.smx
           if-no-files-found: error
 
-      - name: Zip output
-        run: zip -qq -r ${{ github.event.repository.name }}-${{ matrix.sm-label }}.zip addons materials scripts shaders
-
       - name: Upload package artifact
         uses: actions/upload-artifact@v7
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.sm-label }}
-          path: ./${{ github.event.repository.name }}-${{ matrix.sm-label }}.zip
+          path: |
+            addons
+            materials
+            scripts
+            shaders
           if-no-files-found: error
 
   release:
@@ -92,14 +93,22 @@ jobs:
         with:
           pattern: ${{ github.event.repository.name }}-sm*
           path: packages
-          merge-multiple: true
+
+      - name: Zip packages
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          for dir in packages/*/; do
+            name="$(basename "$dir")"
+            (cd "$dir" && zip -qq -r "$GITHUB_WORKSPACE/dist/${name}.zip" addons materials scripts shaders)
+          done
 
       - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.build.outputs.plugin-version }}
-          artifacts: packages/*.zip
+          artifacts: dist/*.zip
           draft: true
           allowUpdates: true
           updateOnlyUnreleased: true
