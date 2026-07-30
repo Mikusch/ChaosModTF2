@@ -12,7 +12,7 @@ function ChaosEffect_Update()
 		if (projectile in TrackedProjectiles)
 			continue
 
-		if (projectile.GetClassname() == "tf_projectile_grapplinghook")
+		if (!IsProjectileInFlight(projectile))
 			continue
 
 		local base_speed = NetProps.GetPropVector(projectile, "m_vInitialVelocity").Length()
@@ -58,8 +58,8 @@ function ProjectileThink()
 	if (!self.IsValid())
 		return
 
-	// Stickies that already latched onto something are not in flight
-	if (self.GetClassname() == "tf_projectile_pipe_remote" && NetProps.GetPropBool(self, "m_bTouched"))
+	// A sticky can still latch after we started tracking it
+	if (!IsProjectileInFlight(self))
 		return THINK_INTERVAL
 
 	local origin = self.GetOrigin()

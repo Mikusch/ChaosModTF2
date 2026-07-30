@@ -15,13 +15,7 @@ function ChaosEffect_Update()
 		if (speed <= 0.0)
 			continue
 
-		local classname = projectile.GetClassname()
-
-		// Stickies that already latched onto something are not in flight
-		if (classname == "tf_projectile_pipe_remote" && NetProps.GetPropBool(projectile, "m_bTouched"))
-			continue
-
-		if (classname == "tf_projectile_grapplinghook")
+		if (!IsProjectileInFlight(projectile))
 			continue
 
 		local origin = projectile.GetOrigin()

@@ -67,6 +67,21 @@ function ForcePlayerSuicide(player)
 	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
 }
 
+function IsProjectileInFlight(projectile)
+{
+	local classname = projectile.GetClassname()
+
+	// Stickies that already latched onto something are not in flight
+	if (classname == "tf_projectile_pipe_remote" && NetProps.GetPropBool(projectile, "m_bTouched"))
+		return false
+
+	// The grappling hook drags its owner along, so leave its trajectory alone
+	if (classname == "tf_projectile_grapplinghook")
+		return false
+
+	return true
+}
+
 function GetProjectileVelocity(projectile)
 {
 	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
