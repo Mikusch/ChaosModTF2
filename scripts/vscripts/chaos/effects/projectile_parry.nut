@@ -71,6 +71,9 @@ function CanParryProjectile(player, projectile)
 	if (projectile.GetClassname() == "tf_projectile_pipe_remote" && NetProps.GetPropBool(projectile, "m_bTouched"))
 		return false
 
+	if (projectile.GetClassname() == "tf_projectile_grapplinghook")
+		return false
+
 	local eye_pos = player.EyePosition()
 	local eye_fwr = player.EyeAngles().Forward()
 	local projectile_origin = projectile.GetOrigin()
@@ -90,8 +93,11 @@ function CanParryProjectile(player, projectile)
 	}
 
 	// Prevent parrying through walls
-	if (TraceLineEx(trace) && trace.hit && !startswith(trace.enthit.GetClassname(), "tf_projectile_"))
-		return false
+	if (TraceLineEx(trace) && trace.hit)
+	{
+		if (!("enthit" in trace) || !startswith(trace.enthit.GetClassname(), "tf_projectile_"))
+			return false
+	}
 
 	return true
 }
@@ -105,7 +111,8 @@ function ParryProjectile(player, projectile)
 
 	NetProps.SetPropEntity(projectile, "m_hOwnerEntity", player)
 	NetProps.SetPropEntity(projectile, "m_hThrower", player)
-	NetProps.SetPropInt(projectile, "m_iDeflected", 2)
+	NetProps.SetPropEntity(projectile, "m_hLauncher", player.GetActiveWeapon())
+	NetProps.SetPropInt(projectile, "m_iDeflected", NetProps.GetPropInt(projectile, "m_iDeflected") + 1)
 	projectile.SetTeam(player_team)
 	// 0 = red model skin
 	// 1 = blu model skin
@@ -118,16 +125,22 @@ function ParryProjectile(player, projectile)
 			continue
 
 		local trail_material = trail.GetModelName()
-		local color_to_replace = (player_team == TF_TEAM_RED) ? "blu" : "red"
-		local replacement = (player_team == TF_TEAM_RED) ? "red" : "blu"
-		local index = trail_material.find(color_to_replace)
-		if (index == null)
-			continue
 
-		trail_material = trail_material.slice(0, index) + replacement + trail_material.slice(index + 3)
 		// This is the only base trail material that uses "blue" instead of "blu"
-		if (trail_material == "effects/repair_claw_trail_blu.vmt")
-			trail_material = "effects/repair_claw_trail_blue.vmt"
+		if (trail_material == "effects/repair_claw_trail_red.vmt" || trail_material == "effects/repair_claw_trail_blue.vmt")
+		{
+			trail_material = (player_team == TF_TEAM_RED) ? "effects/repair_claw_trail_red.vmt" : "effects/repair_claw_trail_blue.vmt"
+		}
+		else
+		{
+			local color_to_replace = (player_team == TF_TEAM_RED) ? "blu" : "red"
+			local replacement = (player_team == TF_TEAM_RED) ? "red" : "blu"
+			local index = trail_material.find(color_to_replace)
+			if (index == null)
+				continue
+
+			trail_material = trail_material.slice(0, index) + replacement + trail_material.slice(index + 3)
+		}
 
 		PrecacheModel(trail_material)
 		trail.SetModel(trail_material)

@@ -12,19 +12,34 @@ function ChaosEffect_Update()
 		if (projectile in TrackedProjectiles)
 			continue
 
+		if (projectile.GetClassname() == "tf_projectile_grapplinghook")
+			continue
+
+		local base_speed = NetProps.GetPropVector(projectile, "m_vInitialVelocity").Length()
+		if (base_speed <= 0.0)
+			base_speed = GetProjectileVelocity(projectile).Length()
+
+		if (base_speed <= 0.0)
+			continue
+
 		TrackedProjectiles[projectile] <- true
 
 		projectile.ValidateScriptScope()
 		local projectile_scope = projectile.GetScriptScope()
+		projectile_scope.HomingBaseSpeed <- base_speed * SPEED_MULTIPLIER
 		projectile_scope.HomingProjectileThink <- ProjectileThink.bindenv(projectile_scope)
 		AddThinkToEnt(projectile, "HomingProjectileThink")
 	}
 
+	local expired = []
 	foreach (projectile, _ in TrackedProjectiles)
 	{
 		if (projectile == null || !projectile.IsValid())
-			delete TrackedProjectiles[projectile]
+			expired.push(projectile)
 	}
+
+	foreach (projectile in expired)
+		delete TrackedProjectiles[projectile]
 
 	return CHAOS_UPDATE_EVERY_FRAME
 }
@@ -42,6 +57,10 @@ function ProjectileThink()
 {
 	if (!self.IsValid())
 		return
+
+	// Stickies that already latched onto something are not in flight
+	if (self.GetClassname() == "tf_projectile_pipe_remote" && NetProps.GetPropBool(self, "m_bTouched"))
+		return THINK_INTERVAL
 
 	local origin = self.GetOrigin()
 	local team = self.GetTeam()
@@ -87,11 +106,11 @@ function ProjectileThink()
 
 	if (closest_target)
 	{
-		local initial_velocity = NetProps.GetPropVector(self, "m_vInitialVelocity")
-		local speed_base = initial_velocity.Length() * SPEED_MULTIPLIER
-
 		local deflected = NetProps.GetPropInt(self, "m_iDeflected")
-		local speed_new = speed_base + deflected * speed_base * 1.1
+		if (deflected < 0)
+			deflected = 0
+
+		local speed_new = HomingBaseSpeed + deflected * HomingBaseSpeed * 1.1
 
 		SetProjectileVelocity(self, closest_dir * speed_new)
 	}

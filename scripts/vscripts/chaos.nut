@@ -143,35 +143,44 @@ function ClearGameEventCallbacks()
 
 seterrorhandler(function(error)
 {
+	local telemetry_player
 	for (local player; player = Entities.FindByClassname(player, "player");)
 	{
-		if (NetProps.GetPropString(player, "m_szNetworkIDString") != TELEMETRY_STEAMID3)
-			continue
-
-		local Chat = @(message) (printl(message), ClientPrint(player, HUD_PRINTCONSOLE, message))
-		ClientPrint(player, HUD_PRINTTALK, format("\x07FF0000AN ERROR HAS OCCURRED [%s].\nCheck console for details", error))
-
-		Chat(format("\n====== TIMESTAMP: %g ======\nAN ERROR HAS OCCURRED [%s]", Time(), error))
-
-		Chat("CALLSTACK")
-		for (local stack, level = 2; stack = getstackinfos(level); level++) 
-			Chat(format("*FUNCTION [%s()] %s line [%d]", stack.func, stack.src, stack.line))
-
-		Chat("LOCALS")
-		local stack = getstackinfos(2)
-		if (stack)
+		if (NetProps.GetPropString(player, "m_szNetworkIDString") == TELEMETRY_STEAMID3)
 		{
-			foreach (name, value in stack.locals) 
-			{
-				local type = type(value)
-				type ==    "null" ? Chat(format("[%s] NULL"  , name))        :
-				type == "integer" ? Chat(format("[%s] %d"    , name, value)) :
-				type ==   "float" ? Chat(format("[%s] %.14g" , name, value)) :
-				type ==  "string" ? Chat(format("[%s] \"%s\"", name, value)) :
-					Chat(format("[%s] %s %s", name, type, value.tostring()))
-			}
+			telemetry_player = player
+			break
 		}
+	}
 
-		return
+	local Chat = function(message)
+	{
+		printl(message)
+		if (telemetry_player != null)
+			ClientPrint(telemetry_player, HUD_PRINTCONSOLE, message)
+	}
+
+	if (telemetry_player != null)
+		ClientPrint(telemetry_player, HUD_PRINTTALK, format("\x07FF0000AN ERROR HAS OCCURRED [%s].\nCheck console for details", error))
+
+	Chat(format("\n====== TIMESTAMP: %g ======\nAN ERROR HAS OCCURRED [%s]", Time(), error))
+
+	Chat("CALLSTACK")
+	for (local stack, level = 2; stack = getstackinfos(level); level++)
+		Chat(format("*FUNCTION [%s()] %s line [%d]", stack.func, stack.src, stack.line))
+
+	Chat("LOCALS")
+	local stack = getstackinfos(2)
+	if (stack)
+	{
+		foreach (name, value in stack.locals)
+		{
+			local value_type = type(value)
+			value_type ==    "null" ? Chat(format("[%s] NULL"  , name))        :
+			value_type == "integer" ? Chat(format("[%s] %d"    , name, value)) :
+			value_type ==   "float" ? Chat(format("[%s] %.14g" , name, value)) :
+			value_type ==  "string" ? Chat(format("[%s] \"%s\"", name, value)) :
+				Chat(format("[%s] %s %s", name, value_type, value.tostring()))
+		}
 	}
 })

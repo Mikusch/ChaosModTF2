@@ -24,7 +24,7 @@ function ApplyRandomPaintToItems(player)
 
 function GetRandomColor()
 {
-	return RandomInt(0, 0x1000000)
+	return RandomInt(0, 0xFFFFFF)
 }
 
 function OnGameEvent_post_inventory_application(params)

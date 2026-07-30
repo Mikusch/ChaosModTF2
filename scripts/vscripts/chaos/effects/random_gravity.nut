@@ -1,5 +1,9 @@
 // by pokemonpasta
 
+// SetGravity(0.0) means "use sv_gravity", so we use a really small min value instead for effectively no gravity.
+local GRAVITY_MIN = 0.000001
+local GRAVITY_MAX = 3.0
+
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)
@@ -7,9 +11,8 @@ function ChaosEffect_OnStart()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
-		// SetGravity(0.0) doesn't do anything, so we use a really small min value instead for effectively no gravity.
-		player.SetGravity(RandomFloat(0.000001, 3.0))
+
+		player.SetGravity(RandomFloat(GRAVITY_MIN, GRAVITY_MAX))
 	}
 }
 
@@ -20,16 +23,16 @@ function ChaosEffect_OnEnd()
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
-		
-		player.SetGravity(1.0)
+
+		player.SetGravity(0.0)
 	}
 }
 
 function OnGameEvent_player_spawn(params)
 {
 	local player = GetPlayerFromUserID(params.userid)
-	if (player != null && player.GetGravity() == 1.0) // unlikely for a player OnStart to have gravity be set to 1
-	{
-		player.SetGravity(RandomFloat(0.000001, 3.0))
-	}
+	if (player == null)
+		return
+
+	player.SetGravity(RandomFloat(GRAVITY_MIN, GRAVITY_MAX))
 }

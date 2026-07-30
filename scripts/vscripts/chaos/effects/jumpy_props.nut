@@ -3,13 +3,15 @@
 // config
 local MIN_PROPS = 1		// int, minimum vphysics ents present for effect to load
 local JUMP_COOLDOWN = 1.5	// float, seconds
+local JUMP_SPEED_MIN = 400.0	// float, units per second
+local JUMP_SPEED_MAX = 600.0	// float, units per second
 
 // code
 local ThinkFuncs = {}
 
 function ChaosEffect_OnStart()
 {
-	for (local ent = Entities.First(); ent = Entities.Next(ent);)
+	for (local ent; ent = Entities.Next(ent);)
 	{
 		if (ent.GetMoveType() != MOVETYPE_VPHYSICS)
 			continue
@@ -23,7 +25,7 @@ function ChaosEffect_OnStart()
 
 function ChaosEffect_Update()
 {
-	for (local ent = Entities.First(); ent = Entities.Next(ent);)
+	for (local ent; ent = Entities.Next(ent);)
 	{
 		// Start bouncing any VPhysics entities we aren't tracking already
 		// this will usually be new entities that weren't there when we started
@@ -36,23 +38,31 @@ function ChaosEffect_Update()
 
 function ChaosEffect_OnEnd()
 {
-	for (local ent = Entities.First(); ent = Entities.Next(ent);)
+	for (local ent; ent = Entities.Next(ent);)
 	{
 		if (!(ent in ThinkFuncs))
 			continue
 
 		local think_func = ThinkFuncs[ent]
-		AddThinkToEnt(ent, think_func ? think_func : null) // if there was no original think function, we set to null to clear it
+		AddThinkToEnt(ent, think_func != "" ? think_func : null) // if there was no original think function, we set to null to clear it
 	}
 }
 
 function JumpThink()
 {
+	local scope = self.GetScriptScope()
+
+	local remaining = scope.JumpNextTime - Time()
+	if (remaining > 0.0)
+		return remaining
+
 	local vel = self.GetPhysVelocity()
-	vel.z = RandomFloat(400.0, 600.0)
+	vel.z = RandomFloat(JUMP_SPEED_MIN, JUMP_SPEED_MAX)
 	self.SetPhysVelocity(vel)
 
-	return JumpCooldown
+	scope.JumpNextTime = Time() + scope.JumpCooldown
+
+	return scope.JumpCooldown
 }
 
 function StartBouncing(ent)
@@ -60,9 +70,11 @@ function StartBouncing(ent)
 	ent.ValidateScriptScope()
 	ThinkFuncs[ent] <- ent.GetScriptThinkFunc()
 
-	ent.GetScriptScope().JumpCooldown <- JUMP_COOLDOWN
-	ent.GetScriptScope().JumpThink <- JumpThink
+	local scope = ent.GetScriptScope()
+	scope.JumpCooldown <- JUMP_COOLDOWN
+	// Stagger the first jump in the think, a delayed EntFire could outlive the effect
+	scope.JumpNextTime <- Time() + RandomFloat(0.0, JUMP_COOLDOWN)
+	scope.JumpThink <- JumpThink
 
-	// Run this on itself so we can add some delay
-	EntFireByHandle(ent, "RunScriptCode", "AddThinkToEnt(self, `JumpThink`)", RandomFloat(0.0, JUMP_COOLDOWN), null, null)
+	AddThinkToEnt(ent, "JumpThink")
 }

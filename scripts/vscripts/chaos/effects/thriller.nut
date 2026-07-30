@@ -36,6 +36,6 @@ function ChaosEffect_OnEnd()
 			continue
 
 		player.RemoveCond(TF_COND_HALLOWEEN_THRILLER)
-		player.StopTaunt(false)
+		player.CancelTaunt()
 	}
 }

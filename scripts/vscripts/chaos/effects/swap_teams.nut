@@ -9,6 +9,7 @@ function ChaosEffect_OnStart()
 		if (player.GetTeam() <= TEAM_SPECTATOR || player.GetTeam() >= TF_TEAM_COUNT)
 			continue
 
-		player.ForceChangeTeam(GetEnemyTeam(player.GetTeam()), false)
+		player.ForceChangeTeam(GetEnemyTeam(player.GetTeam()), true)
+		player.UpdateSkin(player.GetTeam())
 	}
 }

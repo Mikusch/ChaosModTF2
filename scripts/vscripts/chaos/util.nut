@@ -1,6 +1,3 @@
-worldspawn <- Entities.FindByClassname(null, "worldspawn")
-gamerules <- Entities.FindByClassname(null, "tf_gamerules")
-
 function GetEnemyTeam(team)
 {
 	switch (team)
