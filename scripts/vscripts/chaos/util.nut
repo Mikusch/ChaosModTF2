@@ -130,6 +130,18 @@ function LerpAngles(a, b, t)
 	)
 }
 
+function VectorAngles(forward)
+{
+	if (forward.x == 0.0 && forward.y == 0.0)
+		return Vector(forward.z > 0.0 ? -90.0 : 90.0, 0.0, 0.0)
+
+	return Vector(
+		atan2(-forward.z, sqrt(forward.x * forward.x + forward.y * forward.y)) * 180.0 / PI,
+		atan2(forward.y, forward.x) * 180.0 / PI,
+		0.0
+	)
+}
+
 function ViewControl_PostEnable(player)
 {
 	local weapon = player.GetActiveWeapon()
