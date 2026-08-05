@@ -4,9 +4,12 @@ local SPEED_MULTIPLIER = 0.4
 local THINK_INTERVAL = 0.05
 
 local TrackedProjectiles = {}
+local Targets = []
 
 function ChaosEffect_Update()
 {
+	CollectTargets()
+
 	for (local projectile; projectile = Entities.FindByClassname(projectile, "tf_projectile_*");)
 	{
 		if (projectile in TrackedProjectiles)
@@ -53,6 +56,47 @@ function ChaosEffect_OnEnd()
 	}
 }
 
+function CollectTargets()
+{
+	Targets.clear()
+
+	for (local i = 1; i <= MaxClients(); i++)
+	{
+		local player = PlayerInstanceFromIndex(i)
+		if (player == null)
+			continue
+
+		if (!player.IsAlive())
+			continue
+
+		if (player.IsStealthed())
+			continue
+
+		if (player.InCond(TF_COND_HALLOWEEN_GHOST_MODE))
+			continue
+
+		Targets.push(player)
+	}
+
+	// Bosses, buildings and any other combat character
+	for (local entity; entity = Entities.Next(entity);)
+	{
+		if (entity.IsPlayer())
+			continue
+
+		if (!(entity instanceof CBaseCombatCharacter))
+			continue
+
+		if (!entity.IsAlive() || !entity.IsSolid())
+			continue
+
+		if (NetProps.GetPropInt(entity, "m_takedamage") == DAMAGE_NO)
+			continue
+
+		Targets.push(entity)
+	}
+}
+
 function ProjectileThink()
 {
 	if (!self.IsValid())
@@ -69,39 +113,29 @@ function ProjectileThink()
 	local closest_target
 	local closest_dist = FLT_MAX
 
-	for (local i = 1; i <= MaxClients(); i++)
+	foreach (target in Targets)
 	{
-		local player = PlayerInstanceFromIndex(i)
-		if (player == null)
+		if (!target.IsValid())
 			continue
 
-		if (player.GetTeam() == team)
+		if (target.GetTeam() == team)
 			continue
 
-		if (!player.IsAlive())
+		if (target.IsPlayer() && target.InCond(TF_COND_DISGUISED) && target.GetDisguiseTeam() == team)
 			continue
 
-		if (player.IsStealthed())
-			continue
-
-		if (player.InCond(TF_COND_DISGUISED) && player.GetDisguiseTeam() == team)
-			continue
-		
-		if (player.InCond(TF_COND_HALLOWEEN_GHOST_MODE))
-			continue
-
-		local player_center = player.GetCenter()
-		local dir = player_center - origin
+		local target_center = target.GetCenter()
+		local dir = target_center - origin
 		local dist = dir.Norm()
 		if (dist >= closest_dist)
 			continue
 
-		if (TraceLine(origin, player_center, self) < 1.0)
+		if (TraceLine(origin, target_center, self) < 1.0)
 			continue
 
 		closest_dir = dir
 		closest_dist = dist
-		closest_target = player
+		closest_target = target
 	}
 
 	if (closest_target)
