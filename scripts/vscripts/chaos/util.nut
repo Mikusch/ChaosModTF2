@@ -55,7 +55,7 @@ function IsPlayerStuck(player)
 		end = player.GetOrigin(),
 		hullmin = player.GetBoundingMins(),
 		hullmax = player.GetBoundingMaxs(),
-		mask = MASK_SOLID_BRUSHONLY,
+		mask = MASK_PLAYERSOLID_BRUSHONLY,
 		ignore = player
 	}
 
@@ -70,7 +70,7 @@ function CanPlayerFitAt(player, where)
 		end = where,
 		hullmin = player.GetBoundingMins(),
 		hullmax = player.GetBoundingMaxs(),
-		mask = MASK_SOLID_BRUSHONLY | CONTENTS_PLAYERCLIP,
+		mask = MASK_PLAYERSOLID_BRUSHONLY,
 		ignore = player
 	}
 
