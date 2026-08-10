@@ -36,7 +36,7 @@ function ChaosEffect_Update()
 			continue
 
 		// Hold the angles the player left behind until they are far enough away to aim at
-		local dir = player.GetCenter() - viewcontrol.GetOrigin()
+		local dir = player.EyePosition() - viewcontrol.GetOrigin()
 		if (dir.Norm() < TRACK_DISTANCE)
 			continue
 
