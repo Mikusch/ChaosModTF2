@@ -17,32 +17,18 @@ function ChaosEffect_OnStart()
 	}
 }
 
-function ChaosEffect_Update()
-{
-	for (local i = 1; i <= MaxClients(); i++)
-	{
-		local player = PlayerInstanceFromIndex(i)
-		if (player == null)
-			continue
-
-		KillPlayerIfStuck(player)
-	}
-}
-
 function ChaosEffect_OnEnd()
 {
-	local change_duration = Chaos_GetData("change_duration", 0.0)
-
 	for (local i = 1; i <= MaxClients(); i++)
 	{
 		local player = PlayerInstanceFromIndex(i)
 		if (player == null)
 			continue
 
-		player.SetModelScale(1.0, change_duration)
+		player.SetModelScale(1.0, Chaos_GetData("change_duration", 0.0))
 		player.RemoveCustomAttribute("voice pitch scale")
 
-		EntFireByHandle(player, "RunScriptCode", "KillPlayerIfStuck(self)", change_duration, null, null)
+		ScheduleStuckCheck(player)
 	}
 }
 
@@ -50,6 +36,13 @@ function Resize(player, scale)
 {
 	player.SetModelScale(scale, Chaos_GetData("change_duration", 0.0))
 	player.AddCustomAttribute("voice pitch scale", 1.0 / scale, -1)
+
+	ScheduleStuckCheck(player)
+}
+
+function ScheduleStuckCheck(player)
+{
+	EntFireByHandle(player, "RunScriptCode", "ResolveStuckPlayer(self)", Chaos_GetData("change_duration", 0.0), null, null)
 }
 
 function OnGameEvent_player_spawn(params)

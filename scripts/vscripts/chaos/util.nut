@@ -62,12 +62,27 @@ function IsPlayerStuck(player)
 	return TraceHull(trace) && trace.hit
 }
 
+function CanPlayerFitAt(player, where)
+{
+	local trace =
+	{
+		start = where,
+		end = where,
+		hullmin = player.GetBoundingMins(),
+		hullmax = player.GetBoundingMaxs(),
+		mask = MASK_SOLID_BRUSHONLY | CONTENTS_PLAYERCLIP,
+		ignore = player
+	}
+
+	return TraceHull(trace) && !trace.hit
+}
+
 function ForcePlayerSuicide(player)
 {
 	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
 }
 
-function KillPlayerIfStuck(player)
+function ResolveStuckPlayer(player)
 {
 	if (!player.IsAlive())
 		return
@@ -78,6 +93,30 @@ function KillPlayerIfStuck(player)
 
 	if (!IsPlayerStuck(player))
 		return
+
+	local origin = player.GetOrigin()
+	local height = player.GetBoundingMaxs().z - player.GetBoundingMins().z
+	local extra_height = 10.0
+
+	local offsets =
+	[
+		Vector(32.0, 32.0, extra_height),
+		Vector(-32.0, -32.0, extra_height),
+		Vector(-32.0, 32.0, extra_height),
+		Vector(32.0, -32.0, extra_height),
+		Vector(0.0, 0.0, height + extra_height),
+		Vector(0.0, 0.0, -height - extra_height)
+	]
+
+	foreach (offset in offsets)
+	{
+		local where = origin + offset
+		if (!CanPlayerFitAt(player, where))
+			continue
+
+		player.Teleport(true, where, true, player.GetAbsAngles(), false, Vector())
+		return
+	}
 
 	ForcePlayerSuicide(player)
 }
