@@ -17,7 +17,7 @@ function ChaosEffect_OnStart()
 	}
 }
 
-function ChaosEffect_OnEnd()
+function ChaosEffect_Update()
 {
 	for (local i = 1; i <= MaxClients(); i++)
 	{
@@ -25,8 +25,24 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
-		player.SetModelScale(1.0, Chaos_GetData("change_duration", 0.0))
+		KillPlayerIfStuck(player)
+	}
+}
+
+function ChaosEffect_OnEnd()
+{
+	local change_duration = Chaos_GetData("change_duration", 0.0)
+
+	for (local i = 1; i <= MaxClients(); i++)
+	{
+		local player = PlayerInstanceFromIndex(i)
+		if (player == null)
+			continue
+
+		player.SetModelScale(1.0, change_duration)
 		player.RemoveCustomAttribute("voice pitch scale")
+
+		EntFireByHandle(player, "RunScriptCode", "KillPlayerIfStuck(self)", change_duration, null, null)
 	}
 }
 

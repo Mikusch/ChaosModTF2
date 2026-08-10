@@ -67,6 +67,21 @@ function ForcePlayerSuicide(player)
 	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
 }
 
+function KillPlayerIfStuck(player)
+{
+	if (!player.IsAlive())
+		return
+
+	// Noclipping players are inside the map on purpose
+	if (player.GetMoveType() == MOVETYPE_NOCLIP)
+		return
+
+	if (!IsPlayerStuck(player))
+		return
+
+	ForcePlayerSuicide(player)
+}
+
 function IsProjectileInFlight(projectile)
 {
 	local classname = projectile.GetClassname()
