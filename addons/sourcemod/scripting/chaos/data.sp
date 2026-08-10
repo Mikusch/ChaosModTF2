@@ -98,9 +98,6 @@ enum struct ChaosEffect
 		kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 		kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 
-		// Accept backticks for quotes like RunScriptCode does
-		ReplaceString(this.data_string, sizeof(this.data_string), "`", "\"");
-
 		this.claims = ParseClaims(kv);
 
 		if (kv.JumpToKey("data", false))
@@ -247,6 +244,9 @@ bool Data_InitializeEffects()
 	StringMap hInitializedClasses = new StringMap();
 
 	KeyValues kv = new KeyValues("effects");
+
+	kv.SetEscapeSequences(true);
+
 	if (!kv.ImportFromFile(szFilePath))
 	{
 		delete kv;
