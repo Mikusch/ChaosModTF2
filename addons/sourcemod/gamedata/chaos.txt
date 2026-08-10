@@ -10,6 +10,7 @@
 				"linux"		"@_ZN9CTFPlayer24PostInventoryApplicationEv"
 				"linux64"	"@_ZN9CTFPlayer24PostInventoryApplicationEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x3C\x53\x8B\xD9\x56\x57"
+				"windows64"	"\x48\x8B\xC4\x53\x41\x55\x41\x56\x48\x81\xEC\xB0\x00\x00\x00\x4C\x8B\xF1"
 			}
 			"CTFPlayer::GetMaxHealthForBuffing"
 			{
@@ -17,6 +18,7 @@
 				"linux"		"@_ZN9CTFPlayer22GetMaxHealthForBuffingEv"
 				"linux64"	"@_ZN9CTFPlayer22GetMaxHealthForBuffingEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x20\x53\x56\x57\x8B\xF9\xFF\xB7\xD0\x22\x00\x00"
+				"windows64"	"\x40\x53\x55\x56\x57\x41\x54\x48\x83\xEC\x50\x48\x8B\xF9\x8B\x89"
 			}
 			"TF_IsHolidayActive"
 			{
@@ -24,6 +26,7 @@
 				"linux"		"@_Z18TF_IsHolidayActivei"
 				"linux64"	"@_Z18TF_IsHolidayActivei"
 				"windows"	"\x55\x8B\xEC\xA1\x2A\x2A\x2A\x2A\x83\x78\x30\x00\x74\x2A\x32\xC0"
+				"windows64"	"\x48\x83\xEC\x28\x48\x8B\x05\x2A\x2A\x2A\x2A\x44\x8B\xC9\x83\x78\x58\x00"
 			}
 		}
 		"Offsets"
