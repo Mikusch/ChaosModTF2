@@ -1,6 +1,3 @@
-worldspawn <- Entities.FindByClassname(null, "worldspawn")
-gamerules <- Entities.FindByClassname(null, "tf_gamerules")
-
 function GetEnemyTeam(team)
 {
 	switch (team)
@@ -9,30 +6,6 @@ function GetEnemyTeam(team)
 		case TF_TEAM_BLUE: return TF_TEAM_RED
 		default: return team
 	}
-}
-
-function VectorAngles(forward)
-{
-	local yaw, pitch
-	if (forward.y == 0.0 && forward.x == 0.0)
-	{
-		yaw = 0.0
-		if (forward.z > 0.0)
-			pitch = 270.0
-		else
-			pitch = 90.0
-	}
-	else
-	{
-		yaw = (atan2(forward.y, forward.x) * 180.0 / Constants.Math.Pi)
-		if (yaw < 0.0)
-			yaw += 360.0
-		pitch = (atan2(-forward.z, forward.Length2D()) * 180.0 / Constants.Math.Pi)
-		if (pitch < 0.0)
-			pitch += 360.0
-	}
-
-	return QAngle(pitch, yaw, 0.0)
 }
 
 function ShuffleArray(arr)
@@ -82,16 +55,107 @@ function IsPlayerStuck(player)
 		end = player.GetOrigin(),
 		hullmin = player.GetBoundingMins(),
 		hullmax = player.GetBoundingMaxs(),
-		mask = MASK_SOLID_BRUSHONLY,
+		mask = MASK_PLAYERSOLID_BRUSHONLY,
 		ignore = player
 	}
 
 	return TraceHull(trace) && trace.hit
 }
 
+function CanPlayerFitAt(player, where)
+{
+	local trace =
+	{
+		start = where,
+		end = where,
+		hullmin = player.GetBoundingMins(),
+		hullmax = player.GetBoundingMaxs(),
+		mask = MASK_PLAYERSOLID_BRUSHONLY,
+		ignore = player
+	}
+
+	return TraceHull(trace) && !trace.hit
+}
+
 function ForcePlayerSuicide(player)
 {
 	player.TakeDamageCustom(player, player, null, Vector(), Vector(), 99999.0, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, TF_DMG_CUSTOM_SUICIDE)
+}
+
+function ResolveStuckPlayer(player)
+{
+	if (!player.IsAlive())
+		return
+
+	// Noclipping players are inside the map on purpose
+	if (player.GetMoveType() == MOVETYPE_NOCLIP)
+		return
+
+	if (!IsPlayerStuck(player))
+		return
+
+	local origin = player.GetOrigin()
+	local height = player.GetBoundingMaxs().z - player.GetBoundingMins().z
+	local extra_height = 10.0
+
+	local offsets =
+	[
+		Vector(32.0, 32.0, extra_height),
+		Vector(-32.0, -32.0, extra_height),
+		Vector(-32.0, 32.0, extra_height),
+		Vector(32.0, -32.0, extra_height),
+		Vector(0.0, 0.0, height + extra_height),
+		Vector(0.0, 0.0, -height - extra_height)
+	]
+
+	foreach (offset in offsets)
+	{
+		local where = origin + offset
+		if (!CanPlayerFitAt(player, where))
+			continue
+
+		player.Teleport(true, where, true, player.GetAbsAngles(), false, Vector())
+		return
+	}
+
+	ForcePlayerSuicide(player)
+}
+
+function IsProjectileInFlight(projectile)
+{
+	local classname = projectile.GetClassname()
+
+	// Stickies that already latched onto something are not in flight
+	if (classname == "tf_projectile_pipe_remote" && NetProps.GetPropBool(projectile, "m_bTouched"))
+		return false
+
+	// The grappling hook drags its owner along, so leave its trajectory alone
+	if (classname == "tf_projectile_grapplinghook")
+		return false
+
+	return true
+}
+
+function GetProjectileVelocity(projectile)
+{
+	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
+		return projectile.GetPhysVelocity()
+
+	return projectile.GetAbsVelocity()
+}
+
+function SetProjectileVelocity(projectile, velocity)
+{
+	if (projectile.GetMoveType() == MOVETYPE_VPHYSICS)
+	{
+		projectile.SetPhysVelocity(velocity)
+		return
+	}
+
+	projectile.SetAbsVelocity(velocity)
+
+	if (velocity.Length() > 0.0)
+		projectile.SetForwardVector(velocity)
 }
 
 function LerpVector(a, b, t)
@@ -117,6 +181,18 @@ function LerpAngles(a, b, t)
 		LerpAngle(a.x, b.x, t),
 		LerpAngle(a.y, b.y, t),
 		LerpAngle(a.z, b.z, t)
+	)
+}
+
+function VectorAngles(forward)
+{
+	if (forward.x == 0.0 && forward.y == 0.0)
+		return Vector(forward.z > 0.0 ? -90.0 : 90.0, 0.0, 0.0)
+
+	return Vector(
+		atan2(-forward.z, sqrt(forward.x * forward.x + forward.y * forward.y)) * 180.0 / PI,
+		atan2(forward.y, forward.x) * 180.0 / PI,
+		0.0
 	)
 }
 

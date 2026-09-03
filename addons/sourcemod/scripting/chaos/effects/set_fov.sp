@@ -1,25 +1,27 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void SetFOV_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("player:fov");
+}
+
 public bool SetFOV_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	// Only allow one active at a time
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-	
-	int iFOV = effect.data.GetNum("fov");
-	
+
+	int iFOV = kv.GetNum("fov");
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		SetFOV(client, iFOV);
 	}
-	
+
 	return true;
 }
 
@@ -29,22 +31,30 @@ public void SetFOV_OnEnd(ChaosEffect effect)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		SetDefaultFOV(client);
 	}
 }
 
 public void SetFOV_OnPlayerSpawn(ChaosEffect effect, int client)
 {
-	SetFOV(client, effect.data.GetNum("fov"));
+	KeyValues kv = effect.OpenData();
+	if (!kv)
+		return;
+
+	SetFOV(client, kv.GetNum("fov"));
 }
 
 public void SetFOV_OnConditionRemoved(ChaosEffect effect, int client, TFCond condition)
 {
-	if (condition == TFCond_Zoomed || condition == TFCond_Teleporting || condition == TFCond_HalloweenKartDash)
-	{
-		SetFOV(client, effect.data.GetNum("fov"));
-	}
+	if (condition != TFCond_Zoomed && condition != TFCond_Teleporting && condition != TFCond_HalloweenKartDash)
+		return;
+
+	KeyValues kv = effect.OpenData();
+	if (!kv)
+		return;
+
+	SetFOV(client, kv.GetNum("fov"));
 }
 
 static void SetFOV(int client, int iFOV)

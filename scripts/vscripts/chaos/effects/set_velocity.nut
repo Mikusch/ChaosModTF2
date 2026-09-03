@@ -4,7 +4,7 @@ function ChaosEffect_OnStart()
 		return false
 
 	local velocity = Chaos_Data.velocity
-	local abs = Chaos_Data.GetOrDefault("abs", false)
+	local abs = Chaos_GetData("abs", false)
 
 	for (local i = 1; i <= MaxClients(); i++)
 	{

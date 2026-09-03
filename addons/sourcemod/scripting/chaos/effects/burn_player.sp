@@ -3,10 +3,11 @@
 
 public bool BurnPlayer_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	float flDuration = effect.data.GetFloat("duration");
+
+	float flDuration = kv.GetFloat("duration");
 
 	for (int client = 1; client <= MaxClients; client++)
 	{

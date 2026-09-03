@@ -6,9 +6,12 @@ function ChaosEffect_OnStart()
 		if (player == null)
 			continue
 		
+		if (player.GetTeam() <= TEAM_SPECTATOR || player.GetTeam() >= TF_TEAM_COUNT)
+			continue
+
 		if (player.IsAlive())
 			continue
-		
+
 		player.ForceRespawn()
 	}
 }

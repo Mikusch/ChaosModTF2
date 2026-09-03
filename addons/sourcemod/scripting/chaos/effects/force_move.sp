@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Dir_t g_nDirection;
-
 static ConVar cl_forwardspeed;
 static ConVar cl_backspeed;
 static ConVar cl_sidespeed;
@@ -18,16 +16,18 @@ public bool ForceMove_Initialize(ChaosEffect effect)
 	return true;
 }
 
+public void ForceMove_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("player:movement");
+}
+
 public bool ForceMove_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
 
-	// Only allow one active at a time
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-
-	g_nDirection = view_as<Dir_t>(effect.data.GetNum("direction", view_as<int>(DIR_FWD)));
+	effect.state.SetValue("direction", kv.GetNum("direction", view_as<int>(DIR_FWD)));
 
 	return true;
 }
@@ -37,7 +37,13 @@ public Action ForceMove_OnPlayerRunCmd(ChaosEffect effect, int client, int &butt
 	if (!IsPlayerAlive(client))
 		return Plugin_Continue;
 
-	switch (g_nDirection)
+	int nValue;
+	if (!effect.state.GetValue("direction", nValue))
+		return Plugin_Continue;
+
+	Dir_t nDirection = view_as<Dir_t>(nValue);
+
+	switch (nDirection)
 	{
 		case DIR_FWD:	vel[0] = cl_forwardspeed.FloatValue;
 		case DIR_BACK:	vel[0] = -cl_backspeed.FloatValue;

@@ -18,6 +18,9 @@ function ChaosEffect_OnEnd()
 		if (player == null)
 			continue
 
+		if (player.HasItem())
+			continue
+
 		NetProps.SetPropBool(player, "m_bGlowEnabled", false)
 	}
 }

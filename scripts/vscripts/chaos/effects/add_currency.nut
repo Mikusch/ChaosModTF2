@@ -20,7 +20,7 @@ function ChaosEffect_OnStart()
 
 			EntFireByHandle(player, "AddContext", "IsMvMDefender:1", -1, null, null)
 			EntFireByHandle(player, "SpeakResponseConcept", "TLK_MVM_MONEY_PICKUP", -1, null, null)
-			EntFireByHandle(player, "ClearContext", null, -1, null, null)
+			EntFireByHandle(player, "RemoveContext", "IsMvMDefender", -1, null, null)
 		}
 		else
 		{

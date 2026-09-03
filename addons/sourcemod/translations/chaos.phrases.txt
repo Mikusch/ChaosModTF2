@@ -4,6 +4,11 @@
 	{
 		"en"		"[{darkorange}TF2 CHAOS{default}] "
 	}
+	"#Chaos_Cmd_Usage"
+	{
+		"#format"	"{1:s}"
+		"en"		"Usage: {lightgreen}{1}{default}"
+	}
 	"#Chaos_Effect_NotFound"
 	{
 		"#format"	"{1:s}"
@@ -11,8 +16,28 @@
 	}
 	"#Chaos_Effect_SetNextEffect_Success"
 	{
-		"#format"	"{1:t}"
+		"#format"	"{1:s}"
 		"en"		"Next effect set to {lightgreen}{1}{default}."
+	}
+	"#Chaos_Effect_ForceEffect_Success"
+	{
+		"#format"	"{1:s}"
+		"en"		"Forced effect {lightgreen}{1}{default}."
+	}
+	"#Chaos_Effect_ForceEffect_Failed"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"Could not activate {lightgreen}{1}{default}: {2}"
+	}
+	"#Chaos_Effect_Expire_NotActive"
+	{
+		"#format"	"{1:s}"
+		"en"		"Effect {lightgreen}{1}{default} is not active."
+	}
+	"#Chaos_Effect_Expire_Success"
+	{
+		"#format"	"{1:s}"
+		"en"		"Expired effect {lightgreen}{1}{default}."
 	}
 	"#Chaos_Effect_InvertAccel"
 	{
@@ -58,10 +83,6 @@
 	"#Chaos_Effect_LowHP"
 	{
 		"en"		"One Hit K.O."
-	}
-	"#Chaos_Effect_HighHP"
-	{
-		"en"		"Healthy Mercs"
 	}
 	"#Chaos_Effect_NoTorso"
 	{
@@ -147,6 +168,10 @@
 	{
 		"en"		"Super Speed"
 	}
+	"#Chaos_Effect_HighHP"
+	{
+		"en"		"Healthy Mercs"
+	}
 	"#Chaos_Effect_ThirdPerson"
 	{
 		"en"		"Third Person Camera"
@@ -182,10 +207,6 @@
 	"#Chaos_Effect_HeavyOverlay"
 	{
 		"en"		"Companion Heavy"
-	}
-	"#Chaos_Effect_GrillOverlay"
-	{
-		"en"		"Meat The Grill"
 	}
 	"#Chaos_Effect_Ghosts"
 	{
@@ -236,14 +257,6 @@
 		"#format"	"{1:s},{2:s}"
 		"en"		"Removed entity: {lightgreen}{1} {default}({lightgreen}{2}{default})."
 	}
-	"#Chaos_Effect_LaunchUp"
-	{
-		"en"		"Launch Players Up"
-	}
-	"#Chaos_Effect_Fling"
-	{
-		"en"		"Fling Players"
-	}
 	"#Chaos_Effect_RemovePickups"
 	{
 		"en"		"Remove Health and Ammo Pickups"
@@ -276,10 +289,6 @@
 	{
 		"en"		"Airblast on Hit"
 	}
-	"#Chaos_Effect_Stop"
-	{
-		"en"		"Stop and Stare"
-	}
 	"#Chaos_Effect_RandomCritsOn"
 	{
 		"en"		"Enable Random Crits"
@@ -287,6 +296,10 @@
 	"#Chaos_Effect_RandomCritsOff"
 	{
 		"en"		"Disable Random Crits"
+	}
+	"#Chaos_Effect_Stop"
+	{
+		"en"		"Stop and Stare"
 	}
 	"#Chaos_Effect_GrapplingHooks"
 	{
@@ -340,6 +353,14 @@
 	{
 		"en"		"Megaphone"
 	}
+	"#Chaos_Effect_LaunchUp"
+	{
+		"en"		"Launch Players Up"
+	}
+	"#Chaos_Effect_Fling"
+	{
+		"en"		"Fling Players"
+	}
 	"#Chaos_Effect_SpawnBall"
 	{
 		"en"		"Spawn Halloween Ball"
@@ -352,13 +373,13 @@
 	{
 		"en"		"Rich Man"
 	}
-	"#Chaos_Effect_ExtraJumps"
-	{
-		"en"		"Extra Scout Jumps"
-	}
 	"#Chaos_Effect_BigTorso"
 	{
 		"en"		"Stretchy Mercs"
+	}
+	"#Chaos_Effect_ExtraJumps"
+	{
+		"en"		"Extra Scout Jumps"
 	}
 	"#Chaos_Effect_PaintItems"
 	{
@@ -472,6 +493,18 @@
 	{
 		"en"		"All Weapons Can Headshot"
 	}
+	"#Chaos_Effect_VRCamera"
+	{
+		"en"		"Virtual Reality Camera"
+	}
+	"#Chaos_Effect_DelayedCamera"
+	{
+		"en"		"Delayed Camera"
+	}
+	"#Chaos_Effect_LeaveCamera"
+	{
+		"en"		"Goodbye"
+	}
 	"#Chaos_Effect_SmokeExplosions"
 	{
 		"en"		"Directed by Michael Bay"
@@ -540,10 +573,6 @@
 	{
 		"en"		"High Pitch"
 	}
-	"#Chaos_Effect_SwapTeams"
-	{
-		"en"		"Swap Teams"
-	}
 	"#Chaos_Effect_ForceForward"
 	{
 		"en"		"Help, My W Key Is Stuck"
@@ -551,6 +580,10 @@
 	"#Chaos_Effect_ForceBack"
 	{
 		"en"		"Moonwalk"
+	}
+	"#Chaos_Effect_SwapTeams"
+	{
+		"en"		"Swap Teams"
 	}
 	"#Chaos_Effect_FastTaunt"
 	{
@@ -563,18 +596,6 @@
 	"#Chaos_Effect_SpawnBirds"
 	{
 		"en"		"Who Let the Birds Out?"
-	}
-	"#Chaos_Effect_VRCamera"
-	{
-		"en"		"Virtual Reality Camera"
-	}
-	"#Chaos_Effect_DelayedCamera"
-	{
-		"en"		"Delayed Camera"
-	}
-	"#Chaos_Effect_LeaveCamera"
-	{
-		"en"		"Goodbye"
 	}
 	"#Chaos_Effect_SpeedUp"
 	{
@@ -607,6 +628,10 @@
 	"#Chaos_Effect_DisableDirection"
 	{
 		"en"		"Disable Random Direction"
+	}
+	"#Chaos_Effect_GrillOverlay"
+	{
+		"en"		"Meat The Grill"
 	}
 	"#Chaos_Effect_Swimming"
 	{
@@ -663,10 +688,6 @@
 	"#Chaos_Effect_HomingProjectiles"
 	{
 		"en"		"Homing Projectiles"
-	}
-	"#Chaos_Effect_RandomizeWeaponOrder"
-	{
-		"en"		"Randomize Weapon Order"
 	}
 	"#Chaos_Effect_PlayCommentary"
 	{
@@ -756,6 +777,14 @@
 	{
 		"en"		"See More"
 	}
+	"#Chaos_Effect_JumpyProps"
+	{
+		"en"		"Jumpy Props"
+	}
+	"#Chaos_Effect_SpinProps"
+	{
+		"en"		"Beyblades"
+	}
 	"#Chaos_Effect_ProjectileParry"
 	{
 		"en"		"Melee Parries Projectiles"
@@ -795,13 +824,5 @@
 	"#Chaos_MetaEffect_Multi6"
 	{
 		"en"		"WOMBO COMBO TIME (Meta)"
-	}
-	"#Chaos_Effect_JumpyProps"
-	{
-		"en"		"Jumpy Props"
-	}
-	"#Chaos_Effect_SpinProps"
-	{
-		"en"		"Beyblades"
 	}
 }

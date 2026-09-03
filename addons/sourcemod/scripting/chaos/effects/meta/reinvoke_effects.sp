@@ -3,10 +3,11 @@
 
 public bool ReinvokeEffects_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
-	
-	float reinvoke_time = effect.data.GetFloat("reinvoke_time");
+
+	float reinvoke_time = kv.GetFloat("reinvoke_time");
 	
 	bool bActivated = false;
 	

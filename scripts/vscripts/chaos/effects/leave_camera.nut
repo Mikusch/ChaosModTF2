@@ -1,3 +1,6 @@
+local TRACK_DISTANCE = 64.0 // Distance the player has to leave before the camera starts following them
+local TURN_LERP_FACTOR = 0.15
+
 function ChaosEffect_OnStart()
 {
 	for (local i = 1; i <= MaxClients(); i++)
@@ -11,6 +14,37 @@ function ChaosEffect_OnStart()
 
 		SetupPlayer(player)
 	}
+}
+
+function ChaosEffect_Update()
+{
+	for (local i = 1; i <= MaxClients(); i++)
+	{
+		local player = PlayerInstanceFromIndex(i)
+		if (player == null)
+			continue
+
+		if (!player.IsAlive())
+			continue
+
+		local scope = player.GetScriptScope()
+		if (scope == null || !("viewcontrol" in scope))
+			continue
+
+		local viewcontrol = scope.viewcontrol
+		if (viewcontrol == null || !viewcontrol.IsValid())
+			continue
+
+		// Hold the angles the player left behind until they are far enough away to aim at
+		local dir = player.EyePosition() - viewcontrol.GetOrigin()
+		if (dir.Norm() < TRACK_DISTANCE)
+			continue
+
+		local goal = VectorAngles(dir)
+		viewcontrol.KeyValueFromVector("angles", LerpAngles(viewcontrol.GetAbsAngles(), goal, TURN_LERP_FACTOR))
+	}
+
+	return CHAOS_UPDATE_EVERY_FRAME
 }
 
 function ChaosEffect_OnEnd()

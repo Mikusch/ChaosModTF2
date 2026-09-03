@@ -15,15 +15,18 @@ public bool TimeScale_Initialize(ChaosEffect effect)
 	return true;
 }
 
+public void TimeScale_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("convar:host_timescale");
+}
+
 public bool TimeScale_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
 
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-
-	float flTimescale = effect.data.GetFloat("timescale", 1.0);
+	float flTimescale = kv.GetFloat("timescale", 1.0);
 
 	if (host_timescale.FloatValue == flTimescale)
 		return false;
@@ -75,10 +78,10 @@ static void OnTimescaleChanged(ConVar convar, const char[] oldValue, const char[
 static void OnCheatsChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
 	// Allow clients to react to the initial change first
-	RequestFrame(RequestFrameCallback_ReplicateCheats);
+	RequestFrame(Frame_ReplicateCheats);
 }
 
-public void RequestFrameCallback_ReplicateCheats()
+static void Frame_ReplicateCheats()
 {
 	ReplicateCheatsToClients("1");
 }

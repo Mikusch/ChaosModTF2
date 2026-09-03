@@ -7,21 +7,26 @@ static int g_iNumEffects;
 static int g_iActivatedEffects;
 static Handle g_hTimer;
 
+public void MultiEffect_GetClaims(ChaosEffect effect, ArrayList claims)
+{
+	claims.PushString("meta:multi_effect");
+}
+
 public bool MultiEffect_OnStart(ChaosEffect effect)
 {
-	if (!effect.data)
+	KeyValues kv = effect.OpenData();
+	if (!kv)
 		return false;
 
-	// Only allow one active at a time
-	if (IsEffectOfClassActive(effect.effect_class))
-		return false;
-
-	g_iNumEffects = effect.data.GetNum("effect_count");
+	g_iNumEffects = kv.GetNum("effect_count");
 	if (g_iNumEffects < 1)
 		return false;
 
 	g_iActivatedEffects = 0;
-	float flNextEffectDelay = (effect.duration - 0.1) / float(g_iNumEffects); // n effects over m seconds
+
+	float flNextEffectDelay = (effect.current_duration - 0.1) / float(g_iNumEffects); // n effects over m seconds
+	if (flNextEffectDelay <= 0.0)
+		return false;
 
 	g_hTimer = CreateTimer(flNextEffectDelay, Timer_NextEffect, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 

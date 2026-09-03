@@ -4,7 +4,7 @@ function OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	if (params["class"] != Constants.ETFClass.TF_CLASS_SNIPER)
+	if (params["class"] != TF_CLASS_SNIPER)
 		return
 
 	for (local i = 1; i <= MaxClients(); i++)
@@ -22,7 +22,8 @@ function OnGameEvent_player_spawn(params)
 		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", -1, null, null)
 		EntFireByHandle(other, "AddContext", "randomnum:100", -1, null, null)
 		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_SNIPER_CALLOUT", -1, null, null)
-		EntFireByHandle(other, "ClearContext", null, -1, null, null)
+		EntFireByHandle(other, "RemoveContext", "IsMvMDefender", -1, null, null)
+		EntFireByHandle(other, "RemoveContext", "randomnum", -1, null, null)
 	}
 }
 
@@ -48,6 +49,8 @@ function OnGameEvent_player_death(params)
 		EntFireByHandle(other, "AddContext", "IsMvMDefender:1", -1, null, null)
 		EntFireByHandle(other, "AddContext", "randomnum:100", -1, null, null)
 		EntFireByHandle(other, "SpeakResponseConcept", "TLK_MVM_DEFENDER_DIED", -1, null, null)
-		EntFireByHandle(other, "ClearContext", null, -1, null, null)
+		EntFireByHandle(other, "RemoveContext", "victimclass", -1, null, null)
+		EntFireByHandle(other, "RemoveContext", "IsMvMDefender", -1, null, null)
+		EntFireByHandle(other, "RemoveContext", "randomnum", -1, null, null)
 	}
 }

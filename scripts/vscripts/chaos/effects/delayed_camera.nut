@@ -62,7 +62,7 @@ function ChaosEffect_Update()
 
 		local delayed = scope.position_history[0]
 
-		local lerp_factor = Chaos_Data.GetOrDefault("lerp_factor", 0.15)
+		local lerp_factor = Chaos_GetData("lerp_factor", 0.15)
 		scope.origin <- LerpVector(scope.origin, delayed.origin, lerp_factor)
 		scope.angles <- LerpAngles(scope.angles, delayed.angles, lerp_factor)
 
@@ -70,7 +70,7 @@ function ChaosEffect_Update()
 		viewcontrol.KeyValueFromVector("angles", Vector() + scope.angles)
 	}
 
-	return -1
+	return CHAOS_UPDATE_EVERY_FRAME
 }
 
 function ChaosEffect_OnEnd()

@@ -22,190 +22,73 @@ any Max(any a, any b)
 	return (a >= b) ? a : b;
 }
 
-int Compare(any a, any b)
+any Min(any a, any b)
 {
-	if (a > b)
-	{
-		return 1;
-	}
-	else if (a < b)
-	{
-		return -1;
-	}
-	
-	return 0;
+	return (a <= b) ? a : b;
 }
 
-int SortFuncADTArray_SortChaosEffectsByCooldown(int index1, int index2, Handle array, Handle hndl)
+int SortFuncADTArray_SortDisplayOrder(int index1, int index2, Handle array, Handle hndl)
 {
-	ArrayList list = view_as<ArrayList>(array);
-	
-	ChaosEffect effect1, effect2;
-	list.GetArray(index1, effect1);
-	list.GetArray(index2, effect2);
-	
-	// If both are the same, pick a random one
-	return (effect1.cooldown_left == effect2.cooldown_left) ? GetRandomInt(-1, 1) : Compare(effect1.cooldown_left, effect2.cooldown_left);
-}
+	ArrayList order = view_as<ArrayList>(array);
 
-int SortFuncADTArray_SortChaosEffectsByActivationTime(int index1, int index2, Handle array, Handle hndl)
-{
-	ArrayList list = view_as<ArrayList>(array);
-
-	ChaosEffect effect1, effect2;
-	list.GetArray(index1, effect1);
-	list.GetArray(index2, effect2);
+	int a = order.Get(index1);
+	int b = order.Get(index2);
 
 	// Sort by activation time descending
-	if (effect1.activate_time != effect2.activate_time)
-		return Compare(effect2.activate_time, effect1.activate_time);
+	float flActivate1 = g_hEffects.Get(a, ChaosEffect::activate_time);
+	float flActivate2 = g_hEffects.Get(b, ChaosEffect::activate_time);
+	if (flActivate1 != flActivate2)
+		return FloatCompare(flActivate2, flActivate1);
 
 	// Sort meta effects first
-	if (effect1.meta != effect2.meta)
-		return Compare(effect2.meta, effect1.meta);
+	bool bMeta1 = g_hEffects.Get(a, ChaosEffect::meta);
+	bool bMeta2 = g_hEffects.Get(b, ChaosEffect::meta);
+	if (bMeta1 != bMeta2)
+		return bMeta1 ? -1 : 1;
 
-	float duration1 = effect1.duration ? effect1.duration : ONESHOT_EFFECT_DISPLAY_TIME;
-	float duration2 = effect2.duration ? effect2.duration : ONESHOT_EFFECT_DISPLAY_TIME;
+	float flDuration1 = g_hEffects.Get(a, ChaosEffect::duration);
+	float flDuration2 = g_hEffects.Get(b, ChaosEffect::duration);
+	if (flDuration1 <= 0.0)
+		flDuration1 = ONESHOT_EFFECT_DISPLAY_TIME;
+	if (flDuration2 <= 0.0)
+		flDuration2 = ONESHOT_EFFECT_DISPLAY_TIME;
 
 	// Sort by duration ascending
-	if (duration1 != duration2)
-		return Compare(duration1, duration2);
+	if (flDuration1 != flDuration2)
+		return FloatCompare(flDuration1, flDuration2);
 
 	// Sort alphabetically by ID
-	return strcmp(effect1.id, effect2.id);
+	char szId1[64], szId2[64];
+	g_hEffects.GetString(a, szId1, sizeof(szId1), ChaosEffect::id);
+	g_hEffects.GetString(b, szId2, sizeof(szId2), ChaosEffect::id);
+
+	return strcmp(szId1, szId2);
 }
 
-bool FindKeyInKeyValues(KeyValues kv, const char[] szKeyToFind)
+// bInvert drains the bar as the ratio rises, for the remaining-time bar
+void BuildProgressBar(ProgressBarConfig config, float flRatio, bool bInvert, char[] szBuffer, int iMaxLength)
 {
-	do
+	szBuffer[0] = EOS;
+
+	if (flRatio < 0.0)
+		flRatio = 0.0;
+	if (flRatio > 1.0)
+		flRatio = 1.0;
+
+	int nBlocks = config.num_blocks;
+	int nScaled = RoundToNearest(flRatio * float(nBlocks));
+
+	int nFilled = bInvert ? (nBlocks - nScaled) : nScaled;
+	int nEmpty = nBlocks - nFilled;
+
+	for (int i = 0; i < nFilled; i++)
 	{
-		if (kv.GotoFirstSubKey(false))
-		{
-			// Current key is a section, browse it recursively
-			if (FindKeyInKeyValues(kv, szKeyToFind))
-				return true;
-
-			kv.GoBack();
-		}
-		else
-		{
-			// Current key is a regular key, or an empty section
-			if (kv.GetDataType(NULL_STRING) != KvData_None)
-			{
-				char szKey[64];
-				if (kv.GetSectionName(szKey, sizeof(szKey)) && StrEqual(szKey, szKeyToFind))
-					return true;
-			}
-		}
+		StrCat(szBuffer, iMaxLength, config.filled);
 	}
-	while (kv.GotoNextKey(false));
-	
-	return false;
-}
-
-static bool FindValueInKeyValues(KeyValues kv, const char[] szValueToFind)
-{
-	do
+	for (int i = 0; i < nEmpty; i++)
 	{
-		if (kv.GotoFirstSubKey(false))
-		{
-			// It's a section, recurse into it
-			if (FindValueInKeyValues(kv, szValueToFind))
-				return true;
-
-			kv.GoBack();
-		}
-		else if (kv.GetDataType(NULL_STRING) != KvData_None)
-		{
-			// It's a key-value pair
-			char szValue[64];
-			kv.GetString(NULL_STRING, szValue, sizeof(szValue));
-
-			if (StrEqual(szValue, szValueToFind))
-				return true;
-		}
+		StrCat(szBuffer, iMaxLength, config.empty);
 	}
-	while (kv.GotoNextKey(false));
-
-	return false;
-}
-
-bool FindKeyValuePairInKeyValues(KeyValues kv, const char[] szKeyToFind, const char[] szValueToFind)
-{
-	do
-	{
-		char szKey[64];
-		kv.GetSectionName(szKey, sizeof(szKey));
-
-		if (kv.GotoFirstSubKey(false))
-		{
-			// Current key is a section
-			if (StrEqual(szKey, szKeyToFind))
-			{
-				// Found target section, recursively search for the value
-				if (FindValueInKeyValues(kv, szValueToFind))
-					return true;
-			}
-			else
-			{
-				// Not the target section, recurse to find nested instances
-				if (FindKeyValuePairInKeyValues(kv, szKeyToFind, szValueToFind))
-					return true;
-			}
-			kv.GoBack();
-		}
-		else if (kv.GetDataType(NULL_STRING) != KvData_None)
-		{
-			// Current key is a regular key-value pair
-			if (StrEqual(szKey, szKeyToFind))
-			{
-				char szValue[64];
-				kv.GetString(NULL_STRING, szValue, sizeof(szValue));
-
-				if (StrEqual(szValue, szValueToFind))
-					return true;
-			}
-		}
-	}
-	while (kv.GotoNextKey(false));
-
-	return false;
-}
-
-bool FindKeyInSectionInKeyValues(KeyValues kv, const char[] szSectionToFind, const char[] szKeyToFind)
-{
-	do
-	{
-		char szKey[64];
-		kv.GetSectionName(szKey, sizeof(szKey));
-
-		if (kv.GotoFirstSubKey(false))
-		{
-			// Current key is a section
-			if (StrEqual(szKey, szSectionToFind))
-			{
-				// Found target section, search for the key name inside it
-				if (FindKeyInKeyValues(kv, szKeyToFind))
-				{
-					kv.GoBack();
-					return true;
-				}
-			}
-			else
-			{
-				// Not the target section, recurse to find nested instances
-				if (FindKeyInSectionInKeyValues(kv, szSectionToFind, szKeyToFind))
-				{
-					kv.GoBack();
-					return true;
-				}
-			}
-			kv.GoBack();
-		}
-	}
-	while (kv.GotoNextKey(false));
-
-	return false;
 }
 
 void SendHudNotification(HudNotification_t iType, bool bForceShow = false)
@@ -402,35 +285,6 @@ static bool ItemFilterCriteria_FilterByName(int iItemDefIndex, DataPack hDataPac
 	return false;
 }
 
-int FixedUnsigned16(float value, int scale)
-{
-	int output;
-	
-	output = RoundToFloor(value * float(scale));
-	if (output < 0)
-		output = 0;
-	if (output > 0xFFFF)
-		output = 0xFFFF;
-	
-	return output;
-}
-
-void UTIL_ScreenFade(int player, const int color[4], float fadeTime, float fadeHold, int flags)
-{
-	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Fade", player, USERMSG_RELIABLE));
-	if (bf != null)
-	{
-		bf.WriteShort(FixedUnsigned16(fadeTime, 1 << SCREENFADE_FRACBITS));
-		bf.WriteShort(FixedUnsigned16(fadeHold, 1 << SCREENFADE_FRACBITS));
-		bf.WriteShort(flags);
-		bf.WriteByte(color[0]);
-		bf.WriteByte(color[1]);
-		bf.WriteByte(color[2]);
-		bf.WriteByte(color[3]);
-		EndMessage();
-	}
-}
-
 void UTIL_ScreenShake(int player, ShakeCommand_t eCommand, float flAmplitude, float flFrequency, float flDuration)
 {
 	BfWrite bf = UserMessageToBfWrite(StartMessageOne("Shake", player));
@@ -462,7 +316,79 @@ int FindItemOffset(int entity)
 	return FindSendPropInfo(szNetClass, "m_Item");
 }
 
-bool Chaos_LoadGameData(GameData &gameconf)
+bool IsEntityWeapon(int entity)
+{
+	return HasEntProp(entity, Prop_Data, "CTFWeaponBaseFallThink");
+}
+
+bool IsEntityWearable(int entity)
+{
+	return HasEntProp(entity, Prop_Send, "m_bDisguiseWearable");
+}
+
+ArrayList GetWearables(int client = -1)
+{
+	ArrayList hWearables = new ArrayList();
+
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "*")) != -1)
+	{
+		if (!IsEntityWearable(entity))
+			continue;
+
+		if (client == -1 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
+			hWearables.Push(entity);
+	}
+
+	return hWearables;
+}
+
+int GetPlayerLoadoutEntity(int client, int iLoadoutSlot, bool bIncludeWearableWeapons = true)
+{
+	TFClassType nClass = TF2_GetPlayerClass(client);
+
+	if (IsWearableSlot(iLoadoutSlot) || bIncludeWearableWeapons)
+	{
+		ArrayList hWearables = GetWearables(client);
+		for (int i = 0; i < hWearables.Length; i++)
+		{
+			int wearable = hWearables.Get(i);
+
+			int iItemDefIndex = GetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex");
+			if (TF2Econ_GetItemLoadoutSlot(iItemDefIndex, nClass) == iLoadoutSlot)
+			{
+				delete hWearables;
+				return wearable;
+			}
+		}
+		delete hWearables;
+	}
+
+	int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
+	for (int i = 0; i < nMaxWeapons; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if (weapon == -1)
+			continue;
+
+		int iItemDefIndex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+		if (TF2Econ_GetItemLoadoutSlot(iItemDefIndex, nClass) == iLoadoutSlot)
+			return weapon;
+	}
+
+	return -1;
+}
+
+void SetPlayerActiveWeapon(int client, int weapon)
+{
+	char code[64];
+	FormatEx(code, sizeof(code), "self.Weapon_Switch(EntIndexToHScript(%d))", EntRefToEntIndex(weapon));
+
+	SetVariantString(code);
+	AcceptEntityInput(client, "RunScriptCode");
+}
+
+bool LoadGameData(GameData &gameconf)
 {
 	gameconf = new GameData("chaos");
 	if (!gameconf)
@@ -471,40 +397,4 @@ bool Chaos_LoadGameData(GameData &gameconf)
 		return false;
 	}
 	return true;
-}
-
-DynamicDetour Chaos_CreateDetour(const char[] name)
-{
-	GameData gameconf;
-	if (!Chaos_LoadGameData(gameconf))
-		return null;
-
-	DynamicDetour detour = DynamicDetour.FromConf(gameconf, name);
-	delete gameconf;
-
-	if (!detour)
-	{
-		LogError("Failed to create detour for '%s'", name);
-		return null;
-	}
-
-	return detour;
-}
-
-DynamicHook Chaos_CreateDynamicHook(const char[] name)
-{
-	GameData gameconf;
-	if (!Chaos_LoadGameData(gameconf))
-		return null;
-
-	DynamicHook hook = DynamicHook.FromConf(gameconf, name);
-	delete gameconf;
-
-	if (!hook)
-	{
-		LogError("Failed to create hook for '%s'", name);
-		return null;
-	}
-
-	return hook;
 }

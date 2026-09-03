@@ -15,29 +15,20 @@ function ChaosEffect_OnStart()
 	if (players.len() < 2)
 		return false
 
-	local others = players.slice(0)
-	ShuffleArray(others)
+	ShuffleArray(players)
 
 	foreach (i, player in players)
 	{
-		for (local j = others.len() - 1; j >= 0; j--)
-		{
-			local other = others[j]
-			if (player == other)
-				continue
+		local other = players[(i + 1) % players.len()]
 
-			local scope = player.GetScriptScope()
-			scope.teleport_origin <- other.GetOrigin()
-			scope.teleport_angles <- other.GetAbsAngles()
-			scope.teleport_velocity <- other.GetAbsVelocity()
-			scope.TeleportPlayer <- TeleportPlayer
+		local scope = player.GetScriptScope()
+		scope.teleport_origin <- other.GetOrigin()
+		scope.teleport_angles <- other.GetAbsAngles()
+		scope.teleport_velocity <- other.GetAbsVelocity()
+		scope.TeleportPlayer <- TeleportPlayer
 
-			// Delay it, so that other players can get our old position
-			EntFireByHandle(player, "CallScriptFunction", "TeleportPlayer", -1, player, null)
-
-			others.remove(j)
-			break
-		}
+		// Delay it, so that other players can get our old position
+		EntFireByHandle(player, "CallScriptFunction", "TeleportPlayer", -1, player, null)
 	}
 }
 

@@ -70,14 +70,6 @@ public bool MannInTheMachine_OnStart(ChaosEffect effect)
 	return true;
 }
 
-public void MannInTheMachine_OnPlayerSpawn(ChaosEffect effect, int client)
-{
-	if (!IsValidRobotPlayer(client))
-		return;
-	
-	SetRobotModel(client);
-}
-
 public void MannInTheMachine_OnEnd(ChaosEffect effect)
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -93,6 +85,14 @@ public void MannInTheMachine_OnEnd(ChaosEffect effect)
 	UnhookEvent("player_death", OnPlayerDeath);
 }
 
+public void MannInTheMachine_OnPlayerSpawn(ChaosEffect effect, int client)
+{
+	if (!IsValidRobotPlayer(client))
+		return;
+	
+	SetRobotModel(client);
+}
+
 static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
 	if (!IsValidRobotPlayer(entity))
@@ -106,18 +106,18 @@ static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char
 		if (GetEntProp(entity, Prop_Send, "m_bIsMiniBoss") && nClass != TFClass_Sniper && nClass != TFClass_Engineer && nClass != TFClass_Medic && nClass != TFClass_Spy)
 		{
 			ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/mght/", false);
-			Format(szClassMvM, sizeof(szClassMvM), "%s_mvm_m", g_szBotClassNames[view_as<int>(nClass)]);
+			FormatEx(szClassMvM, sizeof(szClassMvM), "%s_mvm_m", g_szBotClassNames[view_as<int>(nClass)]);
 		}
 		else
 		{
 			ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/norm/", false);
-			Format(szClassMvM, sizeof(szClassMvM), "%s_mvm", g_szBotClassNames[view_as<int>(nClass)]);
+			FormatEx(szClassMvM, sizeof(szClassMvM), "%s_mvm", g_szBotClassNames[view_as<int>(nClass)]);
 		}
 		
 		ReplaceString(sample, sizeof(sample), g_szBotClassNames[view_as<int>(nClass)], szClassMvM);
 		
 		char szSoundPath[PLATFORM_MAX_PATH];
-		Format(szSoundPath, sizeof(szSoundPath), "sound/%s", sample);
+		FormatEx(szSoundPath, sizeof(szSoundPath), "sound/%s", sample);
 		
 		if (FileExists(szSoundPath, true))
 		{

@@ -11,6 +11,7 @@ function ChaosEffect_OnStart()
 		foglerptime = 1.5,
 		fogcolor = Vector(200, 200, 200),
 		fogblend = 0,
+		fogradial = 1,
 		farz = 8192
 	})
 
@@ -28,10 +29,10 @@ function ChaosEffect_OnEnd()
 		custom_fog_controller.Destroy()
 	
 	local controller = FindFogController(true)
-	if (controller != null)
-		SetFogForAllPlayers(controller)
-	else
-		SetFogForAllPlayers(FindFogController())
+	if (controller == null)
+		controller = FindFogController()
+
+	SetFogForAllPlayers(controller)
 }
 
 function FindFogController(master = false)
@@ -42,9 +43,9 @@ function FindFogController(master = false)
 		if (controller == custom_fog_controller)
 			continue
 
-		if (!master && NetProps.GetPropInt(controller, "m_spawnflags") & SF_FOG_MASTER)
+		if (master && !(NetProps.GetPropInt(controller, "m_spawnflags") & SF_FOG_MASTER))
 			continue
-		
+
 		return controller
 	}
 

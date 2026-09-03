@@ -26,12 +26,13 @@ local skynames =
 
 function ChaosEffect_OnStart()
 {
-	local sky, sv_skyname = Convars.GetStr("sv_skyname");
+	local sv_skyname = Convars.GetStr("sv_skyname")
+	local sky
 	do
 	{
 		sky = skynames[RandomInt(0, skynames.len() - 1)]
 	}
 	while (sky == sv_skyname)
-	
+
 	SetSkyboxTexture(sky)
 }

@@ -4,14 +4,14 @@
 public bool NoChaos_OnStart(ChaosEffect effect)
 {
 	ExpireAllActiveEffects(true);
-	SetChaosPaused(true);
-	StopChaosTimers();
+	Chaos_SetPaused(true);
+	Chaos_StopTimers();
 
 	return true;
 }
 
 public void NoChaos_OnEnd(ChaosEffect effect)
 {
-	SetChaosPaused(false);
-	StartChaosTimers();
+	Chaos_SetPaused(false);
+	Chaos_StartTimers();
 }
