@@ -35,7 +35,7 @@ function ChaosEffect_OnEnd()
 function Resize(player, scale)
 {
 	player.SetModelScale(scale, Chaos_GetData("change_duration", 0.0))
-	player.AddCustomAttribute("voice pitch scale", 1.0 / scale, -1)
+	EntFireByHandle(player, "RunScriptCode", format("self.AddCustomAttribute(\"voice pitch scale\", %f, -1)", 1.0 / scale), -1, null, null)
 
 	ScheduleStuckCheck(player)
 }

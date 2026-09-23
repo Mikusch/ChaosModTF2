@@ -114,7 +114,7 @@ function ResolveStuckPlayer(player)
 		if (!CanPlayerFitAt(player, where))
 			continue
 
-		player.Teleport(true, where, true, player.GetAbsAngles(), false, Vector())
+		player.Teleport(true, where, false, QAngle(), false, Vector())
 		return
 	}
 
