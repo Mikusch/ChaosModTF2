@@ -158,6 +158,14 @@ function SetProjectileVelocity(projectile, velocity)
 		projectile.SetForwardVector(velocity)
 }
 
+function RemoveThinkFromEnt(ent)
+{
+	AddThinkToEnt(ent, null)
+
+	// Passing null keeps the old think name around
+	NetProps.SetPropString(ent, "m_iszScriptThinkFunction", "")
+}
+
 function LerpVector(a, b, t)
 {
 	return Vector(

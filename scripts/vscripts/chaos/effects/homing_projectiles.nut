@@ -8,8 +8,6 @@ local Targets = []
 
 function ChaosEffect_Update()
 {
-	CollectTargets()
-
 	for (local projectile; projectile = Entities.FindByClassname(projectile, "tf_projectile_*");)
 	{
 		if (projectile in TrackedProjectiles)
@@ -44,6 +42,9 @@ function ChaosEffect_Update()
 	foreach (projectile in expired)
 		delete TrackedProjectiles[projectile]
 
+	if (TrackedProjectiles.len() > 0)
+		CollectTargets()
+
 	return CHAOS_UPDATE_EVERY_FRAME
 }
 
@@ -52,7 +53,7 @@ function ChaosEffect_OnEnd()
 	foreach (projectile, _ in TrackedProjectiles)
 	{
 		if (projectile != null && projectile.IsValid())
-			AddThinkToEnt(projectile, null)
+			RemoveThinkFromEnt(projectile)
 	}
 }
 
