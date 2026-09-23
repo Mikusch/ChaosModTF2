@@ -16,7 +16,7 @@ function SetStepSizeOnAll(stepsize)
 		if (player == null)
 			continue
 
-		NetProps.SetPropFloat(player, "m_flStepSize", stepsize)
+		NetProps.SetPropFloat(player, "m_Local.m_flStepSize", stepsize)
 	}
 }
 
@@ -26,5 +26,5 @@ function OnGameEvent_player_spawn(params)
 	if (player == null)
 		return
 
-	NetProps.SetPropFloat(player, "m_flStepSize", Chaos_GetData("stepsize", 18.0))
+	NetProps.SetPropFloat(player, "m_Local.m_flStepSize", Chaos_GetData("stepsize", 18.0))
 }
