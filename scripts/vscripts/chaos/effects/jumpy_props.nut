@@ -44,7 +44,10 @@ function ChaosEffect_OnEnd()
 			continue
 
 		local think_func = ThinkFuncs[ent]
-		AddThinkToEnt(ent, think_func != "" ? think_func : null) // if there was no original think function, we set to null to clear it
+		if (think_func != "")
+			AddThinkToEnt(ent, think_func)
+		else
+			RemoveThinkFromEnt(ent)
 	}
 }
 
