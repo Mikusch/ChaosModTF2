@@ -116,7 +116,10 @@ function ParryProjectile(projectile, swing)
 
 	NetProps.SetPropEntity(projectile, "m_hOwnerEntity", swing.owner)
 	NetProps.SetPropEntity(projectile, "m_hThrower", swing.owner)
-	NetProps.SetPropEntity(projectile, "m_hLauncher", swing.launcher)
+
+	if (projectile.GetClassname() != "tf_projectile_pipe_remote")
+		NetProps.SetPropEntity(projectile, "m_hLauncher", swing.launcher)
+
 	NetProps.SetPropInt(projectile, "m_iDeflected", NetProps.GetPropInt(projectile, "m_iDeflected") + 1)
 
 	projectile.SetTeam(swing.team)
