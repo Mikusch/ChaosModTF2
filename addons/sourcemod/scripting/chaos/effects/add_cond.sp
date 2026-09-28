@@ -22,30 +22,6 @@ public void AddCond_GetClaims(ChaosEffect effect, ArrayList claims)
 	kv.Rewind();
 }
 
-public void AddCond_OnMapStart(ChaosEffect effect)
-{
-	// Halloween Ghost
-	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
-	PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
-	PrecacheScriptSound("Halloween.GhostBoo");
-
-	// Bumper Cars
-	PrecacheModel("models/player/items/taunts/bumpercar/parts/bumpercar.mdl");
-	PrecacheModel("models/props_halloween/bumpercar_cage.mdl");
-	PrecacheScriptSound("BumperCar.Spawn");
-	PrecacheScriptSound("BumperCar.SpawnFromLava");
-	PrecacheScriptSound("BumperCar.GoLoop");
-	PrecacheScriptSound("BumperCar.Screech");
-	PrecacheScriptSound("BumperCar.HitGhost");
-	PrecacheScriptSound("BumperCar.Bump");
-	PrecacheScriptSound("BumperCar.BumpHard");
-	PrecacheScriptSound("BumperCar.BumpIntoAir");
-	PrecacheScriptSound("BumperCar.SpeedBoostStart");
-	PrecacheScriptSound("BumperCar.SpeedBoostStop");
-	PrecacheScriptSound("BumperCar.Jump");
-	PrecacheScriptSound("BumperCar.JumpLand");
-}
-
 public bool AddCond_OnStart(ChaosEffect effect)
 {
 	KeyValues kv = effect.OpenData();
@@ -57,6 +33,8 @@ public bool AddCond_OnStart(ChaosEffect effect)
 		do
 		{
 			TFCond nCondition = view_as<TFCond>(kv.GetNum(NULL_STRING));
+
+			PrecacheCondition(nCondition);
 
 			for (int client = 1; client <= MaxClients; client++)
 			{
@@ -137,4 +115,34 @@ public void AddCond_OnConditionRemoved(ChaosEffect effect, int client, TFCond co
 	}
 
 	kv.Rewind();
+}
+
+static void PrecacheCondition(TFCond nCondition)
+{
+	switch (nCondition)
+	{
+		case TFCond_HalloweenGhostMode:
+		{
+			PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
+			PrecacheModel("models/props_halloween/ghost_no_hat_red.mdl");
+			PrecacheScriptSound("Halloween.GhostBoo");
+		}
+		case TFCond_HalloweenKart:
+		{
+			PrecacheModel("models/player/items/taunts/bumpercar/parts/bumpercar.mdl");
+			PrecacheModel("models/props_halloween/bumpercar_cage.mdl");
+			PrecacheScriptSound("BumperCar.Spawn");
+			PrecacheScriptSound("BumperCar.SpawnFromLava");
+			PrecacheScriptSound("BumperCar.GoLoop");
+			PrecacheScriptSound("BumperCar.Screech");
+			PrecacheScriptSound("BumperCar.HitGhost");
+			PrecacheScriptSound("BumperCar.Bump");
+			PrecacheScriptSound("BumperCar.BumpHard");
+			PrecacheScriptSound("BumperCar.BumpIntoAir");
+			PrecacheScriptSound("BumperCar.SpeedBoostStart");
+			PrecacheScriptSound("BumperCar.SpeedBoostStop");
+			PrecacheScriptSound("BumperCar.Jump");
+			PrecacheScriptSound("BumperCar.JumpLand");
+		}
+	}
 }

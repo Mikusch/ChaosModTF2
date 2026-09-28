@@ -9,14 +9,11 @@ public bool EnableAllHolidays_Initialize(ChaosEffect effect)
 	return g_hDetourIsHolidayActive != null;
 }
 
-public void EnableAllHolidays_OnMapStart(ChaosEffect effect)
+public bool EnableAllHolidays_OnStart(ChaosEffect effect)
 {
 	PrecacheScriptSound("Christmas.GiftDrop");
 	PrecacheScriptSound("Christmas.GiftPickup");
-}
-
-public bool EnableAllHolidays_OnStart(ChaosEffect effect)
-{
+	
 	if (!g_hDetourIsHolidayActive.Enable(Hook_Pre, OnIsHolidayActive))
 		return false;
 	

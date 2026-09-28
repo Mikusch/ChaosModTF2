@@ -46,16 +46,13 @@ static char g_szBotClassNames[][] =
 	"engineer"
 };
 
-public void MannInTheMachine_OnMapStart(ChaosEffect effect)
+public bool MannInTheMachine_OnStart(ChaosEffect effect)
 {
 	PrecacheScriptSound("MVM.BotStep");
 	PrecacheScriptSound("MVM.FallDamageBots");
 	PrecacheScriptSound("MVM.GiantHeavyExplodes");
 	PrecacheScriptSound("MVM.GiantCommonExplodes");
-}
-
-public bool MannInTheMachine_OnStart(ChaosEffect effect)
-{
+	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsValidRobotPlayer(client))
