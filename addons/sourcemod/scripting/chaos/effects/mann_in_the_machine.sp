@@ -102,25 +102,29 @@ static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char
 	
 	if (!strncmp(sample, "vo/", 3))
 	{
+		char szSample[PLATFORM_MAX_PATH];
+		strcopy(szSample, sizeof(szSample), sample);
+		
 		char szClassMvM[32];
 		if (GetEntProp(entity, Prop_Send, "m_bIsMiniBoss") && nClass != TFClass_Sniper && nClass != TFClass_Engineer && nClass != TFClass_Medic && nClass != TFClass_Spy)
 		{
-			ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/mght/", false);
+			ReplaceString(szSample, sizeof(szSample), "vo/", "vo/mvm/mght/", false);
 			FormatEx(szClassMvM, sizeof(szClassMvM), "%s_mvm_m", g_szBotClassNames[view_as<int>(nClass)]);
 		}
 		else
 		{
-			ReplaceString(sample, sizeof(sample), "vo/", "vo/mvm/norm/", false);
+			ReplaceString(szSample, sizeof(szSample), "vo/", "vo/mvm/norm/", false);
 			FormatEx(szClassMvM, sizeof(szClassMvM), "%s_mvm", g_szBotClassNames[view_as<int>(nClass)]);
 		}
 		
-		ReplaceString(sample, sizeof(sample), g_szBotClassNames[view_as<int>(nClass)], szClassMvM);
+		ReplaceString(szSample, sizeof(szSample), g_szBotClassNames[view_as<int>(nClass)], szClassMvM);
 		
 		char szSoundPath[PLATFORM_MAX_PATH];
-		FormatEx(szSoundPath, sizeof(szSoundPath), "sound/%s", sample);
+		FormatEx(szSoundPath, sizeof(szSoundPath), "sound/%s", szSample);
 		
 		if (FileExists(szSoundPath, true))
 		{
+			strcopy(sample, sizeof(sample), szSample);
 			PrecacheSound(sample);
 			return Plugin_Changed;
 		}
