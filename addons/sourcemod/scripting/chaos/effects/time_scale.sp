@@ -4,9 +4,6 @@
 static ConVar host_timescale;
 static ConVar sv_cheats;
 
-static float g_flOldTimescale;
-static float g_flCurrentTimescale;
-
 public bool TimeScale_Initialize(ChaosEffect effect)
 {
 	host_timescale = FindConVar("host_timescale");
@@ -31,8 +28,8 @@ public bool TimeScale_OnStart(ChaosEffect effect)
 	if (host_timescale.FloatValue == flTimescale)
 		return false;
 
-	g_flOldTimescale = host_timescale.FloatValue;
-	g_flCurrentTimescale = flTimescale;
+	effect.state.SetValue("old_timescale", host_timescale.FloatValue);
+	effect.state.SetValue("timescale", flTimescale);
 	host_timescale.FloatValue = flTimescale;
 
 	host_timescale.AddChangeHook(OnTimescaleChanged);
@@ -50,7 +47,10 @@ public void TimeScale_OnEnd(ChaosEffect effect)
 {
 	host_timescale.RemoveChangeHook(OnTimescaleChanged);
 	sv_cheats.RemoveChangeHook(OnCheatsChanged);
-	host_timescale.FloatValue = g_flOldTimescale;
+
+	float flOldTimescale;
+	if (effect.state.GetValue("old_timescale", flOldTimescale))
+		host_timescale.FloatValue = flOldTimescale;
 
 	RemoveNormalSoundHook(OnNormalSoundPlayed);
 	RemoveAmbientSoundHook(OnAmbientSoundPlayed);
@@ -68,11 +68,19 @@ public void TimeScale_OnClientPutInServer(ChaosEffect effect, int client)
 
 static void OnTimescaleChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
+	ChaosEffect effect;
+	if (!GetActiveEffectByClass("TimeScale", effect))
+		return;
+
+	float flTimescale;
+	if (!effect.state.GetValue("timescale", flTimescale))
+		return;
+
 	host_timescale.RemoveChangeHook(OnTimescaleChanged);
-	host_timescale.FloatValue = g_flCurrentTimescale;
+	host_timescale.FloatValue = flTimescale;
 	host_timescale.AddChangeHook(OnTimescaleChanged);
 
-	g_flOldTimescale = StringToFloat(newValue);
+	effect.state.SetValue("old_timescale", StringToFloat(newValue));
 }
 
 static void OnCheatsChanged(ConVar convar, const char[] oldValue, const char[] newValue)
@@ -88,13 +96,29 @@ static void Frame_ReplicateCheats()
 
 static Action OnNormalSoundPlayed(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-	pitch = RoundToNearest(pitch * g_flCurrentTimescale);
+	ChaosEffect effect;
+	if (!GetActiveEffectByClass("TimeScale", effect))
+		return Plugin_Continue;
+
+	float flTimescale;
+	if (!effect.state.GetValue("timescale", flTimescale))
+		return Plugin_Continue;
+
+	pitch = RoundToNearest(pitch * flTimescale);
 	return Plugin_Changed;
 }
 
 static Action OnAmbientSoundPlayed(char sample[PLATFORM_MAX_PATH], int &entity, float &volume, int &level, int &pitch, float pos[3], int &flags, float &delay)
 {
-	pitch = RoundToNearest(pitch * g_flCurrentTimescale);
+	ChaosEffect effect;
+	if (!GetActiveEffectByClass("TimeScale", effect))
+		return Plugin_Continue;
+
+	float flTimescale;
+	if (!effect.state.GetValue("timescale", flTimescale))
+		return Plugin_Continue;
+
+	pitch = RoundToNearest(pitch * flTimescale);
 	return Plugin_Changed;
 }
 

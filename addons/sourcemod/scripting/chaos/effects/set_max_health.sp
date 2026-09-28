@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 static DynamicDetour g_hDetourGetMaxHealthForBuffing;
-static int g_nMaxHealth;
 
 public bool SetMaxHealth_Initialize(ChaosEffect effect)
 {
@@ -21,10 +20,12 @@ public bool SetMaxHealth_OnStart(ChaosEffect effect)
 	if (!kv)
 		return false;
 
-	g_nMaxHealth = kv.GetNum("health");
+	int nHealth = kv.GetNum("health");
 	
 	if (!g_hDetourGetMaxHealthForBuffing.Enable(Hook_Pre, OnGetMaxHealthForBuffing))
 		return false;
+	
+	effect.state.SetValue("health", nHealth);
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -34,7 +35,7 @@ public bool SetMaxHealth_OnStart(ChaosEffect effect)
 		if (!IsPlayerAlive(client))
 			continue;
 		
-		SetEntProp(client, Prop_Data, "m_iHealth", g_nMaxHealth);
+		SetEntProp(client, Prop_Data, "m_iHealth", nHealth);
 	}
 	
 	return true;
@@ -47,6 +48,14 @@ public void SetMaxHealth_OnEnd(ChaosEffect effect)
 
 static MRESReturn OnGetMaxHealthForBuffing(int player, DHookReturn hReturn)
 {
-	hReturn.Value = g_nMaxHealth;
+	ChaosEffect effect;
+	if (!GetActiveEffectByClass("SetMaxHealth", effect))
+		return MRES_Ignored;
+	
+	int nHealth;
+	if (!effect.state.GetValue("health", nHealth))
+		return MRES_Ignored;
+	
+	hReturn.Value = nHealth;
 	return MRES_Supercede;
 }

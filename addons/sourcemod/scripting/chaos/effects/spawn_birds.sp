@@ -6,22 +6,27 @@
 #define ENTITY_FLYING_BIRD_SPEED_MIN	200.0
 #define ENTITY_FLYING_BIRD_SPEED_MAX	500.0
 
-static float g_flNextBirdSpawnTime[MAXPLAYERS + 1];
-
 public bool SpawnBirds_OnStart(ChaosEffect effect)
 {
 	PrecacheModel(ENTITY_FLYING_BIRD_MODEL);
 
+	float flNextBirdSpawnTime[MAXPLAYERS + 1];
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		g_flNextBirdSpawnTime[client] = GetGameTime();
+		flNextBirdSpawnTime[client] = GetGameTime();
 	}
+
+	effect.state.SetArray("next_bird_spawn_time", flNextBirdSpawnTime, sizeof(flNextBirdSpawnTime));
 
 	return true;
 }
 
 public void SpawnBirds_Update(ChaosEffect effect)
 {
+	float flNextBirdSpawnTime[MAXPLAYERS + 1];
+	if (!effect.state.GetArray("next_bird_spawn_time", flNextBirdSpawnTime, sizeof(flNextBirdSpawnTime)))
+		return;
+
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!IsClientInGame(client))
@@ -30,10 +35,10 @@ public void SpawnBirds_Update(ChaosEffect effect)
 		if (!IsPlayerAlive(client))
 			continue;
 
-		if (g_flNextBirdSpawnTime[client] > GetGameTime())
+		if (flNextBirdSpawnTime[client] > GetGameTime())
 			continue;
 
-		g_flNextBirdSpawnTime[client] = GetGameTime() + GetRandomFloat(0.5, 1.0);
+		flNextBirdSpawnTime[client] = GetGameTime() + GetRandomFloat(0.5, 1.0);
 
 		float vecPos[3], vecOrigin[3], vecCenter[3];
 		GetClientAbsOrigin(client, vecOrigin);
@@ -47,6 +52,8 @@ public void SpawnBirds_Update(ChaosEffect effect)
 
 		SpawnClientsideFlyingBird(vecPos);
 	}
+
+	effect.state.SetArray("next_bird_spawn_time", flNextBirdSpawnTime, sizeof(flNextBirdSpawnTime));
 }
 
 static void SpawnClientsideFlyingBird(float vecSpawn[3])
