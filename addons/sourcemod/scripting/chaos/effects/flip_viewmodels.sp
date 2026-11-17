@@ -7,20 +7,20 @@ public bool FlipViewModels_OnStart(ChaosEffect effect)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
 		for (int i = 0; i < nMaxWeapons; i++)
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 			if (weapon == -1)
 				continue;
-			
-			SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", true);
+
+			FlipWeapon(effect, weapon);
 		}
-		
+
 		SDKHook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
 	}
-	
+
 	return true;
 }
 
@@ -30,17 +30,23 @@ public void FlipViewModels_OnEnd(ChaosEffect effect)
 	{
 		if (!IsClientInGame(client))
 			continue;
-		
+
 		int nMaxWeapons = GetEntPropArraySize(client, Prop_Send, "m_hMyWeapons");
 		for (int i = 0; i < nMaxWeapons; i++)
 		{
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
 			if (weapon == -1)
 				continue;
-			
-			SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", false);
+
+			char szKey[16];
+			IntToString(EntIndexToEntRef(weapon), szKey, sizeof(szKey));
+
+			if (!effect.state.ContainsKey(szKey))
+				continue;
+
+			SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", !GetEntProp(weapon, Prop_Send, "m_bFlipViewModel"));
 		}
-		
+
 		SDKUnhook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
 	}
 }
@@ -50,7 +56,24 @@ public void FlipViewModels_OnClientPutInServer(ChaosEffect effect, int client)
 	SDKHook(client, SDKHook_WeaponEquipPost, SDKHookCB_Client_WeaponEquipPost);
 }
 
+static void FlipWeapon(ChaosEffect effect, int weapon)
+{
+	char szKey[16];
+	IntToString(EntIndexToEntRef(weapon), szKey, sizeof(szKey));
+
+	// Never toggle the same weapon twice
+	if (effect.state.ContainsKey(szKey))
+		return;
+
+	SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", !GetEntProp(weapon, Prop_Send, "m_bFlipViewModel"));
+	effect.state.SetValue(szKey, true);
+}
+
 static void SDKHookCB_Client_WeaponEquipPost(int client, int weapon)
 {
-	SetEntProp(weapon, Prop_Send, "m_bFlipViewModel", true);
+	ChaosEffect effect;
+	if (!GetActiveEffectByClass("FlipViewModels", effect))
+		return;
+
+	FlipWeapon(effect, weapon);
 }
