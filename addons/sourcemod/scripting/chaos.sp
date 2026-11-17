@@ -563,6 +563,10 @@ bool SelectRandomEffect(bool bMeta = false)
 		if (effect.active || effect.cooldown_left > 0)
 			continue;
 
+		// Skip class-specific effects nobody would notice
+		if (effect.required_classes && !IsAnyPlayerOfClass(effect.required_classes))
+			continue;
+
 		char szReason[192];
 		if (Claims_FindConflict(effect, szReason, sizeof(szReason)))
 			continue;
@@ -613,6 +617,13 @@ bool ActivateEffectById(const char[] szEffectId, bool bForce = false, char[] szR
 	if (!effect.enabled && !bForce)
 	{
 		SetRefusalReason(szReason, iMaxLength, "effect is disabled");
+		return false;
+	}
+
+	if (!bForce && effect.required_classes && !IsAnyPlayerOfClass(effect.required_classes))
+	{
+		SetRefusalReason(szReason, iMaxLength, "nobody is playing a class this effect requires");
+		LogDebug("Skipped '%s' because nobody is playing a class it requires", effect.id);
 		return false;
 	}
 

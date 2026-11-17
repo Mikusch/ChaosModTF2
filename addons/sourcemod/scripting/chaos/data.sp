@@ -67,6 +67,7 @@ enum struct ChaosEffect
 	char script_file[PLATFORM_MAX_PATH];
 	char start_sound[PLATFORM_MAX_PATH];
 	char end_sound[PLATFORM_MAX_PATH];
+	int required_classes;
 	ArrayList claims;
 	KeyValues data;
 	char data_string[2048];
@@ -98,6 +99,7 @@ enum struct ChaosEffect
 		kv.GetString("start_sound", this.start_sound, sizeof(this.start_sound));
 		kv.GetString("end_sound", this.end_sound, sizeof(this.end_sound));
 
+		this.required_classes = ParseRequiredClasses(kv, this.id);
 		this.claims = ParseClaims(kv);
 
 		if (kv.JumpToKey("data", false))
@@ -205,6 +207,38 @@ enum struct ProgressBarConfig
 
 ProgressBarConfig g_stEffectBarConfig;
 ProgressBarConfig g_stTimerBarConfig;
+
+static int ParseRequiredClasses(KeyValues kv, const char[] szEffectId)
+{
+	char szValue[256];
+	kv.GetString("required_class", szValue, sizeof(szValue));
+
+	if (!szValue[0])
+		return 0;
+
+	char buffers[10][32];
+	int num = ExplodeString(szValue, ",", buffers, sizeof(buffers), sizeof(buffers[]));
+
+	int iMask = 0;
+	for (int i = 0; i < num; i++)
+	{
+		TrimString(buffers[i]);
+
+		if (!buffers[i][0])
+			continue;
+
+		TFClassType nClass = TF2_GetClass(buffers[i]);
+		if (nClass == TFClass_Unknown)
+		{
+			LogError("Effect '%s': unknown class '%s' in 'required_class'", szEffectId, buffers[i]);
+			continue;
+		}
+
+		iMask |= (1 << view_as<int>(nClass));
+	}
+
+	return iMask;
+}
 
 static ArrayList ParseClaims(KeyValues kv)
 {

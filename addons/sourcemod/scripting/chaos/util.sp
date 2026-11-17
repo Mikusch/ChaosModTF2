@@ -120,6 +120,24 @@ void PrintKeyHintText(int client, const char[] format, any...)
 	EndMessage();
 }
 
+bool IsAnyPlayerOfClass(int iClassMask)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsClientInGame(client))
+			continue;
+
+		TFTeam nTeam = TF2_GetClientTeam(client);
+		if (nTeam <= TFTeam_Spectator)
+			continue;
+
+		if (iClassMask & (1 << view_as<int>(TF2_GetPlayerClass(client))))
+			return true;
+	}
+
+	return false;
+}
+
 int GetRandomPlayer(bool bIsAlive = true)
 {
 	ArrayList hPlayers = new ArrayList();
